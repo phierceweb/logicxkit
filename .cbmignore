@@ -1,0 +1,2 @@
+# Keep prose out of the code index; it dilutes symbol search.
+docs/

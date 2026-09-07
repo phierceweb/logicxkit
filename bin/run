@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# bin/run — invoke a command via the logicxkit venv.
+#
+#   bin/run setup [rig]       create the venv and install editable ('rig' adds x32scene)
+#   bin/run pytest [args]     run the test suite in the venv
+#   bin/run python [args]     one-off venv'd python
+#   bin/run pip|ruff [args]   pip / ruff in the venv
+#   bin/run pf-guards [args]  pf-core structural gate directly (lint runs it too)
+#   bin/run lint              ruff check + pf-core structural gate (file size:
+#                             300 soft / 500 hard)
+#   bin/run logic [args]      the Logic strip CLI  (logicxkit logic …)
+#   bin/run au [args]         the AU preset/state decoder (logicxkit au …)
+#
+# logic/au dispatch through the unified logicxkit.cli entry point.
+#
+# macOS only: `logic` reads and writes Logic Pro's own files, the AU host and probes run
+# src/logicxkit/native/*.swift through the `swift` toolchain, and `logic ocr` needs Apple
+# Vision. Setup builds the venv with python3.12; set PYTHON=python3.13 (or any 3.12+) to use
+# another interpreter.
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+PY="$ROOT/.venv/bin/python"
+
+# Local, uncommitted settings.
+if [ -f "$ROOT/.env" ]; then set -a; . "$ROOT/.env"; set +a; fi
+
+cmd="${1:-}"; shift || true
+case "$cmd" in
+  pytest|python|pip|ruff|pf-guards) exec "$ROOT/.venv/bin/$cmd" "$@" ;;
+  logic|au) exec "$PY" -m logicxkit.cli "$cmd" "$@" ;;
+  setup)
+    [ -d "$ROOT/.venv" ] || "${PYTHON:-python3.12}" -m venv "$ROOT/.venv"
+    "$PY" -m pip install -q --upgrade pip
+    extras="dev"; [ "${1:-}" = "rig" ] && extras="dev,rig"
+    "$PY" -m pip install -q -e ".[$extras]"
+    mkdir -p docs
+    ln -sfn "$("$PY" -c 'import pf_core, pathlib; print(pathlib.Path(pf_core.__file__).parent / "docs")')" \
+       docs/pf-core 2>/dev/null || true
+    # tests/rig self-skips when x32scene is absent, so a rig setup that did not actually get it
+    # would report OK while the golden quietly stops running.
+    if [ "$extras" = "dev,rig" ]; then
+      "$PY" -c 'import x32scene' || { echo "x32scene missing after .[dev,rig]" >&2; exit 1; }
+    fi
+    echo "setup OK ($extras)"
+    ;;
+  lint)
+    "$ROOT/.venv/bin/ruff" check src tests
+    # pf-core structural gate (pf_core.guards): FAIL > 500 lines, WARN > 300.
+    # No baseline file: an oversize file gets split, never grandfathered.
+    "$PY" -m pf_core.guards --root src
+    "$PY" -m pf_core.guards --root tests
+    echo "lint OK"
+    ;;
+  ""|--help|-h)
+    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|logic|au} [args]" ;;
+  *) echo "unknown command: $cmd" >&2; exit 2 ;;
+esac

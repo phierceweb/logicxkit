@@ -1,0 +1,37 @@
+{
+  "_comment": "Neutral example of this spec shape. Create config/local/ (gitignored, so a clone has none), copy this file there and edit it for your own rig. Keys are the basenames retrack matches in the library; each entry gives the new name and the category folder it lands in. An entry may omit 'category' to stay in the spec's top-level one.",
+  "category": "Example Tracking",
+  "mapping": {
+    "Kick.cst": {
+      "name": "Demo Trk - Kick.cst",
+      "category": "Drums"
+    },
+    "Snare.cst": {
+      "name": "Demo Trk - Snare.cst",
+      "category": "Drums"
+    },
+    "Kit Mics.cst": {
+      "name": "Demo Trk - Kit Mics.cst",
+      "category": "Drums"
+    },
+    "Upright Bass.cst": {
+      "name": "Demo Trk - Upright Bass.cst",
+      "category": "Instrument"
+    },
+    "Gtr Amp.cst": {
+      "name": "Demo Trk - Gtr Amp.cst",
+      "category": "Instrument"
+    },
+    "Horn Section.cst": {
+      "name": "Demo Trk - Horn Section.cst",
+      "category": "Instrument"
+    },
+    "Lead Vocal.cst": {
+      "name": "Demo Trk - Lead Vocal.cst",
+      "category": "Vocals"
+    },
+    "Stereo Out.cst": {
+      "name": "Demo Trk - Stereo Out.cst"
+    }
+  }
+}

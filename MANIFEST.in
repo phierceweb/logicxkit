@@ -1,0 +1,9 @@
+# distutils' sdist default globs `tests/test*.py`: top level only, and only names starting with
+# `test`. conftest.py and the `_*.py` helpers it imports are left behind, so the tree cannot collect.
+recursive-include tests *.py
+# test_capabilities.py reads these two; without them the shipped suite fails rather than skips.
+recursive-include docs *.md
+recursive-include config *.json
+include CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md .env.example
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

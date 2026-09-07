@@ -1,0 +1,72 @@
+{
+  "_comment": "Neutral example. Copy to config/local/ (gitignored) and edit for your own rig. Sources are read from Logic's library (or strip_root / LOGICXKIT_STRIP_ROOT); output_root sends the built strips to out/. Writing into Logic's own library needs --install.",
+  "output_root": "out/strips",
+  "output_dir": "Example Kit/Drums",
+  "presets": {
+    "Demo Trk - Kick": {
+      "graft": {
+        "routing_from": "Track/Example Mixing/Drums/Kick.cst",
+        "chain_from": "Track/Example Tracking/Drums/Kit Mics.cst"
+      },
+      "label": "Demo Trk - Kick",
+      "eq": {
+        "hpf": {
+          "freq": 35
+        },
+        "peak1": {
+          "freq": 70,
+          "gain": 2.5,
+          "q": 0.9
+        },
+        "peak2": {
+          "freq": 320,
+          "gain": -4.0,
+          "q": 1.2
+        },
+        "peak3": {
+          "freq": 3500,
+          "gain": 3.0,
+          "q": 0.7
+        }
+      },
+      "comp": {
+        "circuit": "ClassicVCA",
+        "threshold": -22,
+        "ratio": 5,
+        "attack": 8,
+        "release": 45,
+        "gain": 3,
+        "knee": 0.4
+      }
+    },
+    "Demo Trk - Sub Kick": {
+      "graft": {
+        "routing_from": "Track/Example Mixing/Drums/Sub Kick.cst",
+        "chain_from": "Track/Example Tracking/Drums/Kit Mics.cst"
+      },
+      "label": "Demo Trk - Sub Kick",
+      "eq": {
+        "hpf": {
+          "freq": 40
+        },
+        "peak1": {
+          "freq": 55,
+          "gain": 2.0,
+          "q": 0.6
+        },
+        "lpf": {
+          "freq": 140
+        }
+      },
+      "comp": {
+        "circuit": "VintageVCA",
+        "threshold": -14,
+        "ratio": 2.5,
+        "attack": 25,
+        "release": 110,
+        "gain": 2,
+        "knee": 0.6
+      }
+    }
+  }
+}

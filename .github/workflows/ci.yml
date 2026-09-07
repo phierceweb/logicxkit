@@ -1,0 +1,36 @@
+# A runner has no reference corpus and no console, so tests/goldens and tests/rig skip here and
+# a green check proves the synthetic layer only.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: python -m pip install --upgrade pip && python -m pip install -e '.[dev]'
+
+      - name: Lint
+        run: |
+          ruff check src tests
+          python -m pf_core.guards --root src
+          python -m pf_core.guards --root tests
+
+      - name: Tests
+        run: |
+          set -o pipefail
+          python -m pytest -q | tee pytest.out
+          grep -E "goldens: [0-9]+ of [0-9]+ keys found" pytest.out

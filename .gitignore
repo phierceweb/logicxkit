@@ -1,0 +1,66 @@
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+dist/
+build/
+
+# Tool caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+
+# Local settings
+.env
+
+# Rig libraries are personal and hold licensed commercial profiles. Nothing here ships.
+samples/
+*.rmbackup
+*.rigpack
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
+*.orig
+*.rej
+
+# Local working notes and editor/assistant scratch — never part of a release.
+.ai/
+.claude/
+.cursor/
+.superpowers/
+CLAUDE.md
+
+# Logic project exchange — drop copies in in/, tooling writes new versions to out/.
+# Both hold real sessions and rig audio; only the READMEs are tracked.
+in/*
+!in/README.md
+out/*
+!out/README.md
+
+# Real rig specs — every config/example-*.json tells you to copy it here and edit it.
+config/local/
+
+# Local run output
+logs/
+*.jsonl
+
+# pf-core docs symlink (bin/run setup recreates it)
+docs/pf-core
+
+# reference material kept beside the repo — real sessions, mixes, the strip library, and
+# under resources/data the Logic-written templates, donor slots and AU tables the tools need
+resources/*
+!resources/README.md
+!resources/data/
+resources/data/*
+!resources/data/README.md

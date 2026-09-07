@@ -1,0 +1,50 @@
+{
+  "label_prefix": "Demo Trk",
+  "_comment": "Neutral example of this spec shape. Create config/local/ (gitignored, so a clone has none), copy this file there and edit it for your own rig. Relative paths (chains[].strip, donors[].cst) resolve against 'strip_root' when the spec sets one, else LOGICXKIT_STRIP_ROOT or Logic's own Channel Strip Settings; an absolute path always wins.",
+  "chains": {
+    "Kick.cst": {
+      "label": "Kick",
+      "strip": "Track/Example Tracking/Drums/Kick.cst",
+      "env": true,
+      "bypass": [
+        "env"
+      ],
+      "_source": "Takes its EQ and Compressor settings from the strip named above."
+    },
+    "Snare.cst": {
+      "label": "Snare",
+      "strip": "Track/Example Tracking/Drums/Snare.cst",
+      "pre": [
+        "gain_invert"
+      ],
+      "_source": "Takes its EQ and Compressor settings from the strip named above."
+    }
+  },
+  "donors": {
+    "gain_invert": {
+      "type": 183,
+      "cst": "Track/Example Tracking/Drums/Kit Mics.cst",
+      "_note": "Gain, set to invert polarity. No filtering and no lookahead, so it costs nothing to leave in"
+    },
+    "chromaverb": {
+      "type": 287
+    },
+    "silververb": {
+      "type": 150,
+      "_note": "SilverVerb — algorithmic, and lighter on CPU than ChromaVerb"
+    },
+    "enverb": {
+      "type": 166,
+      "_note": "EnVerb, the envelope-shaped reverb"
+    },
+    "echo": {
+      "type": 147,
+      "_note": "Logic's own delay; a slapback insert is the usual reason to want one"
+    },
+    "enveloper": {
+      "type": 157,
+      "cst": "Track/Example Tracking/Drums/Kick.cst",
+      "_note": "a transient shaper. It carries lookahead, so insert it bypassed"
+    }
+  }
+}

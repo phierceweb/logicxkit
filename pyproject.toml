@@ -1,0 +1,67 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "logicxkit"
+version = "0.1.0"
+description = "Logic Pro project and channel-strip tooling, and Audio Unit preset and state decoding"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Mike Farr" }]
+keywords = ["logic-pro", "audio-unit", "channel-strip", "daw", "reverse-engineering", "macos"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio",
+]
+
+dependencies = [
+    # Foundation tier + the pf_core.guards gate bin/run lint runs. Must match
+    # x32scene's pin, or pip cannot resolve the two together.
+    "pf-core~=0.22.0",
+]
+
+[project.urls]
+Repository = "https://github.com/phierceweb/logicxkit"
+Issues = "https://github.com/phierceweb/logicxkit/issues"
+Changelog = "https://github.com/phierceweb/logicxkit/blob/main/CHANGELOG.md"
+
+[project.scripts]
+logicxkit = "logicxkit.cli:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+# Opt-in: only tests/rig needs it, and only on a machine with the real scene. Nothing in
+# src/ imports it. Its own pf-core pin is ~=0.22.0, which is why the two resolve together.
+rig = [
+    "x32scene~=0.2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# The Swift scripts are run by `swift` at call time, so they must land beside the package
+# in a wheel as well as in a checkout — see logicxkit/utils/swiftrun.py.
+[tool.setuptools.package-data]
+logicxkit = ["native/*.swift"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "B"]
+ignore = ["E501", "B008", "B904"]
