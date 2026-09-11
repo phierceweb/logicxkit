@@ -3,6 +3,20 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.1.1 — 2026-09-11
+
+### Fixed
+
+- The headless AU host looked for `auprobe.swift` outside the package and never found it, so
+  `au params` failed and every state decode fell back to the static tables.
+
+### Added
+
+- `docs/README.md` (documentation index), `docs/INSTALLATION.md` and `docs/commands.md`.
+- `py.typed`: the package is annotated and now says so to type checkers.
+- `aulatency.swift` is documented in `src/logicxkit/au/README.md`; it ships in the wheel and
+  is run directly with `swift`.
+
 ## 0.1.0 — 2026-09-10
 
 First public release.

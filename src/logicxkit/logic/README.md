@@ -210,7 +210,7 @@ target_header[:seam] + donor[seam:]        seam = w7 + 0x24
 
 Header words (uint32 LE): `w7` @0x1c = header length; `w10` @0x28 = channel number (high bytes)
 plus a type flag in the low byte — **0x40 track · 0x42 bus · 0x43 instrument · 0x4C output**
-(verified against all 94 strips in the library; the folder is ground truth).
+(verified against every strip in the library; the folder is ground truth).
 
 Confirmed in Logic — a grafted vox strip (vox header + overhead EQ→Comp slots) loaded and
 re-serialised correctly.

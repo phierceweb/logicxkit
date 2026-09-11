@@ -1,5 +1,7 @@
 # logicxkit
 
+[![PyPI](https://img.shields.io/pypi/v/logicxkit)](https://pypi.org/project/logicxkit/)
+
 Read and edit Logic Pro projects, channel strips and Audio Unit plugin state from the command
 line.
 
@@ -24,7 +26,7 @@ is the tidiest example — every button id was pinned on fifty single-toggle sav
 and a control bar written by this tool and copied whole onto another project came up in Logic
 with that exact set. That standard is not uniform across the tool. Some commands have been
 opened in Logic and confirmed, some are reasoned from diffs and never opened, and a few carry
-defects reproduced on real projects. **[`docs/CAPABILITIES.md`](docs/CAPABILITIES.md)
+defects reproduced on real projects. **[`docs/CAPABILITIES.md`][caps]
 carries the level and the evidence for every command, and `bin/run logic capabilities` prints
 the same table.** Read it before you point a writer at a session you care about.
 
@@ -40,6 +42,10 @@ the same table.** Read it before you point a writer at a session you care about.
 - **A Swift toolchain** (`swift`) — the headless AU host and the Apple Vision OCR are Swift
   scripts run JIT at call time. Without it, `au` falls back to static parameter tables and
   `logic ocr` is unavailable.
+
+The only runtime dependency is [pf-core][pf-core], installed automatically, which supplies the
+atomic-write helpers and the logging and exception types used at the CLI boundary. The library
+itself stays pure-stdlib.
 
 ## Getting it
 
@@ -87,7 +93,7 @@ bin/run logic capabilities -v                            # what each writer is t
   header, control bar, toolbar, transport modes, metronome, channel width, mixer groups,
   arrangement sections, tempo, time signature and key, track add/rename/colour/hide/reorder,
   sends, routing, and `apply-template` to move a session onto another project's layout. See
-  [`src/logicxkit/logic/README.md`](src/logicxkit/logic/README.md).
+  [`src/logicxkit/logic/README.md`][logic-fmt].
 - **`logicxkit.au`** — Audio Unit preset/state decoder (read-only): FabFilter `.ffp` +
   `.aupreset` parsing, Waves XPst, **TR5 chain XML** (module chain + per-module params from the
   ValueTree `Chain` prop), **sonible protobuf field walk** (values, unnamed), and a **headless
@@ -96,7 +102,7 @@ bin/run logic capabilities -v                            # what each writer is t
   3rd-party states **embedded in `.cst` strips and `.logicx` projects** — the layer Logic
   reports as a preset name and nothing more (FabFilter, Ozone, Nectar, Neutron, Ampeg SVT). AU
   parameter tables live in the data root for offline decode when the host is unavailable. See
-  [`src/logicxkit/au/README.md`](src/logicxkit/au/README.md).
+  [`src/logicxkit/au/README.md`][au-fmt].
 - **`logicxkit.logicx`** — the `.logicx` container format itself: alternatives, `ProjectData`,
   `OCuA` channel blocks. A leaf that both `logic` and `au` read projects through.
 - **`logicxkit.utils`** — helpers at least two domains share: the Swift runner behind the AU
@@ -119,7 +125,7 @@ directly, so nothing checks the result before it lands. They still never touch t
 
 A write by a command that has not been confirmed in Logic prints a one-line notice naming its
 level before it runs, so you get the warning without having to have read
-[`docs/CAPABILITIES.md`](docs/CAPABILITIES.md) first. `LOGICXKIT_NO_NOTICE=1` silences it.
+[`docs/CAPABILITIES.md`][caps] first. `LOGICXKIT_NO_NOTICE=1` silences it.
 
 And the gate covers structure, not sound. It cannot tell you a chain landed on the wrong
 channel. **Open every output in Logic before trusting it** — that, not a green run, is what
@@ -144,7 +150,7 @@ Three more things write outside `--out`, and one warning:
   reference, and `validate_project` cannot see the loss. A clone across record class versions
   cannot be legalised either. Both stop the run and say what to do instead; `--force` writes
   anyway. The remaining open defects are listed in
-  [`docs/CAPABILITIES.md`](docs/CAPABILITIES.md).
+  [`docs/CAPABILITIES.md`][caps].
 
 ## Layout
 
@@ -191,8 +197,8 @@ The consequence for a fresh clone: **`bin/run pytest` runs green, but the golden
 real files. The run prints `goldens: N of M keys found` on its last line so you can see how much
 actually ran, and `LOGICXKIT_REQUIRE_GOLDENS=1` turns a missing golden into a failure.
 
-[`resources/README.md`](resources/README.md) describes the shape of the corpus and how the
-controlled saves are made; [`resources/data/README.md`](resources/data/README.md) describes the
+[`resources/README.md`][corpus] describes the shape of the corpus and how the
+controlled saves are made; [`resources/data/README.md`][data-root] describes the
 data root and how to regenerate each part of it (`logic donors`, `logic recdiff`, `au params`).
 Point `LOGICXKIT_RESOURCES` and `LOGICXKIT_DATA` at your own copies.
 
@@ -208,16 +214,18 @@ bin/run lint     # ruff + the pf-core structural gate
 bin/run pytest   # the suite; ends with the goldens line
 ```
 
-Both must pass before a change lands. CI ([`.github/workflows/ci.yml`](.github/workflows/ci.yml))
+Both must pass before a change lands. **[`docs/`][docs] is the documentation index** —
+installation, the command groups and their rules, and the format references.
+CI ([`.github/workflows/ci.yml`][ci])
 runs the same two on a macOS runner, but with no corpus staged it proves the synthetic layer
 only — a green check there is not a substitute for running the suite on a machine that has the
-files. [`CONTRIBUTING.md`](CONTRIBUTING.md) has the full loop; the house rules are:
+files. [`CONTRIBUTING.md`][contributing] has the full loop; the house rules are:
 
 - File size target 300 lines, hard limit 500, one concern per file. The limit is enforced by
   pf-core's `pf_core.guards` gate inside `bin/run lint`; there is no baseline file and none
   should be added — split an oversize file instead.
 - src-layout, no `sys.path` hacks. `X | None` types.
-- The library stays pure-stdlib and portable; [pf-core](https://pypi.org/project/pf-core/) is
+- The library stays pure-stdlib and portable; [pf-core][pf-core] is
   used for foundation helpers (atomic writes) and adopted for logging and exceptions at the CLI
   boundary only.
 - **Decoding claims need evidence from a real file.** `None` beats a guess, and a command
@@ -227,4 +235,16 @@ files. [`CONTRIBUTING.md`](CONTRIBUTING.md) has the full loop; the house rules a
 
 ## License
 
-Apache License 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+Apache License 2.0. See [`LICENSE`][license] and [`NOTICE`][notice].
+
+[caps]: https://github.com/phierceweb/logicxkit/blob/main/docs/CAPABILITIES.md
+[logic-fmt]: https://github.com/phierceweb/logicxkit/blob/main/src/logicxkit/logic/README.md
+[au-fmt]: https://github.com/phierceweb/logicxkit/blob/main/src/logicxkit/au/README.md
+[corpus]: https://github.com/phierceweb/logicxkit/blob/main/resources/README.md
+[data-root]: https://github.com/phierceweb/logicxkit/blob/main/resources/data/README.md
+[docs]: https://github.com/phierceweb/logicxkit/blob/main/docs/README.md
+[ci]: https://github.com/phierceweb/logicxkit/blob/main/.github/workflows/ci.yml
+[contributing]: https://github.com/phierceweb/logicxkit/blob/main/CONTRIBUTING.md
+[pf-core]: https://pypi.org/project/pf-core/
+[license]: https://github.com/phierceweb/logicxkit/blob/main/LICENSE
+[notice]: https://github.com/phierceweb/logicxkit/blob/main/NOTICE

@@ -53,9 +53,6 @@ from .services.donors import harvest_donors, load_donor_library
 from .services.retrack import copy_project, find_project, missing_strips, retrack_bundle
 from .services.spec import assemble, load_spec
 
-_NEURAL_NOISE = {"metronomeParameters", "tunerParameters"}  # UI state, not tone
-
-
 def _byte_loader():
     """path -> bytes, cached; shared by every preset in a spec run."""
     cache: dict[Path, bytes] = {}

@@ -20,6 +20,13 @@ class NativeDirTest(unittest.TestCase):
     def test_it_sits_inside_the_installed_package(self):
         self.assertEqual(native_dir(), Path(logicxkit.__file__).resolve().parent / "native")
 
+    def test_the_au_host_resolves_its_probe_through_it(self):
+        from logicxkit.au.services.host import auprobe_path
+        from logicxkit.logic.services.ocr import _script
+        self.assertEqual(auprobe_path(), native_dir() / "auprobe.swift")
+        self.assertEqual(_script(), native_dir() / "vision_ocr.swift")
+        self.assertTrue(auprobe_path().is_file())
+
     def test_every_script_is_there(self):
         for name in SCRIPTS:
             with self.subTest(name):

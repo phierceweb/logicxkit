@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logicxkit"
-version = "0.1.0"
+version = "0.1.1"
 description = "Logic Pro project and channel-strip tooling, and Audio Unit preset and state decoding"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -20,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Multimedia :: Sound/Audio",
+    "Typing :: Typed",
 ]
 
 dependencies = [
@@ -53,7 +54,7 @@ where = ["src"]
 # The Swift scripts are run by `swift` at call time, so they must land beside the package
 # in a wheel as well as in a checkout — see logicxkit/utils/swiftrun.py.
 [tool.setuptools.package-data]
-logicxkit = ["native/*.swift"]
+logicxkit = ["native/*.swift", "py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

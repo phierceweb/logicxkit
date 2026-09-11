@@ -19,7 +19,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from logicxkit.utils.swiftrun import SwiftRunError, run_swift, swift_available
+from logicxkit.utils.swiftrun import SwiftRunError, native_dir, run_swift, swift_available
 
 # Observed crashes: sonible (dyld abort), Waves (WaveShell objc class collision).
 _HEADLESS_UNSAFE = {"Soni", "ksWV"}
@@ -35,7 +35,7 @@ def is_headless_safe(manufacturer_cc: str) -> bool:
 
 
 def auprobe_path() -> Path:
-    return Path(__file__).resolve().parents[4] / "native" / "auprobe.swift"
+    return native_dir() / "auprobe.swift"
 
 
 @dataclass(frozen=True)

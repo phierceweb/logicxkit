@@ -67,6 +67,13 @@ bin/run au tables                          # list the tables in the data root
 # --all shows unchanged params too; --json for structured output; --no-host forces static
 ```
 
+## Latency
+
+`src/logicxkit/native/aulatency.swift <type> <subtype> <manu> [sampleRate]` reports an
+installed AU's `kAudioUnitProperty_LatencySamples` after initialisation at that rate — the
+figure a host compensates for, so what a player feels while monitoring. Run it with `swift`
+directly; there is no CLI wrapper.
+
 ## Denylist
 
 `Soni` (sonible) and `ksWV` (Waves) crash when instantiated without a UI host —
