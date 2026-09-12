@@ -1,9 +1,5 @@
-"""The subpackage import graph stays a DAG, and logicx stays a leaf.
-
-`au` and `logic` were mutually dependent until the .logicx container primitives moved into
-`logicxkit.logicx`. Nothing mechanical catches a relapse — pf_core.guards' layering rule only
-inspects `app/` trees — so it is caught here.
-"""
+"""The subpackage import graph stays a DAG, and logicx stays a leaf; pf_core.guards' layering
+rule inspects only `app/` trees, so it is enforced here."""
 
 import ast
 import os
@@ -16,6 +12,20 @@ _PKGS = ("au", "logic", "utils", "logicx")
 def _package_of(path: str) -> str:
     head = os.path.relpath(path, _SRC).split(os.sep)[0]
     return head if head in _PKGS else "(root)"
+
+
+def _modules(path: str, node: ast.Import | ast.ImportFrom) -> list[str]:
+    """The absolute modules an import names, relative ``from`` imports resolved."""
+    if isinstance(node, ast.Import):
+        return [a.name for a in node.names]
+    if node.level:
+        rel = os.path.relpath(os.path.dirname(path), _SRC)
+        package = ["logicxkit"] + ([] if rel == "." else rel.split(os.sep))
+        base = ".".join(package[:len(package) - (node.level - 1)])
+    else:
+        base = ""
+    module = ".".join(p for p in (base, node.module) if p)
+    return [module] if node.module else [f"{module}.{a.name}" for a in node.names]
 
 
 def _edges() -> dict[tuple[str, str], list[str]]:
@@ -32,13 +42,9 @@ def _edges() -> dict[tuple[str, str], list[str]]:
             with open(path, encoding="utf-8") as fh:
                 tree = ast.parse(fh.read(), path)
             for node in ast.walk(tree):
-                if isinstance(node, ast.Import):
-                    mods = [a.name for a in node.names]
-                elif isinstance(node, ast.ImportFrom) and node.module and not node.level:
-                    mods = [node.module]
-                else:
+                if not isinstance(node, (ast.Import, ast.ImportFrom)):
                     continue
-                for mod in mods:
+                for mod in _modules(path, node):
                     parts = mod.split(".")
                     if parts[0] != "logicxkit":
                         continue
@@ -84,6 +90,20 @@ class PackageLayeringTest(unittest.TestCase):
     def test_logicx_is_a_leaf(self):
         out = {b: s for (a, b), s in _edges().items() if a == "logicx"}
         self.assertEqual(out, {}, "logicxkit.logicx must not import a sibling package")
+
+
+class RelativeImportTest(unittest.TestCase):
+    def test_a_relative_import_across_packages_is_an_edge(self):
+        import sys
+        import tempfile
+        from unittest import mock
+        with tempfile.TemporaryDirectory() as tmp:
+            for sub in ("au", "logic"):
+                os.makedirs(os.path.join(tmp, sub))
+            with open(os.path.join(tmp, "au", "reader.py"), "w") as fh:
+                fh.write("from ..logic import services\nfrom .. import logic\n")
+            with mock.patch.object(sys.modules[__name__], "_SRC", tmp):
+                self.assertEqual(len(_edges().get(("au", "logic"), [])), 2)
 
 
 if __name__ == "__main__":

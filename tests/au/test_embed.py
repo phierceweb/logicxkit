@@ -42,5 +42,20 @@ class TestLogicReexport(unittest.TestCase):
         self.assertIs(legacy, find_au_plists)
 
 
+class CraftedInputTest(unittest.TestCase):
+    def test_a_run_of_declarations_is_parsed_once_per_plist(self):
+        import plistlib
+        from unittest import mock
+        with mock.patch.object(plistlib, "loads", wraps=plistlib.loads) as loads:
+            self.assertEqual(find_au_plists(b"<?xml" * 2000 + b"</plist>"), [])
+        self.assertEqual(loads.call_count, 1)
+
+    def test_a_plist_after_a_broken_declaration_is_still_found(self):
+        import plistlib
+        real = plistlib.dumps({"name": "x"})
+        data = b"junk<?xml broken " + real + b"tail"
+        self.assertEqual(find_au_plists(data), [(data.index(real), {"name": "x"})])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -41,13 +41,12 @@ CAPABILITIES = (
                "`project`'s \"channels with inserts\" counts `.cst` labels, not loaded plugins"),
     Capability(("stacks",), "CONFIRMED", "read-only until `--move`, which needs `--out`",
                "Reads folder stacks and the arrange list. `--move TRACK:STACK --out DIR` writes "
-               "a copy whose rows match Logic's own drag saves (2026-09-04). It writes directly "
-               "rather than through `_edit.edit_copy`, so `integrity.py` does NOT gate it — open "
-               "the result in Logic"),
-    Capability(("levels",), "DERIVED", "read-only until `--to`, which needs `--out`",
-               "Reads fader and pan. `--to OTHER --out DIR` copies them onto another project; no "
-               "Logic-confirmed artifact stands behind that write, and like `stacks --move` it "
-               "bypasses `integrity.py` — open the result in Logic"),
+               "a copy whose rows match Logic's own drag saves (2026-09-04), through the "
+               "same integrity gate as every other writer"),
+    Capability(("levels",), "CONFIRMED", "read-only until `--to`, which needs `--out`",
+               "Reads fader and pan. `--to OTHER --out DIR` copies them onto another project "
+               "through the integrity gate; a copy written onto a blank project came back from "
+               "Logic's re-save with every fader and pan as written (2026-09-12)"),
     Capability(("build", "verify", "pst", "donors", "image", "ocr"), "—",
                "never touches a project; `build`/`pst` reach Logic's own library only with "
                "`--install`",
@@ -56,9 +55,11 @@ CAPABILITIES = (
                "separately required to replace a file. Elsewhere: `output_root` (or `strip_root` "
                "/ `LOGICXKIT_STRIP_ROOT`, which moves `build`'s sources too), or an absolute "
                "`output_dir`"),
-    Capability(("chains",), "CLAIMED", "yes, after reading `--plan`",
+    Capability(("chains",), "CONFIRMED", "yes, after reading `--plan`",
                "Replaces a channel's whole chain. `--plan` names every chain it would "
-               "take off; `--strict` refuses on shape drift"),
+               "take off; `--strict` refuses on shape drift. The real tracking chains written "
+               "onto the tracking template came back from Logic's re-save with all 46 "
+               "channels' chains identical (2026-09-12)"),
     Capability(("retrack",), "CONFIRMED", "yes",
                "Changes a label, never a chain; basename-only library match. `--channel` repoints one "
                "channel at a time, so channels sharing a name can part ways: seven repointed on a "
@@ -75,7 +76,13 @@ CAPABILITIES = (
                "Logic makes one, and Logic's re-save kept three such byte for byte (2026-09-06). "
                "Keeps the song container's row count, the region placements and the registry's "
                "slot entries in step"),
-    Capability(("reorder", "route"), "DERIVED", "with care"),
+    Capability(("reorder",), "DERIVED", "with care",
+               "Moves a row among its siblings; a stack header moves with its members, and that "
+               "move reproduces Logic's own drag of a header byte for byte (2026-09-12). Plain-row "
+               "moves are reasoned from Logic's drag saves and not yet opened"),
+    Capability(("route",), "DERIVED", "with care",
+               "Sets a channel's input or output by label; reasoned from diffs of Logic's saves, "
+               "never opened in Logic"),
     Capability(("arrangement",), "CONFIRMED", "yes, on a copy",
                "Reads matched Logic's display on every project tested; a rename plus a resize "
                "survived Logic's re-save byte for byte (2026-09-06), `--add` reproduces Logic's own "
@@ -119,7 +126,7 @@ CAPABILITIES = (
                "Refuses a move that overruns the slot key range — which deletes the channel's "
                "`.cst` reference record, a loss `validate_project` cannot see — and one that "
                "crosses a record class version; `--force` writes anyway. Clones take the "
-               "destination's own slot keys (2 in pre-11.2 projects)"),
+               "destination's own slot keys (2 in projects whose slots start there)"),
     Capability(("bypass",), "DERIVED", "yes",
                "Flips the bypass bit on the slots a channel already carries; adds nothing and "
                "removes nothing"),
@@ -142,7 +149,7 @@ CAPABILITIES = (
                "Every box and the member events measured on twenty-eight single-change saves "
                "(2026-09-05); the writer reproduces six of Logic's saves byte for byte, and a "
                "migrated song with two groups opened in Logic showing them and re-saved with the "
-               "identical group records and row list. Leaving a group is composed, not measured"),
+               "identical group records and row list. Leaving a group: Logic's own No Group on a member (2026-09-12) matches the composed leave outside the selection bytes"),
     Capability(("apply-template",), "CONFIRMED", "yes, with a map across lineages",
                "Same lineage pairs by object id; across lineages `--map FILE` says how tracks pair "
                "(`--propose-map` drafts it, `(none)` leaves a track alone). Three legacy songs "
@@ -150,9 +157,9 @@ CAPABILITIES = (
                "row list (2026-09-04). Never removes a send; inputs past the session's count are made "
                "before planning (Logic re-saved six); the template's groups are made and joined by "
                "name (2026-09-05, confirmed on the same song). Legacy bus returns the template "
-               "duplicates are silenced; `-` lines in the map leave template tracks out. A song made "
-               "before Logic 11.2 migrates in one pass: the slot base is stamped into every channel "
-               "record (`logic/README.md`: slot keys). Also carries the track power state, icons, "
+               "duplicates are silenced; `-` lines in the map leave template tracks out. A song "
+               "whose slots start at key 2 beside three sends is moved to base 4 in the same pass, as Logic's own re-save does; a project born at base 2 without that collision is left there "
+               "(`logic/README.md`: slot keys). Also carries the track power state, icons, "
                "header components and the control bar; not the project's own tempo, meter or key, "
                "which stay the song's"),
 )

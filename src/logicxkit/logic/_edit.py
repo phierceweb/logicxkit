@@ -24,38 +24,32 @@ Step = Callable[[bytes, "int | None", Path], bytes]
 
 def edit_copy(project: Path, out: Path, step: Step) -> Path:
     """Copy ``project`` into ``out`` and run ``step(data, track_count, data_file)`` over every
-    ProjectData in the copy, writing what it returns.
-
-    Two gates: the result is held against its input before anything is written, and read back
-    afterwards to confirm the bytes that landed are the bytes that passed.
-    """
+    ProjectData in the copy. Each result is held against its input before it is written and read
+    back after; any failure discards the whole copy."""
     copied = copy_project(project, out)
     dest, root = copied["dest"], copied["dest_root"]
     print(f"into : {dest}\n")
-    for data_file in sorted(dest.rglob("Alternatives/*/ProjectData")):
-        count = project_metadata(data_file.parents[2]).get("tracks")
-        before = data_file.read_bytes()
-        after = step(before, count, data_file)
-        try:
-            require_no_regression(before, after)
-        except ValueError as e:
-            _discard(root)
-            raise CommandError(f"{data_file.parent.name}: {e}") from None
-        atomic_write_bytes(data_file, after)
-        if data_file.read_bytes() != after:
-            _discard(root)
-            raise CommandError(f"{data_file.parent.name}: the bytes on disk are not the bytes "
-                               "that passed the gate — the write did not land intact")
+    try:
+        for data_file in sorted(dest.rglob("Alternatives/*/ProjectData")):
+            count = project_metadata(data_file.parents[2]).get("tracks")
+            before = data_file.read_bytes()
+            after = step(before, count, data_file)
+            try:
+                require_no_regression(before, after)
+            except ValueError as e:
+                raise CommandError(f"{data_file.parent.name}: {e}") from None
+            atomic_write_bytes(data_file, after)
+            if data_file.read_bytes() != after:
+                raise CommandError(f"{data_file.parent.name}: the bytes on disk are not the bytes "
+                                   "that passed the gate — the write did not land intact")
+    except BaseException:
+        _discard(root)
+        raise
     return dest
 
 
 def _discard(root: Path) -> None:
-    """Take the whole copy away rather than leave a bundle whose parts disagree.
-
-    A step may already have moved this alternative's ``NumberOfTracks`` — or written an earlier
-    alternative — before a later one was refused, and a bundle that opens but half-matches its
-    own metadata is worse than no bundle.
-    """
+    """Remove the copy: earlier alternatives or ``NumberOfTracks`` may already be written."""
     if root.exists():
         shutil.rmtree(root)
         print(f"discarded: {root}")

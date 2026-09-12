@@ -269,3 +269,22 @@ class ReSavedRampTest(unittest.TestCase):
         eo, el = (events(r[tempo_sequence(r)].raw[HEADER:]) for r in (ro, rl))
         self.assertEqual([e.head for e in eo], [e.head for e in el])
         self.assertEqual([e.data[:8] + e.data[12:] for e in eo], [e.data[:8] + e.data[12:] for e in el])
+
+
+@_goldens.needs("meter-3-4-logic")
+class BarArgumentMeterTest(unittest.TestCase):
+    def test_a_tempo_change_lands_on_the_bar_asked_for_in_three_four(self):
+        import tempfile
+        from argparse import Namespace
+        from pathlib import Path
+        from unittest import mock
+        from logicxkit.logic._song import cmd_tempo
+        from logicxkit.logic.services.signature import meter
+        with tempfile.TemporaryDirectory() as tmp, mock.patch("builtins.print"):
+            rc = cmd_tempo(Namespace(project=str(_goldens.path("meter-3-4-logic")), out=tmp,
+                                     set=None, add=["9=151"], ramp=None, density=8))
+            self.assertEqual(rc, 0)
+            (data_file,) = Path(tmp).rglob("Alternatives/000/ProjectData")
+            data = data_file.read_bytes()
+        m = meter(data)
+        self.assertEqual([m.bar(e.position) for e in read_tempo_events(data) if e.bpm == 151], [9.0])

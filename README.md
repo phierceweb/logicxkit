@@ -20,6 +20,12 @@ another, add and rename and reorder tracks, repoint strip references after a lib
 migrate an old session onto a newer template, and build native Channel EQ / Compressor strips
 from a JSON spec.
 
+If what you want is to drive a *running* Logic — press a button, arm a track, move the
+playhead — that is a different job, and [logic-pro-mcp](https://github.com/MongLong0214/logic-pro-mcp)
+does it through Accessibility, AppleScript and control-surface protocols. logicxkit never talks
+to Logic. It works on closed project files, in batch, and the two are complements: one changes
+what Logic is doing, the other changes what a session *is* before Logic opens it.
+
 None of these formats are documented, so everything here came out of measurement: one
 deliberate change per Logic save, then a byte diff against the save before it. The control bar
 is the tidiest example — every button id was pinned on fifty single-toggle saves (2026-09-04),
@@ -32,9 +38,9 @@ the same table.** Read it before you point a writer at a session you care about.
 
 ## Requirements
 
-- **macOS.** There is no Linux or Windows path. CI runs the synthetic layer on a macOS runner,
-  which is all a runner can do: the goldens need a reference corpus that is not distributable
-  and `tests/rig` needs a physical console's scene, so both skip there.
+- **macOS.** There is no Linux or Windows path. CI runs on a macOS runner with the public golden
+  corpus fetched, so the synthetic layer and every public golden run there; the owner's goldens
+  (real sessions) and `tests/rig` (a physical console's scene) skip.
 - **Logic Pro** — the tool reads and writes its file formats, and confirming any change means
   opening the result in Logic.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
@@ -120,9 +126,6 @@ channels whose send flags stopped matching their sends — then reads the file b
 bytes that landed are the bytes that passed. A refused run discards the whole copy rather than
 leaving a bundle that disagrees with its own metadata.
 
-**Two writers are not gated.** `logic stacks --move` and `logic levels --to` write their copy
-directly, so nothing checks the result before it lands. They still never touch the input.
-
 A write by a command that has not been confirmed in Logic prints a one-line notice naming its
 level before it runs, so you get the warning without having to have read
 [`docs/CAPABILITIES.md`][caps] first. `LOGICXKIT_NO_NOTICE=1` silences it.
@@ -185,21 +188,26 @@ import `logic`. Both read Logic containers through `logicx`.
 
 ## What is not in the repo
 
-The reference corpus this was built against is **not distributable and is not here**: Logic's
-own controlled saves (one deliberate change per save, so a diff isolates the bytes), project
-templates, finished sessions, a channel-strip library snapshot. Those are Logic-authored project
-files containing real music. The same goes for the data root the tools load — record templates
-Logic wrote, plugin-slot donor records, and AU parameter tables dumped from installed plugins,
-none of which are ours to publish.
+Two corpora stand behind the goldens. The **public corpus** is Logic's own saves of a blank
+project — one deliberate change per save, so a diff isolates the bytes — published as a
+release asset and fetched by `bin/run fetch-corpus` into `resources/public/`, pinned by
+checksum in `tests/goldens/corpus.json`. `tests/goldens/manifest.json` names each save by a
+neutral key with the facts a test may assert. The **owner's corpus** — controlled saves cut
+from real sessions, project templates, finished mixes, a channel-strip library snapshot — is
+Logic-authored material containing real music and **is not here**; the same goes for the
+data root the tools load (record templates Logic wrote, plugin-slot donor records, AU
+parameter tables), none of which are ours to publish.
 
-The consequence for a fresh clone: **`bin/run pytest` runs green, but the goldens under
-`tests/goldens/` all skip**, so a green suite there proves the synthetic layer and nothing about
-real files. The run prints `goldens: N of M keys found` on its last line so you can see how much
-actually ran, and `LOGICXKIT_REQUIRE_GOLDENS=1` turns a missing golden into a failure.
+The consequence for a fresh clone: **`bin/run pytest` runs green, but every golden skips until
+`bin/run fetch-corpus` has run**, and the keys only the owner's corpus has skip regardless. The
+run prints `goldens: N of M keys found` on its last line so you can see how much actually ran;
+`LOGICXKIT_REQUIRE_GOLDENS=1` turns a missing golden into a failure, and
+`LOGICXKIT_GOLDENS=owner` prefers the owner's files where both corpora have a key.
 
 [`resources/README.md`][corpus] describes the shape of the corpus and how the
 controlled saves are made; [`resources/data/README.md`][data-root] describes the
-data root and how to regenerate each part of it (`logic donors`, `logic recdiff`, `au params`).
+data root and how to regenerate each part of it (`logic donors`, `logic recdiff`, and
+`auprobe.swift list` for the AU tables).
 Point `LOGICXKIT_RESOURCES` and `LOGICXKIT_DATA` at your own copies.
 
 `tests/rig` is a separate opt-in: it checks a mixing-console scene against a preflight config
@@ -217,8 +225,8 @@ bin/run pytest   # the suite; ends with the goldens line
 Both must pass before a change lands. **[`docs/`][docs] is the documentation index** —
 installation, the command groups and their rules, and the format references.
 CI ([`.github/workflows/ci.yml`][ci])
-runs the same two on a macOS runner, but with no corpus staged it proves the synthetic layer
-only — a green check there is not a substitute for running the suite on a machine that has the
+runs the same two on a macOS runner with the public corpus fetched, but the owner's goldens skip
+there, so a green check is not a substitute for running the suite on a machine that has those
 files. [`CONTRIBUTING.md`][contributing] has the full loop; the house rules are:
 
 - File size target 300 lines, hard limit 500, one concern per file. The limit is enforced by

@@ -1,30 +1,17 @@
-"""Move an arrange row. Measured on a real drag (Ride above Hi Hat inside Drums, 2026-09-01):
-Logic renumbers the two rows' keys, selects the moved row and touches nothing else — no index
-tables move. So a move within one parent is a splice, a renumber and a select.
-
-Moving a row INTO a stack is `stacks.move_to_stack`; moving one OUT of a stack has not been
-observed and is refused.
-"""
+"""Move an arrange row. Logic's own drag renumbers the two rows' keys, selects the moved row and
+touches nothing else, so a move within one parent is a splice, a renumber and a select; a stack
+header moves with its member rows as one block. Moving a row into a stack is
+`stacks.move_to_stack`; a move across parents is refused."""
 
 from __future__ import annotations
 
-from .insert import project_records, reassemble
+from .insert import HEADER, project_records, reassemble
 from .recbuild import with_key
 from .regions import sync_region_tracks
 from .selection import select_track
 from .stacks import MEMBER_AT, read_stacks, read_tracks
 from .tracklist import arrange_run, row_object
 from .validate import require_full_walk, require_valid
-
-
-def _parent_of(rows: list[dict], key: int) -> int | None:
-    """Object id of the stack header above ``key``, or None for a top-level row."""
-    for row in reversed(rows[:key + 1]):
-        if row["key"] == key and not row["member"]:
-            return None
-        if row["grouping"] and (row["label"] or "").startswith("Sub "):
-            return row["object_id"]
-    return None
 
 
 def move_track(data: bytes, track_object: int, *, before: int | None = None,
@@ -38,10 +25,11 @@ def move_track(data: bytes, track_object: int, *, before: int | None = None,
     by_obj = {r["object_id"]: r for r in rows}
     if track_object not in by_obj or target not in by_obj:
         raise ValueError("track or target is not in the arrange list")
-    if by_obj[track_object]["grouping"] and (by_obj[track_object]["label"] or "").startswith("Sub "):
-        raise ValueError("moving a stack header is not supported")
-    src_parent = _parent_of(rows, by_obj[track_object]["key"])
-    dst_parent = _parent_of(rows, by_obj[target]["key"])
+    stacks = read_stacks(data, track_count)
+    headers = {s.object_id for s in stacks}
+    parent = {key: s.object_id for s in stacks for key, _name in s.members}
+    src_parent = parent.get(by_obj[track_object]["key"])
+    dst_parent = parent.get(by_obj[target]["key"])
     if src_parent != dst_parent:
         raise ValueError("track and target sit under different parents; use move_to_stack "
                          "to move into a stack (moving out of one is not decoded)")
@@ -50,15 +38,30 @@ def move_track(data: bytes, track_object: int, *, before: int | None = None,
     run = arrange_run(records, track_count)
     order = [row_object(records[i].raw) for i in run]
     raws = [records[i].raw for i in run]
-    moving = raws.pop(order.index(track_object))
-    order.remove(track_object)
-    at = order.index(target) + (0 if before is not None else 1)
-    raws.insert(at, moving)
+
+    def block(obj: int) -> slice:
+        """A header's row and the member rows under it; a plain row alone (Logic's own drag of
+        a stack header moved header and member as one block, 2026-09-12)."""
+        start = order.index(obj)
+        end = start + 1
+        if obj in headers:
+            while end < len(raws) and raws[end][HEADER + MEMBER_AT] == 1:
+                end += 1
+        return slice(start, end)
+
+    src = block(track_object)
+    moving, moving_ids = raws[src], order[src]
+    del raws[src], order[src]
+    dst = block(target)
+    at = dst.start if before is not None else dst.stop
+    raws[at:at] = moving
+    order[at:at] = moving_ids
     raws = [with_key(raw, key) for key, raw in enumerate(raws)]
     replace = dict(zip(run, raws, strict=True))
     result = reassemble(data, [replace.get(i, r.raw) for i, r in enumerate(records)])
     result = sync_region_tracks(result, track_count)
-    result = select_track(result, track_object, track_count)
+    if track_object not in headers:      # a dragged header keeps the selection it had (Logic's save)
+        result = select_track(result, track_object, track_count)
     require_valid(result)
     return result
 

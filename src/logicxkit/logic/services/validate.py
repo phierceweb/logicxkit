@@ -9,9 +9,12 @@ The violations a writer can produce and nothing else catches:
 `validate_project` runs on the bytes about to be written and returns every problem rather than
 the first, because one root cause usually shows up on many channels at once.
 
-**It only sees native slots.** The scan below skips any record without a `GAMETSPP` chunk, so a
-third-party slot — the kind `transplant` exists to move — is invisible to it. A clean result is
-not a statement about those.
+A slot is a native record carrying a `GAMETSPP` chunk, or any record in the slot key range
+carrying its own index at +6 (`slots.is_plugin_slot`) — so third-party states are checked for
+duplicate keys and index collisions too. Their width bytes are not judged: Logic's own saves
+carry third-party records whose +84/+118/+119 disagree with the channel (29 across the golden
+corpus), so the width check stays native-only. A third-party record whose index is wrong looks
+like the non-slot 'Audio Recording' record and is skipped.
 """
 
 from __future__ import annotations
@@ -34,6 +37,7 @@ from .insert import (
     slot_format,
     slot_index_base,
 )
+from .slots import is_plugin_slot, property_key_base
 
 
 def validate_project(data: bytes) -> list[str]:
@@ -53,11 +57,13 @@ def validate_project(data: bytes) -> list[str]:
 
     formats = channel_formats(data)
     base = slot_index_base(data)
+    prop = property_key_base(data)
     slots: dict[int, list] = {}
     for record in records:
-        if record.tag != b"UCuA" or b"GAMETSPP" not in record.raw:
+        if record.tag != b"UCuA":
             continue
-        if find_blocks(record.raw[HEADER:]):
+        native = b"GAMETSPP" in record.raw and bool(find_blocks(record.raw[HEADER:]))
+        if native or is_plugin_slot(record, prop, base):
             slots.setdefault(record.owner, []).append(record)
 
     for owner, found in sorted(slots.items()):
@@ -70,14 +76,14 @@ def validate_project(data: bytes) -> list[str]:
             problems.append(
                 f"channel {owner}: colliding slot index {sorted(indices)} — Logic will hide a plugin")
         for record, index in zip(found, indices, strict=True):
-            if index != record.key - base:
+            if b"GAMETSPP" in record.raw and index != record.key - base:
                 problems.append(
                     f"channel {owner} key {record.key}: slot index {index}, expected "
                     f"{record.key - base} for this project's numbering")
 
         want = formats.get(owner)
         for record in found:
-            got = slot_format(record.raw)
+            got = slot_format(record.raw) if b"GAMETSPP" in record.raw else None
             if want and got and got != want:
                 problems.append(
                     f"channel {owner} key {record.key}: plugin width {got} on a "

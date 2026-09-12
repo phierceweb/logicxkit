@@ -478,3 +478,4 @@ class WidthNoOpTest(unittest.TestCase):
         out = insert_slots(data, {0: [(self._slot(2, 166), 4, None, 0)]})
         got = [r for r in project_records(out) if r.key == 4][0]
         self.assertEqual(slot_format(got.raw), 2)
+

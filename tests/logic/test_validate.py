@@ -35,6 +35,21 @@ def slot(key: int, index: int, fmt: int = 1, type_id: int = 236) -> bytes:
     return rec(b"UCuA", 0, key, bytes(p))
 
 
+def third_party_slot(key: int, index: int, fmt: int = 1, size: int = 500) -> bytes:
+    """An AU state record: index at +6 and the width bytes, but no `GAMETSPP` chunk."""
+    p = bytearray(size)
+    p[6] = index
+    for off in (81, 84, 118, 119, 156):
+        p[off] = fmt
+    p[200:207] = b"SOLDANO"
+    return rec(b"UCuA", 0, key, bytes(p))
+
+
+def stray(key: int, size: int = 200) -> bytes:
+    """A non-plugin record in the slot key range, +6 left at 0 — the 'Audio Recording' shape."""
+    return rec(b"UCuA", 0, key, bytes(size))
+
+
 def channel(owner: int, fmt: int = 1) -> bytes:
     p = bytearray(225)
     p[123] = fmt
@@ -73,6 +88,26 @@ class ValidateProjectTest(unittest.TestCase):
 
     def test_rejects_a_stream_that_does_not_reach_eof(self):
         self.assertTrue(any("walk" in p for p in validate_project(proj(channel(0)) + b"JUNK")))
+
+    def test_a_third_party_slots_width_is_not_judged(self):
+        """Logic's own saves carry third-party records whose width bytes disagree with the
+        channel, so judging them would refuse files Logic wrote."""
+        self.assertEqual(validate_project(proj(channel(0, fmt=2), third_party_slot(4, 0, fmt=1))), [])
+
+    def test_sees_a_third_party_slot_colliding_with_a_native_index(self):
+        """Two correct native slots pin the base; a third-party slot at index 2 and a native one
+        wrongly claiming index 2 must be reported as a collision, not just a mismatch."""
+        problems = validate_project(proj(channel(0), slot(4, 0), slot(5, 1),
+                                         third_party_slot(6, 2), slot(7, 2)))
+        self.assertTrue(any("colliding" in p for p in problems), problems)
+
+    def test_sees_duplicate_third_party_keys(self):
+        problems = validate_project(proj(channel(0), third_party_slot(4, 0), third_party_slot(4, 0)))
+        self.assertTrue(any("key" in p for p in problems), problems)
+
+    def test_a_stray_record_in_the_key_range_is_not_a_slot(self):
+        """The 200-byte 'Audio Recording' record sits among the slot keys with +6 = 0."""
+        self.assertEqual(validate_project(proj(channel(0, fmt=2), slot(4, 0, fmt=2), stray(5))), [])
 
     def test_reports_every_problem_not_just_the_first(self):
         problems = validate_project(proj(channel(0, fmt=2), slot(4, 0, fmt=1), slot(5, 0, fmt=1)))

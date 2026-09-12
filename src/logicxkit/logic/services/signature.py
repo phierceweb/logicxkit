@@ -1,6 +1,5 @@
-"""The Signature track — time signatures and key signatures. Read from the files on hand
-(2026-09-06: eleven 4/4 songs and one in 5/4 with a change to 4/4) and two of Logic's own
-edits of that song (5/4 -> 3/4 at bar 1, C -> G major).
+"""The Signature track — time signatures and key signatures, as Logic's own meter and key edits
+write them.
 
 The first sequence triple of the record stream. Its `qSvE` events (`events.py`):
 
@@ -12,7 +11,7 @@ The first sequence triple of the record stream. Its `qSvE` events (`events.py`):
 
 Bit 7 of head +15 marks the event Logic last edited. The first time signature sits on the
 earliest bar line before bar 1 — tick 0 for 4/4 and 5/4, tick 960 for 3/4. The song record
-also carries the key's root in semitones above C at `gnoS +179` and +879 (0 -> 7 on that edit).
+also carries the key's root in semitones above C at `gnoS +179` and +879 (0 -> 7 on a C -> G edit).
 """
 
 from __future__ import annotations
@@ -131,6 +130,24 @@ class Meter:
         """A length in bars of the signature in force at ``at``."""
         current = ([s for s in self.times if s.tick <= at] or self.times[:1])[-1]
         return ticks / current.bar_ticks
+
+    def tick(self, bar: float) -> int:
+        """Where display bar ``bar`` falls: the inverse of ``bar()``."""
+        current = ([s for s in self.times if s.tick <= BAR_ONE] or self.times[:1])[-1]
+        if bar < 1:
+            return round(BAR_ONE - (1 - bar) * current.bar_ticks)
+        pos, at = BAR_ONE, 1.0
+        for s in (s for s in self.times if s.tick > BAR_ONE):
+            span = (s.tick - pos) / current.bar_ticks
+            if bar < at + span:
+                break
+            at, pos, current = at + span, s.tick, s
+        return round(pos + (bar - at) * current.bar_ticks)
+
+    def ticks(self, bars: float, at: int) -> int:
+        """The inverse of ``bars()``."""
+        current = ([s for s in self.times if s.tick <= at] or self.times[:1])[-1]
+        return round(bars * current.bar_ticks)
 
 
 def meter(data: bytes) -> Meter:

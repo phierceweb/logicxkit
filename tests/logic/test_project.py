@@ -1,8 +1,4 @@
-"""Logic project analyzer tests — channel-chain + preset + track-name extraction.
-
-Synthetic ``ProjectData`` bytes: a channel is an ``OCuA <ver> 00 0e 00`` header (version
-word 06 or 07 by Logic build), a `` Audio N`` label, padding past the 260-byte slot window,
-then ``.CuA``-tagged insert slots each carrying a preset filename + plugin name."""
+"""Channel-chain, preset and track-name extraction, from synthetic ``ProjectData`` bytes."""
 
 import struct
 import tempfile
@@ -44,6 +40,45 @@ def _channel(n: int, slots) -> bytes:
 def _gametspp(label: str, floats) -> bytes:
     body = struct.pack("<I", len(floats) * 4) + struct.pack(f"<{len(floats)}f", *floats)
     return (label + " ").encode("latin-1") + b"GAMETSPP" + body
+
+
+class RecordChainTest(unittest.TestCase):
+    def _channel(self) -> bytes:
+        from _records import chan, rec
+        slot = bytearray(432)
+        slot[6] = 0                                          # key 4 - base 4
+        slot[40:80] = b"Brighten Overheads.pst\x00\x00Channel EQ\x00\x00".ljust(40, b"\x00")
+        slot[184:192] = b"GAMETSPP"
+        source = bytearray(68)
+        source[8:35] = b"Anlxumua2DAxAddictive 13-14"
+        return (chan(282, "Aux 7") + rec(b"UCuA", 282, 4, bytes(slot), 5)
+                + rec(b"UCuA", 282, 12, bytes(source), 5))
+
+    def test_a_property_record_naming_a_plugin_is_not_an_insert(self):
+        self.assertEqual(channel_chain(self._channel()), [("Channel EQ", "Brighten Overheads")])
+
+    def test_two_instances_of_one_plugin_are_two_inserts(self):
+        """Distinct slot records at keys 4 and 6 are two instances, not a duplicate to drop."""
+        from _records import chan, rec
+        def au(key: int, subtype: bytes) -> bytes:
+            p = bytearray(600)
+            p[6] = key - 4
+            p[40:60] = (b"Soldano SLO\x00\x00PSDNfmua" + subtype).ljust(20, b"\x00")
+            p[80:86] = b"<plist"
+            return rec(b"UCuA", 0, key, bytes(p), 5)
+        seg = chan(0, "Audio 1") + au(4, b"DRSS") + au(6, b"XLSN")
+        self.assertEqual(channel_chain(seg), [("Soldano", None), ("Soldano", None)])
+
+    def test_slots_at_base_three_are_inserts(self):
+        from _records import chan, rec
+        def au(key: int, subtype: bytes) -> bytes:
+            p = bytearray(600)
+            p[6] = key - 3
+            p[40:60] = (b"Soldano SLO\x00\x00PSDNfmua" + subtype).ljust(20, b"\x00")
+            p[80:86] = b"<plist"
+            return rec(b"UCuA", 0, key, bytes(p), 5)
+        seg = chan(0, "Audio 1") + au(3, b"DRSS") + au(4, b"XLSN")
+        self.assertEqual(channel_chain(seg), [("Soldano", None), ("Soldano", None)])
 
 
 class ChannelChainTest(unittest.TestCase):

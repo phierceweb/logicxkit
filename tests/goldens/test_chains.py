@@ -8,6 +8,7 @@ The real-file part of tests/logic/test_chains.py; skips without the owner's file
 
 import struct
 import unittest
+import _goldens
 import _paths
 from _fixtures import chunk
 from logicxkit.logic import chain_plan
@@ -140,3 +141,17 @@ class ChainChangesTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@_goldens.needs("chains-mine", "chains-logic")
+class LogicResavedChainsTest(unittest.TestCase):
+    """The tracking chains applied by `chains`, re-saved by Logic: every channel's chain came
+    back as written (2026-09-12)."""
+
+    def test_logic_kept_every_chain(self):
+        from logicxkit.logic.services.project import analyze
+        from logicxkit.logicx import project_data
+        ours = {c["label"]: c["chain"] for c in analyze(project_data(_goldens.path("chains-mine")))["channels"]}
+        logic = {c["label"]: c["chain"] for c in analyze(project_data(_goldens.path("chains-logic")))["channels"]}
+        self.assertEqual(len(ours), _goldens.fact("chains-mine", "channels_with_inserts"))
+        self.assertEqual(ours, logic)

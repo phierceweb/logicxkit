@@ -63,3 +63,23 @@ class GoldenPowerTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@_goldens.needs("stack-folder-logic", "stack-summing-logic")
+class LogicMadeStacksTest(unittest.TestCase):
+    """Logic's own Create Track Stack over three audio tracks on a project that had no stack:
+    a folder stack's header is bound to a Sub strip, a summing stack's to an Aux."""
+
+    def _stacks(self, key):
+        from logicxkit.logicx import project_data
+        return read_stacks(project_data(_goldens.path(key)), 4)
+
+    def test_the_folder_stack_reads_with_its_members(self):
+        (stack,) = self._stacks("stack-folder-logic")
+        self.assertEqual(stack.kind, "folder")
+        self.assertEqual([n for _k, n in stack.members], _goldens.fact("stack-folder-logic", "members"))
+
+    def test_the_summing_stack_reads_with_its_members(self):
+        (stack,) = self._stacks("stack-summing-logic")
+        self.assertEqual(stack.kind, "summing")
+        self.assertEqual([n for _k, n in stack.members], _goldens.fact("stack-summing-logic", "members"))

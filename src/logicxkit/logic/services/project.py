@@ -1,16 +1,5 @@
-"""Read-only Logic *project* (.logicx) analyzer — inventory channels, chains, presets.
-
-Projects can't be safely written (length-changing edits break Logic's internal offset
-tables) and 3rd-party plugin state is opaque base64, so this is **extraction only**. What
-*is* recoverable from the binary ``ProjectData``: per-channel insert chains (plugin order),
-AU preset names, native ``GAMETSPP`` params, and the track-name table; plus project params
-from ``MetaData.plist``.
-
-Channel blocks come from :mod:`logicxkit.logicx`; insert slots are ``.CuA``-tagged regions carrying a plugin name and (optionally) a
-``.aupreset`` / ``.pst`` preset name. Scanning a fixed window after each slot tag and taking
-the first plugin/preset match is robust on real songs (spurious tags in plugin data carry no
-plugin name and are skipped).
-"""
+"""Read-only `.logicx` analysis: per-channel insert chains, AU preset names, native `GAMETSPP`
+params and the track-name table, with project params from ``MetaData.plist``."""
 
 from __future__ import annotations
 
@@ -23,6 +12,8 @@ from logicxkit.logicx import channel_blocks, channel_label, first_alternative
 from .._binary import find_blocks, identify_plugin, read_block_floats
 from .comp import decode_comp
 from .eq import decode_eq
+from .insert import HEADER, project_records
+from .slots import is_plugin_slot
 
 # Canonical plugin display names, most-specific needle first.
 _PLUGINS = [
@@ -76,20 +67,36 @@ def channel_cst_refs(seg: bytes) -> list[str]:
 
 
 def strip_chain(data: bytes) -> list[tuple[str, str | None]]:
-    """Insert chain of a standalone channel-strip (`.cst`) file.
-
-    A ``.cst`` is one channel object in the same ``OCuA``/slot format the project
-    embeds, so the channel-chain walk applies to the whole file directly.
-    """
+    """Insert chain of a `.cst` file, which is one channel object in the project's own format."""
     return channel_chain(data)
 
 
 def channel_chain(seg: bytes) -> list[tuple[str, str | None]]:
-    """Ordered (plugin, preset) inserts for one channel segment.
+    """Ordered (plugin, preset) inserts: the plugin-slot records of a segment that walks as records
+    (a plugin name in a property record is not an insert), else the tag-window scan."""
+    records = project_records(seg, start=0)
+    if records and sum(len(r.raw) for r in records) == len(seg):
+        return _chain_from_records(records)
+    return _chain_from_windows(seg)
 
-    Each slot is bounded by the next ``.CuA`` tag (capped at ``_SLOT_WINDOW``) so a
-    preset-less plugin can't borrow the next slot's preset.
-    """
+
+def _chain_from_records(records) -> list[tuple[str, str | None]]:
+    slots = [r for r in records if r.tag == b"UCuA"]
+    prop = min((r.key for r in slots if len(r.raw) - HEADER < 400 and b".cst" in r.raw), default=10)
+    chain: list[tuple[str, str | None]] = []
+    for r in slots:
+        if not any(is_plugin_slot(r, prop, base) for base in (4, 3, 2)):
+            continue
+        head = r.raw[HEADER:HEADER + _SLOT_WINDOW]
+        name = _plugin_name(head)
+        if name is not None:
+            chain.append((name, _preset_name(head)))
+    return chain
+
+
+def _chain_from_windows(seg: bytes) -> list[tuple[str, str | None]]:
+    """Each slot bounded by the next ``.CuA`` tag (capped at ``_SLOT_WINDOW``) so a preset-less
+    plugin can't borrow the next slot's preset."""
     tags = [m.start() for m in _SLOT_TAG.finditer(seg)]
     tags.append(len(seg))
     chain: list[tuple[str, str | None]] = []
@@ -169,11 +176,7 @@ def project_metadata(logicx: Path, alt: str | None = None) -> dict:
 
 
 def window_image_path(logicx: Path, alt: str | None = None) -> Path:
-    """Path of the auto-saved mixer/arrange screenshot inside a ``.logicx`` bundle.
-
-    Captures whatever view was open at save time — possibly partial. Raises
-    FileNotFoundError when the alternative has no image.
-    """
+    """The auto-saved screenshot of whatever view was open at save; FileNotFoundError when absent."""
     logicx = Path(logicx)
     alt = alt or first_alternative(logicx)
     p = logicx / "Alternatives" / alt / "WindowImage.jpg"

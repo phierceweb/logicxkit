@@ -35,7 +35,10 @@ def apply(template: bytes, session: bytes, ops: list[Op], *, session_count: int 
             a = op.args
             try:
                 if op.kind == "add":
-                    data, _r = add_track(data, name=a["name"], after=a["after"], kind=a["kind"],
+                    after = a["after"] if a.get("after_op") is None else a["after_op"].made
+                    if after is None:
+                        raise ValueError(f"the track it follows, {a['after_op'].args['name']}, was not added")
+                    data, _r = add_track(data, name=a["name"], after=after, kind=a["kind"],
                                          track_count=count, colour=a["colour"], member=a.get("member"))
                     op.made = _r["object_id"]
                     added += 1

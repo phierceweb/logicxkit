@@ -1,12 +1,5 @@
-"""argparse CLI for the Logic strip tools: build / verify / decode.
-
-  python -m logicxkit.logic.cli build  spec.json
-  python -m logicxkit.logic.cli verify spec.json
-  python -m logicxkit.logic.cli decode "Strip.cst" [--json]
-
-decode prints the human dump to stderr and (with --json) a spec stub to stdout, so the
-decode->edit->rebuild workflow can pipe the JSON.
-"""
+"""argparse CLI for `logicxkit logic`. `decode` prints the human dump to stderr and, with
+``--json``, a spec stub to stdout, so decode -> edit -> rebuild can pipe the JSON."""
 
 from __future__ import annotations
 
@@ -50,7 +43,7 @@ from .services.levels import PAN_CENTRE, UNITY, copy_levels, read_levels
 from .services.pst import output_root as pst_output_root
 from .services.pst import write_psts
 from .services.donors import harvest_donors, load_donor_library
-from .services.retrack import copy_project, find_project, missing_strips, retrack_bundle
+from .services.retrack import find_project, missing_strips, retrack_bundle
 from .services.spec import assemble, load_spec
 
 def _byte_loader():
@@ -81,8 +74,8 @@ def _live_library_blocked(path, install: bool, what: str, elsewhere: str) -> boo
 
 
 def cmd_build(args) -> int:
-    """A relative `output_dir` resolves into Logic's own strip library, so an existing file is
-    kept unless `--overwrite` says otherwise, and a failed preset is a non-zero exit."""
+    """Build `.cst` strips from a spec; an existing file is kept unless `--overwrite`, and a failed
+    preset exits 1."""
     spec = load_spec(Path(args.spec))
     load = _byte_loader()
     out_dir = spec["_output_dir"]
@@ -157,12 +150,15 @@ def cmd_pst(args) -> int:
     root = pst_output_root(spec)
     if _live_library_blocked(root, args.install, "settings", "'output_root'"):
         return 2
-    written = 0
+    written = failed = 0
     for dest, status in write_psts(spec, overwrite=args.overwrite):
-        print(f"  {'OK ' if status == 'written' else '-- '} {dest.parent.name}/{dest.name}  {status}")
+        mark = "OK " if status == "written" else "!! " if status.startswith("FAILED") else "-- "
+        print(f"  {mark} {dest.parent.name}/{dest.name}  {status}")
         written += status == "written"
-    print(f"\nDone — {written} preset(s). In Logic: plugin window → Settings menu → the preset name.")
-    return 0
+        failed += status.startswith("FAILED")
+    print(f"\nDone — {written} preset(s)" + (f", {failed} failed" if failed else "")
+          + ". In Logic: plugin window → Settings menu → the preset name.")
+    return 1 if failed else 0
 
 
 def cmd_retrack(args) -> int:
@@ -269,7 +265,11 @@ def cmd_levels(args) -> int:
     from .services.chains import channel_references
 
     src_project = find_project(Path(args.project))
-    src = _project_data_paths(src_project)[0].read_bytes()
+    sources = _project_data_paths(src_project)
+    if not sources:
+        print(f"logic levels: {args.project} is not a project (no Alternatives/*/ProjectData)")
+        return 2
+    src = sources[0].read_bytes()
 
     if not args.to:
         refs = channel_references(src)
@@ -289,19 +289,25 @@ def cmd_levels(args) -> int:
     if not args.out:
         print("logic levels: --to needs --out")
         return 2
-    copied = copy_project(Path(args.to), Path(args.out))
-    dest = copied["dest"]
-    print(f"levels from : {src_project}")
-    print(f"into        : {dest}")
+    from ._edit import CommandError, edit_copy
     total = 0
-    for data_file in _project_data_paths(dest):
-        out, report = copy_levels(src, data_file.read_bytes(), by=args.by)
-        atomic_write_bytes(data_file, out)
+
+    def step(data, _count, data_file):
+        nonlocal total
+        out, report = copy_levels(src, data, by=args.by)
         total += len(report["changed"])
         print(f"  {data_file.parent.name}: {report['matched']} matched, "
               f"{len(report['changed'])} changed, {report['unchanged']} already equal")
         if report["unmatched"]:
             print(f"    no counterpart in the source: {len(report['unmatched'])} channel(s)")
+        return out
+
+    print(f"levels from : {src_project}")
+    try:
+        edit_copy(Path(args.to), Path(args.out), step)
+    except CommandError as e:
+        print(f"  {e}")
+        return 1
     print(f"\nSet levels on {total} channel(s).")
     return 0
 
@@ -345,14 +351,20 @@ def cmd_decode(args) -> int:
 
 # Every path argument, so a quoted "~/Music/…" is a path and not a directory named "~".
 _PATH_ARGS = ("project", "logicx", "out", "to", "spec", "library", "file", "image", "map",
-              "propose_map", "export", "from_", "config")
+              "propose_map", "export", "from_", "config", "template", "src", "dst", "a", "b",
+              "baseline", "apply", "backup_dir", "controlbar_from")
+
+
+def _expand(value):
+    return str(Path(value).expanduser()) if isinstance(value, str) and value.startswith("~") else value
 
 
 def _expand_paths(args) -> None:
     for name in _PATH_ARGS:
-        value = getattr(args, name, None)
-        if isinstance(value, str) and value.startswith("~"):
-            setattr(args, name, str(Path(value).expanduser()))
+        if not hasattr(args, name):
+            continue
+        value = getattr(args, name)
+        setattr(args, name, [_expand(v) for v in value] if isinstance(value, list) else _expand(value))
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -435,6 +447,7 @@ def main(argv: list[str] | None = None) -> int:
     im = sub.add_parser("image", help="extract a bundle's auto-saved WindowImage.jpg")
     im.add_argument("logicx", help="path to a .logicx bundle")
     im.add_argument("-o", "--out", help="output path (default: '<name> - WindowImage.jpg')")
+    im.add_argument("--overwrite", action="store_true", help="replace an existing file at the output path")
     im.set_defaults(func=cmd_image)
     oc = sub.add_parser("ocr", help="OCR a WindowImage (or any image) via Apple Vision")
     oc.add_argument("file", help=".logicx bundle or an image file")

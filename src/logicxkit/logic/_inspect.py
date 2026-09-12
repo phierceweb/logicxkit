@@ -1,9 +1,6 @@
 """Inspection commands: project · diff · image · neural · ocr · stacks · levels.
-
-Split out of ``cli.py`` to keep it under the structural gate's hard limit. They report on a
-project or strip; `stacks --move` and `levels --to` also write, to a copy under ``--out``, and
-are the two writers that do not go through ``_edit.edit_copy``'s gate.
-"""
+`image` writes the extracted JPEG; `stacks --move` and `levels --to` write a copy through
+`_edit.edit_copy`."""
 
 from __future__ import annotations
 
@@ -11,7 +8,6 @@ import json
 import shutil
 from pathlib import Path
 
-from pf_core.utils.io import atomic_write_bytes
 
 from .services.library import strip_library
 from .services.neural import read_neural
@@ -98,6 +94,9 @@ def cmd_image(args) -> int:
         print(e)
         return 1
     out = Path(args.out) if args.out else Path(f"{Path(args.logicx).stem} - WindowImage.jpg")
+    if out.exists() and not args.overwrite:
+        print(f"{out} exists; pass --overwrite to replace it")
+        return 1
     shutil.copyfile(src, out)
     print(f"wrote {out.resolve()}  (whatever view was open at save — possibly partial)")
     return 0
@@ -190,32 +189,30 @@ def cmd_stacks(args) -> int:
 
 def _move_into_stack(args, project: Path, count: int | None) -> int:
     """`--move "Track:Stack"` — writes a copy, never the input."""
-    from .services.retrack import copy_project
-    from ._edit import CommandError, object_by_name
+    from ._edit import CommandError, edit_copy, object_by_name
     from .services.stacks import move_to_stack, read_stacks
 
     if not args.out:
         print("logic stacks: --move needs --out")
         return 2
-    copied = copy_project(project, Path(args.out))
-    dest = copied["dest"]
-    print(f"in  : {project}\nout : {dest}\n")
-    for data_file in sorted(dest.glob("Alternatives/*/ProjectData")):
-        data = data_file.read_bytes()
+
+    def step(data, _count, _file):
         stacks = {s.name: s.object_id for s in read_stacks(data, count)}
         for pair in args.move:
             track, _, stack = pair.partition(":")
-            try:
-                track_object = object_by_name(data, track, count)
-            except CommandError as e:
-                print(f"  {e}")
-                return 1
+            track_object = object_by_name(data, track, count)
             if stack not in stacks:
-                print(f"  no stack named {stack!r} (have: {', '.join(sorted(stacks))})")
-                return 1
+                raise CommandError(f"no stack named {stack!r} (have: {', '.join(sorted(stacks))})")
             data = move_to_stack(data, track_object, stacks[stack], track_count=count)
             print(f"  {track} -> {stack}")
-        atomic_write_bytes(data_file, data)
+        return data
+
+    print(f"in  : {project}")
+    try:
+        dest = edit_copy(project, Path(args.out), step)
+    except CommandError as e:
+        print(f"  {e}")
+        return 1
     for stack in read_stacks(sorted(dest.glob("Alternatives/*/ProjectData"))[0].read_bytes(),
                              count):
         print(f"\n  {stack.name}: {', '.join(n for _k, n in stack.members) or '(empty)'}")

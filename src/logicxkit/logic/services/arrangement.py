@@ -1,6 +1,5 @@
-"""The Arrangement track — the song's sections (Intro, Verse, Chorus …). Read from the
-files on hand (2026-09-06; twelve sections of one song reproduced against Logic's own
-display); no writer yet.
+"""The Arrangement track — the song's sections (Intro, Verse, Chorus …); `arrangement_write`
+edits them.
 
 A sequence triple near the head of the record stream whose `qSvE` events (`events.py`)
 have type 0x12 and one data line:

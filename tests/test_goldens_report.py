@@ -1,5 +1,6 @@
 """The end-of-run goldens line: the count always, the key names only when they help."""
 
+import os
 import unittest
 from contextlib import contextmanager
 from unittest import mock
@@ -11,7 +12,9 @@ import _goldens
 def asked(found: int, missing: int):
     keys = {f"found-{i}": True for i in range(found)}
     keys |= {f"missing-{i:02d}": False for i in range(missing)}
-    with mock.patch.dict(_goldens.asked, keys, clear=True):
+    # An ambient LOGICXKIT_REQUIRE_GOLDENS would make every report() here raise.
+    with mock.patch.dict(_goldens.asked, keys, clear=True), mock.patch.dict(os.environ):
+        os.environ.pop(_goldens.REQUIRE, None)
         yield
 
 

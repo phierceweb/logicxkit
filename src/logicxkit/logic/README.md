@@ -117,7 +117,7 @@ first, and a total at **0x10 == filesize - 24** that must be rewritten after any
 There is no offset table, record count or checksum anywhere, which is what makes writing into
 a project possible at all.
 
-Keys: **0-2 sends**, **4+ plugin slots**, higher keys per-channel properties (the `.cst`
+Keys: **0-2 sends**, then the **plugin slots** from the project's slot base — 2 with up to one send anywhere in the project, 3 with two, 4 with three (Logic re-keys every channel when a send pushes it, and each channel record carries the base at +28; measured 2026-09-12) — and higher keys per-channel properties (the `.cst`
 reference sits at a key that moves with the Logic build — 9, 10, 12 and 13 all occur, so never
 hardcode it). Gaps are normal; Logic writes sparse keys itself.
 
@@ -354,7 +354,8 @@ slots (key 4+). 78 sends across three Logic 12.3.1 saves:
 | `+0` | u32 class word, 72 at `UCuA` v5 (the only version on hand) |
 | `+4` | slot: `key << 16` |
 | `+8` | u16, 0 or 4 — not decoded |
-| `+16..19`, `+24..27` | the level, not decoded; `+17` and `+27` agree on every send and differ per send |
+| `+17` | the send level's 0-127 position (a new send is 0; Logic's knob dragged twice on a blank project: 0 → 11 → 34, 2026-09-12) |
+| `+24..27` | the exact level, u32 LE in 8.24 fixed point — the same word the channel fader keeps at `+116`; its top byte is `+17` again |
 | `+20` | u16 destination as **bus number + the project's mono input count - 1** (32 inputs: 46 -> Bus 15, the B 15 the mixer shows; a 20-input song writes Bus 10 as 29) |
 | `+44` | the send's own instance UUID (v1), distinct on all 78 |
 | `+60` | the destination **`Bus N` channel's own UUID** (78/78) — the bus is named twice |
@@ -411,6 +412,11 @@ row, and Logic's re-save kept both group records byte for byte and the row list 
 **Open (2026-09-08):** a track added *after* members are assigned leaves the group with fewer
 fader events than members ("2 event(s) for 2 member(s), 4 expected"), so `apply-template` runs
 over another lineage need `--skip group` until the add re-syncs the events.
+
+Leaving a group was composed until 2026-09-12: Logic's own No Group on one member of a group
+made by `logic group` on a blank project (Logic re-saved that group intact first) changed the
+group record, the object's group number and nothing else the leave owns — `assign(…, 0)`
+reproduces it; the bytes that differ are the selection made by clicking the track.
 
 ### What a track add writes (two clean saves, 2026-09-01, Logic 12.3.1)
 
@@ -509,6 +515,17 @@ in another). A track cloned from one comes back as a group with no registry entr
 write gate refuses the copy. The add path takes a pattern only when its entry leads to a track
 triple carrying the object itself (`addtrack._sound_entry`, 2026-09-08).
 
+### Summing stacks — read, not written (Logic's own, 2026-09-12)
+
+Logic's Create Track Stack of each kind over three audio tracks on a blank project: a folder
+stack's header row is a grouping object bound to a `Sub N` strip; a summing stack's header is
+a grouping object bound to an `Aux N` strip (named `Sum N`, stereo), and every member's output
+is re-routed to that aux's bus. The grouping flag alone is not the tell — plain aux, instrument
+and output tracks carry it too — so the reader takes an Aux-bound grouping row as a summing
+header only when the row under it is a member. `move_to_stack` refuses a summing stack: a
+member's routing moves with it, which is not modelled. Flatten Stack leaves the Sub strip
+allocated and unbound.
+
 ### Creating a stack (`logic stack-create`) — composed, not sampled
 
 Logic's own Create Track Stack has not been saved and diffed; `services/stack_create.py`
@@ -560,11 +577,13 @@ Track Header popover) lives in the 312-byte `ArrangeCLgUserData` blob under
 `screensetDictArray[0]/layoutDictArray[0]/docwWindowState/udataArrange` in
 `Alternatives/NNN/DisplayState.plist`, and again as the same blob inside `DisplayStateArchive`.
 Measured on seventeen Logic 12.3.1 saves of one project, one component toggled per save
-(2026-09-04), each save changing exactly one bit and the width:
+(2026-09-04), and again on seventeen saves of a blank project (2026-09-12): every bit the same
+on both, the width formula corrected by the second set. Each save changes exactly one bit and
+the width:
 
 | offset | meaning |
 |---|---|
-| `+38` | u16 header width in pixels: 109 plus the shown components' widths (On/Off, Mute, Solo, Protect, Freeze, Input Monitoring 22 each; Record Enable 26; Volume 128; Pan/Send 25; Control Surface Bars 5; Track Numbers 12; Track Icons 30; the rest 0) |
+| `+38` | u16 header width in pixels: the name column's width plus the shown components' widths (On/Off, Mute, Solo, Protect, Freeze, Input Monitoring 22 each; Record Enable 26; Volume 128; Pan/Send 25; Control Surface Bars 5; Track Numbers 12; Track Icons 30; the rest 0), never below 180. The name column is per project — 109 on the first project measured, 33 on a blank one — and is stored nowhere else, so the writer takes it from the file's own width |
 | `+58` | bit 3 = Track Numbers **hidden** |
 | `+68` | bit 1 Volume, bit 2 Pan/Send, bit 3 On/Off, bit 4 Groove Track, bit 5 Track Alternatives (set = shown) |
 | `+70` | bit 0 Mute, bit 1 Record Enable, bit 2 Solo, bit 3 Track Icons, bit 5 Additional Name Column, bit 7 Input Monitoring, bit 8 Track Protect, bit 10 Freeze, bit 12 Color Bars (set = shown); bit 14 Control Surface Bars **hidden** |
@@ -579,9 +598,12 @@ toggles, and a written set opened in Logic showing every component as set (2026-
 The set the main window's control bar shows (Customize Control Bar and Display…) lives in
 each alternative's `DisplayState.plist` under `screensetDictArray/layoutDictArray/
 docwWindowState/transportLayoutDict`, mirrored in `DisplayStateArchive`. Five lists of
-button ids, one per column of the popover, kept in one fixed order whatever order the boxes
-were ticked; a control that draws two buttons carries two ids. Measured on fifty Logic 12.3.1
-saves of one project, one control per save (2026-09-04, the `controlbar-saves` golden):
+button ids, one per column of the popover; a control that draws two buttons carries two ids. A
+list keeps the order it was stored in, and a newly ticked id lands after the last present id
+of lower canonical rank (at the front when none is lower) — so two projects can hold the same
+set in different orders and both draw the same. Measured on fifty Logic 12.3.1 saves of one
+project (2026-09-04) and fifty of a blank project (2026-09-12), one control per save; the
+second set corrected MIDI Activity's rank, which the first project had stored out of order:
 
 | List | ids |
 |---|---|
@@ -708,16 +730,18 @@ added, chains, references, routing, sends, levels, colours and hidden rows appli
 own re-save of each returned the identical row list. What stays refused: sends the legacy
 session has and the template lacks (never removed), and inputs past the session's count. Groups
 follow the template (see Groups). Three things a legacy migration has to get right: **slot
-keys** — a project made before Logic 11.2 starts its plugin slots at key 2, not 4;
-`apply-template` first moves every key from the slot base up by two, as Logic's own re-save of
-such a project does (`services/slotkeys.py`), and every slot writer reads the project's own base
+keys** — some projects start their plugin slots at key 2, not 4, and the 2020 song did so with
+a channel carrying three sends, so key 2 was a send and a slot at once; `apply-template` first
+moves every key from the slot base up by two on that collision, as Logic's own re-save of that
+song did (`services/slotkeys.py`). A project born in Logic 12.3.1 also sits at base 2, with no
+collision, and Logic keeps it there — it undid a rebase forced on a blank project (2026-09-12),
+so the move is never applied without the collision. Every slot writer reads the project's own base
 (`slot_index_base`, a majority vote over its native chunks and XML AU states), so a transplanted
 chain replaces the old one instead of sitting behind it (Logic loaded both: two amp sims in
 series, two drum instruments on one channel, prompts for plugins the old chain used). The rebase
 also stamps the base into every channel record: the u16 at +28 of a channel's `OCuA` is the slot
-base it was written with, 2 in such a project and 4 in everything Logic 12 writes or converts,
-and left at 2 under keys that sit at 4 Logic drops the plugin at slot 0 on any channel that also
-carries three sends. Stamped 4, the same file keeps them, and the 2020 song migrates in one pass
+base it was written with, 2 or 4 to match the slot keys, and left at 2 under keys that sit at 4
+Logic drops the plugin at slot 0 on any channel that also carries three sends. Stamped 4, the same file keeps them, and the 2020 song migrates in one pass
 (2026-09-06); **send destinations** — a send's `+20` counts from the project's device input
 count, not from 31 (`sends.send_base`); **mixer-only returns** — a legacy song returns its buses
 through auxes that have no arrange track, and once a template aux track returns the same bus the
@@ -1102,6 +1126,12 @@ own plugin state.
 `logic metronome PROJECT` reads it all; `--out DIR --set 'Simple mode=on' --set 'Pre-roll
 seconds=2'` writes a copy, `--from OTHER` copies the panes whole. `apply-template` copies the
 template's after the modes (`--skip metronome` leaves them).
+
+The pane's Volume slider is the Click channel's fader (`OCuA` owner of the `Inst … Click`
+channel, the same two fader bytes `levels` reads: 127 → 120 → 121 followed the slider on a blank
+project, 2026-09-12); its Tone slider writes three bytes at +248 of that channel's key-2 record,
+the Klopfgeist instrument's own state — located, not decoded. The Bar / Group / Beat / Division
+row boxes are shared by the Klopfgeist and MIDI click sections: a row that is off greys both.
 
 ## `diff` — project↔project and project↔strip-library drift
 

@@ -1,8 +1,5 @@
-"""The strip library a spec's relative paths hang off, and the settings-file path.
-
-A relative path in a spec has to land somewhere predictable: `strip_root` if the spec names
-one, else `LOGICXKIT_STRIP_ROOT`, else Logic's own library. Never the process's cwd.
-"""
+"""Where a spec's relative paths land — `strip_root`, else `LOGICXKIT_STRIP_ROOT`, else Logic's
+own library, never the cwd — and which preset names and settings paths are allowed."""
 
 import os
 import unittest
@@ -137,6 +134,36 @@ class PrefsPlistTest(unittest.TestCase):
         with mock.patch.dict(os.environ, {ENV_PLIST: "/tmp/copy.plist"}):
             self.assertEqual(prefs_plist(), Path("/tmp/copy.plist"))
             self.assertEqual(prefs_plist("com.x.scratch"), PREFS_DIR / "com.x.scratch.plist")
+
+
+class PresetNameTest(unittest.TestCase):
+    BAD = ("../escaped", "sub/dir", "/abs/path", "..", ".", "", "back\\slash")
+
+    def _spec(self, tmp: Path, name: str) -> dict:
+        return {"output_dir": str(tmp / "out"),
+                "presets": {name: {"eq": {"peak1": {"freq": 100, "gain": 3.0, "q": 1.0}}}}}
+
+    def test_a_strip_spec_refuses_a_name_that_is_not_a_plain_file_name(self):
+        import json
+        import tempfile
+        from logicxkit.logic.services.spec import load_spec
+        for name in self.BAD:
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
+                spec = Path(tmp) / "spec.json"
+                spec.write_text(json.dumps(self._spec(Path(tmp), name)))
+                with self.assertRaisesRegex(ValueError, "plain file name"):
+                    load_spec(spec)
+
+    def test_a_settings_spec_refuses_one_too(self):
+        from logicxkit.logic.services.pst import plan_psts
+        for name in self.BAD:
+            with self.subTest(name=name), self.assertRaisesRegex(ValueError, "plain file name"):
+                plan_psts(self._spec(Path("/tmp/logicxkit-never-written"), name))
+
+    def test_an_ordinary_name_still_plans(self):
+        from logicxkit.logic.services.pst import plan_psts
+        ((name, dest, _values),) = plan_psts(self._spec(Path("/tmp/x"), "Kick - Tight 2"))
+        self.assertEqual(dest.name, "Kick - Tight 2.pst")
 
 
 if __name__ == "__main__":

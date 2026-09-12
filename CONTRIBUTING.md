@@ -3,11 +3,11 @@
 ## Requirements
 
 macOS with Logic Pro, Python 3.12, and a `swift` toolchain. There is no Linux path. CI runs
-lint and the suite on a macOS runner, but a runner has no reference corpus and no console, so
-the goldens and `tests/rig` skip there and a green check proves the synthetic layer only.
-`bin/run lint && bin/run pytest` on your own machine, before you open a pull request, is still
-the gate — and if you have the corpus staged, say so in the PR, because that run is worth more
-than the runner's.
+lint and the suite on a macOS runner with the public corpus fetched, so the synthetic layer and
+the public goldens run there; the owner's goldens and `tests/rig` skip, because a runner has
+neither those sessions nor a console. `bin/run lint && bin/run pytest` on your own machine,
+before you open a pull request, is still the gate — and if you have goldens staged beyond the
+public corpus, say so in the PR, because that run is worth more than the runner's.
 
 ## Setup
 
@@ -21,12 +21,13 @@ bin/run lint
 
 ## What a green suite does and does not prove
 
-Tests that read real Logic files skip when those files are absent, and they are absent in every
-clone — the reference corpus is not distributed. Every run ends with a
-`goldens: N of M keys found` line; on a machine without the corpus it reads `0 of M` and the
-suite is still green. Set `LOGICXKIT_REQUIRE_GOLDENS=1` to make a missing golden fail instead.
-See `resources/README.md` and `resources/data/README.md` for what the corpus is and how to
-build your own.
+Tests that read real Logic files skip when those files are absent. Run `bin/run fetch-corpus`
+once to get the public corpus (Logic's saves of a blank project); the keys only the owner's
+corpus has — real sessions and templates — skip everywhere else, and a change to one of those
+readers needs the owner to run the suite. Every run ends with a `goldens: N of M keys found`
+line; without the corpus it reads `0 of M` and the suite is still green. Set
+`LOGICXKIT_REQUIRE_GOLDENS=1` to make a missing golden fail instead. See `resources/README.md`
+and `resources/data/README.md` for what the corpora are and how to build your own.
 
 ## Evidence
 

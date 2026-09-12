@@ -182,3 +182,20 @@ class WriteTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class InsertionOrderTest(unittest.TestCase):
+    """A list keeps the order it was stored in; a newly ticked id goes after the last present
+    id of lower canonical rank (two transitions Logic made, one per project measured)."""
+
+    def test_a_stored_order_is_kept_and_the_new_id_lands_after_its_lower_ranked_neighbours(self):
+        from logicxkit.logic.services.controlbar import with_controls
+        layout = {"CLgTransportBtnsDisplay": [18, 19, 21, 22, 23, 24]}       # MIDI Activity stored early
+        out = with_controls(layout, {"Sample Rate / Buffer Size": True})
+        self.assertEqual(out["CLgTransportBtnsDisplay"], [18, 19, 21, 22, 23, 24, 20])
+
+    def test_midi_activity_ranks_after_key_signature(self):
+        from logicxkit.logic.services.controlbar import with_controls
+        layout = {"CLgTransportBtnsDisplay": [18, 19, 21, 22, 24, 20, 46, 51]}
+        out = with_controls(layout, {"MIDI Activity (In/Out)": True})
+        self.assertEqual(out["CLgTransportBtnsDisplay"], [18, 19, 21, 22, 24, 20, 46, 51, 23])

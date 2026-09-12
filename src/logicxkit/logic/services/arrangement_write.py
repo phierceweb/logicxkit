@@ -38,9 +38,7 @@ _TEXT_DATA = "section-text-12.3.1.json"    # under the data root, `utils.data`
 
 
 def plain_text_payload(name: str) -> bytes:
-    text = name.encode("utf-8") + b"\0"
-    text += b"\0" * (len(text) % 2)
-    p = bytearray(TEXT_NAME_AT) + text
+    p = bytearray(TEXT_NAME_AT) + _text_bytes(name)
     for at in (_SIZE_AT, _SIZE2_AT):
         struct.pack_into("<I", p, at, len(p))
     struct.pack_into("<I", p, _TEXT_AT_AT, TEXT_NAME_AT)
@@ -128,7 +126,10 @@ def delete_section(data: bytes, number: int) -> bytes:
 
 
 def _text_bytes(name: str) -> bytes:
-    text = name.encode("utf-8") + b"\0"
+    if not name.isascii():
+        raise ValueError(f"section name {name!r}: only ASCII names are written — how Logic stores "
+                         "other characters has not been measured")
+    text = name.encode("ascii") + b"\0"
     return text + b"\0" * (len(text) % 2)
 
 

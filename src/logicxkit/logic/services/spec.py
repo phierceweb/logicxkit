@@ -1,9 +1,5 @@
-"""Spec loading + strip assembly — turn a JSON spec + template .cst into patched bytes.
-
-Template-based by necessity: the proprietary `.cst` header and plugin-slot table are not
-synthesised. We clone a template that already has the plugin chain, then rewrite the first
-Channel EQ and first Compressor `GAMETSPP` blocks from the spec.
-"""
+"""Spec loading and strip assembly: a template `.cst` that already has the plugin chain, with
+its first Channel EQ and Compressor `GAMETSPP` blocks rewritten from the spec."""
 
 from __future__ import annotations
 
@@ -13,22 +9,16 @@ from pathlib import Path
 from .._binary import find_blocks, identify_plugin, patch_block_floats, read_block_floats
 from .comp import build_comp, decode_comp
 from .eq import build_eq, decode_eq
-from .library import resolve
+from .library import require_plain_names, resolve
 from .limiter import build_limiter
 from .graft import graft, relabel_presets, set_provenance
 from .records import plugin_slots, replace_slots
 
 
 def _patch_group(buf: bytearray, blocks, plugin: str, vals: list[float], limit: int) -> bool:
-    """Patch the first ``plugin`` block AND its Logic-re-save paired copies.
-
-    A re-saved strip writes each slot as two consecutive same-size GAMETSPP blocks; the
-    copy reads as ``Unknown`` (its plugin-name label is outside identify_plugin's window).
-    We patch the identified block, then every immediately-following block of identical
-    float count that identifies as the same plugin or ``Unknown`` — writing only the
-    user-param region (``limit`` floats), so each copy's trailing internal floats survive.
-    Returns True if at least one block was patched.
-    """
+    """Patch the first ``plugin`` block and the same-size copies a Logic re-save writes after it
+    (they identify as ``Unknown``), only the first ``limit`` floats, so trailing state survives.
+    True if at least one block was patched."""
     for i, (idx, _size, n) in enumerate(blocks):
         if identify_plugin(bytes(buf), idx) != plugin:
             continue
@@ -109,11 +99,8 @@ def resolve_base(spec: dict, preset: dict, load) -> bytes:
 
 
 def assemble(spec: dict, preset: dict, load, name: str | None = None) -> bytes:
-    """Full pipeline for one preset: base -> patch EQ/Comp -> ``label`` -> self-identity.
-
-    ``name`` re-stamps the strip's own provenance record; without it a clone or graft keeps
-    claiming to be its donor.
-    """
+    """Base -> patch EQ/Comp -> ``label`` -> ``name`` re-stamped, so a clone or graft stops
+    claiming to be its donor."""
     data = build_strip(resolve_base(spec, preset, load), preset)
     if "label" in preset:
         data = relabel_presets(data, preset["label"])
@@ -129,6 +116,7 @@ def load_spec(spec_path: Path) -> dict:
     for key in ("output_dir", "presets"):
         if key not in spec:
             raise ValueError(f"spec missing required key '{key}'")
+    require_plain_names(spec["presets"])
     if "template" in spec:
         spec["_template_path"] = resolve(spec["template"], spec.get("strip_root"))
     # `strip_root` moves sources as well as output; `output_root` moves output only.

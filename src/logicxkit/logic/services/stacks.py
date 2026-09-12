@@ -67,6 +67,7 @@ from .validate import require_full_walk, require_valid
 FOLDER = "folder"
 SUMMING = "summing"
 _SUB = "Sub "
+_AUX = "Aux "                 # a summing stack's header is bound to an Aux strip
 
 
 @dataclass
@@ -130,24 +131,42 @@ def read_tracks(data: bytes, track_count: int | None = None) -> list[dict]:
     return out
 
 
-def _is_stack(row: dict) -> bool:
-    return row["grouping"] and (row["label"] or "").startswith(_SUB)
+def _stack_kind(row: dict, following: dict | None) -> str | None:
+    """folder for a grouping row bound to a Sub strip; summing for one bound to an Aux whose
+    next row is a member — the grouping flag alone is set on plain aux, instrument and output
+    tracks too (Logic's own Create Track Stack of each kind on a blank project, 2026-09-12,
+    against a template with three grouping aux tracks that are not stacks); else None."""
+    if not row["grouping"]:
+        return None
+    label = row["label"] or ""
+    if label.startswith(_SUB):
+        return FOLDER
+    if label.startswith(_AUX) and following is not None and following["member"]:
+        return SUMMING
+    return None
+
+
+def _is_stack(row: dict, following: dict | None = None) -> bool:
+    return _stack_kind(row, following) is not None
 
 
 def read_stacks(data: bytes, track_count: int | None = None) -> list[Stack]:
     """Stacks in the arrange list, each with the tracks it holds.
 
-    A stack is a grouping object bound to a ``Sub N`` strip; its members are the rows that
-    follow it while their ``+14`` byte is set. Position still orders them — a member row
+    A stack is a grouping object bound to a ``Sub N`` strip (folder) or an ``Aux N`` strip
+    (summing); its members are the rows that follow it while their ``+14`` byte is set. Position still orders them — a member row
     always sits below its header — but the byte is what says it belongs.
     """
     stacks: list[Stack] = []
     open_stack: Stack | None = None
-    for row in read_tracks(data, track_count):
-        if _is_stack(row):
+    rows = read_tracks(data, track_count)
+    for i, row in enumerate(rows):
+        following = rows[i + 1] if i + 1 < len(rows) else None
+        if _is_stack(row, following):
+            kind = _stack_kind(row, following)
             open_stack = Stack(name=row["name"], object_id=row["object_id"],
-                               track_key=row["key"], index=int(row["label"][len(_SUB):]),
-                               owner=row["owner"])
+                               track_key=row["key"], index=int(row["label"].split()[1]),
+                               owner=row["owner"], kind=kind)
             stacks.append(open_stack)
         elif open_stack is not None and not row["member"]:
             open_stack = None
@@ -179,6 +198,8 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
     if track_object in stacks:
         raise ValueError("moving a stack into a stack is not decoded")
     stack = stacks[stack_object]
+    if stack.kind == SUMMING:
+        raise ValueError("summing stacks are read, not written: a member's routing moves with it")
 
     start = order.index(stack_object)
     end = start + 1

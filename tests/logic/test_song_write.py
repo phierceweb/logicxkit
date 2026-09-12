@@ -16,5 +16,12 @@ class TextPayloadTest(unittest.TestCase):
         self.assertEqual(len(w.plain_text_payload("")), 100)
 
 
+class NonAsciiNameTest(unittest.TestCase):
+    def test_a_name_that_would_not_read_back_is_refused(self):
+        for encode in (w.plain_text_payload, w._text_bytes):
+            with self.subTest(encode.__name__), self.assertRaisesRegex(ValueError, "ASCII"):
+                encode("Café")
+
+
 if __name__ == "__main__":
     unittest.main()

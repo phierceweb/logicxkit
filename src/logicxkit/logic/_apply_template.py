@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, bump_track_count, edit_copy, first_project_data, object_by_name
-from .orchestrators.apply_template import KINDS, apply_template, lineage_problem, plan
+from .orchestrators.apply_template import KINDS, apply_template, lineage_problem, plan, session_only
 from .services.pairing import format_map, parse_map_full, propose_map
 from .services.project import project_metadata
 from .services.retrack import find_project
@@ -71,6 +71,9 @@ def _only(args, session: bytes, count: int | None) -> set[int] | None:
 
 
 def cmd_apply_template(args) -> int:
+    if not (args.out or args.plan or args.propose_map):
+        print("  --out is required unless you pass --plan or --propose-map")
+        return 2
     template_project = find_project(Path(args.template))
     template = first_project_data(template_project)
     template_count = project_metadata(template_project).get("tracks")
@@ -127,6 +130,11 @@ def cmd_apply_template(args) -> int:
         print(f"session : {session_project}" + (f"\nonly    : {len(only)} row(s)" if only else "") + "\n")
         for op in ops:
             print("  " + op.line())
+        kept = session_only(template, session, template_count=template_count, session_count=count,
+                            forced=forced, excluded=excluded)
+        if kept:
+            print("\n  session-only, left as they are: "
+                  + ", ".join(f"{r['name']} ({r['label']})" if r["label"] else str(r["name"]) for r in kept))
         print(f"\n{sum(op.status == 'planned' for op in ops)} op(s) to run, "
               f"{sum(op.status == 'refused' for op in ops)} refused, "
               f"{sum(op.status == 'skipped' for op in ops)} skipped")

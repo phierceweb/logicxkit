@@ -212,14 +212,16 @@ class RebaseTest(unittest.TestCase):
         from logicxkit.logic.services.insert import project_records, slot_index_base
         from logicxkit.logic.services.slotkeys import needs_rebase, rebase
         old = OldSlotBaseTest()
-        data = proj(chan(3, "Audio 20"), send(3, 0, 5), old._old_slot(3, 2, b"AMPLITUBE", True), old._old_slot(3, 3, b"OLD-B"),
+        # the 2020 song: three sends on a channel whose slots start at key 2, so key 2 is both
+        data = proj(chan(3, "Audio 20"), send(3, 0, 5), send(3, 1, 6), send(3, 2, 7),
+                    old._old_slot(3, 2, b"AMPLITUBE", True), old._old_slot(3, 3, b"OLD-B"),
                     ref(3, 13), chan(4, "Audio 21"), old._old_slot(4, 2, b"KEEP", True), ref(4, 13))
         self.assertTrue(needs_rebase(data))
         out, report = rebase(data)
         self.assertEqual((report["from"], report["to"], report["moved"]), (2, 4, 5))
         self.assertEqual(slot_index_base(out), 4)
         keys = sorted((r.owner, r.key) for r in project_records(out) if r.tag == b"UCuA")
-        self.assertEqual(keys, [(3, 0), (3, 4), (3, 5), (3, 15), (4, 4), (4, 15)])
+        self.assertEqual(keys, [(3, 0), (3, 1), (3, 2), (3, 4), (3, 5), (3, 15), (4, 4), (4, 15)])
         self.assertEqual([r.key for r in channel_slots(out, 3)], [4, 5])
         self.assertFalse(needs_rebase(out))
         self.assertEqual(rebase(out)[0], out)

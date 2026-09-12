@@ -48,6 +48,12 @@ class Send:
     slot: int
     bus: int
     raw: bytes
+    level: int = 0                  # the 0-127 position, +17 (a new send is 0)
+    level_exact: float = 0.0        # +24 u32, 8.24 fixed point, as the fader's own word
+
+
+LEVEL_AT = 17
+LEVEL_FIXED_AT = 24
 
 
 _SEND_MAX = 128                 # every send is 76 bytes (1,197 on 39 files); a project whose
@@ -95,7 +101,9 @@ def read_sends(data: bytes) -> dict[int, list[Send]]:
             owner=record.owner, key=record.key,
             slot=struct.unpack_from("<I", payload, SLOT_AT)[0] >> 16,
             bus=struct.unpack_from("<H", payload, BUS_AT)[0] - base,
-            raw=record.raw))
+            raw=record.raw,
+            level=payload[LEVEL_AT],
+            level_exact=struct.unpack_from("<I", payload, LEVEL_FIXED_AT)[0] / (1 << 24)))
     return out
 
 

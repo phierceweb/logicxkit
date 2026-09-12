@@ -71,23 +71,32 @@ The variables fall into three groups:
   to read from a staged copy instead of the live library.
 - **Where your rig's specs and reference files live.** These point outside the repo (see below).
 - **Test behaviour.** Most usefully `LOGICXKIT_REQUIRE_GOLDENS=1`, which turns a missing
-  golden into a failure instead of a skip.
+  golden into a failure instead of a skip (`=public` fails only on keys the public corpus
+  should supply, which is what CI runs), and `LOGICXKIT_GOLDENS=owner`, which prefers the
+  owner's file where both corpora have a key.
 
 ## The three things that live outside the repo
 
 None of these ship, and none of them can. Each is Logic-authored or vendor-authored material
 that is not ours to redistribute.
 
-**The reference corpus** (`LOGICXKIT_RESOURCES`) — Logic's own controlled saves, project
-templates, finished sessions and a channel-strip library snapshot. The goldens read it through
-a manifest that maps neutral keys to files, so no test names a real song.
+**The public corpus** — Logic's own saves of a blank project, one change per save. It is a
+release asset, not part of the clone: `bin/run fetch-corpus` downloads it, checks it against
+the checksum pinned in `tests/goldens/corpus.json`, and unpacks it under `resources/public/`.
+`tests/goldens/manifest.json` (tracked) names each save by a neutral key with the facts a test
+may assert. Fetch it before trusting a golden run.
+
+**The owner's corpus** (`LOGICXKIT_RESOURCES`) — controlled saves cut from real sessions,
+project templates, finished mixes and a channel-strip library snapshot. It cannot ship. The
+goldens read it through an untracked manifest beside it, so no test names a real song; a key
+both corpora have resolves to the public file first (`LOGICXKIT_GOLDENS=owner` flips that).
 [`resources/README.md`](../resources/README.md) describes its shape and how the controlled
 saves are made.
 
 **The data root** (`LOGICXKIT_DATA`) — record templates Logic wrote, plugin-slot donor records,
 and AU parameter tables dumped from installed plugins. The tools load these at runtime.
 [`resources/data/README.md`](../resources/data/README.md) says how to regenerate each part
-(`logic donors`, `logic recdiff`, `au params`).
+(`logic donors`, `logic recdiff`, and `auprobe.swift list` for the AU tables).
 
 **Your rig's specs** — the real chain, preset and mapping specs. No variable points at them:
 they are files you hand to `build`, `chains` and `apply-template --map`. Keep them in a private
@@ -99,8 +108,9 @@ repo so they are versioned and backed up. Do not put real paths, names or values
 
 ## What a green test run does and does not prove
 
-Tests that read real Logic files skip when those files are absent, and they are absent in every
-clone. **A green suite on a fresh clone proves the synthetic layer only.**
+Tests that read real Logic files skip when those files are absent, and they are absent in a
+fresh clone until `bin/run fetch-corpus` has run. **A green suite without the corpus proves the
+synthetic layer only**, and the keys only the owner's corpus has skip on every other machine.
 
 Every run ends with a line naming how much actually ran:
 
@@ -109,9 +119,9 @@ goldens: 0 of 73 keys found; none on this machine
 ```
 
 Read that line before trusting a run. Set `LOGICXKIT_REQUIRE_GOLDENS=1` to make a missing
-golden fail instead of skip. CI is subject to the same limit — it runs on a macOS runner with
-no corpus staged, so a green check there is not a substitute for a run on a machine that has
-the files.
+golden fail instead of skip. CI fetches the public corpus and runs with `=public`, so the keys
+only the owner's corpus has skip there too — a green check is not a substitute for a run on a
+machine that has those files.
 
 ## Adding a new environment variable
 

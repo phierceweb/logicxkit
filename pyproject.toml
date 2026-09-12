@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logicxkit"
-version = "0.1.1"
+version = "0.2.0"
 description = "Logic Pro project and channel-strip tooling, and Audio Unit preset and state decoding"
 readme = "README.md"
 requires-python = ">=3.12"

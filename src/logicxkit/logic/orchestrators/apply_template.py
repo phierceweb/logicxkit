@@ -20,7 +20,7 @@ from ..services.groups import read_groups
 from ..services.instout import read_instrument_outputs
 from ..services.insert import HEADER, channel_formats
 from ..services.levels import FIXED_ONE, read_levels
-from ..services.pairing import match_quality, pair_rows, pair_tracks
+from ..services.pairing import extra_rows, match_quality, pair_rows, pair_tracks
 from ..services.retrack import cst_references
 from ..services.sends import read_sends
 from ..services.stacks import read_stacks, read_tracks
@@ -102,6 +102,7 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
 
     # --- structure
     previous = None                      # the session row the last paired template row landed on
+    last_add = None                      # the add op planned directly above, if any
     for p in pairs:
         t = p.template
         if p.session is None:
@@ -126,10 +127,12 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
                         note="no paired row above it to place it after")
             else:
                 inside = t_in.get(t["key"], (None,))[0]
-                op = Op("add", _row_name(t), f"add {kind} track after {previous['name']}", p.rule,
+                anchor = last_add.args["name"] if last_add else previous["name"]
+                op = Op("add", _row_name(t), f"add {kind} track after {anchor}", p.rule,
                         args={"kind": kind, "name": t["name"], "after": previous["object_id"],
-                              "colour": t["colour"], "template_row": t["key"],
+                              "after_op": last_add, "colour": t["colour"], "template_row": t["key"],
                               "member": inside is not None and inside in s_stack_names})
+                last_add = op
             ops.append(op)
             continue
         s = p.session
@@ -153,7 +156,7 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             if target is None:
                 op.status, op.note = "refused", "the stack does not exist yet"
             ops.append(op)
-        previous = s
+        previous, last_add = s, None
 
     # --- arrange order, per parent, among paired rows that already sit under that parent
     for parent in [None] + [s.name for s in t_stacks]:
@@ -384,6 +387,17 @@ def apply_template(template: bytes, session: bytes, *, template_count: int | Non
     rest = [op for op in ops if op.kind not in STRUCTURE]
     data, _ = apply(template, data, rest, session_count=count)
     return data, done_structural + leftover + rest, added
+
+
+def session_only(template: bytes, session: bytes, *, template_count: int | None,
+                 session_count: int | None, forced: dict[str, str] | None = None,
+                 excluded: set[str] | None = None) -> list[dict]:
+    """Session rows no template row claims. The plan leaves them as they are; naming them is
+    what keeps a stray track from being invisible in it."""
+    from ..services.stacks import read_tracks
+    pairs = pair_tracks(template, session, template_count=template_count,
+                        session_count=session_count, forced=forced, excluded=excluded)
+    return extra_rows(pairs, read_tracks(session, session_count))
 
 
 def lineage_problem(template: bytes, session: bytes, *, template_count: int | None,

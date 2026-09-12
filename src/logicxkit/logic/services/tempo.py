@@ -1,6 +1,4 @@
-"""Tempo — the project tempo and the tempo track. Read from the files on hand (2026-09-06:
-every song's LCD tempo matched, and a ramp and two step songs read as Logic draws them);
-no writer yet.
+"""Tempo — the project tempo and the tempo track; `tempo_write` edits them.
 
 `gnoS +110` is `bpm x 10000` as u32 — the tempo the LCD showed when the song was saved;
 +114 is the tempo at bar 1 (equal unless the track has changes) and +198 repeats it. The

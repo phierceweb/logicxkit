@@ -15,12 +15,28 @@ def _spec(spec: str, what: str) -> tuple[int, str]:
     return int(number), value.strip()
 
 
-def _ticks(bars: str, what: str, *, offset: int) -> int:
-    from .services.events import PPQ
+def _number(text: str, what: str) -> float:
     try:
-        return offset + int(round((float(bars) - (1 if offset else 0)) * 4 * PPQ))
+        return float(text)
     except ValueError:
-        raise CommandError(f"bad {what} {bars!r}: bars, 4/4, fractions allowed") from None
+        raise CommandError(f"bad {what} {text!r}: a number of bars, fractions allowed") from None
+
+
+def _bar_tick(data: bytes, bar: str, what: str) -> int:
+    from .services.signature import meter
+    return meter(data).tick(_number(bar, what))
+
+
+def _bar_length(data: bytes, bars: str, what: str, *, at: int) -> int:
+    from .services.signature import meter
+    return meter(data).ticks(_number(bars, what), at)
+
+
+def _section_start(data: bytes, n: int) -> int:
+    from .services.arrangement import read_sections
+    from .services.events import BAR_ONE
+    sections = read_sections(data)
+    return sections[n - 1].start if 1 <= n <= len(sections) else BAR_ONE
 
 
 def _print_sections(project: Path, data: bytes) -> None:
@@ -38,7 +54,6 @@ def cmd_arrangement(args) -> int:
     from logicxkit.logicx import project_data
     from .services import arrangement_write as w
     from .services.arrangement import KINDS
-    from .services.events import BAR_ONE
     edits = [a for a in (args.rename, args.move, args.length, args.delete, args.add) if a]
     project = find_project(Path(args.project))
     if not edits:
@@ -54,10 +69,10 @@ def cmd_arrangement(args) -> int:
             data = w.rename_section(data, n, name)
         for spec in args.move or []:
             n, bar = _spec(spec, "move")
-            data = w.move_section(data, n, _ticks(bar, "move", offset=BAR_ONE))
+            data = w.move_section(data, n, _bar_tick(data, bar, "move"))
         for spec in args.length or []:
             n, bars = _spec(spec, "length")
-            data = w.resize_section(data, n, _ticks(bars, "length", offset=0))
+            data = w.resize_section(data, n, _bar_length(data, bars, "length", at=_section_start(data, n)))
         for n in sorted(args.delete or [], reverse=True):
             data = w.delete_section(data, n)
         for spec in args.add or []:
@@ -67,8 +82,9 @@ def cmd_arrangement(args) -> int:
             kind = {v: k for k, v in KINDS.items()}.get(parts[3].lower(), None) if len(parts) == 4 else 0
             if kind is None:
                 raise CommandError(f"bad kind {parts[3]!r}: one of {', '.join(KINDS.values())}")
-            data = w.add_section(data, parts[2], start=_ticks(parts[0], "add", offset=BAR_ONE),
-                                 length=_ticks(parts[1], "add", offset=0), kind=kind)
+            start = _bar_tick(data, parts[0], "add")
+            data = w.add_section(data, parts[2], start=start,
+                                 length=_bar_length(data, parts[1], "add", at=start), kind=kind)
         _print_sections(project, data)
         return data
     return _run(project, args.out, step)
@@ -76,7 +92,6 @@ def cmd_arrangement(args) -> int:
 
 def cmd_tempo(args) -> int:
     from logicxkit.logicx import project_data
-    from .services.events import BAR_ONE
     from .services.tempo import project_tempo, read_tempo_events
     from .services.tempo_write import add_ramp, add_tempo, set_tempo
     project = find_project(Path(args.project))
@@ -103,7 +118,7 @@ def cmd_tempo(args) -> int:
             if not sep:
                 raise CommandError(f"bad --add {spec!r}: use BAR=BPM, for example 33=150")
             try:
-                data = add_tempo(data, _ticks(bar, "add", offset=BAR_ONE), float(bpm))
+                data = add_tempo(data, _bar_tick(data, bar, "add"), float(bpm))
             except ValueError as e:
                 raise CommandError(str(e)) from None
         for spec in args.ramp or []:
@@ -113,8 +128,8 @@ def cmd_tempo(args) -> int:
             if not (sep and s1 and s2):
                 raise CommandError(f"bad --ramp {spec!r}: use BAR=BPM:BAR=BPM, for example 33=176:41=140")
             try:
-                data = add_ramp(data, _ticks(bar1, "ramp", offset=BAR_ONE), float(bpm1),
-                                _ticks(bar2, "ramp", offset=BAR_ONE), float(bpm2), per_bar=args.density)
+                data = add_ramp(data, _bar_tick(data, bar1, "ramp"), float(bpm1),
+                                _bar_tick(data, bar2, "ramp"), float(bpm2), per_bar=args.density)
             except ValueError as e:
                 raise CommandError(str(e)) from None
         show(data)
@@ -184,18 +199,17 @@ def cmd_signature(args) -> int:
             data = set_key(data, args.key)
         if args.division:
             data = set_division(data, args.division)
-        from .services.events import BAR_ONE
         for spec in args.key_at or []:
             bar, sep, key = spec.partition("=")
             if not sep:
                 raise CommandError(f"bad --key-at {spec!r}: use BAR=KEY, for example 33=G")
-            data = add_key_change(data, _ticks(bar, "key-at", offset=BAR_ONE), key)
+            data = add_key_change(data, _bar_tick(data, bar, "key-at"), key)
         for spec in args.time_at or []:
             bar, sep, sig = spec.partition("=")
             n, slash, d = sig.partition("/")
             if not (sep and slash and n.isdigit() and d.isdigit()):
                 raise CommandError(f"bad --time-at {spec!r}: use BAR=N/D, for example 49=3/4")
-            data = add_meter_change(data, _ticks(bar, "time-at", offset=BAR_ONE), int(n), int(d))
+            data = add_meter_change(data, _bar_tick(data, bar, "time-at"), int(n), int(d))
         show(data)
         return data
     return _run(project, args.out, step)

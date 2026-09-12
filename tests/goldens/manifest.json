@@ -1,0 +1,1388 @@
+{
+ "_about": "Public goldens: Logic's own saves of a blank project, one change per save. Paths are relative to resources/; bin/run fetch-corpus puts the files there. Facts are what tests may assert.",
+ "blank-base": {
+  "path": "public/blank-00-empty-audio.logicx",
+  "note": "an empty project with one audio track, Logic's first save",
+  "facts": {}
+ },
+ "modes-base-logic": {
+  "path": "public/modes-00-base.logicx",
+  "note": "every mode off, count-in off",
+  "facts": {}
+ },
+ "modes-cycle-logic": {
+  "path": "public/modes-01-cycle-on.logicx",
+  "note": "Cycle pressed on",
+  "facts": {
+   "on": [
+    "Cycle"
+   ]
+  }
+ },
+ "modes-count-in-logic": {
+  "path": "public/modes-02-count-in-on.logicx",
+  "note": "Count In pressed on (count-in was Off)",
+  "facts": {
+   "count_in": "1 Bar"
+  }
+ },
+ "modes-replace-logic": {
+  "path": "public/modes-03-replace-on.logicx",
+  "note": "Replace pressed on",
+  "facts": {
+   "on": [
+    "Cycle",
+    "Replace"
+   ]
+  }
+ },
+ "modes-solo-logic": {
+  "path": "public/modes-04-solo-on.logicx",
+  "note": "Solo pressed on",
+  "facts": {
+   "on": [
+    "Cycle",
+    "Replace",
+    "Solo"
+   ],
+   "count_in": "1 Bar"
+  }
+ },
+ "modes-cycle-off-logic": {
+  "path": "public/modes-05-cycle-off.logicx",
+  "note": "Cycle pressed off",
+  "facts": {
+   "on": [
+    "Replace",
+    "Solo"
+   ]
+  }
+ },
+ "modes-replace-off-logic": {
+  "path": "public/modes-06-replace-off.logicx",
+  "note": "Replace pressed off",
+  "facts": {
+   "on": [
+    "Solo"
+   ]
+  }
+ },
+ "modes-solo-off-logic": {
+  "path": "public/modes-07-solo-off.logicx",
+  "note": "Solo pressed off",
+  "facts": {
+   "on": [],
+   "count_in": "1 Bar"
+  }
+ },
+ "modes-base-b-logic": {
+  "path": "public/modes-08-base-b.logicx",
+  "note": "a second base: every mode off, count-in off",
+  "facts": {}
+ },
+ "modes-autopunch-logic": {
+  "path": "public/modes-09-autopunch-on.logicx",
+  "note": "Autopunch pressed on",
+  "facts": {
+   "on": [
+    "Autopunch"
+   ]
+  }
+ },
+ "modes-metronome-logic": {
+  "path": "public/modes-10-metronome-click-on.logicx",
+  "note": "Metronome Click pressed on",
+  "facts": {
+   "on": [
+    "Autopunch",
+    "Metronome Click"
+   ]
+  }
+ },
+ "modes-count-in-2-bars-logic": {
+  "path": "public/modes-11-count-in-2-bars.logicx",
+  "note": "Record > Count-in > 2 Bars",
+  "facts": {
+   "count_in": "2 Bars"
+  }
+ },
+ "modes-count-in-3-beats-logic": {
+  "path": "public/modes-12-count-in-3-beats.logicx",
+  "note": "Record > Count-in > 3/4",
+  "facts": {
+   "count_in": "3/4"
+  }
+ },
+ "modes-count-in-1-bar-logic": {
+  "path": "public/modes-13-count-in-1-bar.logicx",
+  "note": "Record > Count-in > 1 Bar",
+  "facts": {
+   "count_in": "1 Bar"
+  }
+ },
+ "metronome-simple-on-logic": {
+  "path": "public/settings-00-simple-on.logicx",
+  "note": "simple on",
+  "facts": {
+   "on": [
+    "Simple mode"
+   ]
+  }
+ },
+ "metronome-simple-off-logic": {
+  "path": "public/settings-01-simple-off.logicx",
+  "note": "simple off",
+  "facts": {
+   "off": [
+    "Simple mode"
+   ]
+  }
+ },
+ "metronome-click-recording-off-logic": {
+  "path": "public/settings-02-click-recording-off.logicx",
+  "note": "click recording off",
+  "facts": {
+   "off": [
+    "Click while recording"
+   ]
+  }
+ },
+ "metronome-click-playing-off-logic": {
+  "path": "public/settings-03-click-playing-off.logicx",
+  "note": "click playing off",
+  "facts": {
+   "off": [
+    "Click while playing"
+   ]
+  }
+ },
+ "metronome-polyphonic-off-logic": {
+  "path": "public/settings-04-polyphonic-off.logicx",
+  "note": "polyphonic off",
+  "facts": {
+   "off": [
+    "Polyphonic clicks"
+   ]
+  }
+ },
+ "metronome-polyphonic-on-logic": {
+  "path": "public/settings-05-polyphonic-on.logicx",
+  "note": "polyphonic on",
+  "facts": {
+   "on": [
+    "Polyphonic clicks"
+   ]
+  }
+ },
+ "metronome-rows-base-logic": {
+  "path": "public/settings-06-rows-base.logicx",
+  "note": "rows base",
+  "facts": {
+   "rows_on": [
+    "Bar",
+    "Group",
+    "Beat"
+   ]
+  }
+ },
+ "metronome-row-bar-off-logic": {
+  "path": "public/settings-07-row-bar-off.logicx",
+  "note": "row bar off",
+  "facts": {
+   "rows_on": [
+    "Group",
+    "Beat"
+   ]
+  }
+ },
+ "metronome-row-group-off-logic": {
+  "path": "public/settings-08-row-group-off.logicx",
+  "note": "row group off",
+  "facts": {
+   "rows_on": [
+    "Beat"
+   ]
+  }
+ },
+ "metronome-row-beat-off-logic": {
+  "path": "public/settings-09-row-beat-off.logicx",
+  "note": "row beat off",
+  "facts": {
+   "rows_on": []
+  }
+ },
+ "metronome-rows-flipped-logic": {
+  "path": "public/settings-10-rows-flipped-division-on.logicx",
+  "note": "rows flipped division on",
+  "facts": {
+   "rows_on": [
+    "Division"
+   ]
+  }
+ },
+ "metronome-midi-division-channel-up-logic": {
+  "path": "public/settings-20-midi-division-channel-up.logicx",
+  "note": "MIDI click/Division/channel 10 -> 16",
+  "facts": {
+   "moved": {
+    "MIDI click/Division/channel": 16
+   }
+  }
+ },
+ "metronome-midi-division-note-up-logic": {
+  "path": "public/settings-21-midi-division-note-up.logicx",
+  "note": "MIDI click/Division/note 37 -> 47",
+  "facts": {
+   "moved": {
+    "MIDI click/Division/note": 47
+   }
+  }
+ },
+ "metronome-midi-division-velocity-up-logic": {
+  "path": "public/settings-22-midi-division-velocity-up.logicx",
+  "note": "MIDI click/Division/velocity 52 -> 62",
+  "facts": {
+   "moved": {
+    "MIDI click/Division/velocity": 62
+   }
+  }
+ },
+ "recording-colorize-on-logic": {
+  "path": "public/settings-33-colorize-on.logicx",
+  "note": "colorize on",
+  "facts": {
+   "on": [
+    "Automatically colorize takes"
+   ]
+  }
+ },
+ "recording-tempo-change-on-logic": {
+  "path": "public/settings-34-tempo-change-on.logicx",
+  "note": "tempo change on",
+  "facts": {
+   "on": [
+    "Allow tempo change recording"
+   ]
+  }
+ },
+ "recording-reduction-off-logic": {
+  "path": "public/settings-35-reduction-off.logicx",
+  "note": "reduction off",
+  "facts": {
+   "off": [
+    "MIDI data reduction"
+   ]
+  }
+ },
+ "recording-erase-off-logic": {
+  "path": "public/settings-36-erase-off.logicx",
+  "note": "erase off",
+  "facts": {
+   "off": [
+    "Automatically erase duplicates"
+   ]
+  }
+ },
+ "recording-preroll-on-logic": {
+  "path": "public/settings-37-preroll-on.logicx",
+  "note": "preroll on",
+  "facts": {
+   "on": [
+    "Pre-roll instead of count-in"
+   ]
+  }
+ },
+ "recording-preroll-10s-logic": {
+  "path": "public/settings-38-preroll-time-up.logicx",
+  "note": "preroll time up",
+  "facts": {
+   "preroll": 10.0
+  }
+ },
+ "recording-count-in-radio-logic": {
+  "path": "public/settings-39-count-in-radio.logicx",
+  "note": "count-in radio",
+  "facts": {
+   "off": [
+    "Pre-roll instead of count-in"
+   ]
+  }
+ },
+ "recording-count-in-2-bars-logic": {
+  "path": "public/settings-40-count-in-2-bars.logicx",
+  "note": "count-in 2 bars",
+  "facts": {
+   "count_in": "2 Bars"
+  }
+ },
+ "grid-on-logic": {
+  "path": "public/settings-41-grid-on.logicx",
+  "note": "grid on",
+  "facts": {
+   "grid": true
+  }
+ },
+ "grid-off-logic": {
+  "path": "public/settings-42-grid-off.logicx",
+  "note": "grid off",
+  "facts": {
+   "grid": false
+  }
+ },
+ "click-button-on-logic": {
+  "path": "public/settings-43-click-button-on.logicx",
+  "note": "click button on",
+  "facts": {
+   "on": [
+    "Click while playing"
+   ]
+  }
+ },
+ "metronome-division-row-logic": {
+  "path": "public/settings-22-midi-division-velocity-up.logicx",
+  "note": "MIDI click/Division/velocity 52 -> 62",
+  "facts": {
+   "division": {
+    "channel": 16,
+    "note": 47,
+    "velocity": 62
+   }
+  }
+ },
+ "header-00": {
+  "path": "public/header-00-baseline.logicx",
+  "note": "the blank project's header set",
+  "facts": {
+   "components": {
+    "On/Off": false,
+    "Mute": true,
+    "Solo": true,
+    "Track Protect": false,
+    "Freeze": false,
+    "Record Enable": true,
+    "Input Monitoring": true,
+    "Volume": true,
+    "Pan/Send": true,
+    "Additional Name Column": false,
+    "Control Surface Bars": true,
+    "Track Numbers": true,
+    "Track Color Bars": false,
+    "Groove Track": false,
+    "Track Icons": true,
+    "Track Alternatives": false
+   }
+  }
+ },
+ "header-01": {
+  "path": "public/header-01-onoff on.logicx",
+  "note": "On/Off shown",
+  "facts": {
+   "toggle": [
+    "On/Off",
+    true
+   ]
+  }
+ },
+ "header-02": {
+  "path": "public/header-02-mute.logicx",
+  "note": "Mute hidden",
+  "facts": {
+   "toggle": [
+    "Mute",
+    false
+   ]
+  }
+ },
+ "header-03": {
+  "path": "public/header-03-solo.logicx",
+  "note": "Solo hidden",
+  "facts": {
+   "toggle": [
+    "Solo",
+    false
+   ]
+  }
+ },
+ "header-04": {
+  "path": "public/header-04-track-protect.logicx",
+  "note": "Track Protect shown",
+  "facts": {
+   "toggle": [
+    "Track Protect",
+    true
+   ]
+  }
+ },
+ "header-05": {
+  "path": "public/header-05-freeze.logicx",
+  "note": "Freeze shown",
+  "facts": {
+   "toggle": [
+    "Freeze",
+    true
+   ]
+  }
+ },
+ "header-06": {
+  "path": "public/header-06-record-enable.logicx",
+  "note": "Record Enable hidden",
+  "facts": {
+   "toggle": [
+    "Record Enable",
+    false
+   ]
+  }
+ },
+ "header-07": {
+  "path": "public/header-07-input-monitoring.logicx",
+  "note": "Input Monitoring hidden",
+  "facts": {
+   "toggle": [
+    "Input Monitoring",
+    false
+   ]
+  }
+ },
+ "header-08": {
+  "path": "public/header-08-volume.logicx",
+  "note": "Volume hidden",
+  "facts": {
+   "toggle": [
+    "Volume",
+    false
+   ]
+  }
+ },
+ "header-09": {
+  "path": "public/header-09-pansend.logicx",
+  "note": "Pan/Send hidden",
+  "facts": {
+   "toggle": [
+    "Pan/Send",
+    false
+   ]
+  }
+ },
+ "header-10": {
+  "path": "public/header-10-additional-name-column.logicx",
+  "note": "Additional Name Column shown",
+  "facts": {
+   "toggle": [
+    "Additional Name Column",
+    true
+   ]
+  }
+ },
+ "header-11": {
+  "path": "public/header-11-control-surface-bars.logicx",
+  "note": "Control Surface Bars hidden",
+  "facts": {
+   "toggle": [
+    "Control Surface Bars",
+    false
+   ]
+  }
+ },
+ "header-12": {
+  "path": "public/header-12-track-numbers.logicx",
+  "note": "Track Numbers hidden",
+  "facts": {
+   "toggle": [
+    "Track Numbers",
+    false
+   ]
+  }
+ },
+ "header-13": {
+  "path": "public/header-13-track-color-bars.logicx",
+  "note": "Track Color Bars shown",
+  "facts": {
+   "toggle": [
+    "Track Color Bars",
+    true
+   ]
+  }
+ },
+ "header-14": {
+  "path": "public/header-14-groove-track.logicx",
+  "note": "Groove Track shown",
+  "facts": {
+   "toggle": [
+    "Groove Track",
+    true
+   ]
+  }
+ },
+ "header-15": {
+  "path": "public/header-15-track-icons.logicx",
+  "note": "Track Icons hidden",
+  "facts": {
+   "toggle": [
+    "Track Icons",
+    false
+   ]
+  }
+ },
+ "header-16": {
+  "path": "public/header-16-track-alternatives.logicx",
+  "note": "Track Alternatives shown",
+  "facts": {
+   "toggle": [
+    "Track Alternatives",
+    true
+   ]
+  }
+ },
+ "controlbar-base": {
+  "path": "public/controlbar-00-base.logicx",
+  "note": "base",
+  "facts": {}
+ },
+ "controlbar-go-to-position-on": {
+  "path": "public/controlbar-01-go-to-position-on.logicx",
+  "note": "go-to-position on",
+  "facts": {
+   "toggle": [
+    "Go to Position",
+    true
+   ]
+  }
+ },
+ "controlbar-go-to-left-locator-on": {
+  "path": "public/controlbar-02-go-to-left-locator-on.logicx",
+  "note": "go-to-left-locator on",
+  "facts": {
+   "toggle": [
+    "Go to Left Locator",
+    true
+   ]
+  }
+ },
+ "controlbar-go-to-right-locator-on": {
+  "path": "public/controlbar-03-go-to-right-locator-on.logicx",
+  "note": "go-to-right-locator on",
+  "facts": {
+   "toggle": [
+    "Go to Right Locator",
+    true
+   ]
+  }
+ },
+ "controlbar-go-to-selection-start-on": {
+  "path": "public/controlbar-04-go-to-selection-start-on.logicx",
+  "note": "go-to-selection-start on",
+  "facts": {
+   "toggle": [
+    "Go to Selection Start",
+    true
+   ]
+  }
+ },
+ "controlbar-play-from-beginning-on": {
+  "path": "public/controlbar-05-play-from-beginning-on.logicx",
+  "note": "play-from-beginning on",
+  "facts": {
+   "toggle": [
+    "Play from Beginning",
+    true
+   ]
+  }
+ },
+ "controlbar-play-from-left-window-edge-on": {
+  "path": "public/controlbar-06-play-from-left-window-edge-on.logicx",
+  "note": "play-from-left-window-edge on",
+  "facts": {
+   "toggle": [
+    "Play from Left Window Edge",
+    true
+   ]
+  }
+ },
+ "controlbar-play-from-left-locator-on": {
+  "path": "public/controlbar-07-play-from-left-locator-on.logicx",
+  "note": "play-from-left-locator on",
+  "facts": {
+   "toggle": [
+    "Play from Left Locator",
+    true
+   ]
+  }
+ },
+ "controlbar-play-from-right-locator-on": {
+  "path": "public/controlbar-08-play-from-right-locator-on.logicx",
+  "note": "play-from-right-locator on",
+  "facts": {
+   "toggle": [
+    "Play from Right Locator",
+    true
+   ]
+  }
+ },
+ "controlbar-play-from-selection-on": {
+  "path": "public/controlbar-09-play-from-selection-on.logicx",
+  "note": "play-from-selection on",
+  "facts": {
+   "toggle": [
+    "Play from Selection",
+    true
+   ]
+  }
+ },
+ "controlbar-pause-on": {
+  "path": "public/controlbar-10-pause-on.logicx",
+  "note": "pause on",
+  "facts": {
+   "toggle": [
+    "Pause",
+    true
+   ]
+  }
+ },
+ "controlbar-free-tempo-recording-on": {
+  "path": "public/controlbar-11-free-tempo-recording-on.logicx",
+  "note": "free-tempo-recording on",
+  "facts": {
+   "toggle": [
+    "Free Tempo Recording",
+    true
+   ]
+  }
+ },
+ "controlbar-flashback-capture-on": {
+  "path": "public/controlbar-12-flashback-capture-on.logicx",
+  "note": "flashback-capture on",
+  "facts": {
+   "toggle": [
+    "Flashback Capture",
+    true
+   ]
+  }
+ },
+ "controlbar-skip-cycle-on": {
+  "path": "public/controlbar-13-skip-cycle-on.logicx",
+  "note": "skip-cycle on",
+  "facts": {
+   "toggle": [
+    "Skip Cycle",
+    true
+   ]
+  }
+ },
+ "controlbar-sample-rate-off": {
+  "path": "public/controlbar-14-sample-rate-off.logicx",
+  "note": "sample-rate off",
+  "facts": {
+   "toggle": [
+    "Sample Rate / Buffer Size",
+    false
+   ]
+  }
+ },
+ "controlbar-sample-rate-on": {
+  "path": "public/controlbar-15-sample-rate-on.logicx",
+  "note": "sample-rate on",
+  "facts": {
+   "toggle": [
+    "Sample Rate / Buffer Size",
+    true
+   ]
+  }
+ },
+ "controlbar-varispeed-on": {
+  "path": "public/controlbar-16-varispeed-on.logicx",
+  "note": "varispeed on",
+  "facts": {
+   "toggle": [
+    "Varispeed",
+    true
+   ]
+  }
+ },
+ "controlbar-key-signature-on": {
+  "path": "public/controlbar-17-key-signature-on.logicx",
+  "note": "key-signature on",
+  "facts": {
+   "toggle": [
+    "Key Signature / Project End",
+    true
+   ]
+  }
+ },
+ "controlbar-midi-activity-on": {
+  "path": "public/controlbar-18-midi-activity-on.logicx",
+  "note": "midi-activity on",
+  "facts": {
+   "toggle": [
+    "MIDI Activity (In/Out)",
+    true
+   ]
+  }
+ },
+ "controlbar-sync-on": {
+  "path": "public/controlbar-19-sync-on.logicx",
+  "note": "sync on",
+  "facts": {
+   "toggle": [
+    "Sync",
+    true
+   ]
+  }
+ },
+ "controlbar-autopunch-off": {
+  "path": "public/controlbar-20-autopunch-off.logicx",
+  "note": "autopunch off",
+  "facts": {
+   "toggle": [
+    "Autopunch",
+    false
+   ]
+  }
+ },
+ "controlbar-autopunch-on": {
+  "path": "public/controlbar-21-autopunch-on.logicx",
+  "note": "autopunch on",
+  "facts": {
+   "toggle": [
+    "Autopunch",
+    true
+   ]
+  }
+ },
+ "controlbar-set-punch-by-playhead-on": {
+  "path": "public/controlbar-22-set-punch-by-playhead-on.logicx",
+  "note": "set-punch-by-playhead on",
+  "facts": {
+   "toggle": [
+    "Set Punch In/Out Locator by Playhead",
+    true
+   ]
+  }
+ },
+ "controlbar-software-monitoring-on": {
+  "path": "public/controlbar-23-software-monitoring-on.logicx",
+  "note": "software-monitoring on",
+  "facts": {
+   "toggle": [
+    "Software Monitoring",
+    true
+   ]
+  }
+ },
+ "controlbar-pre-fader-metering-on": {
+  "path": "public/controlbar-24-pre-fader-metering-on.logicx",
+  "note": "pre-fader-metering on",
+  "facts": {
+   "toggle": [
+    "Pre Fader Metering",
+    true
+   ]
+  }
+ },
+ "controlbar-set-lr-by-playhead-on": {
+  "path": "public/controlbar-25-set-lr-by-playhead-on.logicx",
+  "note": "set-lr-by-playhead on",
+  "facts": {
+   "toggle": [
+    "Set Left/Right Locator by Playhead",
+    true
+   ]
+  }
+ },
+ "controlbar-set-lr-numerically-on": {
+  "path": "public/controlbar-26-set-lr-numerically-on.logicx",
+  "note": "set-lr-numerically on",
+  "facts": {
+   "toggle": [
+    "Set Left/Right Locator Numerically",
+    true
+   ]
+  }
+ },
+ "controlbar-move-locators-on": {
+  "path": "public/controlbar-27-move-locators-on.logicx",
+  "note": "move-locators on",
+  "facts": {
+   "toggle": [
+    "Move Locators by Cycle Length",
+    true
+   ]
+  }
+ },
+ "controlbar-left-length-radio": {
+  "path": "public/controlbar-28-left-length-radio.logicx",
+  "note": "left-length radio",
+  "facts": {
+   "toggle": [
+    "Left/Length",
+    true
+   ]
+  }
+ },
+ "controlbar-library-off": {
+  "path": "public/controlbar-29-library-off.logicx",
+  "note": "library off",
+  "facts": {
+   "toggle": [
+    "Library",
+    false
+   ]
+  }
+ },
+ "controlbar-master-volume-off": {
+  "path": "public/controlbar-30-master-volume-off.logicx",
+  "note": "master-volume off",
+  "facts": {
+   "toggle": [
+    "Master Volume",
+    false
+   ]
+  }
+ },
+ "controlbar-output-meter-on": {
+  "path": "public/controlbar-31-output-meter-on.logicx",
+  "note": "output-meter on",
+  "facts": {
+   "changed": [
+    "Master Volume",
+    "Output Meter"
+   ],
+   "set": {
+    "Master Volume": true,
+    "Output Meter": true
+   }
+  }
+ },
+ "controlbar-replace-off": {
+  "path": "public/controlbar-32-replace-off.logicx",
+  "note": "replace off",
+  "facts": {
+   "toggle": [
+    "Replace",
+    false
+   ]
+  }
+ },
+ "controlbar-tuner-off": {
+  "path": "public/controlbar-33-tuner-off.logicx",
+  "note": "tuner off",
+  "facts": {
+   "toggle": [
+    "Tuner",
+    false
+   ]
+  }
+ },
+ "controlbar-solo-off": {
+  "path": "public/controlbar-34-solo-off.logicx",
+  "note": "solo off",
+  "facts": {
+   "toggle": [
+    "Solo",
+    false
+   ]
+  }
+ },
+ "controlbar-count-in-off": {
+  "path": "public/controlbar-35-count-in-off.logicx",
+  "note": "count-in off",
+  "facts": {
+   "toggle": [
+    "Count In",
+    false
+   ]
+  }
+ },
+ "controlbar-inspector-off": {
+  "path": "public/controlbar-36-inspector-off.logicx",
+  "note": "inspector off",
+  "facts": {
+   "toggle": [
+    "Inspector",
+    false
+   ]
+  }
+ },
+ "controlbar-browsers-off": {
+  "path": "public/controlbar-37-browsers-off.logicx",
+  "note": "browsers off",
+  "facts": {
+   "toggle": [
+    "Browsers",
+    false
+   ]
+  }
+ },
+ "controlbar-positions-off": {
+  "path": "public/controlbar-38-positions-off.logicx",
+  "note": "positions off",
+  "facts": {
+   "toggle": [
+    "Positions (Time/Beats)",
+    false
+   ]
+  }
+ },
+ "controlbar-performance-meter-off": {
+  "path": "public/controlbar-39-performance-meter-off.logicx",
+  "note": "performance-meter off",
+  "facts": {
+   "toggle": [
+    "Performance Meter (CPU/HD)",
+    false
+   ]
+  }
+ },
+ "controlbar-locators-off": {
+  "path": "public/controlbar-40-locators-off.logicx",
+  "note": "locators off",
+  "facts": {
+   "toggle": [
+    "Locators or Punch Locators",
+    false
+   ]
+  }
+ },
+ "controlbar-midi-activity-off": {
+  "path": "public/controlbar-41-midi-activity-off.logicx",
+  "note": "midi-activity off",
+  "facts": {
+   "toggle": [
+    "MIDI Activity (In/Out)",
+    false
+   ]
+  }
+ },
+ "controlbar-tempo-off": {
+  "path": "public/controlbar-42-tempo-off.logicx",
+  "note": "tempo off",
+  "facts": {
+   "toggle": [
+    "Tempo",
+    false
+   ]
+  }
+ },
+ "controlbar-master-volume-popup": {
+  "path": "public/controlbar-43-master-volume-popup.logicx",
+  "note": "master-volume popup",
+  "facts": {
+   "toggle": [
+    "Output Meter",
+    false
+   ]
+  }
+ },
+ "controlbar-display-time": {
+  "path": "public/controlbar-44-display-time.logicx",
+  "note": "display time",
+  "facts": {
+   "display_mode": 1
+  }
+ },
+ "controlbar-display-custom": {
+  "path": "public/controlbar-45-display-custom.logicx",
+  "note": "display custom",
+  "facts": {
+   "display_mode": 0
+  }
+ },
+ "controlbar-display-beats-project-large": {
+  "path": "public/controlbar-46-display-beats-project-large.logicx",
+  "note": "display beats-project-large",
+  "facts": {
+   "display_mode": 4
+  }
+ },
+ "controlbar-display-beats-time-large": {
+  "path": "public/controlbar-47-display-beats-time-large.logicx",
+  "note": "display beats-time-large",
+  "facts": {
+   "display_mode": 3
+  }
+ },
+ "controlbar-display-beats-project": {
+  "path": "public/controlbar-48-display-beats-project.logicx",
+  "note": "display beats-project",
+  "facts": {
+   "display_mode": 7
+  }
+ },
+ "controlbar-display-beats-time": {
+  "path": "public/controlbar-49-display-beats-time.logicx",
+  "note": "display beats-time",
+  "facts": {
+   "display_mode": 8
+  }
+ },
+ "toolbar-all-logic": {
+  "path": "public/toolbar-01-all-on.logicx",
+  "note": "all on",
+  "facts": {
+   "buttons": 31,
+   "row": true
+  }
+ },
+ "toolbar-bit0-logic": {
+  "path": "public/toolbar-02-bit0.logicx",
+  "note": "bit0",
+  "facts": {
+   "buttons": 15,
+   "row": true,
+   "bit": 0
+  }
+ },
+ "toolbar-bit1-logic": {
+  "path": "public/toolbar-03-bit1.logicx",
+  "note": "bit1",
+  "facts": {
+   "buttons": 15,
+   "row": true,
+   "bit": 1
+  }
+ },
+ "toolbar-bit2-logic": {
+  "path": "public/toolbar-04-bit2.logicx",
+  "note": "bit2",
+  "facts": {
+   "buttons": 15,
+   "row": true,
+   "bit": 2
+  }
+ },
+ "toolbar-bit3-logic": {
+  "path": "public/toolbar-05-bit3.logicx",
+  "note": "bit3",
+  "facts": {
+   "buttons": 15,
+   "row": true,
+   "bit": 3
+  }
+ },
+ "toolbar-bit4-logic": {
+  "path": "public/toolbar-06-bit4.logicx",
+  "note": "bit4",
+  "facts": {
+   "buttons": 15,
+   "row": true,
+   "bit": 4
+  }
+ },
+ "toolbar-rest-logic": {
+  "path": "public/toolbar-07-rest.logicx",
+  "note": "rest",
+  "facts": {
+   "buttons": 14,
+   "row": true
+  }
+ },
+ "metronome-klopfgeist-on-logic": {
+  "path": "public/klopf-00-klopfgeist-on.logicx",
+  "note": "Audio Click (Klopfgeist) ticked",
+  "facts": {
+   "moved": {
+    "Automatically colorize takes": false
+   }
+  }
+ },
+ "metronome-klopf-division-note-up-logic": {
+  "path": "public/klopf-07-klopf-division-note-up.logicx",
+  "note": "Klopfgeist/Division/note 48 -> 58",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Division/note": 58
+   }
+  }
+ },
+ "metronome-klopf-division-velocity-up-logic": {
+  "path": "public/klopf-08-klopf-division-velocity-up.logicx",
+  "note": "Klopfgeist/Division/velocity 60 -> 70",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Division/velocity": 70
+   }
+  }
+ },
+ "metronome-klopf-division-note-down-logic": {
+  "path": "public/klopf-17-klopf-division-note-down.logicx",
+  "note": "Klopfgeist/Division/note 58 -> 57",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Division/note": 57
+   }
+  }
+ },
+ "metronome-klopf-division-velocity-down-logic": {
+  "path": "public/klopf-18-klopf-division-velocity-down.logicx",
+  "note": "Klopfgeist/Division/velocity 70 -> 69",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Division/velocity": 69
+   }
+  }
+ },
+ "metronome-midi-bar-on-up-logic": {
+  "path": "public/klopf-30-midi-bar-on-up.logicx",
+  "note": "MIDI click/Bar/on False -> True",
+  "facts": {
+   "moved": {
+    "MIDI click/Bar/on": true
+   }
+  }
+ },
+ "metronome-midi-group-on-up-logic": {
+  "path": "public/klopf-31-midi-group-on-up.logicx",
+  "note": "MIDI click/Group/on False -> True",
+  "facts": {
+   "moved": {
+    "MIDI click/Group/on": true
+   }
+  }
+ },
+ "metronome-midi-beat-on-up-logic": {
+  "path": "public/klopf-32-midi-beat-on-up.logicx",
+  "note": "MIDI click/Beat/on False -> True",
+  "facts": {
+   "moved": {
+    "MIDI click/Beat/on": true
+   }
+  }
+ },
+ "metronome-klopf-bar-note-up-logic": {
+  "path": "public/klopf-33-klopf-bar-note-up.logicx",
+  "note": "Klopfgeist/Bar/note 91 -> 101",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Bar/note": 101
+   }
+  }
+ },
+ "metronome-klopf-group-note-up-logic": {
+  "path": "public/klopf-35-klopf-group-note-up.logicx",
+  "note": "Klopfgeist/Group/note 97 -> 107",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Group/note": 107
+   }
+  }
+ },
+ "metronome-beat-note-logic": {
+  "path": "public/klopf-37-klopf-beat-note-up.logicx",
+  "note": "Klopfgeist/Beat/note 95 -> 105",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Beat/note": 105
+   },
+   "beat_note": 105
+  }
+ },
+ "metronome-klopf-beat-velocity-up-logic": {
+  "path": "public/klopf-38-klopf-beat-velocity-up.logicx",
+  "note": "Klopfgeist/Beat/velocity 112 -> 122",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Beat/velocity": 122
+   }
+  }
+ },
+ "metronome-klopf-bar-velocity-down-logic": {
+  "path": "public/klopf-39-klopf-bar-velocity-down.logicx",
+  "note": "Klopfgeist/Bar/velocity 127 -> 117",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Bar/velocity": 117
+   }
+  }
+ },
+ "metronome-group-velocity-logic": {
+  "path": "public/klopf-40-klopf-group-velocity-down.logicx",
+  "note": "Klopfgeist/Group/velocity 127 -> 117",
+  "facts": {
+   "moved": {
+    "Klopfgeist/Group/velocity": 117
+   },
+   "group_velocity": 117
+  }
+ },
+ "tracks-two-audio-logic": {
+  "path": "public/stack-01-new-audio-track-2.logicx",
+  "note": "Track > New Audio Track on the blank project",
+  "facts": {
+   "tracks": 2
+  }
+ },
+ "tracks-three-audio-logic": {
+  "path": "public/stack-02-new-audio-track-3.logicx",
+  "note": "Track > New Audio Track again",
+  "facts": {
+   "tracks": 3
+  }
+ },
+ "stack-folder-logic": {
+  "path": "public/stack-03-folder-stack.logicx",
+  "note": "Create Track Stack (Folder) over all three tracks, on a project that had none",
+  "facts": {
+   "stacks": 1,
+   "kind": "folder",
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ]
+  }
+ },
+ "stack-folder-flattened-logic": {
+  "path": "public/stack-04-flattened.logicx",
+  "note": "Flatten Stack",
+  "facts": {
+   "stacks": 0,
+   "tracks": 3
+  }
+ },
+ "stack-summing-logic": {
+  "path": "public/stack-06-summing-stack.logicx",
+  "note": "Create Track Stack (Summing) over all three tracks",
+  "facts": {
+   "stacks": 1,
+   "kind": "summing",
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ]
+  }
+ },
+ "stack-summing-flattened-logic": {
+  "path": "public/stack-07-summing-flattened.logicx",
+  "note": "Flatten Stack on the summing stack",
+  "facts": {
+   "stacks": 0,
+   "tracks": 3
+  }
+ },
+ "tracks-four-audio-logic": {
+  "path": "public/tracks-04-new-tracks-dialog.logicx",
+  "note": "Track > New Tracks\u2026 (Audio, input 1) added a fourth track after the selected one",
+  "facts": {
+   "tracks": 4
+  }
+ },
+ "stack-folder-of-one-logic": {
+  "path": "public/stack-08-folder-of-one.logicx",
+  "note": "Create Track Stack (Folder) over the selected Audio 1 alone, four tracks in the project",
+  "facts": {
+   "stacks": 1,
+   "members": [
+    "Audio 1"
+   ],
+   "order": [
+    "Sub 2",
+    "Audio 1",
+    "Audio 4",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ]
+  }
+ },
+ "stack-header-reordered-logic": {
+  "path": "public/stack-09-header-dragged.logicx",
+  "note": "the stack header dragged two rows down; header and member moved as a block",
+  "facts": {
+   "stacks": 1,
+   "members": [
+    "Audio 1"
+   ],
+   "order": [
+    "Audio 4",
+    "Audio 2",
+    "Sub 2",
+    "Audio 1",
+    "Audio 3",
+    "Stereo Out"
+   ]
+  }
+ },
+ "levels-ours": {
+  "path": "public/levels-00-ours.logicx",
+  "note": "levels --to by owner onto the base: the Click channel's fader 127 -> 120",
+  "facts": {
+   "click_owner": 8,
+   "fader": 120
+  }
+ },
+ "levels-resave-logic": {
+  "path": "public/levels-01-resave.logicx",
+  "note": "Logic's re-save of levels-ours",
+  "facts": {
+   "click_owner": 8,
+   "fader": 120
+  }
+ },
+ "send-bus-1-logic": {
+  "path": "public/send-00-bus-1.logicx",
+  "note": "a send from Audio 1 to Bus 1 made in the inspector's Sends menu, level as Logic sets a new send",
+  "facts": {
+   "owner": 0,
+   "bus": 1,
+   "level_byte": 0
+  }
+ },
+ "send-level-1-logic": {
+  "path": "public/send-01-knob-up.logicx",
+  "note": "the send knob dragged up once",
+  "facts": {
+   "owner": 0,
+   "bus": 1,
+   "level_byte": 11
+  }
+ },
+ "send-level-2-logic": {
+  "path": "public/send-02-knob-up.logicx",
+  "note": "the send knob dragged up again",
+  "facts": {
+   "owner": 0,
+   "bus": 1,
+   "level_byte": 34
+  }
+ },
+ "send-two-base-3-logic": {
+  "path": "public/send-03-second-send.logicx",
+  "note": "a second send (Audio 1 -> Bus 2): Logic moved every channel's slot base word from 2 to 3 and the Click instrument to key 3",
+  "facts": {
+   "owner": 0,
+   "sends": [
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2
+    ]
+   ],
+   "slot_base": 3
+  }
+ },
+ "group-drums-logic": {
+  "path": "public/group-00-drums-resave.logicx",
+  "note": "Logic's re-save of a group made by `logic group --create` over Audio 1 and Audio 2 on a blank-born project",
+  "facts": {
+   "name": "Drums",
+   "members": [
+    "Audio 1",
+    "Audio 2"
+   ]
+  }
+ },
+ "group-leave-logic": {
+  "path": "public/group-01-audio-1-left.logicx",
+  "note": "Audio 1 set to No Group in the strip's Group popup",
+  "facts": {
+   "name": "Drums",
+   "members": [
+    "Audio 2"
+   ],
+   "left": "Audio 1"
+  }
+ }
+}

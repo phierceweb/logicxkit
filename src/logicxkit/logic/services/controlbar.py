@@ -61,12 +61,13 @@ CONTROLS: dict[str, tuple[tuple[str, int], ...]] = {
 LCD_MODES = {0: "Custom", 1: "Time", 2: "Beats", 3: "Beats & Time (Large)",
              4: "Beats & Project (Large)", 7: "Beats & Project", 8: "Beats & Time"}
 
-# the order Logic keeps each list in, whatever order the boxes were ticked (all-on saves)
+# each id's canonical rank: a newly ticked id goes after the last present id of lower rank,
+# and a list otherwise keeps the order it was stored in (measured on both projects' saves)
 ORDER: dict[str, tuple[int, ...]] = {
     _VL: (100, 101, 102, 103, 104, 105, 106),
     _VR: (107, 108, 109, 110),
     _T: (6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 11, 12, 13, 14, 15, 16, 50, 17, 35, 38),
-    _D: (18, 19, 21, 22, 23, 24, 20, 46, 51, 52),
+    _D: (18, 19, 21, 22, 24, 20, 46, 51, 23, 52),
     _M: (30, 53, 44, 42, 39, 40, 41, 25, 26, 28, 29, 31, 32, 33, 34, 36, 37, 46, 47, 43, 48, 45),
 }
 
@@ -88,24 +89,33 @@ def controls_of(layout: dict) -> dict[str, bool]:
     return {name: all(i in have[s] for s, i in ids) for name, ids in CONTROLS.items()}
 
 
-def _ordered(section: str, ids: list[int]) -> list[int]:
-    known = [i for i in ORDER[section] if i in ids]
-    return known + [i for i in ids if i not in ORDER[section]]
+def _inserted(section: str, ids: list[int], new_id: int) -> list[int]:
+    """``ids`` with ``new_id`` placed where Logic places it: after the last present id of
+    lower canonical rank, at the front when there is none, at the end when it has no rank."""
+    if new_id in ids:
+        return ids
+    rank = {v: k for k, v in enumerate(ORDER[section])}
+    if new_id not in rank:
+        return ids + [new_id]
+    at = 0
+    for pos, present in enumerate(ids):
+        if present in rank and rank[present] < rank[new_id]:
+            at = pos + 1
+    return ids[:at] + [new_id] + ids[at:]
 
 
 def with_controls(layout: dict, want: dict[str, bool]) -> dict:
-    """``layout`` with the named controls switched on or off, each list in Logic's order."""
+    """``layout`` with the named controls switched on or off; every list keeps its stored
+    order and a switched-on id is inserted where Logic inserts it."""
     new = {k: (list(v) if isinstance(v, list) else v) for k, v in layout.items()}
     for s in SECTIONS:
         new.setdefault(s, [])
     for name, on in want.items():
         for s, i in CONTROLS[name]:
-            if on and i not in new[s]:
-                new[s].append(i)
-            elif not on and i in new[s]:
+            if on:
+                new[s] = _inserted(s, new[s], i)
+            elif i in new[s]:
                 new[s] = [x for x in new[s] if x != i]
-    for s in SECTIONS:
-        new[s] = _ordered(s, new[s])
     return new
 
 

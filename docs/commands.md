@@ -41,8 +41,10 @@ a channel that has drifted from the `.cst` it claims to reference. `stacks`, `le
 own part of a session and print it. `decode` reads a `.cst` directly. `manifest` and `recdiff`
 report on the record layer.
 
-`image` extracts the window screenshot Logic auto-saves into a project; `ocr` reads that
-screenshot with Apple Vision, which is the only way to see the mixer as Logic actually drew it.
+`image` extracts the window screenshot Logic auto-saves into a project, the one exception here:
+it writes that JPEG (to the current directory unless `-o` says where) and keeps an existing file
+unless `--overwrite` is given. `ocr` reads that screenshot with Apple Vision, which is the only way
+to see the mixer as Logic actually drew it.
 
 Several of these turn into writers when given a flag — `stacks --move`, `levels --to`. Read the
 next section before using one.
@@ -60,11 +62,11 @@ whole copy rather than leaving a bundle that disagrees with its own metadata.
 Do not assume that gate covers everything:
 
 - **It checks structure, not sound.** It cannot tell you a chain landed on the wrong channel.
-- **Two writers bypass it entirely** — `stacks --move` and `levels --to` write their copy
-  directly. They still never touch the input.
 - **`chains` bypasses `edit_copy`** but runs the same regression check and read-back itself.
 - **`controlbar`, `header` and `toolbar` bypass it** because they write `DisplayState.plist`
   and never touch `ProjectData`, which is what the gate inspects.
+- **`retrack --map` bypasses it**: it rewrites each `ProjectData` in the copy checked only for
+  an unchanged length. `retrack --channel` goes through the gate.
 
 `apply-template` is the orchestrator over the rest: it migrates a session onto another
 project's layout, pairing tracks by Environment object id within a lineage and by an explicit

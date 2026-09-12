@@ -64,10 +64,18 @@ _PLUGIN_MARKS = (b"GAMETSPP", b"<plist")      # native chunks and XML AU states;
                                               # property records (the strip reference) are not slots
 
 
+CHANNEL_BASE_AT = 28          # every channel record's own copy of the project's slot base
+
+
 def slot_index_base(data: bytes) -> int:
-    """The key that slot index 0 corresponds to — 2 in projects made before Logic 11.2, 4
-    since — read from the project's own plugin slots (native chunks and AU states alike),
-    the value most of them agree on."""
+    """The key that slot index 0 corresponds to: 2 with up to one send in the project, 3 with
+    two, 4 with three (Logic moves it with the sends, 2026-09-12). Every channel record
+    carries it at +28; when they all agree that is the answer, else the project's own plugin
+    slots (native chunks and AU states alike) vote."""
+    words = {struct.unpack_from("<H", r.raw, HEADER + CHANNEL_BASE_AT)[0]
+             for r in project_records(data) if r.tag == CHANNEL_TAG and len(r.raw) - HEADER > CHANNEL_BASE_AT + 2}
+    if len(words) == 1 and next(iter(words)) in (2, 3, 4):
+        return words.pop()
     votes: dict[int, int] = {}
     for record in project_records(data):
         if record.tag != b"UCuA" or not any(m in record.raw for m in _PLUGIN_MARKS):

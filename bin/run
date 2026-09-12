@@ -10,6 +10,7 @@
 #                             300 soft / 500 hard)
 #   bin/run logic [args]      the Logic strip CLI  (logicxkit logic …)
 #   bin/run au [args]         the AU preset/state decoder (logicxkit au …)
+#   bin/run fetch-corpus      download the public golden corpus into resources/public/
 #
 # logic/au dispatch through the unified logicxkit.cli entry point.
 #
@@ -29,6 +30,7 @@ cmd="${1:-}"; shift || true
 case "$cmd" in
   pytest|python|pip|ruff|pf-guards) exec "$ROOT/.venv/bin/$cmd" "$@" ;;
   logic|au) exec "$PY" -m logicxkit.cli "$cmd" "$@" ;;
+  fetch-corpus) exec "$PY" "$ROOT/bin/fetch_corpus.py" "$@" ;;
   setup)
     [ -d "$ROOT/.venv" ] || "${PYTHON:-python3.12}" -m venv "$ROOT/.venv"
     "$PY" -m pip install -q --upgrade pip
@@ -53,6 +55,6 @@ case "$cmd" in
     echo "lint OK"
     ;;
   ""|--help|-h)
-    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|logic|au} [args]" ;;
+    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|logic|au|fetch-corpus} [args]" ;;
   *) echo "unknown command: $cmd" >&2; exit 2 ;;
 esac

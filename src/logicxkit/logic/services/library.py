@@ -1,11 +1,9 @@
 """Where Logic's own files live: its user folder, the saved-strip library, the installed app.
 
-`~/Music/Audio Music Apps` holds `Channel Strip Settings` and `Plug-In Settings` as siblings —
+`~/Music/Audio Music Apps` holds `Channel Strip Settings` and `Plug-In Settings` as siblings,
 so a `.cst` spec and a `.pst` spec hang off different roots, and only the strip one is what
 `strip_root` means. `LOGICXKIT_AUDIO_MUSIC_APPS`, `LOGICXKIT_STRIP_ROOT` and
-`LOGICXKIT_LOGIC_APP` override the three defaults for a machine (the tests point the strip one
-at a staged snapshot under `resources/`). An absolute path in a spec always wins, so nothing
-here can redirect one.
+`LOGICXKIT_LOGIC_APP` override the three defaults; an absolute path in a spec always wins.
 """
 
 from __future__ import annotations
@@ -13,7 +11,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from ...utils.env import env_path, env_str
+from ...utils.env import env_path
 
 USER_DATA_ENV = "LOGICXKIT_AUDIO_MUSIC_APPS"
 USER_DATA_DEFAULT = Path.home() / "Music/Audio Music Apps"
@@ -51,13 +49,16 @@ def resolve(path, root=None) -> Path:
     return (Path(os.path.expanduser(str(root))) if root else strip_library()) / p
 
 
+def require_plain_names(names) -> None:
+    """A preset name becomes ``<name>.cst`` or ``.pst`` in an output directory; a separator
+    would escape it."""
+    bad = [n for n in names if not n or n in (".", "..") or "/" in n or "\\" in n]
+    if bad:
+        raise ValueError(f"preset names must each be a plain file name: {bad}")
+
+
 def under_live_library(path) -> bool:
-    """Whether a path lands inside Logic's own user folder. An explicit
-    `LOGICXKIT_AUDIO_MUSIC_APPS` says Logic's data is not there, so it answers no."""
-    if env_str(USER_DATA_ENV):
-        return False
-    try:
-        Path(os.path.expanduser(str(path))).resolve().relative_to(logic_user_data().resolve())
-    except ValueError:
-        return False
-    return True
+    """Whether a path lands inside Logic's user folder: the configured one, or the default,
+    which Logic loads whatever `LOGICXKIT_AUDIO_MUSIC_APPS` says."""
+    p = Path(os.path.expanduser(str(path))).resolve()
+    return any(p.is_relative_to(root.resolve()) for root in (logic_user_data(), USER_DATA_DEFAULT))

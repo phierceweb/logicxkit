@@ -88,7 +88,7 @@ def parse_value_tree(state: bytes) -> dict | None:
     try:
         tree, _ = _read_tree(state, 0)
         return tree
-    except (ValueError, IndexError, struct.error, UnicodeDecodeError):
+    except (ValueError, IndexError, struct.error, UnicodeDecodeError, RecursionError):
         return None
 
 

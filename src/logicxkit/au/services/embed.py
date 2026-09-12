@@ -1,8 +1,5 @@
-"""Embedded AU state scanning — Logic stores 3rd-party plugin state as raw XML
-plists inside its binaries (identically in ``.cst`` files and ``.logicx``
-``ProjectData``). Each plist is a full AU ClassInfo dict: identity fourccs
-(``type``/``subtype``/``manufacturer``), preset ``name``, and the state itself
-(``data`` pairs and/or vendor blob keys)."""
+"""Embedded AU state: Logic stores third-party plugin state as XML plists inside `.cst` files
+and ``ProjectData`` alike, each a full AU ClassInfo dict."""
 
 from __future__ import annotations
 
@@ -21,14 +18,16 @@ def find_au_plists(data: bytes) -> list[tuple[int, dict]]:
         end = data.find(b"</plist>", i)
         if end < 0:
             break
+        # A document holds one declaration, so only the last one before this </plist> can parse.
+        start = data.rfind(b"<?xml", i, end)
+        stop = end + len(b"</plist>")
         try:
-            pl = plistlib.loads(data[i : end + len(b"</plist>")])
+            pl = plistlib.loads(data[start:stop])
         except Exception:
-            pos = i + len(b"<?xml")
-            continue
+            pl = None
         if isinstance(pl, dict):
-            out.append((i, pl))
-        pos = end + len(b"</plist>")
+            out.append((start, pl))
+        pos = stop
     return out
 
 

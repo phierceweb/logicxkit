@@ -5,7 +5,7 @@ Not in ProjectData: the set lives in each alternative's `DisplayState.plist`, in
 udataArrange`, and again as the same blob inside `DisplayStateArchive`. Measured on seventeen
 Logic 12.3.1 saves of one project, one component toggled per save (2026-09-04):
 
-    +38   u16   header width in pixels = 109 + the widths of the shown components
+    +38   u16   header width in pixels = the name column + the shown components, >= 180
     +58   u16   bit 3   Track Numbers HIDDEN
     +68   u16   bit 1 Volume, bit 2 Pan/Send, bit 3 On/Off, bit 4 Groove Track,
                 bit 5 Track Alternatives — set = shown
@@ -26,7 +26,7 @@ from pathlib import Path
 BLOB_KEY = "ArrangeCLgUserData"
 BLOB_LEN = 312
 WIDTH_AT = 38
-BASE_WIDTH = 109
+MIN_WIDTH = 180      # Logic never writes the header narrower than this
 
 # name -> (word offset, bit, set means shown, width when shown)
 COMPONENTS: dict[str, tuple[int, int, bool, int]] = {
@@ -108,23 +108,45 @@ def with_components(blob: bytes, shown: dict[str, bool]) -> bytes:
         want_set = state[name] if set_means_shown else not state[name]
         word = word | (1 << bit) if want_set else word & ~(1 << bit) & 0xFFFF
         struct.pack_into("<H", buf, at, word)
-    struct.pack_into("<H", buf, WIDTH_AT, header_width(state))
+    struct.pack_into("<H", buf, WIDTH_AT, header_width(state, name_column(blob)))
     return bytes(buf)
 
 
-def header_width(state: dict[str, bool]) -> int:
-    return BASE_WIDTH + sum(w for name, (_a, _b, _s, w) in COMPONENTS.items() if state.get(name))
+def components_width(state: dict[str, bool]) -> int:
+    return sum(w for name, (_a, _b, _s, w) in COMPONENTS.items() if state.get(name))
+
+
+def name_column(blob: bytes) -> int:
+    """The name column's width: per project, stored nowhere but in the total, so it is the width
+    less the shown components. A width on the 180 floor hides it; the widest it could be is used."""
+    width = struct.unpack_from("<H", blob, WIDTH_AT)[0]
+    return max(0, width - components_width(components_of(blob)))
+
+
+def header_width(state: dict[str, bool], name_col: int) -> int:
+    return max(MIN_WIDTH, name_col + components_width(state))
 
 
 def alternative_dirs(project: Path) -> list[Path]:
     return sorted(p for p in (project / "Alternatives").iterdir() if (p / "DisplayState.plist").exists())
 
 
-def read_components(alternative: Path) -> dict[str, bool]:
+def _blob(alternative: Path) -> bytes:
     blob = _find_blob(plistlib.loads((alternative / "DisplayState.plist").read_bytes()))
     if blob is None:
         raise ValueError(f"{alternative}: no {BLOB_KEY} in DisplayState.plist")
-    return components_of(blob)
+    return blob
+
+
+def read_components(alternative: Path) -> dict[str, bool]:
+    return components_of(_blob(alternative))
+
+
+def width_estimated(alternative: Path, shown: dict[str, bool]) -> bool:
+    blob = _blob(alternative)
+    state = {**components_of(blob), **shown}
+    return (struct.unpack_from("<H", blob, WIDTH_AT)[0] <= MIN_WIDTH
+            and header_width(state, name_column(blob)) > MIN_WIDTH)
 
 
 def write_components(alternative: Path, shown: dict[str, bool]) -> dict[str, bool]:

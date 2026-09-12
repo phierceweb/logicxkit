@@ -1,8 +1,5 @@
-"""Every CLI subcommand must declare what it is trusted for, and the doc must match the code.
-
-Prose rots away from the code it describes, so the table in `docs/CAPABILITIES.md` is generated
-from `_capabilities.py` and these tests fail the moment the two part company.
-"""
+"""Every CLI subcommand declares what it is trusted for, and docs/CAPABILITIES.md's table is
+generated from `_capabilities.py`; these tests fail when either drifts."""
 
 import contextlib
 import io
@@ -136,3 +133,47 @@ def test_live_library_write_is_refused_without_install(tmp_path, monkeypatch, ca
     assert main(["pst", str(spec)]) == 2
     assert "refusing to write" in capsys.readouterr().err
     assert not (target / "Channel EQ/zz-logicxkit-test.pst").exists(), "the refusal did not hold"
+
+
+def test_an_override_does_not_unguard_the_real_library(tmp_path, monkeypatch):
+    from logicxkit.logic.services import library
+
+    live, override = tmp_path / "live", tmp_path / "override"
+    monkeypatch.setattr(library, "USER_DATA_DEFAULT", live)
+    monkeypatch.setenv("LOGICXKIT_AUDIO_MUSIC_APPS", str(override))
+    assert library.under_live_library(live / "Plug-In Settings/Channel EQ/x.pst")
+    assert library.under_live_library(override / "Plug-In Settings/Channel EQ/x.pst")
+    assert not library.under_live_library(tmp_path / "elsewhere/x.pst")
+
+
+def test_pst_into_the_real_library_is_refused_with_an_override_set(tmp_path, monkeypatch):
+    import json
+
+    from logicxkit.logic.cli import main
+    from logicxkit.logic.services import library
+
+    live = tmp_path / "live"
+    monkeypatch.setattr(library, "USER_DATA_DEFAULT", live)
+    monkeypatch.setenv("LOGICXKIT_AUDIO_MUSIC_APPS", str(tmp_path / "override"))
+    spec = tmp_path / "spec.json"
+    spec.write_text(json.dumps({
+        "output_dir": str(live / "Plug-In Settings"),
+        "presets": {"zz-logicxkit-test": {"eq": {"peak1": {"freq": 100, "gain": 3.0, "q": 1.0}}}},
+    }))
+    assert main(["pst", str(spec)]) == 2
+    assert not (live / "Plug-In Settings/Channel EQ/zz-logicxkit-test.pst").exists()
+
+
+def test_pst_exits_nonzero_when_a_preset_fails(tmp_path, monkeypatch, capsys):
+    import json
+
+    from logicxkit.logic.cli import main
+
+    monkeypatch.setenv("LOGICXKIT_LOGIC_APP", str(tmp_path / "No Logic.app"))
+    spec = tmp_path / "spec.json"
+    spec.write_text(json.dumps({
+        "output_dir": str(tmp_path / "out"),
+        "presets": {"zz": {"eq": {"peak1": {"freq": 100, "gain": 3.0, "q": 1.0}}}},
+    }))
+    assert main(["pst", str(spec)]) == 1
+    assert "!!" in capsys.readouterr().out

@@ -18,7 +18,6 @@ from .recbuild import rec
 from .insert import (
     CHANNEL_TAG,
     HEADER,
-    SLOT_INDEX_AT,
     ProjRecord,
     channel_formats,
     insert_slots,
@@ -27,25 +26,8 @@ from .insert import (
     set_slot_bypass,
     slot_index_base,
 )
+from .slots import is_plugin_slot, property_key_base
 from .validate import require_full_walk, require_valid
-
-_DEFAULT_PROPERTY_KEY = 10
-
-
-def property_key_base(data: bytes) -> int:
-    """The key of the `.cst` reference record — the first key that is a property, not a slot."""
-    keys = [r.key for r in project_records(data)
-            if r.tag == b"UCuA" and len(r.raw) - HEADER < 400 and b".cst" in r.raw]
-    return min(keys) if keys else _DEFAULT_PROPERTY_KEY
-
-
-def is_plugin_slot(record: ProjRecord, base: int, index_base: int) -> bool:
-    """A plugin slot: in the slot key range AND carrying its slot index at +6. Every session's
-    Audio 1 also holds a 200-byte 'Audio Recording' record in that range, and Aux strips a
-    68-byte one, both with +6 = 0 — not slots, never to be bypassed or cloned."""
-    payload = record.raw[HEADER:]
-    return (record.tag == b"UCuA" and index_base <= record.key < base
-            and len(payload) > SLOT_INDEX_AT and payload[SLOT_INDEX_AT] == record.key - index_base)
 
 
 def slot_class_version(data: bytes) -> int | None:

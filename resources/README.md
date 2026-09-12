@@ -15,6 +15,8 @@ macOS.
 ## Layout
 
     templates/    .logicx templates re-saved from the current Logic (File > Save As… here).
+    public/       The public corpus, unpacked by `bin/run fetch-corpus`: Logic's saves of a
+                  blank project, keyed by `tests/goldens/manifest.json`
     experiments/  Controlled saves made by Logic itself: one deliberate change per save, named
                   `NN-what-changed`, so a diff against the previous one isolates the bytes.
                   These are the ground truth the decoders and goldens measure against.

@@ -1,19 +1,13 @@
-"""Plugin-preset (`.pst`) authoring — a single-plugin setting, with no channel attached.
-
-A `.pst` is exactly one GAMETSPP chunk at offset 0. That is what makes it the safe delivery
-vehicle: loading a channel-strip `.cst` replaces the channel's whole routing (output bus,
-sends, fader), while loading a `.pst` into an existing plugin slot touches only that plugin.
-
-Built by patching Logic's own factory `#default.pst`, so length and any trailing internal
-state stay exactly as Logic writes them.
-"""
+"""`.pst` authoring: one `GAMETSPP` chunk at offset 0, patched into Logic's own factory
+`#default.pst`. Loading one touches only its plugin slot; loading a `.cst` replaces the whole
+channel's routing."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from .._binary import find_blocks, patch_block_floats
-from .library import factory_settings, logic_user_data, resolve
+from .library import factory_settings, logic_user_data, require_plain_names, resolve
 
 # spec key -> (Logic's plugin folder name, GAMETSPP type id)
 PLUGINS = {
@@ -52,6 +46,7 @@ def output_root(spec: dict) -> Path:
 
 def plan_psts(spec: dict) -> list[tuple[str, Path, list[float]]]:
     """[(name, destination path, float values)] for every plugin setting the spec defines."""
+    require_plain_names(spec["presets"])
     out_root = output_root(spec)
     plan = []
     for name, preset in spec["presets"].items():

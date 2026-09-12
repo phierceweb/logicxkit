@@ -63,3 +63,8 @@ class StateFromPlistTest(unittest.TestCase):
     def test_malformed_xml_in_container_returns_none(self):
         self.assertIsNone(
             state_from_plist({"subtype": 0, "jucePluginState": vc2("<unclosed>")}))
+
+
+class DeepValueTreeTest(unittest.TestCase):
+    def test_nesting_deeper_than_the_stack_returns_none(self):
+        self.assertIsNone(parse_value_tree(b"A\x00\x00\x01\x01" * 5000 + b"A\x00\x00\x00"))

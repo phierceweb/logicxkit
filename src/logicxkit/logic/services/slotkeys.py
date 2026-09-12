@@ -1,12 +1,14 @@
-"""Slot key bases. Projects made before Logic 11.2 number a channel's plugin slots from key
-2 and its property records (the 192-byte state, the `.cst` reference, ...) from 10; Logic
-12.3.1 numbers slots from 4 and, when it re-saves such a project, moves every key from the
-slot base up by 2 (measured on Logic's re-saves of a 2020 project, 2026-09-05: slots 2, 3
--> 4, 5 and the state records 10, 12, 13 -> 12, 14, 15; sends at 0-2 unmoved). `rebase`
-applies the same move.
+"""Slot key bases. A project's plugin slots start at key 2 or at key 4, with its property
+records (the 192-byte state, the `.cst` reference, ...) two keys higher in the second case.
+Logic's re-save of a 2020 song moved every key from the slot base up by 2 (2026-09-05: slots
+2, 3 -> 4, 5 and the state records 10, 12, 13 -> 12, 14, 15; sends at 0-2 unmoved) — that
+song had a channel with three sends, so key 2 was a send and a slot at once. A project born
+in Logic 12.3.1 also starts at base 2, carries no such collision, and Logic keeps it there
+(a blank project, 2026-09-12). `rebase` applies the move; `needs_rebase` asks for it only on
+the collision.
 
-Every channel record also carries the base it was written with, as u16 at +28 — 2 in the
-old project, 4 in everything Logic 12 writes or converts. Left at 2 while the keys sit at 4,
+Every channel record also carries the base it was written with, as u16 at +28 — 2 or 4,
+matching the slot keys. Left at 2 while the keys sit at 4,
 Logic drops the plugin at slot 0 on any channel that also carries three sends; set to 4, the
 same file keeps them (measured 2026-09-06). `rebase` sets it.
 Logic's conversion also turns the u16 at +30 from 5 to 3 and moves property keys by 1 rather
@@ -41,7 +43,12 @@ def channel_bases(data: bytes) -> dict[int, int]:
 
 
 def needs_rebase(data: bytes) -> bool:
-    return slot_index_base(data) in SLOT_SHIFT
+    """Only a base-2 project with a send at key 2 — three sends beside slots that start at 2 —
+    is moved. A project born in Logic 12.3.1 sits at base 2 with no such collision and Logic
+    keeps it there on re-save (a blank project, 2026-09-12); it undoes a rebase forced on it."""
+    if slot_index_base(data) not in SLOT_SHIFT:
+        return False
+    return any(is_send(r) and r.key == 2 for r in project_records(data))
 
 
 def rebase(data: bytes) -> tuple[bytes, dict]:

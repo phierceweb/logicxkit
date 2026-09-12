@@ -5,7 +5,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .services.header import COMPONENTS, alternative_dirs, read_components, write_components
+from .services.header import (
+    COMPONENTS,
+    alternative_dirs,
+    read_components,
+    width_estimated,
+    write_components,
+)
 from .services.retrack import copy_project, find_project
 
 
@@ -53,9 +59,13 @@ def cmd_header(args) -> int:
     dest = copy_project(project, Path(args.out))["dest"]
     print(f"into : {dest}\n")
     for alt in alternative_dirs(dest):
+        estimated = width_estimated(alt, want)
         state = write_components(alt, want)
         print(f"  {alt.name}:")
         _print_state(state)
+        if estimated:
+            print("  header width estimated: the stored width sat on Logic's 180-pixel floor, which "
+                  "hides the name column, so the widest it could be was used")
     print("\nUnverified until opened in Logic.")
     return 0
 

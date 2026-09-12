@@ -1,6 +1,5 @@
 """The orchestrator: the plan names every difference with the rule that paired the rows, and
-apply runs it as the chain of atomic writers. The real-file golden runs the Recording template
-against a session under in/ when both are present."""
+apply runs it as the chain of atomic writers."""
 
 import unittest
 from _records import chan, env_obj, marker, proj, track, uuid
@@ -75,6 +74,52 @@ class LeaveOutTest(unittest.TestCase):
         self.assertEqual([op.target for op in ops if op.kind == "add"], ["Vox (Audio 20)"])
         ops = plan(template, target, template_count=2, session_count=1, forced=forced, excluded={"Vox (Audio 20)"})
         self.assertEqual([op.target for op in ops if op.kind == "add"], [])
+
+
+class ConsecutiveAddsTest(unittest.TestCase):
+    """Two new template tracks, one under the other: the second is placed after the first, or they
+    land reversed."""
+
+    def _pair(self):
+        from test_stack_create import TRACKS, session as full_session
+        base = full_session()
+        objs = env_obj(600, "Room L") + env_obj(601, "Room R")
+        chans = chan(70, "Aux 4", uuid=uuid(600)) + chan(71, "Aux 5", uuid=uuid(601))
+        old_tail = track(7, 216) + track(8, 80, flag=3) + marker()
+        new_tail = track(7, 216) + track(8, 600) + track(9, 601) + track(10, 80, flag=3) + marker()
+        master, inst = env_obj(80, "Master", grouping=True), chan(88, "Inst 4", uuid=uuid(504))
+        body = base.replace(old_tail, new_tail).replace(master, master + objs).replace(inst, inst + chans)
+        template = body[:16] + (len(body) - 24).to_bytes(4, "little") + body[20:]
+        return template, base, TRACKS
+
+    def test_the_second_add_is_anchored_on_the_first(self):
+        template, target, n = self._pair()
+        ops = plan(template, target, template_count=n + 2, session_count=n)
+        self.assertEqual([op.detail for op in ops if op.kind == "add"],
+                         ["add aux track after Cymbals", "add aux track after Room L"])
+
+    @needs("logic", "aux-track-12.3.1.json")
+    def test_the_rows_land_in_template_order_without_reordering(self):
+        template, target, n = self._pair()
+        out, ops, added = apply_template(template, target, template_count=n + 2, session_count=n)
+        self.assertEqual([(op.kind, op.status) for op in ops if op.kind in ("add", "order")],
+                         [("add", "done"), ("add", "done")])
+        self.assertEqual([r["name"] for r in read_tracks(out, n + added)][7:],
+                         ["Cymbals", "Room L", "Room R", "Master"])
+
+
+class SessionOnlyTest(unittest.TestCase):
+    def test_rows_the_template_lacks_are_named(self):
+        from logicxkit.logic.orchestrators.apply_template import session_only
+        template = session()
+        target = proj(env_obj(88, "Kick In"), env_obj(504, "Vox"), env_obj(700, "Room"),
+                      env_obj(80, "Master", grouping=True),
+                      chan(0, "Audio 1", uuid=uuid(88), fader=99), chan(19, "Audio 20", uuid=uuid(504)),
+                      chan(20, "Audio 21", uuid=uuid(700)),
+                      chan(402, "Output 1-2", uuid=uuid(80), size=201),
+                      track(0, 88), track(1, 504), track(2, 700), track(3, 80, flag=3), marker())
+        rows = session_only(template, target, template_count=2, session_count=3)
+        self.assertEqual([r["name"] for r in rows], ["Room"])
 
 
 class ReturnsTest(unittest.TestCase):
