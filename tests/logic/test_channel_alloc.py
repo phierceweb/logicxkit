@@ -53,6 +53,22 @@ class InstNumberIsSixteenBitTest(unittest.TestCase):
         self.assertEqual(struct.unpack_from("<H", out, HDR + INST_NUMBER2_AT)[0], 256)
 
 
+class InstWidthTest(unittest.TestCase):
+    """`--stereo` on an instrument track: the width bytes of Logic's own stereo instrument
+    channel (`sessionplayer-track-logic`), mono as before without it."""
+
+    def _width(self, **kw) -> tuple[int, ...]:
+        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        out, _ = new_inst_channel(inst_channel(3), owner=9, object_uuid=bytes(16), output_uuid=None, **kw)
+        return tuple(out[HDR + at] for at in (78, 81, 86, 123))
+
+    def test_mono_is_the_default(self):
+        self.assertEqual(self._width(), (243, 0, 0, 1))
+
+    def test_stereo_writes_logics_stereo_bytes(self):
+        self.assertEqual(self._width(stereo=True), (247, 8, 1, 2))
+
+
 class ShiftedChannelIsSixteenBitTest(unittest.TestCase):
     def _shift(self, number: int) -> bytes:
         from logicxkit.logic.services.channel_alloc import shifted_channel

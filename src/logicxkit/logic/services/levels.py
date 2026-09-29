@@ -5,7 +5,7 @@ but leave undecoded (it is why `logic ocr` reads the mixer screenshot instead):
 
     +116..119      fader as u32, 8.24 fixed point: the integer part is the 0-127 position
     +85 and +119   the integer part again, twice (+119 is the u32's own high byte); all three
-                   must agree — 532/532 records on nine Logic files do
+                   must agree, and do on every record measured
     +89            pan, 0-127, where 64 is centre.
 
 Confirmed against Logic's own mixer display: pan reads out as ``byte - 64`` (-64 hard left,

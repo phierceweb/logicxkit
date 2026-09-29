@@ -1,5 +1,5 @@
 {
- "_about": "Public goldens: Logic's own saves of a blank project, one change per save, tracked under tests/corpus/. Paths are relative to that directory. Facts are what tests may assert.",
+ "_about": "Public goldens: Logic's own saves of a blank project, one change per save, tracked under tests/corpus/. Paths are relative to that directory. Facts are what tests may assert. strips/ holds channel strips `logic strip-save` exported from those saves, laid out as config/example-chains.json names them.",
  "blank-base": {
   "path": "blank-00-empty-audio.logicx",
   "note": "an empty project with one audio track, Logic's first save",
@@ -11496,15 +11496,15 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400,
       46800
      ],
      "values": [
-      1.0,
-      1.0
+      0.4961,
+      0.4961
      ]
     },
     {
@@ -11629,13 +11629,13 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400
      ],
      "values": [
-      1.0
+      0.4961
      ]
     },
     {
@@ -11800,15 +11800,15 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400,
       46800
      ],
      "values": [
-      1.0,
-      1.0
+      0.4961,
+      0.4961
      ]
     },
     {
@@ -11969,15 +11969,15 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400,
       46800
      ],
      "values": [
-      1.0,
-      1.0
+      0.4961,
+      0.4961
      ]
     },
     {
@@ -12166,15 +12166,15 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400,
       46800
      ],
      "values": [
-      1.0,
-      1.0
+      0.4961,
+      0.4961
      ]
     },
     {
@@ -12387,15 +12387,15 @@
     },
     {
      "track": "Audio 2",
-     "parameter": "plug-in parameter 26",
+     "parameter": "insert 1 parameter 26",
      "region": false,
      "ticks": [
       38400,
       46800
      ],
      "values": [
-      1.0,
-      1.0
+      0.4961,
+      0.4961
      ]
     },
     {
@@ -12838,6 +12838,8690 @@
     0,
     128
    ]
+  }
+ },
+ "addplugin-mid-mine": {
+  "path": "addplugin-b01-mid-mine.logicx",
+  "note": "add-plugin --at 2 Channel EQ on Audio 1 of master-track-limiter-logic: the four slots from key 7 on moved down a key, the Smart Control mappings with them, the reference place and the archives up one key on every channel (2026-09-21)",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Channel EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ],
+   "mapping_slots": 6
+  }
+ },
+ "addplugin-mid-logic": {
+  "path": "addplugin-b02-mid-logic.logicx",
+  "note": "Logic's re-save of addplugin-mid-mine (Save As, 2026-09-21): every slot, archive and channel record as written",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Channel EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ],
+   "mapping_slots": 6
+  }
+ },
+ "addplugin-end-mine": {
+  "path": "addplugin-b03-end-mine.logicx",
+  "note": "add-plugin Channel EQ after the last slot on Audio 1 of master-track-limiter-logic (2026-09-21)",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter",
+    "Channel EQ"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ]
+  }
+ },
+ "addplugin-end-logic": {
+  "path": "addplugin-b04-end-logic.logicx",
+  "note": "Logic's re-save of addplugin-end-mine (Save As, 2026-09-21): as written",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter",
+    "Channel EQ"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ]
+  }
+ },
+ "addplugin-remove-mine": {
+  "path": "addplugin-b05-remove-mine.logicx",
+  "note": "remove-plugin --at 2 on addplugin-mid-mine: the Channel EQ out, the three slots after it moved up a key, its Smart Control mappings dropped and the later ones moved (2026-09-22)",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ]
+  }
+ },
+ "addplugin-remove-logic": {
+  "path": "addplugin-b06-remove-logic.logicx",
+  "note": "Logic's re-save of addplugin-remove-mine (Save As, 2026-09-22): every slot as written; the range re-laid out for the shorter chain",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 9,
+   "archives": [
+    14,
+    15
+   ]
+  }
+ },
+ "addplugin-replace-mine": {
+  "path": "addplugin-b07-replace-mine.logicx",
+  "note": "replace-plugin --at 2 --plugin Gain on addplugin-mid-mine, the packaged library: a removal and an insert at the same slot (2026-09-22)",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Gain",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ]
+  }
+ },
+ "addplugin-replace-logic": {
+  "path": "addplugin-b08-replace-logic.logicx",
+  "note": "Logic's re-save of addplugin-replace-mine (Save As, 2026-09-22): every slot, archive and channel record as written",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Gain",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ]
+  }
+ },
+ "stockfx-dynamics-defaults": {
+  "path": "stockfx-d01-dynamics-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh audio track (Audio 2) with Compressor, DeEsser 2 and Expander inserted through the slot menu and left at their defaults (2026-09-22); the donor source for those three",
+  "facts": {
+   "channel": "Audio 2",
+   "inserts": [
+    "Compressor",
+    "DeEsser 2",
+    "Expander"
+   ],
+   "types": {
+    "Compressor": 154,
+    "DeEsser 2": 291,
+    "Expander": 156
+   }
+  }
+ },
+ "stockfx-dynamics-spots": {
+  "path": "stockfx-d02-dynamics-spots.logicx",
+  "note": "the defaults save after every slider row of the three plug-ins' Controls views was moved one unit and every checkbox pressed (2026-09-22); with the defaults save, the float of every parameter",
+  "facts": {
+   "channel": "Audio 2",
+   "inserts": [
+    "Compressor",
+    "DeEsser 2",
+    "Expander"
+   ],
+   "moved": {
+    "Compressor": {
+     "Threshold": {
+      "before": -20.0,
+      "after": -19.5
+     },
+     "Ratio": {
+      "before": 2.1,
+      "after": 2.0
+     },
+     "Attack": {
+      "before": 15.0,
+      "after": 15.5
+     },
+     "Release": {
+      "before": 51.0,
+      "after": 54.0
+     },
+     "Make Up": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Knee": {
+      "before": 0.7,
+      "after": 0.8
+     },
+     "Limiter Threshold": {
+      "before": 0.0,
+      "after": -0.1
+     },
+     "Limiter On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Auto Release": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Frequency": {
+      "before": 7040.0,
+      "after": 7458.6
+     },
+     "Q": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "Mix": {
+      "before": 100.0,
+      "after": 99.5
+     },
+     "Input Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Output Gain": {
+      "before": 0.0,
+      "after": 0.5
+     }
+    },
+    "DeEsser 2": {
+     "Max Reduction": {
+      "before": 20.0,
+      "after": 19.9
+     },
+     "Threshold": {
+      "before": -9.5,
+      "after": -9.4
+     },
+     "Detector Frequency": {
+      "before": 7001.0,
+      "after": 7009.0
+     },
+     "Filter Solo": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Expander": {
+     "Threshold": {
+      "before": -20.0,
+      "after": -19.5
+     },
+     "Ratio": {
+      "before": 0.8,
+      "after": 0.79
+     },
+     "Attack": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Release": {
+      "before": 98.0,
+      "after": 100.0
+     },
+     "Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Knee": {
+      "before": 1.0,
+      "after": 0.9
+     },
+     "Auto Gain": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-dynamics2-defaults": {
+  "path": "stockfx-d03-dynamics2-defaults.logicx",
+  "note": "Logic 12.3.1: the stereo Audio 2 with Compressor, DeEsser 2, Expander, Adaptive Limiter and Noise Gate inserted through the slot menu, the first three with their sliders moved once already (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "inserts": [
+    "Compressor",
+    "DeEsser 2",
+    "Expander",
+    "Adaptive Limiter",
+    "Noise Gate"
+   ],
+   "types": {
+    "Compressor": 154,
+    "DeEsser 2": 291,
+    "Expander": 156,
+    "Adaptive Limiter": 193,
+    "Noise Gate": 179
+   }
+  }
+ },
+ "stockfx-dynamics2-spots": {
+  "path": "stockfx-d04-dynamics2-spots.logicx",
+  "note": "the dynamics2-defaults save after every slider row of the four plug-ins with a Controls view was moved one unit (2026-09-22); Noise Gate's window showed no Controls rows",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Compressor": {
+     "Threshold": {
+      "before": -19.5,
+      "after": -19.0
+     },
+     "Ratio": {
+      "before": 2.0,
+      "after": 2.1
+     },
+     "Attack": {
+      "before": 15.5,
+      "after": 16.0
+     },
+     "Release": {
+      "before": 54.0,
+      "after": 57.0
+     },
+     "Make Up": {
+      "before": 0.5,
+      "after": 1.0
+     },
+     "Knee": {
+      "before": 0.8,
+      "after": 0.9
+     },
+     "Limiter Threshold": {
+      "before": -0.1,
+      "after": 0.0
+     },
+     "Limiter On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Auto Release": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Frequency": {
+      "before": 7458.6,
+      "after": 7902.1
+     },
+     "Q": {
+      "before": 1.1,
+      "after": 1.3
+     },
+     "Mix": {
+      "before": 99.5,
+      "after": 100.0
+     },
+     "Input Gain": {
+      "before": 0.5,
+      "after": 1.0
+     },
+     "Output Gain": {
+      "before": 0.5,
+      "after": 1.0
+     }
+    },
+    "DeEsser 2": {
+     "Max Reduction": {
+      "before": 19.9,
+      "after": 19.8
+     },
+     "Threshold": {
+      "before": -9.4,
+      "after": -9.3
+     },
+     "Detector Frequency": {
+      "before": 7009.0,
+      "after": 7017.0
+     },
+     "Filter Solo": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "Expander": {
+     "Threshold": {
+      "before": -19.5,
+      "after": -19.0
+     },
+     "Ratio": {
+      "before": 0.79,
+      "after": 0.8
+     },
+     "Attack": {
+      "before": 0.5,
+      "after": 1.0
+     },
+     "Release": {
+      "before": 100.0,
+      "after": 110.0
+     },
+     "Gain": {
+      "before": 0.5,
+      "after": 1.0
+     },
+     "Knee": {
+      "before": 0.9,
+      "after": 1.0
+     },
+     "Auto Gain": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "AdLimit": {
+     "Input Scale": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Gain": {
+      "before": 3.0,
+      "after": 3.1
+     },
+     "Out Ceiling": {
+      "before": 0.0,
+      "after": -0.1
+     },
+     "Lookahead": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Remove DC": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "True Peak Detection": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-dynamics2-mono": {
+  "path": "stockfx-d05-dynamics2-mono.logicx",
+  "note": "the dynamics2-spots save with DeEsser 2, Expander and Noise Gate also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "DeEsser 2",
+    "Expander",
+    "Noise Gate"
+   ]
+  }
+ },
+ "stockfx-eq-defaults": {
+  "path": "stockfx-e01-eq-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Channel EQ, Linear Phase EQ, a third-party match EQ (the search's first hit), Single Band EQ, Vintage Console EQ, Vintage Graphic EQ, Vintage Tube EQ, Multipressor and Enveloper inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Channel EQ": 236,
+    "Linear Phase EQ": 243,
+    "Single Band EQ": 311,
+    "Vintage Console EQ": 286,
+    "Vintage Graphic EQ": 285,
+    "Vintage Tube EQ": 284,
+    "Multipressor": 194,
+    "Enveloper": 157
+   },
+   "third_party_slots": [
+    3
+   ]
+  }
+ },
+ "stockfx-eq-spots": {
+  "path": "stockfx-e02-eq-spots.logicx",
+  "note": "the eq-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Channel EQ": {
+     "Low Cut On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Cut Frequency": {
+      "before": 20.0,
+      "after": 20.2
+     },
+     "Low Cut Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Low Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Shelf Frequency": {
+      "before": 75.0,
+      "after": 75.5
+     },
+     "Low Shelf Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Low Shelf Q-Factor": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "Peak 1 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 1 Frequency": {
+      "before": 100.0,
+      "after": 101.0
+     },
+     "Peak 1 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 1 Q-Factor": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "Peak 2 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 2 Frequency": {
+      "before": 250.0,
+      "after": 252.0
+     },
+     "Peak 2 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 2 Q-Factor": {
+      "before": 0.3,
+      "after": 0.31
+     },
+     "Peak 3 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 3 Frequency": {
+      "before": 1040.0,
+      "after": 1050.0
+     },
+     "Peak 3 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 3 Q-Factor": {
+      "before": 0.41,
+      "after": 0.43
+     },
+     "Peak 4 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 4 Frequency": {
+      "before": 2500.0,
+      "after": 2520.0
+     },
+     "Peak 4 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 4 Q-Factor": {
+      "before": 0.2,
+      "after": 0.21
+     },
+     "High Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Shelf Frequency": {
+      "before": 7500.0,
+      "after": 7550.0
+     },
+     "High Shelf Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "High Shelf Q-Factor": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "High Cut On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "High Cut Frequency": {
+      "before": 20000.0,
+      "after": 19900.0
+     },
+     "High Cut Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Master": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Analyzer On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Analyzer Top": {
+      "before": 0.0,
+      "after": -5.0
+     },
+     "Analyzer Decay": {
+      "before": 10.0,
+      "after": 12.0
+     },
+     "Gain-Q Coupling": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Oversampling": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Visualize Master Gain": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "EQ Scale Shift": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Linear EQ": {
+     "Low Cut On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Cut Frequency": {
+      "before": 20.0,
+      "after": 20.2
+     },
+     "Low Cut Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Low Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Shelf Frequency": {
+      "before": 75.0,
+      "after": 75.5
+     },
+     "Low Shelf Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Low Shelf Q-Factor": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "Peak 1 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 1 Frequency": {
+      "before": 100.0,
+      "after": 101.0
+     },
+     "Peak 1 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 1 Q-Factor": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "Peak 2 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 2 Frequency": {
+      "before": 250.0,
+      "after": 252.0
+     },
+     "Peak 2 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 2 Q-Factor": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "Peak 3 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 3 Frequency": {
+      "before": 750.0,
+      "after": 755.0
+     },
+     "Peak 3 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 3 Q-Factor": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "Peak 4 On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Peak 4 Frequency": {
+      "before": 2500.0,
+      "after": 2520.0
+     },
+     "Peak 4 Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Peak 4 Q-Factor": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "High Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Shelf Frequency": {
+      "before": 7500.0,
+      "after": 7550.0
+     },
+     "High Shelf Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "High Shelf Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "High Cut On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "High Cut Frequency": {
+      "before": 20000.0,
+      "after": 19900.0
+     },
+     "High Cut Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Master": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Analyzer On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Analyzer Top": {
+      "before": 0.0,
+      "after": -5.0
+     },
+     "Analyzer Decay": {
+      "before": 10.0,
+      "after": 12.0
+     },
+     "Gain-Q Coupling": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Visualize Master Gain": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "EQ Scale Shift": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Single EQ": {
+     "Frequency": {
+      "before": 1000.0,
+      "after": 1020.0
+     },
+     "Q-Factor": {
+      "before": 0.71,
+      "after": 0.75
+     }
+    },
+    "Cnsl EQ": {
+     "High Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mid Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mid Freq": {
+      "before": 3.2,
+      "after": 3.253
+     },
+     "Low Gain": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Low Freq": {
+      "before": 110.0,
+      "after": 112.75
+     },
+     "Low Cut": {
+      "before": 50.0,
+      "after": 53.0
+     },
+     "High Frequency On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Mid Frequency On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Frequency On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Pass On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Drive": {
+      "before": 4.0,
+      "after": 4.1
+     },
+     "EQ": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Volume": {
+      "before": 0.0,
+      "after": 0.1
+     }
+    },
+    "Graph EQ": {
+     "16.0K": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "8.0K": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "4.0K": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "2.0K": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "1.0K": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "500": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "250": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "125": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "63": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "31": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Detune": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Drive": {
+      "before": 5.0,
+      "after": 5.1
+     },
+     "In": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Volume": {
+      "before": 0.0,
+      "after": 0.1
+     }
+    },
+    "Tube EQ": {
+     "Program EQ In": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Boost": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Low Atten": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Program EQ Low Freq": {
+      "before": 60.0,
+      "after": 62.0
+     },
+     "High Atten": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "High Boost": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Program EQ High Freq": {
+      "before": 6.0,
+      "after": 6.133
+     },
+     "High Bandwidth": {
+      "before": 0.5,
+      "after": 0.6
+     },
+     "Mid-Range EQ In": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Peak": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mid-Range EQ Low Freq": {
+      "before": 0.2,
+      "after": 0.205
+     },
+     "Dip": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Dip Freq": {
+      "before": 0.7,
+      "after": 0.73
+     },
+     "Dip Q": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "High Peak": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mid-Range EQ High Freq": {
+      "before": 1.5,
+      "after": 1.525
+     },
+     "Drive": {
+      "before": 4.0,
+      "after": 4.1
+     },
+     "Volume": {
+      "before": 0.0,
+      "after": 0.1
+     }
+    },
+    "Multipr": {
+     "Lookahead": {
+      "before": 2.0,
+      "after": 2.2
+     },
+     "Band 4 Xover Frequency 3/4": {
+      "before": 7500.0,
+      "after": 7900.0
+     },
+     "Band 4 Response": {
+      "before": 50.0,
+      "after": 52.0
+     },
+     "Band 4 Reduction": {
+      "before": 0.0,
+      "after": -0.5
+     },
+     "Band 4 Exp. Threshold": {
+      "before": -50.0,
+      "after": -49.0
+     },
+     "Band 4 Exp. Ratio": {
+      "before": 1.0,
+      "after": 1.01
+     },
+     "Band 4 Comp. Threshold": {
+      "before": -12.0,
+      "after": -11.5
+     },
+     "Band 4 Comp. Ratio": {
+      "before": 2.022,
+      "after": 2.066
+     },
+     "Band 4 Make Up": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Band 4 Attack": {
+      "before": 2.0,
+      "after": 2.5
+     },
+     "Band 4 Release": {
+      "before": 49.0,
+      "after": 52.0
+     },
+     "Band 4 Monitor": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Band 3 Xover Frequency 2/3": {
+      "before": 1100.0,
+      "after": 1200.0
+     },
+     "Band 3 Response": {
+      "before": 100.0,
+      "after": 102.0
+     },
+     "Band 3 Reduction": {
+      "before": 0.0,
+      "after": -0.5
+     },
+     "Band 3 Exp. Threshold": {
+      "before": -50.0,
+      "after": -49.0
+     },
+     "Band 3 Exp. Ratio": {
+      "before": 1.0,
+      "after": 1.01
+     },
+     "Band 3 Comp. Threshold": {
+      "before": -15.0,
+      "after": -14.5
+     },
+     "Band 3 Comp. Ratio": {
+      "before": 2.022,
+      "after": 2.066
+     },
+     "Band 3 Make Up": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Band 3 Attack": {
+      "before": 2.0,
+      "after": 2.5
+     },
+     "Band 3 Release": {
+      "before": 49.0,
+      "after": 52.0
+     },
+     "Band 3 Monitor": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Band 2 Xover Frequency 1/2": {
+      "before": 160.0,
+      "after": 170.0
+     },
+     "Band 2 Response": {
+      "before": 100.0,
+      "after": 102.0
+     },
+     "Band 2 Reduction": {
+      "before": 0.0,
+      "after": -0.5
+     },
+     "Band 2 Exp. Threshold": {
+      "before": -50.0,
+      "after": -49.0
+     },
+     "Band 2 Exp. Ratio": {
+      "before": 1.0,
+      "after": 1.01
+     },
+     "Band 2 Comp. Threshold": {
+      "before": -15.0,
+      "after": -14.5
+     },
+     "Band 2 Comp. Ratio": {
+      "before": 2.022,
+      "after": 2.066
+     },
+     "Band 2 Make Up": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Band 2 Attack": {
+      "before": 2.0,
+      "after": 2.5
+     },
+     "Band 2 Release": {
+      "before": 49.0,
+      "after": 52.0
+     },
+     "Band 2 Monitor": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Band 1 Response": {
+      "before": 200.0,
+      "after": 198.0
+     },
+     "Band 1 Reduction": {
+      "before": 0.0,
+      "after": -0.5
+     },
+     "Band 1 Exp. Threshold": {
+      "before": -50.0,
+      "after": -49.0
+     },
+     "Band 1 Exp. Ratio": {
+      "before": 1.0,
+      "after": 1.01
+     },
+     "Band 1 Comp. Threshold": {
+      "before": -18.0,
+      "after": -17.5
+     },
+     "Band 1 Comp. Ratio": {
+      "before": 2.511,
+      "after": 2.555
+     },
+     "Band 1 Make Up": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Band 1 Attack": {
+      "before": 2.0,
+      "after": 2.5
+     },
+     "Band 1 Release": {
+      "before": 61.0,
+      "after": 65.0
+     },
+     "Band 1 Monitor": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Master Gain": {
+      "before": 0.0,
+      "after": 0.4
+     },
+     "Auto Gain": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 4 Bypass": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 3 Bypass": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 2 Bypass": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 1 Bypass": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 4 Solo": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 3 Solo": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 2 Solo": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Band 1 Solo": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Enveloper": {
+     "Attack Time": {
+      "before": 20.0,
+      "after": 23.0
+     },
+     "Attack Gain": {
+      "before": 0.0,
+      "after": 2.0
+     },
+     "Release Time": {
+      "before": 200.0,
+      "after": 210.0
+     },
+     "Release Gain": {
+      "before": 0.0,
+      "after": 2.0
+     },
+     "Threshold": {
+      "before": -100.0,
+      "after": -99.0
+     },
+     "Lookahead": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Out Level": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-eq-mono": {
+  "path": "stockfx-e03-eq-mono.logicx",
+  "note": "the eq-spots save with the same plug-ins also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1"
+  }
+ },
+ "stockfx-dr-defaults": {
+  "path": "stockfx-r01-dr-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Tru-Tape Delay, the search's first hit for Sample Delay (an Audio Unit, not one of Logic's own), Delay Designer, Space Designer, Echo, ChromaVerb, SilverVerb and EnVerb inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Tru-Tape Delay": 273,
+    "Delay Designer": 248,
+    "Space Designer": 231,
+    "Echo": 147,
+    "ChromaVerb": 287,
+    "SilverVerb": 150,
+    "EnVerb": 166
+   },
+   "variants": {
+    "Tru-Tape Delay": 2050,
+    "Delay Designer": 1310,
+    "Space Designer": 1123,
+    "Echo": 216,
+    "ChromaVerb": 2279,
+    "SilverVerb": 249,
+    "EnVerb": 582
+   },
+   "third_party_slots": [
+    2
+   ]
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 2,
+    "private words": 1,
+    "bookmark fields": 14
+   }
+  }
+ },
+ "stockfx-dr-spots": {
+  "path": "stockfx-r02-dr-spots.logicx",
+  "note": "the dr-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Tru-Tape": {
+     "Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Time": {
+      "before": 1.0,
+      "after": 390.0
+     },
+     "Feedback": {
+      "before": 68.0,
+      "after": 69.0
+     },
+     "Mix": {
+      "before": 19.5,
+      "after": 20.0
+     },
+     "Lo Cut": {
+      "before": 170.0,
+      "after": 160.0
+     },
+     "Dirt": {
+      "before": 82.0,
+      "after": 83.0
+     },
+     "Flutter": {
+      "before": 80.0,
+      "after": 81.0
+     }
+    },
+    "Delay D": {
+     "Sync to Tempo": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Feedback Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Feedback Amount": {
+      "before": -6.0,
+      "after": -5.8
+     },
+     "Dry": {
+      "before": 0.0,
+      "after": -0.2
+     },
+     "Wet": {
+      "before": 0.0,
+      "after": -0.2
+     },
+     "Tap Time": {
+      "before": 1000.0,
+      "after": 1000.1
+     },
+     "Tap Level": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Pan Amount": {
+      "before": null,
+      "after": 1.0
+     },
+     "Pan Stereo Spread": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Pan Flip Left/Right": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter HighPass Freq": {
+      "before": 0.0,
+      "after": 20.0
+     },
+     "Filter LowPass Freq": {
+      "before": 22000.0,
+      "after": 20000.0
+     },
+     "Filter Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Resonance": {
+      "before": 5.0,
+      "after": 6.0
+     },
+     "Pitch Transpose": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Pitch Enable": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Space D": {
+     "Output Dry": {
+      "before": 0.0,
+      "after": -0.2
+     },
+     "Output Wet": {
+      "before": -10.0,
+      "after": -9.8
+     },
+     "Predelay": {
+      "before": 8.0,
+      "after": 9.0
+     },
+     "Length": {
+      "before": 1.3,
+      "after": 1.32
+     },
+     "Latency Compensation": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Crossfeed": {
+      "before": 1.0,
+      "after": 0.99
+     },
+     "Reverse": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Volume Init Level": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Volume Attack Time": {
+      "before": 76.6,
+      "after": 77.9
+     },
+     "Volume Attack X1": {
+      "before": 0.011,
+      "after": 0.012
+     },
+     "Volume Attack Y1": {
+      "before": 0.58,
+      "after": 0.581
+     },
+     "Volume Attack X2": {
+      "before": 0.448,
+      "after": 0.449
+     },
+     "Volume Attack Y2": {
+      "before": 0.89,
+      "after": 0.891
+     },
+     "Volume Decay X1": {
+      "before": 0.647,
+      "after": 0.648
+     },
+     "Volume Decay Y1": {
+      "before": 0.825,
+      "after": 0.826
+     },
+     "Volume Decay X2": {
+      "before": 0.819,
+      "after": 0.82
+     },
+     "Volume Decay Y2": {
+      "before": 0.337,
+      "after": 0.338
+     },
+     "Volume End Level": {
+      "before": 30.0,
+      "after": 31.0
+     },
+     "Filter Init Level": {
+      "before": 20000.0,
+      "after": 18665.0
+     },
+     "Filter Attack Time": {
+      "before": 284.0,
+      "after": 286.0
+     },
+     "Filter Attack X1": {
+      "before": 0.025,
+      "after": 0.026
+     },
+     "Filter Attack Y1": {
+      "before": 0.71,
+      "after": 0.711
+     },
+     "Filter Attack X2": {
+      "before": 0.075,
+      "after": 0.076
+     },
+     "Filter Attack Y2": {
+      "before": 0.64,
+      "after": 0.641
+     },
+     "Filter Max Level": {
+      "before": 20000.0,
+      "after": 18665.0
+     },
+     "Filter Decay X1": {
+      "before": 0.4,
+      "after": 0.401
+     },
+     "Filter Decay Y1": {
+      "before": 0.4,
+      "after": 0.401
+     },
+     "Filter Decay X2": {
+      "before": 0.6,
+      "after": 0.601
+     },
+     "Filter Decay Y2": {
+      "before": 0.35,
+      "after": 0.351
+     },
+     "Filter End Level": {
+      "before": 20000.0,
+      "after": 18665.0
+     },
+     "Filter": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Resonance": {
+      "before": 0.6,
+      "after": 0.63
+     },
+     "Low Shelf Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Low Shelf Freq": {
+      "before": 200.0,
+      "after": 210.0
+     },
+     "X-Over Freq": {
+      "before": 230.0,
+      "after": 240.0
+     },
+     "Stereo Spread Low": {
+      "before": 38.0,
+      "after": 39.0
+     },
+     "Rev. Vol. Comp.": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "IR Offset": {
+      "before": 0.0,
+      "after": 1.85
+     },
+     "EQ": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Shelf": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Mid": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "High Mid": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "High Shelf": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Mid Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Low Mid Freq": {
+      "before": 490.0,
+      "after": 520.0
+     },
+     "Low Mid Q": {
+      "before": 0.74,
+      "after": 0.86
+     },
+     "High Mid Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Mid Freq": {
+      "before": 2000.0,
+      "after": 2100.0
+     },
+     "High Mid Q": {
+      "before": 0.74,
+      "after": 0.86
+     },
+     "High Shelf Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Shelf Freq": {
+      "before": 5000.0,
+      "after": 5300.0
+     },
+     "Center Level": {
+      "before": 0.0,
+      "after": -0.2
+     },
+     "Balance F/R": {
+      "before": 0.5,
+      "after": 0.51
+     },
+     "Low Shelf Y": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "High Shelf Y": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFE to Rev": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Predelay Sync": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Size": {
+      "before": 100.0,
+      "after": 98.0
+     },
+     "Stereo Spread High": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Show Bezier Handles": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Cut": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Cut Freq": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Low Cut Q": {
+      "before": 0.74,
+      "after": 0.86
+     },
+     "Low Shelf Q": {
+      "before": 1.0,
+      "after": 1.2
+     },
+     "High Shelf Q": {
+      "before": 1.0,
+      "after": 1.2
+     },
+     "High Cut": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Cut Freq": {
+      "before": 8400.0,
+      "after": 8900.0
+     },
+     "High Cut Q": {
+      "before": 0.74,
+      "after": 0.86
+     },
+     "Volume": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Density": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "Echo": {
+     "Feedback": {
+      "before": 64.0,
+      "after": 65.0
+     },
+     "Color": {
+      "before": 37.0,
+      "after": 38.0
+     },
+     "Dry": {
+      "before": 96.0,
+      "after": 97.0
+     },
+     "Wet": {
+      "before": 20.0,
+      "after": 21.0
+     }
+    },
+    "ChromaVerb": {
+     "Dry": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Wet": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Predelay": {
+      "before": 8.0,
+      "after": 9.0
+     },
+     "Predelay Sync": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "DecayTime Sync": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Attack": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Size": {
+      "before": 60.0,
+      "after": 61.0
+     },
+     "Density": {
+      "before": 60.0,
+      "after": 61.0
+     },
+     "Distance": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Early/Late Mix": {
+      "before": 50.0,
+      "after": 49.0
+     },
+     "Width": {
+      "before": 100.0,
+      "after": 101.0
+     },
+     "Mono Maker": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Mono Maker Freq": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Freeze": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Modulation Depth": {
+      "before": 25.0,
+      "after": 26.0
+     },
+     "Modulation Speed": {
+      "before": 0.5,
+      "after": 0.51
+     },
+     "Modulation Smoothing": {
+      "before": 12.0,
+      "after": 13.0
+     },
+     "Damping Low Shelf Freq": {
+      "before": 210.0,
+      "after": 215.0
+     },
+     "Damping Low Shelf Ratio": {
+      "before": 1.0,
+      "after": 1.01
+     },
+     "Damping Low Shelf Q": {
+      "before": 0.75,
+      "after": 0.8
+     },
+     "Damping Low Peak Freq": {
+      "before": 530.0,
+      "after": 540.0
+     },
+     "Damping Low Peak Ratio": {
+      "before": 0.75,
+      "after": 0.76
+     },
+     "Damping Low Peak Q": {
+      "before": 2.0,
+      "after": 2.1
+     },
+     "Damping High Peak Freq": {
+      "before": 1960.0,
+      "after": 2000.0
+     },
+     "Damping High Peak Ratio": {
+      "before": 0.7,
+      "after": 0.71
+     },
+     "Damping High Peak Q": {
+      "before": 0.88,
+      "after": 0.93
+     },
+     "Damping High Shelf Freq": {
+      "before": 5500.0,
+      "after": 5400.0
+     },
+     "Damping High Shelf Ratio": {
+      "before": 0.88,
+      "after": 0.89
+     },
+     "Damping High Shelf Q": {
+      "before": 0.89,
+      "after": 0.95
+     },
+     "EQ On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Cut On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Low Cut Freq": {
+      "before": 20.0,
+      "after": 20.5
+     },
+     "Low Cut Q": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Low Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Shelf Freq": {
+      "before": 200.0,
+      "after": 205.0
+     },
+     "Low Shelf Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Low Shelf Q": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "Low Peak On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Low Peak Freq": {
+      "before": 500.0,
+      "after": 510.0
+     },
+     "Low Peak Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Low Peak Q": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "High Peak On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Peak Freq": {
+      "before": 2000.0,
+      "after": 1960.0
+     },
+     "High Peak Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Peak Q": {
+      "before": 0.6,
+      "after": 0.64
+     },
+     "High Shelf On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Shelf Freq": {
+      "before": 5000.0,
+      "after": 5100.0
+     },
+     "High Shelf Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Shelf Q": {
+      "before": 1.0,
+      "after": 1.1
+     },
+     "High Cut On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "High Cut Freq": {
+      "before": 10400.0,
+      "after": 10200.0
+     },
+     "High Cut Q": {
+      "before": 0.71,
+      "after": 0.75
+     },
+     "Visualizer": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "SilverVerb": {
+     "Predelay": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Reflectivity": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Room Size": {
+      "before": 70.0,
+      "after": 72.0
+     },
+     "High Cut": {
+      "before": 6000.0,
+      "after": 6100.0
+     },
+     "Low Cut": {
+      "before": 410.0,
+      "after": 430.0
+     },
+     "Density/Time": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Modulation Rate": {
+      "before": 0.65,
+      "after": 0.69
+     },
+     "Modulation Intensity": {
+      "before": 0.51,
+      "after": 0.52
+     },
+     "Modulation Phase": {
+      "before": 60.0,
+      "after": 70.0
+     },
+     "Dry": {
+      "before": 90.0,
+      "after": 91.0
+     },
+     "Wet": {
+      "before": 35.0,
+      "after": 36.0
+     },
+     "Modulation On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "EnVerb": {
+     "Dry Signal Delay": {
+      "before": 50.0,
+      "after": 60.0
+     },
+     "Predelay": {
+      "before": 10.0,
+      "after": 20.0
+     },
+     "Attack": {
+      "before": 20.0,
+      "after": 30.0
+     },
+     "Decay": {
+      "before": 10.0,
+      "after": 20.0
+     },
+     "Sustain": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Hold": {
+      "before": 10.0,
+      "after": 20.0
+     },
+     "Release": {
+      "before": 20.0,
+      "after": 30.0
+     },
+     "Density": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Crossover": {
+      "before": 500.0,
+      "after": 510.0
+     },
+     "Low Freq Level": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Cut": {
+      "before": 5000.0,
+      "after": 5100.0
+     },
+     "Spread": {
+      "before": 100.0,
+      "after": 102.0
+     },
+     "Dry": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Wet": {
+      "before": 100.0,
+      "after": 99.0
+     }
+    }
+   }
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 4,
+    "private words": 2,
+    "bookmark fields": 28
+   }
+  }
+ },
+ "stockfx-dr-mono": {
+  "path": "stockfx-r03-dr-mono.logicx",
+  "note": "the dr-spots save with Tape Delay, Stereo Delay, the Audio Unit hit for Sample Delay, Delay Designer, Space Designer, Quantec Room Simulator, Echo, ChromaVerb, SilverVerb and EnVerb also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Tape Delay",
+    "Stereo Delay",
+    "Sample Delay",
+    "Delay Designer",
+    "Space Designer",
+    "Quantec Room Simulator",
+    "Echo",
+    "ChromaVerb",
+    "SilverVerb",
+    "EnVerb"
+   ]
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 6,
+    "private words": 3,
+    "bookmark fields": 42
+   }
+  }
+ },
+ "stockfx-dr2-defaults": {
+  "path": "stockfx-s01-dr2-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Tape Delay, Stereo Delay, Apple's AUSampleDelay (the row above Sample Delay's, taken for it), Match EQ and Noise Gate inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Tape Delay": 147,
+    "Stereo Delay": 148,
+    "Match EQ": 246,
+    "Noise Gate": 179
+   },
+   "variants": {
+    "Tape Delay": 200,
+    "Stereo Delay": 232,
+    "Match EQ": 1266,
+    "Noise Gate": 728
+   },
+   "third_party_slots": [
+    3
+   ]
+  }
+ },
+ "stockfx-dr2-spots": {
+  "path": "stockfx-s02-dr2-spots.logicx",
+  "note": "the dr2-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Tape Delay": {
+     "Feedback": {
+      "before": 61.0,
+      "after": 62.0
+     },
+     "High Cut": {
+      "before": 1500.0,
+      "after": 1600.0
+     },
+     "Low Cut": {
+      "before": 520.0,
+      "after": 550.0
+     },
+     "Deviation": {
+      "before": 0.0,
+      "after": 0.33
+     },
+     "Smoothing": {
+      "before": 40.0,
+      "after": 50.0
+     },
+     "Flutter Rate": {
+      "before": 1.6,
+      "after": 1.7
+     },
+     "Flutter Intensity": {
+      "before": 13.0,
+      "after": 14.0
+     },
+     "LFO Rate": {
+      "before": 0.38,
+      "after": 0.4
+     },
+     "LFO Intensity": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Freeze": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Dry": {
+      "before": 90.0,
+      "after": 91.0
+     },
+     "Wet": {
+      "before": 30.0,
+      "after": 31.0
+     },
+     "Clip Threshold": {
+      "before": -5.4,
+      "after": -5.2
+     },
+     "Stereo Spread": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "St-Delay": {
+     "Left Mix": {
+      "before": 30.0,
+      "after": 31.0
+     },
+     "Right Mix": {
+      "before": 30.0,
+      "after": 31.0
+     },
+     "Left Feedback": {
+      "before": 35.0,
+      "after": 36.0
+     },
+     "Right Feedback": {
+      "before": 35.0,
+      "after": 36.0
+     },
+     "Crossfeed L->R": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Crossfeed R->L": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Beat Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Left High Cut": {
+      "before": 20000.0,
+      "after": 18900.0
+     },
+     "Left Low Cut": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Right High Cut": {
+      "before": 20000.0,
+      "after": 18900.0
+     },
+     "Right Low Cut": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Stereo Link": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Left Sync Time": {
+      "before": 0.25,
+      "after": null
+     },
+     "Right Sync Time": {
+      "before": 0.12,
+      "after": 0.0
+     }
+    },
+    "Match EQ": {
+     "Analyzer": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Hide Other Channels": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Analyzer Top": {
+      "before": 0.0,
+      "after": -5.0
+     },
+     "Match": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Apply Amount": {
+      "before": 100.0,
+      "after": 101.0
+     },
+     "Channel Link": {
+      "before": 100.0,
+      "after": 90.0
+     },
+     "Smoothing": {
+      "before": 4.0,
+      "after": 6.0
+     },
+     "Ease-In / Ease-Out": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Limit Boost": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Limit Cut": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Reference Material Learn": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Current Material Learn": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Noise Gate": {
+     "Threshold": {
+      "before": -50.0,
+      "after": -49.0
+     },
+     "Hysteresis": {
+      "before": -3.0,
+      "after": -2.5
+     },
+     "Reduction": {
+      "before": -100.0,
+      "after": -99.0
+     },
+     "Attack": {
+      "before": 3.0,
+      "after": 4.0
+     },
+     "Hold": {
+      "before": 40.0,
+      "after": 50.0
+     },
+     "Release": {
+      "before": 10.0,
+      "after": 11.0
+     },
+     "High Cutoff": {
+      "before": 20000.0,
+      "after": 19100.0
+     },
+     "Low Cutoff": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Lookahead": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Monitor": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter On": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-dr2-mono": {
+  "path": "stockfx-s03-dr2-mono.logicx",
+  "note": "the dr2-spots save with Tape Delay, Sample Delay and Match EQ also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Tape Delay",
+    "Sample Delay",
+    "Match EQ"
+   ]
+  }
+ },
+ "stockfx-dr3-defaults": {
+  "path": "stockfx-t01-dr3-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Quantec Room Simulator and Sample Delay inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Quantec Room Simulator": 299,
+    "Sample Delay": 259
+   },
+   "variants": {
+    "Quantec Room Simulator": 2365,
+    "Sample Delay": 1461
+   }
+  }
+ },
+ "stockfx-dr3-spots": {
+  "path": "stockfx-t02-dr3-spots.logicx",
+  "note": "the dr3-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "QRS": {
+     "Dry Level": {
+      "before": 0.0,
+      "after": -1.0
+     },
+     "Reverb Level": {
+      "before": -6.0,
+      "after": -5.0
+     },
+     "Reverb Delay": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Reverb Time": {
+      "before": 2.0,
+      "after": 2.24
+     },
+     "Reverb Low x": {
+      "before": null,
+      "after": 1.6
+     },
+     "Reverb High x": {
+      "before": 0.63,
+      "after": null
+     },
+     "Room Size": {
+      "before": 10.0,
+      "after": 10.0
+     },
+     "Freeze": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Clear": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "1st Reflection Delay": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "1st Reflection Level": {
+      "before": null,
+      "after": -30.0
+     },
+     "1st Reflection Spread": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Enhance": {
+      "before": 0.0,
+      "after": null
+     },
+     "AD/DA Converters": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "1st Phase Reverse": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "SmpleDly": {
+     "Left Delay": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Right Delay": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Link Left & Right": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-dr3-mono": {
+  "path": "stockfx-t03-dr3-mono.logicx",
+  "note": "the dr3-spots save with Sample Delay and Vintage Graphic EQ also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Sample Delay",
+    "Vintage Graphic EQ"
+   ]
+  }
+ },
+ "stockfx-mod-defaults": {
+  "path": "stockfx-m01-mod-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Chorus, Ensemble, Flanger, Microphaser, Modulation Delay, Phaser, Ringshifter, Scanner Vibrato, Spreader and Tremolo inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Chorus": 145,
+    "Ensemble": 161,
+    "Flanger": 146,
+    "Microphaser": 152,
+    "Modulation Delay": 181,
+    "Phaser": 152,
+    "Ringshifter": 252,
+    "Scanner Vibrato": 229,
+    "Spreader": 258,
+    "Tremolo": 185
+   },
+   "variants": {
+    "Chorus": 94,
+    "Ensemble": 486,
+    "Flanger": 147,
+    "Microphaser": 336,
+    "Modulation Delay": 760,
+    "Phaser": 283,
+    "Ringshifter": 1380,
+    "Scanner Vibrato": 1104,
+    "Spreader": 1444,
+    "Tremolo": 832
+   }
+  }
+ },
+ "stockfx-mod-spots": {
+  "path": "stockfx-m02-mod-spots.logicx",
+  "note": "the mod-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Chorus": {
+     "Mix": {
+      "before": 30.0,
+      "after": 31.0
+     },
+     "Intensity": {
+      "before": 10.0,
+      "after": 10.5
+     },
+     "Rate": {
+      "before": 0.5,
+      "after": 0.533
+     },
+     "D-Mode": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Ensemble": {
+     "Mix": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Effect Volume": {
+      "before": 0.2,
+      "after": 0.4
+     },
+     "Voices": {
+      "before": 3.0,
+      "after": 4.0
+     },
+     "Rate LFO 1": {
+      "before": 0.9,
+      "after": 0.933
+     },
+     "Intensity LFO 1": {
+      "before": 16.0,
+      "after": 17.0
+     },
+     "Rate LFO 2": {
+      "before": 3.8,
+      "after": 4.1
+     },
+     "Intensity LFO 2": {
+      "before": 8.0,
+      "after": 9.0
+     },
+     "Random Rate": {
+      "before": 2.0,
+      "after": 2.1
+     },
+     "Random Intensity": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Phase": {
+      "before": -30.0,
+      "after": -20.0
+     },
+     "Spread": {
+      "before": 100.0,
+      "after": 102.0
+     },
+     "LFO 1": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO 2": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Random": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "Flanger": {
+     "Mix": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Intensity": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Rate": {
+      "before": 0.133,
+      "after": 0.166
+     },
+     "Feedback": {
+      "before": 67.0,
+      "after": 69.0
+     },
+     "Rate Sync": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "McrPhas": {
+     "LFO Rate": {
+      "before": 0.22,
+      "after": 0.24
+     },
+     "Feedback": {
+      "before": 37.0,
+      "after": 38.0
+     },
+     "Intensity": {
+      "before": 41.0,
+      "after": 42.0
+     },
+     "LFO Sync": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "ModDel": {
+     "Output Mix": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Flanger/Chorus": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Mod. Intensity": {
+      "before": 25.0,
+      "after": 26.0
+     },
+     "Rate LFO 1 L": {
+      "before": 0.5,
+      "after": 0.533
+     },
+     "Rate LFO 2 L": {
+      "before": 1.0,
+      "after": 1.033
+     },
+     "LFO Mix": {
+      "before": 48.0,
+      "after": 49.0
+     },
+     "Feedback": {
+      "before": 15.0,
+      "after": 17.0
+     },
+     "Volume Modulation": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "De-Warble": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Constant Mod": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFO Phase": {
+      "before": 180.0,
+      "after": 170.0
+     },
+     "Rate LFO 1 R": {
+      "before": 0.5,
+      "after": 0.533
+     },
+     "Rate LFO 2 R": {
+      "before": 1.0,
+      "after": 1.033
+     },
+     "Filter": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "D-Mode": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Phaser": {
+     "Rate LFO 1": {
+      "before": 0.24,
+      "after": 0.26
+     },
+     "Rate LFO 2": {
+      "before": 0.48,
+      "after": 0.5
+     },
+     "LFO Mix": {
+      "before": 10.0,
+      "after": 11.0
+     },
+     "Feedback": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Sweep Floor": {
+      "before": 550.0,
+      "after": 590.0
+     },
+     "Sweep Ceiling": {
+      "before": 13200.0,
+      "after": 14200.0
+     },
+     "Stages": {
+      "before": 12.0,
+      "after": 11.0
+     },
+     "LFO Env Follow": {
+      "before": 0.0,
+      "after": 2.0
+     },
+     "Phase": {
+      "before": 180.0,
+      "after": 170.0
+     },
+     "Output Mix": {
+      "before": 50.0,
+      "after": 52.0
+     },
+     "Env Follow": {
+      "before": 0.0,
+      "after": 2.0
+     },
+     "Warmth": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "FB Filter": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LP Cutoff": {
+      "before": 20000.0,
+      "after": 18900.0
+     },
+     "HP Cutoff": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "LFO 1 Sync": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFO 2 Sync": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Ringshift": {
+     "Frequency": {
+      "before": -0.096,
+      "after": -0.093
+     },
+     "Env->Osc Modulation": {
+      "before": 0.0,
+      "after": 0.002
+     },
+     "LFO->Osc Modulation": {
+      "before": 0.244,
+      "after": 0.246
+     },
+     "Feedback": {
+      "before": 0.63,
+      "after": 0.64
+     },
+     "Stereo Width": {
+      "before": 0.8,
+      "after": 0.81
+     },
+     "Dry/Wet": {
+      "before": 0.62,
+      "after": 0.63
+     },
+     "Env->Dry/Wet Modulation": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "LFO->Dry/Wet Modulation": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "Envelope Follower Follower On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Envelope Follower Sensitivity": {
+      "before": -0.0,
+      "after": 0.5
+     },
+     "Envelope Follower Attack": {
+      "before": 0.1,
+      "after": 0.11
+     },
+     "Envelope Follower Release": {
+      "before": 0.1,
+      "after": 0.11
+     },
+     "LFO On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO Rate": {
+      "before": 2.0,
+      "after": 0.75
+     },
+     "LFO Symmetry": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "LFO Smooth": {
+      "before": 1.0,
+      "after": 0.99
+     },
+     "Delay Amount": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Delay Sync": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Delay Time": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Delay Low Cut": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Delay High Cut": {
+      "before": 10000.0,
+      "after": 10700.0
+     }
+    },
+    "ScanVib": {
+     "Depth": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "Left Rate": {
+      "before": 6.85,
+      "after": 6.9
+     },
+     "Right Rate": {
+      "before": 6.85,
+      "after": 6.9
+     },
+     "Stereo Phase": {
+      "before": null,
+      "after": 0.0
+     }
+    },
+    "Spreader": {
+     "LFO Intensity": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "LFO Rate": {
+      "before": 1.0,
+      "after": 1.02
+     },
+     "Channel Delay": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Mix": {
+      "before": 100.0,
+      "after": 99.0
+     }
+    },
+    "Tremolo": {
+     "Depth": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Symmetry": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Smoothing": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Stereophase": {
+      "before": 180.0,
+      "after": 170.0
+     },
+     "Offset": {
+      "before": 0.0,
+      "after": 10.0
+     },
+     "Sync": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-mod-mono": {
+  "path": "stockfx-m03-mod-mono.logicx",
+  "note": "the mod-spots save with Chorus, Ensemble, Flanger, Microphaser, Modulation Delay, Phaser, Ringshifter, Scanner Vibrato, Spreader and Tremolo also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Chorus",
+    "Ensemble",
+    "Flanger",
+    "Microphaser",
+    "Modulation Delay",
+    "Phaser",
+    "Ringshifter",
+    "Scanner Vibrato",
+    "Spreader",
+    "Tremolo"
+   ]
+  }
+ },
+ "stockfx-dist-defaults": {
+  "path": "stockfx-i01-dist-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Bitcrusher, Clip Distortion, Distortion, Distortion II, Overdrive, Phase Distortion, AutoFilter, EVOC 20 Filterbank, Fuzz-Wah, Spectral Gate and Rotor Cabinet inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Bitcrusher": 163,
+    "Clip Distortion": 191,
+    "Distortion": 164,
+    "Distortion II": 228,
+    "Overdrive": 165,
+    "Phase Distortion": 196,
+    "AutoFilter": 162,
+    "EVOC 20 Filterbank": 221,
+    "Fuzz-Wah": 155,
+    "Spectral Gate": 168,
+    "Rotor Cabinet": 230
+   },
+   "variants": {
+    "Bitcrusher": 534,
+    "Clip Distortion": 905,
+    "Distortion": 550,
+    "Distortion II": 1088,
+    "Overdrive": 566,
+    "Phase Distortion": 986,
+    "AutoFilter": 517,
+    "EVOC 20 Filterbank": 1074,
+    "Fuzz-Wah": 405,
+    "Spectral Gate": 615,
+    "Rotor Cabinet": 1121
+   }
+  }
+ },
+ "stockfx-dist-spots": {
+  "path": "stockfx-i02-dist-spots.logicx",
+  "note": "the dist-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Bitcrusher": {
+     "Drive": {
+      "before": 3.0,
+      "after": 3.5
+     },
+     "Clip Level": {
+      "before": 0.0,
+      "after": -0.2
+     },
+     "Resolution": {
+      "before": 8.0,
+      "after": 9.0
+     },
+     "Downsampling": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Mix": {
+      "before": 100.0,
+      "after": 98.0
+     }
+    },
+    "ClipDist": {
+     "Clip Drive": {
+      "before": 15.0,
+      "after": 15.5
+     },
+     "Clip Tone": {
+      "before": 170.0,
+      "after": 180.0
+     },
+     "Clip Symmetry": {
+      "before": -16.0,
+      "after": -14.0
+     },
+     "Mix": {
+      "before": 45.0,
+      "after": 46.0
+     },
+     "Clip Filter": {
+      "before": 4400.0,
+      "after": 4700.0
+     },
+     "LP Filter": {
+      "before": 5300.0,
+      "after": 5600.0
+     },
+     "High Shelf Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "High Shelf Freqency": {
+      "before": 980.0,
+      "after": 1000.0
+     },
+     "Input Gain": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Output Gain": {
+      "before": 5.0,
+      "after": 5.5
+     }
+    },
+    "Distortion": {
+     "Drive": {
+      "before": 10.0,
+      "after": 10.5
+     },
+     "Tone": {
+      "before": 1100.0,
+      "after": 1200.0
+     },
+     "Output": {
+      "before": -0.5,
+      "after": -0.0
+     },
+     "Level Compensation": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "Dist II": {
+     "Pre Gain": {
+      "before": 5.5,
+      "after": 6.0
+     },
+     "Drive": {
+      "before": 0.77,
+      "after": 0.78
+     },
+     "Tone": {
+      "before": 1.75,
+      "after": 2.0
+     },
+     "Distortion Output Level": {
+      "before": 3.0,
+      "after": 3.5
+     },
+     "Mix": {
+      "before": 88.0,
+      "after": 89.0
+     },
+     "Level Compensation": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "Overdrive": {
+     "Drive": {
+      "before": 6.0,
+      "after": 6.25
+     },
+     "Tone": {
+      "before": 980.0,
+      "after": 1000.0
+     },
+     "Output": {
+      "before": -0.0,
+      "after": 0.5
+     },
+     "Level Compensation": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "PhaseDist": {
+     "Mix": {
+      "before": 40.0,
+      "after": 41.0
+     },
+     "Intensity": {
+      "before": 60.0,
+      "after": 61.0
+     },
+     "Delay": {
+      "before": 30.3,
+      "after": 31.4
+     },
+     "Cutoff": {
+      "before": 4200.0,
+      "after": 4400.0
+     },
+     "Resonance": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Monitor": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Phase Reverse": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "AutoFilter": {
+     "Pre Filter Distortion": {
+      "before": 0.0,
+      "after": 4.0
+     },
+     "Post Filter Distortion": {
+      "before": 0.0,
+      "after": 4.0
+     },
+     "Cutoff": {
+      "before": 70.0,
+      "after": 71.0
+     },
+     "Resonance": {
+      "before": 10.0,
+      "after": 11.0
+     },
+     "Fatness": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Stereo Phase": {
+      "before": 0.0,
+      "after": 10.0
+     },
+     "Pulsewidth": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "LFO Cutoff Mod": {
+      "before": 14.0,
+      "after": 15.0
+     },
+     "Retrigger": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Threshold": {
+      "before": -20.0,
+      "after": -19.0
+     },
+     "Attack": {
+      "before": 0.0,
+      "after": 4.0
+     },
+     "Decay": {
+      "before": 52.0,
+      "after": 56.0
+     },
+     "Sustain": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Release": {
+      "before": 52.0,
+      "after": 56.0
+     },
+     "Env Cutoff Mod": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Env Dynamic": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Main Out": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Beat Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Rate": {
+      "before": 1.0,
+      "after": 180.0
+     },
+     "Sync Phase": {
+      "before": 180.0,
+      "after": 9.68
+     },
+     "Dry Signal": {
+      "before": 0.0,
+      "after": -0.99
+     },
+     "Stereo Spread": {
+      "before": 0.01,
+      "after": 0.73
+     },
+     "Filter": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Envelope": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Distortion": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "EVOC FB": {
+     "Level 1 A": {
+      "before": 28.4,
+      "after": 29.3
+     },
+     "Level 2 A": {
+      "before": 62.7,
+      "after": 64.0
+     },
+     "Level 3 A": {
+      "before": 75.099,
+      "after": 76.599
+     },
+     "Level 4 A": {
+      "before": 65.3,
+      "after": 66.7
+     },
+     "Level 5 A": {
+      "before": 27.6,
+      "after": 28.4
+     },
+     "Level 6 A": {
+      "before": 52.6,
+      "after": 53.799
+     },
+     "Level 7 A": {
+      "before": 68.099,
+      "after": 69.4
+     },
+     "Level 8 A": {
+      "before": 66.7,
+      "after": 68.099
+     },
+     "Level 9 A": {
+      "before": 42.2,
+      "after": 43.299
+     },
+     "Level 10 A": {
+      "before": 55.0,
+      "after": 56.299
+     },
+     "Level 11 A": {
+      "before": 73.7,
+      "after": 75.099
+     },
+     "Level 12 A": {
+      "before": 88.7,
+      "after": 90.3
+     },
+     "Level 13 A": {
+      "before": 62.7,
+      "after": 64.0
+     },
+     "Level 14 A": {
+      "before": 64.0,
+      "after": 65.3
+     },
+     "Level 15 A": {
+      "before": 78.0,
+      "after": 79.5
+     },
+     "Level 16 A": {
+      "before": 95.099,
+      "after": 96.7
+     },
+     "Level 17 A": {
+      "before": 73.7,
+      "after": 75.099
+     },
+     "Level 18 A": {
+      "before": 69.4,
+      "after": 70.8
+     },
+     "Level 19 A": {
+      "before": 78.0,
+      "after": 79.5
+     },
+     "Level 20 A": {
+      "before": 100.0,
+      "after": 98.3
+     },
+     "Boost A": {
+      "before": 0.0,
+      "after": 0.333
+     },
+     "Bands": {
+      "before": 20.0,
+      "after": 19.0
+     },
+     "Stereo": {
+      "before": 5.0,
+      "after": 4.92
+     },
+     "Low Frequency": {
+      "before": 80.0,
+      "after": 82.0
+     },
+     "High Frequency": {
+      "before": 8000.0,
+      "after": 7800.0
+     },
+     "Formant Shift": {
+      "before": -0.0,
+      "after": 0.04
+     },
+     "Resonance": {
+      "before": 2.0,
+      "after": 2.1
+     },
+     "Level 1 B": {
+      "before": 100.0,
+      "after": 98.3
+     },
+     "Level 2 B": {
+      "before": 62.7,
+      "after": 64.0
+     },
+     "Level 3 B": {
+      "before": 46.7,
+      "after": 47.799
+     },
+     "Level 4 B": {
+      "before": 53.799,
+      "after": 55.0
+     },
+     "Level 5 B": {
+      "before": 91.8,
+      "after": 93.4
+     },
+     "Level 6 B": {
+      "before": 69.4,
+      "after": 70.8
+     },
+     "Level 7 B": {
+      "before": 52.6,
+      "after": 53.799
+     },
+     "Level 8 B": {
+      "before": 52.6,
+      "after": 53.799
+     },
+     "Level 9 B": {
+      "before": 84.0,
+      "after": 85.599
+     },
+     "Level 10 B": {
+      "before": 70.8,
+      "after": 72.3
+     },
+     "Level 11 B": {
+      "before": 51.4,
+      "after": 52.6
+     },
+     "Level 12 B": {
+      "before": 39.1,
+      "after": 40.1
+     },
+     "Level 13 B": {
+      "before": 76.599,
+      "after": 78.0
+     },
+     "Level 14 B": {
+      "before": 81.0,
+      "after": 82.5
+     },
+     "Level 15 B": {
+      "before": 70.8,
+      "after": 72.3
+     },
+     "Level 16 B": {
+      "before": 55.0,
+      "after": 56.299
+     },
+     "Level 17 B": {
+      "before": 66.7,
+      "after": 68.099
+     },
+     "Level 18 B": {
+      "before": 78.0,
+      "after": 79.5
+     },
+     "Level 19 B": {
+      "before": 79.5,
+      "after": 81.0
+     },
+     "Level 20 B": {
+      "before": 61.4,
+      "after": 62.7
+     },
+     "Boost B": {
+      "before": 0.0,
+      "after": 0.333
+     },
+     "Level A<>B": {
+      "before": 48.0,
+      "after": 49.0
+     },
+     "Distortion": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFO -> Xfade": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Output Level": {
+      "before": 7.0,
+      "after": 8.0
+     }
+    },
+    "Fuzz-Wah": {
+     "Wah Level": {
+      "before": -2.0,
+      "after": -1.5
+     },
+     "Pedal Position": {
+      "before": 0.0,
+      "after": 0.005
+     },
+     "Pedal Range Start": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "Pedal Range End": {
+      "before": 1.0,
+      "after": 1.02
+     },
+     "Relative Q": {
+      "before": 0.0,
+      "after": 0.02
+     },
+     "Auto Wah Depth": {
+      "before": null,
+      "after": 0.0
+     },
+     "Auto Wah Attack": {
+      "before": 49.0,
+      "after": 57.0
+     },
+     "Auto Wah Release": {
+      "before": 150.0,
+      "after": 160.0
+     },
+     "Auto Gain": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Comp Ratio": {
+      "before": 1.0,
+      "after": 1.2
+     },
+     "Fuzz Gain": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Fuzz Tone": {
+      "before": 6000.0,
+      "after": 6300.0
+     },
+     "Wah": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Comp": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Fuzz": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "SpecGate": {
+     "Threshold": {
+      "before": -30.0,
+      "after": -29.0
+     },
+     "Sub Energy": {
+      "before": -20.0,
+      "after": -19.5
+     },
+     "Super Energy": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Speed": {
+      "before": 0.499,
+      "after": 0.515
+     },
+     "Center Frequency": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Bandwidth": {
+      "before": 20000.0,
+      "after": 18900.0
+     },
+     "CF Modulation": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "BW Modulation": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Low Level": {
+      "before": -100.0,
+      "after": -98.0
+     },
+     "High Level": {
+      "before": -100.0,
+      "after": -98.0
+     },
+     "Gain": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Rotor": {
+     "Rotor Fast Rate": {
+      "before": 6.2,
+      "after": 6.25
+     },
+     "Acc/Dec Scale": {
+      "before": 1.0,
+      "after": 1.05
+     },
+     "Horn Stereo Width": {
+      "before": 1.2,
+      "after": 1.21
+     },
+     "Drum Stereo Width": {
+      "before": 1.2,
+      "after": 1.21
+     },
+     "Balance": {
+      "before": 50.0,
+      "after": 49.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-dist-mono": {
+  "path": "stockfx-i03-dist-mono.logicx",
+  "note": "the dist-spots save with Bitcrusher, Clip Distortion, Distortion, Distortion II, Overdrive, Phase Distortion, AutoFilter, EVOC 20 Filterbank, Fuzz-Wah, Spectral Gate and Rotor Cabinet also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Bitcrusher",
+    "Clip Distortion",
+    "Distortion",
+    "Distortion II",
+    "Overdrive",
+    "Phase Distortion",
+    "AutoFilter",
+    "EVOC 20 Filterbank",
+    "Fuzz-Wah",
+    "Spectral Gate",
+    "Rotor Cabinet"
+   ]
+  }
+ },
+ "stockfx-amp-defaults": {
+  "path": "stockfx-a01-amp-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Amp Designer, Bass Amp Designer, Pedalboard, Pitch Correction, Pitch Shifter, Vocal Transformer, Exciter and SubBass inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Amp Designer": 274,
+    "Bass Amp Designer": 297,
+    "Pedalboard": 273,
+    "Pitch Correction": 235,
+    "Pitch Shifter": 159,
+    "Vocal Transformer": 249,
+    "Exciter": 197,
+    "SubBass": 187
+   },
+   "variants": {
+    "Amp Designer": 2212,
+    "Bass Amp Designer": 2349,
+    "Pedalboard": 1623,
+    "Pitch Correction": 1173,
+    "Pitch Shifter": 454,
+    "Vocal Transformer": 1348,
+    "Exciter": 1002,
+    "SubBass": 885
+   }
+  }
+ },
+ "stockfx-amp-spots": {
+  "path": "stockfx-a02-amp-spots.logicx",
+  "note": "the amp-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Amp": {
+     "Gain": {
+      "before": 4.5,
+      "after": 4.6
+     },
+     "Bass": {
+      "before": 6.7,
+      "after": 6.8
+     },
+     "Mids": {
+      "before": 3.1,
+      "after": 3.2
+     },
+     "Treble": {
+      "before": 7.4,
+      "after": 7.5
+     },
+     "Presence": {
+      "before": 8.3,
+      "after": 8.4
+     },
+     "Master": {
+      "before": 9.4,
+      "after": 9.5
+     },
+     "Output Level": {
+      "before": -7.0,
+      "after": -6.5
+     },
+     "Mic Position X": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Mic Position Z": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "FX Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "FX Depth": {
+      "before": 7.7,
+      "after": 7.8
+     },
+     "Reverb Enable": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Reverb Level": {
+      "before": 2.2,
+      "after": 2.3
+     }
+    },
+    "Bass Amp": {
+     "DI Gain": {
+      "before": 13.4,
+      "after": 13.6
+     },
+     "DI HF Cut": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "DI Tone On/Off": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Bright": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Gain": {
+      "before": 3.2,
+      "after": 3.3
+     },
+     "EQ": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Bass": {
+      "before": 3.4,
+      "after": 3.5
+     },
+     "Mids": {
+      "before": 6.7,
+      "after": 6.8
+     },
+     "Mid Range": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Treble": {
+      "before": 6.7,
+      "after": 6.8
+     },
+     "Master": {
+      "before": 4.5,
+      "after": 4.6
+     },
+     "Comp": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Comp Amount": {
+      "before": 4.0,
+      "after": 4.1
+     },
+     "Comp Gain": {
+      "before": 5.4,
+      "after": 5.5
+     },
+     "Graph/Par EQ": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "40 Hz": {
+      "before": 5.6,
+      "after": 5.7
+     },
+     "100 Hz": {
+      "before": 3.6,
+      "after": 3.7
+     },
+     "250 Hz": {
+      "before": 0.4,
+      "after": 0.5
+     },
+     "625 Hz": {
+      "before": 3.0,
+      "after": 3.1
+     },
+     "1560 Hz": {
+      "before": 5.2,
+      "after": 5.3
+     },
+     "3900 Hz": {
+      "before": 5.6,
+      "after": 5.7
+     },
+     "6600 Hz": {
+      "before": 6.2,
+      "after": 6.3
+     },
+     "Microphone Pos X": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Microphone Pos Z": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Amp/DI Mix": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Output Gain": {
+      "before": 4.5,
+      "after": 5.0
+     },
+     "DI Delay Compensation": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Pedalboard": {
+     "Macro A Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro B Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro C Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro D Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro E Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro F Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro G Value": {
+      "before": 0.0,
+      "after": 0.001
+     },
+     "Macro H Value": {
+      "before": 0.0,
+      "after": 0.001
+     }
+    },
+    "PitchCor": {
+     "Detune": {
+      "before": -41.0,
+      "after": -40.0
+     },
+     "Response": {
+      "before": 378.0,
+      "after": 391.0
+     },
+     "Bypass All": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Tolerance": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Global Tuning": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Follow Song Key": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Neural Pitch Detection": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "PShft": {
+     "Mix": {
+      "before": 25.0,
+      "after": 26.0
+     },
+     "Semitones": {
+      "before": 7.0,
+      "after": 8.0
+     },
+     "Cents": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Latency Compensation": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "VocalTrf": {
+     "Pitch": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Formant": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Mix": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Robotize": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Glide": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Grain Size": {
+      "before": null,
+      "after": 1.0
+     },
+     "Fine Pitch": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Exciter": {
+     "Frequency": {
+      "before": 2000.0,
+      "after": 2100.0
+     },
+     "Harmonics": {
+      "before": 10.6,
+      "after": 11.5
+     },
+     "Dry Signal": {
+      "before": 1.0,
+      "after": 0.0
+     }
+    },
+    "SubBass": {
+     "Dry": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Freq Mix": {
+      "before": 57.0,
+      "after": 58.0
+     },
+     "Ratio High": {
+      "before": 2.0,
+      "after": 3.0
+     },
+     "Ratio Low": {
+      "before": 2.0,
+      "after": 3.0
+     },
+     "Center High": {
+      "before": 130.0,
+      "after": 120.0
+     },
+     "Bandwidth High": {
+      "before": 0.26,
+      "after": 0.33
+     },
+     "Center Low": {
+      "before": 100.0,
+      "after": 97.0
+     },
+     "Bandwidth Low": {
+      "before": 0.33,
+      "after": 0.43
+     },
+     "Wet": {
+      "before": 110.0,
+      "after": 115.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-amp-mono": {
+  "path": "stockfx-a03-amp-mono.logicx",
+  "note": "the amp-spots save with Amp Designer, Bass Amp Designer, Pitch Shifter, Vocal Transformer, Exciter and SubBass also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Amp Designer",
+    "Bass Amp Designer",
+    "Pitch Shifter",
+    "Vocal Transformer",
+    "Exciter",
+    "SubBass"
+   ]
+  }
+ },
+ "stockfx-util-defaults": {
+  "path": "stockfx-u01-util-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Direction Mixer, Stereo Spread, BPM Counter, Correlation Meter, Level Meter, Loudness Meter, MultiMeter, Tuner, Gain and Test Oscillator inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Direction Mixer": 182,
+    "Stereo Spread": 198,
+    "BPM Counter": 242,
+    "Correlation Meter": 241,
+    "Level Meter": 255,
+    "Loudness Meter": 315,
+    "MultiMeter": 240,
+    "Tuner": 239,
+    "Gain": 183,
+    "Test Oscillator": 253
+   },
+   "variants": {
+    "Direction Mixer": 813,
+    "Stereo Spread": 1018,
+    "BPM Counter": 1232,
+    "Correlation Meter": 1231,
+    "Level Meter": 1415,
+    "Loudness Meter": 2480,
+    "MultiMeter": 1222,
+    "Tuner": 1208,
+    "Gain": 815,
+    "Test Oscillator": 1397
+   }
+  }
+ },
+ "stockfx-util-spots": {
+  "path": "stockfx-u02-util-spots.logicx",
+  "note": "the util-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "DirMix": {
+     "Direction": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Spread": {
+      "before": 1.0,
+      "after": 1.02
+     },
+     "Split": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Spread": {
+     "Lower Frequency": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Upper Frequency": {
+      "before": 20000.0,
+      "after": 18700.0
+     },
+     "Order": {
+      "before": 12.0,
+      "after": 11.0
+     },
+     "Lower Intensity": {
+      "before": 100.0,
+      "after": 98.0
+     },
+     "Upper Intensity": {
+      "before": 100.0,
+      "after": 98.0
+     }
+    },
+    "Level Mtr": {
+     "Target Level": {
+      "before": -12.0,
+      "after": -11.0
+     }
+    },
+    "Loudness": {
+     "Target Level": {
+      "before": -14.0,
+      "after": -13.0
+     }
+    },
+    "MultiMeter": {
+     "Analyzer Top": {
+      "before": 5.0,
+      "after": 10.0
+     },
+     "Analyzer Range": {
+      "before": 60.0,
+      "after": 65.0
+     },
+     "Gonio Decay": {
+      "before": 500.0,
+      "after": 520.0
+     },
+     "Gonio AutoGain": {
+      "before": 50.0,
+      "after": 60.0
+     },
+     "Level Peak Hold": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Target Level": {
+      "before": -12.0,
+      "after": -11.0
+     },
+     "Target Loudness": {
+      "before": -14.0,
+      "after": -13.0
+     },
+     "Analyzer Peak Hold": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Gonio Peak Hold": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Tuner": {
+     "Reference": {
+      "before": 440.0,
+      "after": 440.1
+     },
+     "Output Mute": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Gain": {
+     "Balance": {
+      "before": 0.0,
+      "after": 0.5
+     },
+     "Gain": {
+      "before": 0.0,
+      "after": 0.1
+     }
+    },
+    "TestOsc": {
+     "Frequency": {
+      "before": 1000.0,
+      "after": 1050.0
+     },
+     "Sweep On/Off": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Sweep Time": {
+      "before": 10.0,
+      "after": 10.5
+     },
+     "Sweep Start Freq": {
+      "before": 20.0,
+      "after": 21.0
+     },
+     "Sweep End Freq": {
+      "before": 20000.0,
+      "after": 18900.0
+     },
+     "Sweep Trigger": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Level": {
+      "before": -12.0,
+      "after": -11.0
+     },
+     "Dim": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    }
+   }
+  }
+ },
+ "stockfx-util-mono": {
+  "path": "stockfx-u03-util-mono.logicx",
+  "note": "the util-spots save with BPM Counter, Level Meter and Test Oscillator also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "BPM Counter",
+    "Level Meter",
+    "Test Oscillator"
+   ]
+  }
+ },
+ "stockfx-mfx-defaults": {
+  "path": "stockfx-x01-mfx-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with Beat Breaker, Step FX, Remix FX, Phat FX and Binaural Post-Processing inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "types": {
+    "Beat Breaker": 301,
+    "Step FX": 289,
+    "Remix FX": 314,
+    "Phat FX": 288,
+    "Binaural Post-Processing": 269
+   },
+   "variants": {
+    "Beat Breaker": 2419,
+    "Step FX": 2313,
+    "Remix FX": 2466,
+    "Phat FX": 2296,
+    "Binaural Post-Processing": 1590
+   }
+  }
+ },
+ "stockfx-mfx-spots": {
+  "path": "stockfx-x02-mfx-spots.logicx",
+  "note": "the mfx-defaults save after every slider row of every plug-in's Controls view was moved one unit and every checkbox pressed (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "moved": {
+    "Beat Break": {
+     "Mix": {
+      "before": 100.0,
+      "after": 99.0
+     },
+     "Slice De-click": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Bypass Below": {
+      "before": null,
+      "after": 20.0
+     },
+     "Output Beat Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Time Enable": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Repeat Enable": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Filter Cutoff Enable": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Filter Resonance Enable": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Volume Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Enable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Time Start Probability": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Time Start Intensity": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Time Slope Probability": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Time Slope Intensity": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Time Curve Probability": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Time Curve Intensity": {
+      "before": 50.0,
+      "after": 51.0
+     },
+     "Number of Slices": {
+      "before": 8.0,
+      "after": 9.0
+     },
+     "Input Beat 2": {
+      "before": 1.5,
+      "after": 1.13
+     },
+     "Input Beat 3": {
+      "before": 2.0,
+      "after": 1.25
+     },
+     "Input Beat 4": {
+      "before": 2.5,
+      "after": 1.38
+     },
+     "Input Beat 5": {
+      "before": 3.0,
+      "after": 1.5
+     },
+     "Input Beat 6": {
+      "before": 3.5,
+      "after": 1.63
+     },
+     "Input Beat 7": {
+      "before": 4.0,
+      "after": 1.75
+     },
+     "Input Beat 8": {
+      "before": 4.5,
+      "after": 1.88
+     },
+     "Speed 1": {
+      "before": 100.0,
+      "after": 1.0
+     },
+     "Speed 2": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 3": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 4": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 5": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 6": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 7": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Speed 8": {
+      "before": 100.0,
+      "after": 100.08
+     },
+     "Input Time Curve 1": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 2": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 3": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 4": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 5": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 6": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Input Time Curve 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Output Beat 1": {
+      "before": 1.0,
+      "after": -99.0
+     },
+     "Output Beat 2": {
+      "before": 1.5,
+      "after": 1.0
+     },
+     "Output Beat 3": {
+      "before": 2.0,
+      "after": 1.0
+     },
+     "Output Beat 4": {
+      "before": 2.5,
+      "after": 1.08
+     },
+     "Output Beat 5": {
+      "before": 3.0,
+      "after": 1.19
+     },
+     "Output Beat 6": {
+      "before": 3.5,
+      "after": 1.3
+     },
+     "Output Beat 7": {
+      "before": 4.0,
+      "after": 1.41
+     },
+     "Output Beat 8": {
+      "before": 4.5,
+      "after": 1.52
+     },
+     "Repeat 1": {
+      "before": 1.0,
+      "after": 1.7
+     },
+     "Repeat 2": {
+      "before": 1.0,
+      "after": 1.73
+     },
+     "Repeat 3": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Repeat 4": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Repeat 5": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Repeat 6": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Repeat 7": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Repeat 8": {
+      "before": 1.0,
+      "after": 2.0
+     },
+     "Filter Cutoff 1": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 2": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 3": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 4": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 5": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 6": {
+      "before": 20000.0,
+      "after": 1.0
+     },
+     "Filter Cutoff 7": {
+      "before": 20000.0,
+      "after": 19900.0
+     },
+     "Filter Cutoff 8": {
+      "before": 20000.0,
+      "after": 19900.0
+     },
+     "Filter Cutoff Slope 1": {
+      "before": 0.0,
+      "after": 20000.0
+     },
+     "Filter Cutoff Slope 2": {
+      "before": 0.0,
+      "after": 20000.0
+     },
+     "Filter Cutoff Slope 3": {
+      "before": 0.0,
+      "after": 20000.0
+     },
+     "Filter Cutoff Slope 4": {
+      "before": 0.0,
+      "after": 20000.0
+     },
+     "Filter Cutoff Slope 5": {
+      "before": 0.0,
+      "after": 20000.0
+     },
+     "Filter Cutoff Slope 6": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Cutoff Slope 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Cutoff Slope 8": {
+      "before": 0.0,
+      "after": 0.08
+     },
+     "Filter Cutoff Curve 1": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 2": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 3": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 4": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 5": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 6": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Filter Cutoff Curve 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Cutoff Curve 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Resonance 1": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 2": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 3": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 4": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 5": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 6": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 7": {
+      "before": 0.0,
+      "after": -99.0
+     },
+     "Filter Resonance 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Volume 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 2": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 3": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 4": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 5": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 6": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 7": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume 8": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Volume Slope 1": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 2": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 3": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 4": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 5": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 6": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 7": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Slope 8": {
+      "before": 0.0,
+      "after": 6.0
+     },
+     "Volume Curve 1": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Volume Curve 2": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 3": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 4": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 5": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 6": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 7": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Volume Curve 8": {
+      "before": 0.0,
+      "after": -749.5
+     },
+     "Pan 1": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 2": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 3": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 4": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 5": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 6": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Slope 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Slope 2": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Slope 3": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Slope 4": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Slope 5": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Slope 6": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Slope 7": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Slope 8": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Pan Curve 1": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Curve 2": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Curve 3": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Curve 4": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pan Curve 5": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Pan Curve 6": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Pan Curve 7": {
+      "before": 0.0,
+      "after": -791.58
+     },
+     "Pan Curve 8": {
+      "before": 0.0,
+      "after": -791.58
+     }
+    },
+    "Step FX": {
+     "Filter On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Filter Cutoff": {
+      "before": 1937.0,
+      "after": 1950.0
+     },
+     "Filter Resonance": {
+      "before": 30.0,
+      "after": 30.1
+     },
+     "Filter Mix": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Distortion On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Distortion Exciter": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Distortion Dirt": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mod FX On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Mod FX Delay": {
+      "before": 15.1,
+      "after": 15.0
+     },
+     "Mod FX Depth": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Mod FX Feedback": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Mod FX Mix": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Delay On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Delay Feedback": {
+      "before": 33.9,
+      "after": 34.0
+     },
+     "Delay Cutoff": {
+      "before": 6223.0,
+      "after": 6267.0
+     },
+     "Delay Mix": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Delay Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Delay L Rate": {
+      "before": 1.0,
+      "after": 270.0
+     },
+     "Delay R Rate": {
+      "before": 1.0,
+      "after": 220.0
+     },
+     "Reverb On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Reverb Time": {
+      "before": 1250.0,
+      "after": 1256.0
+     },
+     "Reverb Mix": {
+      "before": 25.0,
+      "after": 25.1
+     },
+     "Master Input Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Master Mix": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "XY Pad X On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "XY Pad Y On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Step Mod 1 Depth - X": {
+      "before": 14.4,
+      "after": 14.5
+     },
+     "Reverb Mix - Y": {
+      "before": 15.4,
+      "after": 15.5
+     },
+     "XY Pad X Depth 2": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "XY Pad Y Depth 1": {
+      "before": 62.0,
+      "after": 63.0
+     },
+     "XY Pad Y Depth 2": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "Step Mod 1 On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Step Mod 1 Depth": {
+      "before": 39.8,
+      "after": 40.0
+     },
+     "Step Mod 1 Attack": {
+      "before": 12.4,
+      "after": 12.5
+     },
+     "Step Mod 1 Attack Curve": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "Step Mod 1 Hold": {
+      "before": 20.0,
+      "after": 20.1
+     },
+     "Step Mod 1 Release": {
+      "before": 66.9,
+      "after": 67.0
+     },
+     "Step Mod 1 Release Curve": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "Step Mod 1 Num Steps": {
+      "before": 16.0,
+      "after": 17.0
+     },
+     "Step Mod 1 Value 1": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 2": {
+      "before": 67.7,
+      "after": 67.8
+     },
+     "Step Mod 1 Value 3": {
+      "before": 44.9,
+      "after": 45.0
+     },
+     "Step Mod 1 Value 4": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 5": {
+      "before": 65.3,
+      "after": 65.4
+     },
+     "Step Mod 1 Value 6": {
+      "before": 44.2,
+      "after": 44.3
+     },
+     "Step Mod 1 Value 7": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 8": {
+      "before": 47.1,
+      "after": 47.2
+     },
+     "Step Mod 1 Value 9": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 10": {
+      "before": 62.4,
+      "after": 62.5
+     },
+     "Step Mod 1 Value 11": {
+      "before": 46.2,
+      "after": 46.3
+     },
+     "Step Mod 1 Value 12": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 13": {
+      "before": 62.7,
+      "after": 62.8
+     },
+     "Step Mod 1 Value 14": {
+      "before": 41.0,
+      "after": 41.1
+     },
+     "Step Mod 1 Value 15": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Value 16": {
+      "before": 45.7,
+      "after": 45.8
+     },
+     "Step Mod 1 Tie 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 1 Tie 2": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 3": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 6": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 11": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 12": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 13": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 14": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 15": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Tie 16": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Length 1": {
+      "before": 100.0,
+      "after": 0.0
+     },
+     "Step Mod 1 Length 2": {
+      "before": 100.0,
+      "after": 0.0
+     },
+     "Step Mod 1 Length 3": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 4": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 5": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 6": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 7": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 8": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 9": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 10": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 11": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 12": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 13": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 14": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 15": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Length 16": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 1 Rest 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 1 Rest 2": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 1 Rest 3": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 1 Rest 4": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 5": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 6": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 7": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 9": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 10": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 11": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 12": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 13": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 14": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 15": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 1 Rest 16": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 2 On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 2 Depth": {
+      "before": 100.0,
+      "after": 1.0
+     },
+     "Step Mod 2 Swing": {
+      "before": 50.0,
+      "after": 0.0
+     },
+     "Step Mod 2 Attack": {
+      "before": 50.0,
+      "after": null
+     },
+     "Step Mod 2 Attack Curve": {
+      "before": 0.0,
+      "after": 0.2
+     },
+     "Step Mod 2 Hold": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 2 Release": {
+      "before": 50.0,
+      "after": 75.0
+     },
+     "Step Mod 2 Release Curve": {
+      "before": 0.0,
+      "after": 50.1
+     },
+     "Step Mod 2 Num Steps": {
+      "before": 16.0,
+      "after": -0.48
+     },
+     "Step Mod 2 Value 1": {
+      "before": 100.0,
+      "after": 49.9
+     },
+     "Step Mod 2 Value 2": {
+      "before": 100.0,
+      "after": 0.0
+     },
+     "Step Mod 2 Value 3": {
+      "before": 100.0,
+      "after": 0.5
+     },
+     "Step Mod 2 Value 4": {
+      "before": 100.0,
+      "after": 128.0
+     },
+     "Step Mod 2 Value 5": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 6": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 7": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 8": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 9": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 10": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 11": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 12": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 13": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 14": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 15": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Value 16": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Tie 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 2": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 3": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 4": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 5": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 6": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 7": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 8": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 9": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 10": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 11": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 12": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 13": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 14": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 15": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Tie 16": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Length 1": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 2": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 3": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 4": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 5": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 6": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 7": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 8": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 9": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 10": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 11": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 12": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 13": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 14": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 15": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Length 16": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 2 Rest 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 2": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 3": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 4": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 5": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 6": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 7": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 8": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 9": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 10": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 11": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 12": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 13": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 14": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 15": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 2 Rest 16": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 On": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Depth": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Swing": {
+      "before": 50.0,
+      "after": 0.1
+     },
+     "Step Mod 3 Attack": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Attack Curve": {
+      "before": 0.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Hold": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Step Mod 3 Release": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Release Curve": {
+      "before": 0.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Num Steps": {
+      "before": 16.0,
+      "after": 1.6
+     },
+     "Step Mod 3 Value 1": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Value 2": {
+      "before": 69.1,
+      "after": 69.2
+     },
+     "Step Mod 3 Value 3": {
+      "before": 85.4,
+      "after": 85.5
+     },
+     "Step Mod 3 Value 4": {
+      "before": 96.2,
+      "after": 96.3
+     },
+     "Step Mod 3 Value 5": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Value 6": {
+      "before": 96.2,
+      "after": 96.3
+     },
+     "Step Mod 3 Value 7": {
+      "before": 85.4,
+      "after": 85.5
+     },
+     "Step Mod 3 Value 8": {
+      "before": 69.1,
+      "after": 69.2
+     },
+     "Step Mod 3 Value 9": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Step Mod 3 Value 10": {
+      "before": 30.9,
+      "after": 31.0
+     },
+     "Step Mod 3 Value 11": {
+      "before": 14.6,
+      "after": 14.7
+     },
+     "Step Mod 3 Value 12": {
+      "before": 3.8,
+      "after": 3.9
+     },
+     "Step Mod 3 Value 13": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Step Mod 3 Value 14": {
+      "before": 3.8,
+      "after": 3.9
+     },
+     "Step Mod 3 Value 15": {
+      "before": 14.6,
+      "after": 14.7
+     },
+     "Step Mod 3 Value 16": {
+      "before": 30.9,
+      "after": 31.0
+     },
+     "Step Mod 3 Tie 1": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 2": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 3": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 4": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 5": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 6": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 7": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 8": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 9": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 10": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 11": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 12": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 13": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 14": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 15": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Tie 16": {
+      "before": 1.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Length 1": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 2": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 3": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 4": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 5": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 6": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 7": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 8": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 9": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 10": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 11": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 12": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 13": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 14": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 15": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Length 16": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Step Mod 3 Rest 1": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 2": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 3": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 4": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 5": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 6": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 7": {
+      "before": 0.0,
+      "after": 100.0
+     },
+     "Step Mod 3 Rest 8": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 9": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 10": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 11": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 12": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 13": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 14": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 15": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Step Mod 3 Rest 16": {
+      "before": 0.0,
+      "after": 1.0
+     }
+    },
+    "Remix FX": {
+     "Gater Noise": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Filter Drive": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Reset": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pad L Lock": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pad R Lock": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pad L MotionEnable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Pad R MotionEnable": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Motion X": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Motion Y": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Filter Cutoff": {
+      "before": -1.0,
+      "after": -0.98
+     },
+     "Filter Resonance": {
+      "before": 0.05,
+      "after": 0.06
+     },
+     "Filter On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Wobble Depth": {
+      "before": 0.91,
+      "after": 0.89
+     },
+     "Wobble On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Orbit Depth": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Orbit On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Repeater Mix": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Repeater On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Reverb Time": {
+      "before": 1.0,
+      "after": 1.08
+     },
+     "Reverb Mix": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Reverb On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Delay Feedback": {
+      "before": 0.0,
+      "after": 0.01
+     },
+     "Delay On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Gater On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Downsampler Frequency": {
+      "before": 81.0,
+      "after": 82.0
+     },
+     "Downsampler On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Reverse On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Scratcher On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Tape Stop On/Off": {
+      "before": null,
+      "after": null
+     },
+     "Reverse Note Value L": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Reverse Note Value R": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Scratch Note Value L": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Scratch Note Value R": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Tape Stop Note Value L": {
+      "before": 1.0,
+      "after": 1.0
+     },
+     "Tape Stop Note Value R": {
+      "before": 1.0,
+      "after": 1.0
+     }
+    },
+    "Phat FX": {
+     "Bandpass On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Bandpass Low Cutoff": {
+      "before": 20.0,
+      "after": 20.1
+     },
+     "Bandpass High Cutoff": {
+      "before": 20000.0,
+      "after": 19862.0
+     },
+     "Bandpass Low Resonance": {
+      "before": 35.0,
+      "after": 35.1
+     },
+     "Bandpass High Resonance": {
+      "before": 35.0,
+      "after": 35.1
+     },
+     "Bandpass Reject Mix": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Distortion On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Distortion Drive 1": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Distortion Drive 2": {
+      "before": 15.0,
+      "after": 15.1
+     },
+     "Distortion Drive 3": {
+      "before": 5.0,
+      "after": 5.1
+     },
+     "Filter On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Filter Cutoff": {
+      "before": 632.5,
+      "after": 636.8
+     },
+     "Filter Resonance": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Filter Drive": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Filter Mix": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Mod FX On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Mod FX Mix": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Mod FX Rate": {
+      "before": 0.4,
+      "after": 0.39
+     },
+     "Bass Enhancer On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Bass Enhancer Amount": {
+      "before": 50.0,
+      "after": 50.1
+     },
+     "Compressor On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Compressor Release": {
+      "before": 150.0,
+      "after": 151.0
+     },
+     "Master Input Gain": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Master Mix": {
+      "before": 100.0,
+      "after": 99.9
+     },
+     "Master Output": {
+      "before": -7.4,
+      "after": -7.5
+     },
+     "XY Pad X On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "XY Pad Y On": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "Bandpass Low Cutoff - X": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "Bandpass High Cutoff - Y": {
+      "before": 0.0,
+      "after": 0.1
+     },
+     "XY Pad X Depth 2": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "XY Pad Y Depth 1": {
+      "before": -75.0,
+      "after": -76.0
+     },
+     "XY Pad Y Depth 2": {
+      "before": 0.0,
+      "after": -0.0
+     },
+     "Envelope On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "Envelope Attack": {
+      "before": 0.25,
+      "after": 0.26
+     },
+     "Envelope Release": {
+      "before": 0.5,
+      "after": 0.49
+     },
+     "Envelope Depth": {
+      "before": 200.0,
+      "after": 202.0
+     },
+     "LFO 1 On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFO 1 Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO 1 Rate": {
+      "before": 1.0,
+      "after": 16.0
+     },
+     "LFO 1 Depth": {
+      "before": 100.0,
+      "after": 99.8
+     },
+     "LFO 2 On": {
+      "before": 0.0,
+      "after": 1.0
+     },
+     "LFO 2 Sync": {
+      "before": 1.0,
+      "after": 0.0
+     },
+     "LFO 2 Rate": {
+      "before": 1.0,
+      "after": 16.0
+     },
+     "LFO 2 Depth": {
+      "before": 100.0,
+      "after": 99.8
+     }
+    }
+   }
+  }
+ },
+ "stockfx-mfx-mono": {
+  "path": "stockfx-x03-mfx-mono.logicx",
+  "note": "the mfx-spots save with Phat FX, Remix FX, Step FX, Beat Breaker, Pedalboard, Pitch Correction, Loudness Meter, MultiMeter, Tuner and Gain also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "Phat FX",
+    "Remix FX",
+    "Step FX",
+    "Beat Breaker",
+    "Pedalboard",
+    "Pitch Correction",
+    "Loudness Meter",
+    "MultiMeter",
+    "Tuner",
+    "Gain"
+   ]
+  }
+ },
+ "sidechain-comp-none": {
+  "path": "sidechain-s01-comp-none.logicx",
+  "note": "Logic 12.3.1: a copy of send-two-base-3-logic (Audio 1 sending to Bus 1 'Drums' and Bus 2 'Cymbals') given a second audio track, a Compressor on Audio 2 with its Side Chain at Internal (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": null
+  }
+ },
+ "sidechain-comp-bus1": {
+  "path": "sidechain-s02-comp-bus1.logicx",
+  "note": "the Compressor's Side Chain set to Bus 1 (Drums) in the plug-in header's menu (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 69,
+    "index": 0,
+    "label": "Bus 1",
+    "name": "Bus 1",
+    "menu": "Bus 1  (Drums)"
+   }
+  }
+ },
+ "sidechain-comp-bus2": {
+  "path": "sidechain-s03-comp-bus2.logicx",
+  "note": "the Compressor's Side Chain set to Bus 2 (Cymbals) (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 69,
+    "index": 1,
+    "label": "Bus 2",
+    "name": "Bus 2",
+    "menu": "Bus 2  (Cymbals)"
+   }
+  }
+ },
+ "sidechain-comp-track": {
+  "path": "sidechain-s04-comp-track.logicx",
+  "note": "the Compressor's Side Chain set to the audio track Audio 1 (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 64,
+    "index": 0,
+    "label": "Audio 1",
+    "name": "Audio 1",
+    "menu": "Audio 1"
+   }
+  }
+ },
+ "sidechain-gate-bus1": {
+  "path": "sidechain-s05-gate-bus1.logicx",
+  "note": "the comp-none save with a Noise Gate added under the Compressor, its Side Chain set to Bus 1 (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 2,
+   "plugin": "Noise Gate",
+   "source": {
+    "kind": 69,
+    "index": 0,
+    "label": "Bus 1",
+    "name": "Bus 1",
+    "menu": "Bus 1  (Drums)"
+   }
+  }
+ },
+ "sidechain-proc-bus1": {
+  "path": "sidechain-s06-proc-bus1.logicx",
+  "note": "the gate-bus1 save with a third-party compressor added under the Noise Gate, its Side Chain set to Bus 1 (2026-09-22): the word is Logic's, not the plug-in's",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "source": {
+    "kind": 69,
+    "index": 0,
+    "label": "Bus 1",
+    "name": "Bus 1",
+    "menu": "Bus 1  (Drums)"
+   }
+  }
+ },
+ "sidechain-ours": {
+  "path": "sidechain-s07-ours.logicx",
+  "note": "logic add-plugin --plugin 'Noise Gate' --channel 'Audio 2' --side-chain 'Bus 2' on the comp-none save (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 2,
+   "plugin": "Noise Gate",
+   "source": {
+    "kind": 69,
+    "index": 1,
+    "label": "Bus 2",
+    "name": "Bus 2"
+   }
+  }
+ },
+ "sidechain-ours-resave-logic": {
+  "path": "sidechain-s08-ours-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of sidechain-ours: opened, the Noise Gate's Side Chain popup read 'Bus 2', Save As (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 2,
+   "plugin": "Noise Gate",
+   "source": {
+    "kind": 69,
+    "index": 1,
+    "label": "Bus 2",
+    "name": "Bus 2",
+    "menu": "Bus 2"
+   }
+  }
+ },
+ "translate-proc": {
+  "path": "translate-t01-proc.logicx",
+  "note": "Logic 12.3.1: the sidechain-proc-bus1 save with its Pro-C 2 dialled in the Controls view to -30 dB, 3.06:1, 10.72 ms, 115 ms, 6 dB knee, +3 dB wet gain, 80% mix (2026-09-22); the values the window showed",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "shown": {
+    "threshold": -30.0,
+    "ratio": 3.06,
+    "attack": 10.72,
+    "release": 115.0,
+    "knee": 6.0,
+    "make_up": 3.0,
+    "mix": 80.0,
+    "auto_release": false
+   }
+  }
+ },
+ "translate-ours": {
+  "path": "translate-t02-ours.logicx",
+  "note": "logic replace-plugin --at 3 --plugin Compressor --translate on translate-proc: the Pro-C 2's settings carried into a Compressor through the compressor vocabulary (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor"
+  }
+ },
+ "translate-ours-resave-logic": {
+  "path": "translate-t03-ours-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of translate-ours: opened, the new Compressor's Controls view read the values below, Save As (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Threshold": "-30.0 dB",
+    "Ratio": "3.1:1",
+    "Attack": "10.5 ms",
+    "Release": "110.0 ms",
+    "Make Up": "3.0 dB",
+    "Knee": "0.1",
+    "Auto Release": "0",
+    "Mix": "80.0 %",
+    "Input Gain": "0.0 dB",
+    "Output Gain": "0.0 dB"
+   }
+  }
+ },
+ "sonible-defaults": {
+  "path": "sonible-n01-defaults.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with sonible smart:gate and smart:comp 2 inserted through the slot menu and left at their defaults (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "components": {
+    "smart:comp 2": [
+     "aufx",
+     "smC2",
+     "Soni"
+    ],
+    "smart:gate": [
+     "aufx",
+     "sGat",
+     "Soni"
+    ]
+   }
+  }
+ },
+ "sonible-spots": {
+  "path": "sonible-n02-spots.logicx",
+  "note": "the sonible-defaults save after every slider row of both Controls views was moved 500 units and every checkbox pressed (2026-09-22): the values each window then showed",
+  "facts": {
+   "channel": "Audio 2",
+   "shown": {
+    "smart:comp 2": {
+     "threshold": -10.2,
+     "ratio": 1.45,
+     "knee": 0.3,
+     "attack": 40.0,
+     "release": 400.0,
+     "make_up": 2.4,
+     "mix": 95.0,
+     "auto_gain": true,
+     "input_gain": 2.4
+    },
+    "smart:gate": {
+     "attack": 16.0,
+     "release": 350.0,
+     "hold": 10.0
+    }
+   }
+  }
+ },
+ "sonible-mono": {
+  "path": "sonible-n03-mono.logicx",
+  "note": "an earlier pass's spots save with smart:gate and smart:comp 2 also inserted on the mono Audio 1, in front of its chain (2026-09-22): the mono instances beside Audio 2's stereo ones",
+  "facts": {
+   "channel": "Audio 1",
+   "mono_inserts": [
+    "smart:gate",
+    "smart:comp 2"
+   ]
+  }
+ },
+ "translate-sonible-ours": {
+  "path": "translate-t04-sonible-ours.logicx",
+  "note": "logic replace-plugin --translate twice on sonible-spots: smart:comp 2 (slot 1) into a Compressor, then smart:gate (slot 2) into a Noise Gate, each carrying its settings (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   }
+  }
+ },
+ "translate-sonible-resave-logic": {
+  "path": "translate-t05-sonible-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of translate-sonible-ours: opened twice, each new plug-in's Controls view read the values below, Save As (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "shown": {
+    "Compressor": {
+     "Threshold": "-10.0 dB",
+     "Ratio": "1.5:1",
+     "Attack": "41.0 ms",
+     "Release": "390.0 ms",
+     "Make Up": "2.5 dB",
+     "Knee": "0.0",
+     "Mix": "95.0 %",
+     "Input Gain": "+2.5 dB",
+     "Output Gain": "0.0 dB"
+    },
+    "Noise Gate": {
+     "Threshold": "-50 dB",
+     "Hysteresis": "-3.0 dB",
+     "Reduction": "-100 dB",
+     "Attack": "16 ms",
+     "Hold": "10 ms",
+     "Release": "351.0 ms"
+    }
+   }
+  }
+ },
+ "translate-proq": {
+  "path": "translate-t06-proq.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 2) with a Pro-Q 4 inserted and nine bands dialled in its Controls view by slider value, the shapes picked from their popups, saved, then the three shapes the first pass missed picked with the rows scrolled into view and saved in place (2026-09-22); the values the window showed; the plug-in sits in mixer slot 4, slots 1-3 empty",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Pro-Q 4",
+   "shown": {
+    "1": {
+     "shape": "Low Cut",
+     "frequency": "79.996 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "24 dB/oct"
+    },
+    "2": {
+     "shape": "Bell",
+     "frequency": "250.01 Hz",
+     "gain": "-4.00 dB",
+     "q": "2.424",
+     "slope": "12 dB/oct"
+    },
+    "3": {
+     "shape": "Bell",
+     "frequency": "1000.0 Hz",
+     "gain": "+3.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "4": {
+     "shape": "High Shelf",
+     "frequency": "7999.6 Hz",
+     "gain": "-2.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "5": {
+     "shape": "High Cut",
+     "frequency": "15999 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "24 dB/oct"
+    },
+    "6": {
+     "shape": "Bell",
+     "frequency": "3999.9 Hz",
+     "gain": "+2.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "7": {
+     "shape": "Notch",
+     "frequency": "59.999 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "8": {
+     "shape": "Bell",
+     "frequency": "500.01 Hz",
+     "gain": "+1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "9": {
+     "shape": "Bell",
+     "frequency": "2000.0 Hz",
+     "gain": "-1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    }
+   }
+  }
+ },
+ "translate-proq-ours": {
+  "path": "translate-t07-proq-ours.logicx",
+  "note": "logic replace-plugin --at 1 --plugin 'Channel EQ' --translate on translate-proq: the Pro-Q 4's nine bands carried into a Channel EQ through the eq vocabulary; the notch and the fifth bell (4 kHz) reported as having no slot (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ"
+  }
+ },
+ "translate-proq-ours-resave-logic": {
+  "path": "translate-t08-proq-ours-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of translate-proq-ours: opened, the new Channel EQ's Controls view read the values below, Save As (2026-09-22)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ",
+   "shown": {
+    "Low Cut On/Off": "1",
+    "Low Cut Frequency": "80.0 Hz",
+    "Low Cut Q-Factor": "1.00",
+    "Low Shelf On/Off": "0",
+    "Low Shelf Frequency": "80.0 Hz",
+    "Low Shelf Gain": "0.0 dB",
+    "Low Shelf Q-Factor": "1.10",
+    "Peak 1 On/Off": "1",
+    "Peak 1 Frequency": "250 Hz",
+    "Peak 1 Gain": "-4.0 dB",
+    "Peak 1 Q-Factor": "2.50",
+    "Peak 2 On/Off": "1",
+    "Peak 2 Frequency": "500 Hz",
+    "Peak 2 Gain": "+1.0 dB",
+    "Peak 2 Q-Factor": "1.00",
+    "Peak 3 On/Off": "1",
+    "Peak 3 Frequency": "1000 Hz",
+    "Peak 3 Gain": "+3.0 dB",
+    "Peak 3 Q-Factor": "1.00",
+    "Peak 4 On/Off": "1",
+    "Peak 4 Frequency": "2000 Hz",
+    "Peak 4 Gain": "-1.0 dB",
+    "Peak 4 Q-Factor": "1.00",
+    "High Shelf On/Off": "1",
+    "High Shelf Frequency": "8000 Hz",
+    "High Shelf Gain": "-2.0 dB",
+    "High Shelf Q-Factor": "1.00",
+    "High Cut On/Off": "1",
+    "High Cut Frequency": "16000 Hz",
+    "High Cut Q-Factor": "1.00",
+    "Master  Gain": "0.0 dB"
+   }
+  }
+ },
+ "write-proc": {
+  "path": "write-w01-proc.logicx",
+  "note": "logic settings --set threshold=-24 --set ratio=6 --set auto_gain=off --channel 'Audio 2' --at 3 on translate-proc: the Pro-C 2's id/value pairs patched in place inside its plist (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2"
+  }
+ },
+ "write-proc-resave-logic": {
+  "path": "write-w02-proc-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of write-proc: opened, the Pro-C 2's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "shown": {
+    "Threshold": "-24.00 dB",
+    "Ratio": "6.00:1",
+    "Knee": "+6.00 dB",
+    "Attack": "10.72 ms",
+    "Release": "115.0 ms",
+    "Auto Release": "Off",
+    "Lookahead": "0.000 ms",
+    "Wet Gain": "+3.00 dB",
+    "Auto Gain": "Off",
+    "Mix": "80.00%",
+    "Input Level": "0.00 dB",
+    "Output Level": "0.00 dB"
+   }
+  }
+ },
+ "write-comp2proc": {
+  "path": "write-w03-comp2proc.logicx",
+  "note": "logic replace-plugin --at 3 --plugin 'Pro-C 2' --translate on translate-ours-resave-logic: Logic's Compressor (-30 dB, 3.1:1, 10.5 ms, 110 ms, knee 0.1, +3 dB, 80 %) carried into a Pro-C 2 through the compressor vocabulary, its side chain with it (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2"
+  }
+ },
+ "write-comp2proc-resave-logic": {
+  "path": "write-w04-comp2proc-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of write-comp2proc: opened, the Pro-C 2's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "shown": {
+    "Threshold": "-30.00 dB",
+    "Ratio": "3.10:1",
+    "Knee": "+7.20 dB",
+    "Attack": "10.49 ms",
+    "Release": "109.8 ms",
+    "Auto Release": "Off",
+    "Lookahead": "0.000 ms",
+    "Wet Gain": "+3.00 dB",
+    "Auto Gain": "On",
+    "Mix": "80.00%",
+    "Input Level": "0.00 dB",
+    "Output Level": "0.00 dB"
+   }
+  }
+ },
+ "write-eq2proq": {
+  "path": "write-w05-eq2proq.logicx",
+  "note": "logic replace-plugin --at 1 --plugin 'Pro-Q 4' --translate on translate-proq-ours-resave-logic: the Channel EQ's seven live slots carried into a Pro-Q 4's band layout, the off low shelf left out, the cut slopes 12 dB/oct for want of the table's (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Pro-Q 4"
+  }
+ },
+ "write-eq2proq-resave-logic": {
+  "path": "write-w06-eq2proq-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of write-eq2proq: opened, the Pro-Q 4's Controls view read the values below (its Shape popup reads blank there), band 8 Unused, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Pro-Q 4",
+   "shown": {
+    "1": {
+     "frequency": "79.996 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "2": {
+     "frequency": "250.01 Hz",
+     "gain": "-4.00 dB",
+     "q": "2.498",
+     "slope": "12 dB/oct"
+    },
+    "3": {
+     "frequency": "500.01 Hz",
+     "gain": "+1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "4": {
+     "frequency": "1000.0 Hz",
+     "gain": "+3.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "5": {
+     "frequency": "2000.0 Hz",
+     "gain": "-1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "6": {
+     "frequency": "7999.6 Hz",
+     "gain": "-2.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "7": {
+     "frequency": "15999 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    }
+   }
+  }
+ },
+ "mb-promb": {
+  "path": "mb-m01-promb.logicx",
+  "note": "Logic 12.3.1: a fresh stereo audio track (Audio 3) with a Pro-MB inserted and three bands dialled in its Controls view \u2014 states, crossovers, modes, thresholds, ranges, ratios, levels, band 1's attack, release, knee and lookahead, the output level \u2014 saved, then the four crossover and two percentage rows set again on their own scales and saved in place (2026-09-23); the bands as read back; the plug-in sits in mixer slot 4, slots 1-3 empty",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 4,
+   "plugin": "Pro-MB",
+   "bands": [
+    "30 Hz-120 Hz compress -20.0 dB 3.00:1 range -6.0 dB 30/40 % +1.0 dB",
+    "120 Hz-2.00 kHz expand -40.0 dB 2.00:1 range -10.0 dB 20/20 %",
+    "4.00 kHz-30.00 kHz compress -12.0 dB 4.00:1 range -30.0 dB 20/20 % -1.5 dB"
+   ]
+  }
+ },
+ "mb-promb-ours": {
+  "path": "mb-m02-promb-ours.logicx",
+  "note": "logic replace-plugin --at 1 --plugin Multipressor --translate on mb-promb: the Pro-MB's three bands laid over Multipressor's four \u2014 20-120 Hz, 120 Hz-2 kHz (expand mode into the expander), 2-4 kHz off for want of a band, 4-20 kHz \u2014 lookahead and output level carried (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor"
+  }
+ },
+ "mb-promb-resave-logic": {
+  "path": "mb-m03-promb-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of mb-promb-ours: opened, the Multipressor's Controls view read the values below, Save As (2026-09-23); the Reduction and Response rows read without a band name in the Controls view, band 2's Reduction is the one after its crossover row; its editor, opened again 2026-09-23, drew bands 1, 2 and 4 only, the 3/4 crossover greyed and band 4 from the 2/3 crossover: an Off band's range is the next live band's",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor",
+   "shown": {
+    "Lookahead": "2.000 ms",
+    "Band 2 Xover Frequency 1/2": "120 Hz",
+    "Band 3 Xover Frequency 2/3": "2000 Hz",
+    "Band 4 Xover Frequency 3/4": "3900 Hz",
+    "Band 1 Comp. Threshold": "-20.0 dB",
+    "Band 1 Comp. Ratio": "3.000",
+    "Band 1 Make Up": "1.0 dB",
+    "Band 1 Attack": "2.0 ms",
+    "Band 1 Release": "61.0 ms",
+    "Band 1 Monitor": "1",
+    "Band 1 Exp. Ratio": "1.00",
+    "Band 2 Comp. Threshold": "0.00 dB",
+    "Band 2 Comp. Ratio": "1.000",
+    "Band 2 Exp. Ratio": "1.98",
+    "Band 2 Make Up": "0.0 dB",
+    "Band 2 Monitor": "1",
+    "Band 3 Comp. Threshold": "-15.0 dB",
+    "Band 3 Comp. Ratio": "2.022",
+    "Band 3 Monitor": "0",
+    "Band 4 Comp. Threshold": "-12.0 dB",
+    "Band 4 Comp. Ratio": "3.675",
+    "Band 4 Make Up": "-1.5 dB",
+    "Band 4 Monitor": "1",
+    "Master Gain": "2.0",
+    "Auto Gain": "0",
+    "Band 1 Bypass": "0",
+    "Band 2 Bypass": "0",
+    "Band 3 Bypass": "0",
+    "Band 4 Bypass": "0",
+    "Band 2 Reduction": "-10.0 dB"
+   },
+   "editor": {
+    "bands": [
+     1,
+     2,
+     4
+    ],
+    "crossover_3_4": "greyed",
+    "band_4_from_hz": 2000
+   }
+  }
+ },
+ "mb-multi2promb": {
+  "path": "mb-m04-multi2promb.logicx",
+  "note": "logic replace-plugin --at 1 --plugin Pro-MB --translate on mb-promb-resave-logic: the Multipressor's three live bands back into a Pro-MB \u2014 30-120 Hz and 3.9-20 kHz as compressors at Pro-MB's widest range, 120 Hz-2 kHz as an expander from the band's expander, the off band left out, lookahead and output level carried (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Pro-MB"
+  }
+ },
+ "mb-multi2promb-resave-logic": {
+  "path": "mb-m05-multi2promb-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of mb-multi2promb: opened, the Pro-MB's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Pro-MB",
+   "shown": {
+    "1": {
+     "state": "Enabled",
+     "low": "30.000 Hz",
+     "high": "120.00 Hz",
+     "mode": "Compression",
+     "threshold": "-20.00 dB",
+     "range": "-30.00 dB",
+     "ratio": "3.00:1",
+     "attack": "30.0%",
+     "release": "40.0%",
+     "knee": "12.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "+1.00 dB"
+    },
+    "2": {
+     "state": "Enabled",
+     "low": "120.00 Hz",
+     "high": "2000.0 Hz",
+     "mode": "Expansion",
+     "threshold": "-40.00 dB",
+     "range": "-10.00 dB",
+     "ratio": "1.98:1",
+     "attack": "20.0%",
+     "release": "20.0%",
+     "knee": "24.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "0.00 dB"
+    },
+    "3": {
+     "state": "Enabled",
+     "low": "3900.1 Hz",
+     "high": "19999 Hz",
+     "mode": "Compression",
+     "threshold": "-12.00 dB",
+     "range": "-30.00 dB",
+     "ratio": "3.67:1",
+     "attack": "20.0%",
+     "release": "20.0%",
+     "knee": "24.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "-1.50 dB"
+    },
+    "Mix": "100.0%",
+    "Output Level": "+2.00 dB"
+   }
+  }
+ },
+ "auto-lanes": {
+  "path": "auto-a01-lanes.logicx",
+  "note": "translate-proc with four parameter lanes written on its Pro-C 2 (insert 3) by automation_write.set_param_lane: threshold at bars 1-3 (0.5, 0.6, 0.8 of -60..0 dB), ratio at bars 1 and 3 (0.6, 0.5), attack at bar 2 (0.4), lookahead at bar 1 (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "lanes": {
+    "1": [
+     [
+      38400,
+      0.5
+     ],
+     [
+      42240,
+      0.6
+     ],
+     [
+      46080,
+      0.8
+     ]
+    ],
+    "2": [
+     [
+      38400,
+      0.6
+     ],
+     [
+      46080,
+      0.5
+     ]
+    ],
+    "5": [
+     [
+      42240,
+      0.4
+     ]
+    ],
+    "8": [
+     [
+      38400,
+      0.5
+     ]
+    ]
+   }
+  }
+ },
+ "auto-lanes-ours": {
+  "path": "auto-a02-lanes-ours.logicx",
+  "note": "logic replace-plugin --at 3 --plugin Compressor --translate on auto-lanes: the Pro-C 2's lanes carried onto the Compressor's indices through the maps \u2014 threshold to index 0 on its 0.5 dB slider (units 40, 52, 76), ratio to 1, attack to 2; the lookahead lane dropped (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor",
+   "lanes": {
+    "0": [
+     [
+      38400,
+      40
+     ],
+     [
+      42240,
+      52
+     ],
+     [
+      46080,
+      76
+     ]
+    ],
+    "1": [
+     [
+      38400,
+      34
+     ],
+     [
+      46080,
+      25
+     ]
+    ],
+    "2": [
+     [
+      42240,
+      32
+     ]
+    ]
+   },
+   "units_per": 128
+  }
+ },
+ "auto-lanes-resave-logic": {
+  "path": "auto-a03-lanes-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of auto-lanes-ours: opened, Audio 2's Automation Event List listed the rows below (num = the parameter index, val = the point's top byte), Save As (2026-09-23); with the track in Read, the Compressor's Controls view at bars 1-3 showed the values under shown (the attack lane's one point is at bar 2)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 40,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 1,
+     "val": 34,
+     "name": "Ratio"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 52,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 2,
+     "val": 32,
+     "name": "Attack"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 76,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 1,
+     "val": 25,
+     "name": "Ratio"
+    }
+   ],
+   "provenance": "Automation Event List of the track, read off the screen (Logic Pro 12.3.1, 2026-09-23); position as bar beat division tick",
+   "shown": {
+    "1": {
+     "Threshold": "-30.0 dB",
+     "Ratio": "3.9:1",
+     "Attack": "10.5 ms"
+    },
+    "2": {
+     "Threshold": "-24.0 dB",
+     "Ratio": "3.9:1",
+     "Attack": "16.0 ms"
+    },
+    "3": {
+     "Threshold": "-12.0 dB",
+     "Ratio": "2.7:1",
+     "Attack": "16.0 ms"
+    }
+   }
+  }
+ },
+ "auto-eqlanes": {
+  "path": "auto-a04-eqlanes.logicx",
+  "note": "translate-proq (a Pro-Q 4 dialled to nine bands, mixer slot 4 of Audio 2) with three lanes written on it: band 1's enabled at bars 1-3 (1, 0, 1), band 2's gain (-4, 0, +6 dB over -30..30) and band 3's frequency at bars 1 and 3 (1 kHz, 2 kHz as log2 over 3.32..14.87) (2026-09-23); the lanes sit at insert 1, which names no plug-in on that channel (slots-insert1-logic read it on auto-eqlanes)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Pro-Q 4",
+   "lanes": {
+    "1": [
+     [
+      38400,
+      1.0
+     ],
+     [
+      42240,
+      0.0
+     ],
+     [
+      46080,
+      1.0
+     ]
+    ],
+    "26": [
+     [
+      38400,
+      0.4333
+     ],
+     [
+      42240,
+      0.5
+     ],
+     [
+      46080,
+      0.6
+     ]
+    ],
+    "48": [
+     [
+      38400,
+      0.5752
+     ],
+     [
+      46080,
+      0.6618
+     ]
+    ]
+   }
+  }
+ },
+ "auto-eqlanes-ours": {
+  "path": "auto-a05-eqlanes-ours.logicx",
+  "note": "logic replace-plugin --at 1 --plugin 'Channel EQ' --translate on auto-eqlanes: the Pro-Q 4's band lanes carried onto the Channel EQ slots the plan placed the bands in \u2014 band 1's enabled onto Low Cut On/Off, band 2's gain onto Peak 1 Gain, band 3's frequency onto Peak 3 Frequency \u2014 on the sliders' measured units (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ",
+   "lanes": {
+    "0": [
+     [
+      38400,
+      1.0
+     ],
+     [
+      42240,
+      0.0
+     ],
+     [
+      46080,
+      1.0
+     ]
+    ],
+    "10": [
+     [
+      38400,
+      200
+     ],
+     [
+      42240,
+      240
+     ],
+     [
+      46080,
+      300
+     ]
+    ],
+    "17": [
+     [
+      38400,
+      600
+     ],
+     [
+      46080,
+      700
+     ]
+    ]
+   },
+   "units_per": {
+    "0": 1,
+    "10": 483.75,
+    "17": 1058
+   }
+  }
+ },
+ "auto-mblanes": {
+  "path": "auto-a06-mblanes.logicx",
+  "note": "mb-promb (a Pro-MB dialled to three bands, mixer slot 4 of Audio 3) with three lanes written on it: band 1's threshold at bars 1-3 (0.6667, 0.8, 0.5 of its curve: -20, -12, -30 dB), band 3's ratio at bars 1 and 3 (0.6, 0.4: 4:1, 2:1), band 1's level at bar 2 (+1 dB over -30..30) (2026-09-23); the lanes sit at insert 1, which names no plug-in on that channel (slots-insert1-logic read it on auto-eqlanes)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 4,
+   "plugin": "Pro-MB",
+   "lanes": {
+    "6": [
+     [
+      38400,
+      0.6667
+     ],
+     [
+      42240,
+      0.8
+     ],
+     [
+      46080,
+      0.5
+     ]
+    ],
+    "52": [
+     [
+      38400,
+      0.6
+     ],
+     [
+      46080,
+      0.4
+     ]
+    ],
+    "13": [
+     [
+      42240,
+      0.5167
+     ]
+    ]
+   }
+  }
+ },
+ "auto-mblanes-ours": {
+  "path": "auto-a07-mblanes-ours.logicx",
+  "note": "logic replace-plugin --at 1 --plugin Multipressor --translate on auto-mblanes: the Pro-MB's band lanes carried onto the Multipressor slots the plan placed the bands in \u2014 band 1's threshold and level onto Band 1 Comp. Threshold and Make Up, band 3's ratio onto Band 4 Comp. Ratio (its 4-30 kHz band) \u2014 on the sliders' measured units (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor",
+   "lanes": {
+    "40": [
+     [
+      38400,
+      60
+     ],
+     [
+      42240,
+      76
+     ],
+     [
+      46080,
+      40
+     ]
+    ],
+    "8": [
+     [
+      38400,
+      46
+     ],
+     [
+      46080,
+      22
+     ]
+    ],
+    "42": [
+     [
+      42240,
+      42
+     ]
+    ]
+   },
+   "units_per": {
+    "40": 161.25,
+    "8": 128,
+    "42": 128
+   }
+  }
+ },
+ "auto-eqlanes-resave-logic": {
+  "path": "auto-a08-eqlanes-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of auto-eqlanes-ours: opened, Audio 2's Automation Event List listed the rows under event_list, and with the track in Read the Channel EQ's Controls view at bars 1-3 showed the values under shown, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 127,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 53,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 17,
+     "val": 72,
+     "name": "Peak 3 Frequency"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 0,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 63,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 127,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 79,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 17,
+     "val": 84,
+     "name": "Peak 3 Frequency"
+    }
+   ],
+   "shown": {
+    "1": {
+     "Low Cut On/Off": "1",
+     "Peak 1 Gain": "-4.0 dB",
+     "Peak 3 Frequency": "1000 Hz"
+    },
+    "2": {
+     "Low Cut On/Off": "0",
+     "Peak 1 Gain": "0.0 dB",
+     "Peak 3 Frequency": "1000 Hz"
+    },
+    "3": {
+     "Low Cut On/Off": "1",
+     "Peak 1 Gain": "+6.0 dB",
+     "Peak 3 Frequency": "2000 Hz"
+    }
+   },
+   "provenance": "Automation Event List and the plug-in's Controls view, read off the screen (Logic Pro 12.3.1, 2026-09-23)"
+  }
+ },
+ "auto-mblanes-resave-logic": {
+  "path": "auto-a09-mblanes-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of auto-mblanes-ours: opened, Audio 3's Automation Event List listed the rows under event_list, and with the track in Read the Multipressor's Controls view at bars 1-3 showed the values under shown \u2014 the ratio knob's grid puts unit 46 at 3.675 \u2014 Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 8,
+     "val": 46,
+     "name": "Band 4 Comp. Ratio"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 48,
+     "name": "Band 1 Comp. Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 60,
+     "name": "Band 1 Comp. Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 42,
+     "val": 42,
+     "name": "Band 1 Make Up"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 8,
+     "val": 22,
+     "name": "Band 4 Comp. Ratio"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 32,
+     "name": "Band 1 Comp. Threshold"
+    }
+   ],
+   "shown": {
+    "1": {
+     "Band 1 Comp. Threshold": "-20.0 dB",
+     "Band 4 Comp. Ratio": "3.675",
+     "Band 1 Make Up": "1.0 dB"
+    },
+    "2": {
+     "Band 1 Comp. Threshold": "-12.0 dB",
+     "Band 4 Comp. Ratio": "3.675",
+     "Band 1 Make Up": "1.0 dB"
+    },
+    "3": {
+     "Band 1 Comp. Threshold": "-30.0 dB",
+     "Band 4 Comp. Ratio": "1.977",
+     "Band 1 Make Up": "1.0 dB"
+    }
+   },
+   "provenance": "Automation Event List and the plug-in's Controls view, read off the screen (Logic Pro 12.3.1, 2026-09-23)"
+  }
+ },
+ "snap-raw": {
+  "path": "snap-s01-raw.logicx",
+  "note": "Raw floats between slider positions written into Audio 2's Compressor (slot 1: ratio 4.0, attack 20.5 ms, release 115 ms) and Noise Gate (slot 2: hold 205 ms, release 351 ms) of the translate base, no snap (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "written": {
+    "Compressor": {
+     "ratio": 4.0,
+     "attack": 20.5,
+     "release": 115.0
+    },
+    "Noise Gate": {
+     "hold": 205.0,
+     "release": 351.0
+    }
+   }
+  }
+ },
+ "snap-raw-resave-logic": {
+  "path": "snap-s02-raw-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of snap-raw: opened with no other document open, Save As (2026-09-23); every raw float landed on a slider position",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "kept": {
+    "Compressor": {
+     "ratio": 3.9,
+     "attack": 20.0,
+     "release": 110.0
+    },
+    "Noise Gate": {
+     "hold": 210.0,
+     "release": 350.99
+    }
+   }
+  }
+ },
+ "snap-ours": {
+  "path": "snap-s03-ours.logicx",
+  "note": "logic settings --set ratio=4.0 attack=20.5 release=115 on the Compressor, then --set release=351 hold=205 on the Noise Gate, each through the snap (2026-09-23): 3.9, 20, 110; 200, 351",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "written": {
+    "Compressor": {
+     "ratio": 3.9,
+     "attack": 20.0,
+     "release": 110.0
+    },
+    "Noise Gate": {
+     "hold": 200.0,
+     "release": 351.0
+    }
+   }
+  }
+ },
+ "snap-ours-resave-logic": {
+  "path": "snap-s04-ours-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of snap-ours: opened with no other document open, Save As (2026-09-23); every float as written but the gate release, 350.99 for 351",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "kept": {
+    "Compressor": {
+     "ratio": 3.9,
+     "attack": 20.0,
+     "release": 110.0
+    },
+    "Noise Gate": {
+     "hold": 200.0,
+     "release": 350.99
+    }
+   }
+  }
+ },
+ "neutron-base": {
+  "path": "neutron-n01-base.logicx",
+  "note": "Logic 12.3.1: iZotope Neutron 5 inserted fresh into Audio 2's fourth slot of the translate base through the slot menu, its Controls view read (471 rows), Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Neutron 5",
+   "families": [
+    "compressor",
+    "eq",
+    "gate"
+   ],
+   "eq_bands": 0
+  }
+ },
+ "neutron-dialled": {
+  "path": "neutron-n02-dialled.logicx",
+  "note": "Logic 12.3.1: the fresh Neutron 5's Controls view dialled \u2014 C1 B1 threshold/ratio/attack/release/knee/gain/mix, G1 B1 open/close/hold/attack/release/ratio, EQ Main B1-B3 enabled with shape, frequency, gain, Q (B3's dynamics on) \u2014 and saved; the Shape popup walked top to bottom for its 13 names (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Neutron 5",
+   "compressor": {
+    "threshold": -20.0,
+    "ratio": 3.0,
+    "attack": 25.1,
+    "release": 120.1,
+    "knee": 5.0,
+    "make_up": 2.0,
+    "mix": 80.0
+   },
+   "gate": {
+    "threshold": -100.0,
+    "attack": 5.0,
+    "hold": 250.0,
+    "release": 200.0,
+    "hysteresis": -0.6
+   },
+   "bands": [
+    "bell 150 Hz -4.0 dB Q 1.50",
+    "high shelf 2.00 kHz +3.0 dB Q 2.00",
+    "bell 3.00 kHz -6.0 dB Q 4.00 dynamic"
+   ],
+   "shapes": [
+    "Proportional Q",
+    "Bell",
+    "Band Shelf",
+    "Analog Low Shelf",
+    "Baxandall Low Shelf",
+    "Vintage Low Shelf",
+    "Analog High Shelf",
+    "Baxandall High Shelf",
+    "Vintage High Shelf",
+    "Flat Lowpass",
+    "Resonant Lowpass",
+    "Flat Highpass",
+    "Resonant Highpass"
+   ],
+   "dialled": {
+    "C1 B1": {
+     "Threshold": "-20.0",
+     "Ratio": "3.00",
+     "Attack": "25.1",
+     "Release": "120.1",
+     "Knee": "5.00",
+     "Gain": "+2.00",
+     "Mix": "80.0"
+    },
+    "G1 B1": {
+     "Open": "-100.0",
+     "Close": "0.60",
+     "Hold": "0.25",
+     "Attack": "5.00",
+     "Release": "200.0",
+     "Ratio": "4.00"
+    }
+   }
+  }
+ },
+ "neutron-comp": {
+  "path": "neutron-n03-comp.logicx",
+  "note": "logic replace-plugin --at 4 --plugin Compressor --translate on neutron-dialled: Neutron 5's Dynamics 0 carried into a Compressor, each value on its slider's nearer position (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Compressor"
+  }
+ },
+ "neutron-comp-resave-logic": {
+  "path": "neutron-n04-comp-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of neutron-comp: opened, the Compressor's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Compressor",
+   "shown": {
+    "Threshold": "-20.0 dB",
+    "Ratio": "2.9:1",
+    "Attack": "26.0 ms",
+    "Release": "120.0 ms",
+    "Make Up": "2.0 dB",
+    "Knee": "0.1",
+    "Mix": "80.0 %"
+   }
+  }
+ },
+ "neutron-gate": {
+  "path": "neutron-n05-gate.logicx",
+  "note": "logic replace-plugin --at 4 --plugin 'Noise Gate' --translate on neutron-dialled: Neutron 5's Gate Expander carried into a Noise Gate \u2014 hold from seconds, hysteresis negated (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Noise Gate"
+  }
+ },
+ "neutron-gate-resave-logic": {
+  "path": "neutron-n06-gate-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of neutron-gate: opened, the Noise Gate's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Noise Gate",
+   "shown": {
+    "Threshold": "-100 dB",
+    "Hysteresis": "-0.5 dB",
+    "Attack": "5 ms",
+    "Hold": "250 ms",
+    "Release": "199.6 ms"
+   }
+  }
+ },
+ "neutron-eq": {
+  "path": "neutron-n07-eq.logicx",
+  "note": "logic replace-plugin --at 4 --plugin 'Channel EQ' --translate on neutron-dialled: Neutron 5's three Dynamic EQ bands laid into Channel EQ's slots by shape, the dynamic band's static curve (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ"
+  }
+ },
+ "neutron-eq-resave-logic": {
+  "path": "neutron-n08-eq-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of neutron-eq: opened, the Channel EQ's Controls view read the values below, Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ",
+   "shown": {
+    "Peak 1 Frequency": "150 Hz",
+    "Peak 1 Gain": "-4.0 dB",
+    "Peak 1 Q-Factor": "1.50",
+    "Peak 2 Frequency": "3000 Hz",
+    "Peak 2 Gain": "-6.0 dB",
+    "Peak 2 Q-Factor": "4.00",
+    "High Shelf Frequency": "2000 Hz",
+    "High Shelf Gain": "+3.0 dB",
+    "High Shelf Q-Factor": "2.00",
+    "Peak 1 On/Off": "1",
+    "Peak 2 On/Off": "1",
+    "High Shelf On/Off": "1",
+    "Peak 3 On/Off": "0",
+    "Low Cut On/Off": "0"
+   }
+  }
+ },
+ "autoset-ours": {
+  "path": "autoset-x01-ours.logicx",
+  "note": "logic automation --set on the translate base, four plug-in parameter lanes by slot and name (2026-09-23): Audio 2 slot 1 Compressor Threshold -30@1,-24@5,-12@9 and Auto Release on@1,off@5; slot 2 Noise Gate Hold 250@1,205@5; slot 3 Pro-C 2 Threshold -20@1,-10@5 (its AU table's -60..0)",
+  "facts": {
+   "channel": "Audio 2",
+   "written": {
+    "slot 1 Threshold": [
+     [
+      1,
+      40
+     ],
+     [
+      5,
+      52
+     ],
+     [
+      9,
+      76
+     ]
+    ],
+    "slot 1 Auto Release": [
+     [
+      1,
+      1.0
+     ],
+     [
+      5,
+      0.0
+     ]
+    ],
+    "slot 2 Hold": [
+     [
+      1,
+      25
+     ],
+     [
+      5,
+      20
+     ]
+    ],
+    "slot 3 Threshold": [
+     [
+      1,
+      0.6667
+     ],
+     [
+      5,
+      0.8333
+     ]
+    ]
+   }
+  }
+ },
+ "autoset-resave-logic": {
+  "path": "autoset-x02-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of autoset-ours: opened, Audio 2's Automation Event List read row by row (status, ch, num, val, name), Save As (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "shown": [
+    {
+     "bar": 1,
+     "num": 0,
+     "val": 40,
+     "name": "Threshold",
+     "ch": 2
+    },
+    {
+     "bar": 1,
+     "num": 13,
+     "val": 127,
+     "name": "Auto Release",
+     "ch": 2
+    },
+    {
+     "bar": 1,
+     "num": 4,
+     "val": 25,
+     "name": "Hold",
+     "ch": 3
+    },
+    {
+     "bar": 1,
+     "num": 1,
+     "val": 85,
+     "name": "Threshold",
+     "ch": 4
+    },
+    {
+     "bar": 5,
+     "num": 0,
+     "val": 52,
+     "name": "Threshold",
+     "ch": 2
+    },
+    {
+     "bar": 5,
+     "num": 13,
+     "val": 0,
+     "name": "Auto Release",
+     "ch": 2
+    },
+    {
+     "bar": 5,
+     "num": 4,
+     "val": 20,
+     "name": "Hold",
+     "ch": 3
+    },
+    {
+     "bar": 5,
+     "num": 1,
+     "val": 106,
+     "name": "Threshold",
+     "ch": 4
+    },
+    {
+     "bar": 9,
+     "num": 0,
+     "val": 76,
+     "name": "Threshold",
+     "ch": 2
+    }
+   ]
+  }
+ },
+ "autoset-mb-ours": {
+  "path": "autoset-x03-mb-ours.logicx",
+  "note": "logic automation --set on the Multipressor taper base, Audio 3 slot 1: Band 1 Exp. Threshold -20@1,0@5, Band 1 Reduction -10@1,-25.5@5, Band 1 Response 100@1 \u2014 the rows the Controls view lists without a band name, measured 2026-09-23",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "written": {
+    "Band 1 Exp. Threshold": [
+     [
+      1,
+      60
+     ],
+     [
+      5,
+      120
+     ]
+    ],
+    "Band 1 Reduction": [
+     [
+      1,
+      80
+     ],
+     [
+      5,
+      49
+     ]
+    ],
+    "Band 1 Response": [
+     [
+      1,
+      50
+     ]
+    ]
+   }
+  }
+ },
+ "autoset-mb-resave-logic": {
+  "path": "autoset-x04-mb-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of autoset-mb-ours (opened, Save As), then its Controls view read in Read mode at bars 1 and 5: the fourth Exp. Threshold, Reduction and Response rows \u2014 band 1's, the view lists them band 4 first \u2014 at the units below (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "shown": {
+    "Band 1 Exp. Threshold": {
+     "1": [
+      "-20.0 dB",
+      60
+     ],
+     "5": [
+      "0.00 dB",
+      120
+     ]
+    },
+    "Band 1 Reduction": {
+     "1": [
+      "-10.0 dB",
+      80
+     ],
+     "5": [
+      "-25.5 dB",
+      49
+     ]
+    },
+    "Band 1 Response": {
+     "1": [
+      "100 ms",
+      50
+     ],
+     "5": [
+      "100 ms",
+      50
+     ]
+    }
+   }
+  }
+ },
+ "addtrack-order-mine": {
+  "path": "addtrack-f01-order-mine.logicx",
+  "note": "0.6.0's add-track three times on master-track-limiter-logic (FX 01-03 after Audio 1): the third found no audio stub, and its fresh channel record went after the channel records' trailing 14-byte shells, out of owner order (2026-09-23)",
+  "facts": {
+   "added": [
+    "FX 01",
+    "FX 02",
+    "FX 03"
+   ],
+   "fresh_owner": 1,
+   "plugin_slots": 9
+  }
+ },
+ "addtrack-order-logic": {
+  "path": "addtrack-f02-order-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addtrack-order-mine: every plug-in gone (2026-09-23)",
+  "facts": {
+   "plugin_slots": 0
+  }
+ },
+ "addtrack-fresh-mine": {
+  "path": "addtrack-f03-fresh-mine.logicx",
+  "note": "add-track ten times on master-track-limiter-logic, each fresh channel after the previous channel's run, in owner order, carrying the project's slot base (2026-09-23)",
+  "facts": {
+   "added": [
+    "FX 01",
+    "FX 02",
+    "FX 03",
+    "FX 04",
+    "FX 05",
+    "FX 06",
+    "FX 07",
+    "FX 08",
+    "FX 09",
+    "FX 10"
+   ],
+   "plugin_slots": 9
+  }
+ },
+ "addtrack-fresh-logic": {
+  "path": "addtrack-f04-fresh-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addtrack-fresh-mine: every plug-in and every track kept (2026-09-23)",
+  "facts": {
+   "plugin_slots": 9,
+   "tracks": 12
+  }
+ },
+ "slots-insert1-logic": {
+  "path": "slots-s01-insert1-logic.logicx",
+  "note": "Logic 12.3.1's re-save of auto-eqlanes as written (its Pro-Q 4 in mixer slot 4, key 5, the three lanes at insert 1): Audio 2's Automation Event List named none of them (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Pro-Q 4",
+   "lane_insert": 1,
+   "event_list": [
+    [
+     1,
+     1,
+     127,
+     ""
+    ],
+    [
+     1,
+     26,
+     55,
+     ""
+    ],
+    [
+     1,
+     48,
+     73,
+     ""
+    ],
+    [
+     2,
+     1,
+     0,
+     ""
+    ],
+    [
+     2,
+     26,
+     64,
+     ""
+    ],
+    [
+     3,
+     1,
+     127,
+     ""
+    ],
+    [
+     3,
+     26,
+     76,
+     ""
+    ],
+    [
+     3,
+     48,
+     84,
+     ""
+    ]
+   ]
+  }
+ },
+ "slots-insert4-mine": {
+  "path": "slots-s02-insert4-mine.logicx",
+  "note": "auto-eqlanes with its three lanes moved to insert 4, the Pro-Q 4's slot; opened in Logic 12.3.1, Audio 2's Event List named them as the Pro-Q 4's (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Pro-Q 4",
+   "lane_insert": 4,
+   "event_list": [
+    [
+     1,
+     1,
+     127,
+     "Band 1 Enabled"
+    ],
+    [
+     1,
+     26,
+     55,
+     "Band 2 Gain"
+    ],
+    [
+     1,
+     48,
+     73,
+     "Band 3 Frequency"
+    ],
+    [
+     2,
+     1,
+     0,
+     "Band 1 Enabled"
+    ],
+    [
+     2,
+     26,
+     64,
+     "Band 2 Gain"
+    ],
+    [
+     3,
+     1,
+     127,
+     "Band 1 Enabled"
+    ],
+    [
+     3,
+     26,
+     76,
+     "Band 2 Gain"
+    ],
+    [
+     3,
+     48,
+     84,
+     "Band 3 Frequency"
+    ]
+   ]
+  }
+ },
+ "slots-replace4-mine": {
+  "path": "slots-s03-replace4-mine.logicx",
+  "note": "replace-plugin --at 4 --plugin 'Channel EQ' --translate on slots-insert4-mine: the Channel EQ at the Pro-Q 4's key, its lanes carried onto insert 4 (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ",
+   "key": 5
+  }
+ },
+ "slots-replace4-logic": {
+  "path": "slots-s04-replace4-logic.logicx",
+  "note": "Logic 12.3.1's re-save of slots-replace4-mine: the Event List named the carried lanes as the Channel EQ's (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ",
+   "event_list": [
+    [
+     1,
+     0,
+     127,
+     "Low Cut On/Off"
+    ],
+    [
+     1,
+     10,
+     53,
+     "Peak 1 Gain"
+    ],
+    [
+     1,
+     17,
+     72,
+     "Peak 3 Frequency"
+    ],
+    [
+     2,
+     0,
+     0,
+     "Low Cut On/Off"
+    ],
+    [
+     2,
+     10,
+     63,
+     "Peak 1 Gain"
+    ],
+    [
+     3,
+     0,
+     127,
+     "Low Cut On/Off"
+    ],
+    [
+     3,
+     10,
+     79,
+     "Peak 1 Gain"
+    ],
+    [
+     3,
+     17,
+     84,
+     "Peak 3 Frequency"
+    ]
+   ]
+  }
+ },
+ "slots-front-mine": {
+  "path": "slots-s05-front-mine.logicx",
+  "note": "add-plugin --at 1 --plugin Gain on Audio 2 of autoset-resave-logic: the Compressor, Noise Gate and Pro-C 2 one slot down, their lanes with them (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "plugins": [
+    "Gain",
+    "Compressor",
+    "Noise Gate",
+    "Pro-C 2"
+   ],
+   "lanes": {
+    "2": [
+     0,
+     13
+    ],
+    "3": [
+     4
+    ],
+    "4": [
+     1
+    ]
+   }
+  }
+ },
+ "slots-front-logic": {
+  "path": "slots-s06-front-logic.logicx",
+  "note": "Logic 12.3.1's re-save of slots-front-mine: the Event List named every lane as its own plug-in's parameter (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "event_list": [
+    [
+     1,
+     0,
+     40,
+     "Threshold"
+    ],
+    [
+     1,
+     13,
+     127,
+     "Auto Release"
+    ],
+    [
+     1,
+     4,
+     25,
+     "Hold"
+    ],
+    [
+     1,
+     1,
+     85,
+     "Threshold"
+    ],
+    [
+     5,
+     0,
+     52,
+     "Threshold"
+    ],
+    [
+     5,
+     13,
+     0,
+     "Auto Release"
+    ],
+    [
+     5,
+     4,
+     20,
+     "Hold"
+    ],
+    [
+     5,
+     1,
+     106,
+     "Threshold"
+    ],
+    [
+     9,
+     0,
+     76,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-remove-mine": {
+  "path": "slots-s07-remove-mine.logicx",
+  "note": "remove-plugin --at 1 on Audio 2 of autoset-resave-logic: the Compressor and its two lanes out, the Noise Gate's and Pro-C 2's lanes one insert up (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "plugins": [
+    "Noise Gate",
+    "Pro-C 2"
+   ],
+   "lanes": {
+    "1": [
+     4
+    ],
+    "2": [
+     1
+    ]
+   }
+  }
+ },
+ "slots-remove-logic": {
+  "path": "slots-s08-remove-logic.logicx",
+  "note": "Logic 12.3.1's re-save of slots-remove-mine; opened, the Event List named the lanes as the Noise Gate's and the Pro-C 2's (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "event_list": [
+    [
+     1,
+     4,
+     25,
+     "Hold"
+    ],
+    [
+     1,
+     1,
+     85,
+     "Threshold"
+    ],
+    [
+     5,
+     4,
+     20,
+     "Hold"
+    ],
+    [
+     5,
+     1,
+     106,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-inst-mine": {
+  "path": "slots-s09-inst-mine.logicx",
+  "note": "tracks-instrument-logic with Klopfgeist in Inst 1's slot 1 and a Compressor in slot 2, lanes at inserts 1, 2 and 3 (2026-09-23)",
+  "facts": {
+   "channel": "Inst 1",
+   "plugins": {
+    "1": "Klopfgeist",
+    "2": "Compressor"
+   },
+   "lanes": {
+    "1": [
+     0
+    ],
+    "2": [
+     0
+    ],
+    "3": [
+     1
+    ]
+   }
+  }
+ },
+ "slots-inst-logic": {
+  "path": "slots-s10-inst-logic.logicx",
+  "note": "Logic 12.3.1's re-save of slots-inst-mine: the Event List named insert 1 as the instrument's (Level), insert 2 as the Compressor's (Threshold), insert 3 as nothing (2026-09-23)",
+  "facts": {
+   "channel": "Inst 1",
+   "event_list": [
+    [
+     1,
+     0,
+     32,
+     "Level"
+    ],
+    [
+     1,
+     0,
+     64,
+     "Threshold"
+    ],
+    [
+     2,
+     1,
+     76,
+     ""
+    ],
+    [
+     3,
+     0,
+     96,
+     "Level"
+    ],
+    [
+     3,
+     0,
+     25,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-named-mine": {
+  "path": "slots-s11-named-mine.logicx",
+  "note": "audio-one-region-logic with a Compressor in Inst 1's slot 2, then automation --set 'Untitled:slot 2 Threshold=-20@1,-12@3' on the track named Untitled (2026-09-23)",
+  "facts": {
+   "track": "Untitled",
+   "channel": "Inst 1",
+   "insert": 2,
+   "units": [
+    [
+     1,
+     60
+    ],
+    [
+     3,
+     76
+    ]
+   ]
+  }
+ },
+ "slots-named-logic": {
+  "path": "slots-s12-named-logic.logicx",
+  "note": "Logic 12.3.1's re-save of slots-named-mine: the lane kept on Untitled, insert 2 (2026-09-23)",
+  "facts": {
+   "track": "Untitled",
+   "insert": 2
+  }
+ },
+ "sidechain-input2-logic": {
+  "path": "sidechain-s09-input2-logic.logicx",
+  "note": "Logic 12.3.1: sidechain-comp-none with the Compressor's Side Chain set to Input 2 from the Input submenu, which lists the interface's inputs (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 65,
+    "index": 1,
+    "label": "Input 2"
+   }
+  }
+ },
+ "sidechain-inst1-logic": {
+  "path": "sidechain-s10-inst1-logic.logicx",
+  "note": "Logic 12.3.1: tracks-instrument-logic with a Compressor on Audio 1, its Side Chain set to Inst 1 from the Inst submenu (2026-09-23)",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 67,
+    "index": 0,
+    "label": "Inst 1"
+   }
+  }
+ },
+ "sidechain-inst-mine": {
+  "path": "sidechain-s11-inst-mine.logicx",
+  "note": "add-plugin --plugin Compressor --channel 'Audio 1' --side-chain 'Inst 1' on tracks-instrument-logic (2026-09-23)",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 1,
+   "plugin": "Compressor",
+   "source": {
+    "kind": 67,
+    "index": 0,
+    "label": "Inst 1"
+   }
+  }
+ },
+ "sidechain-inst-logic": {
+  "path": "sidechain-s12-inst-logic.logicx",
+  "note": "Logic 12.3.1's re-save of sidechain-inst-mine: the slot as written (2026-09-23)",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 1,
+   "source": {
+    "kind": 67,
+    "index": 0,
+    "label": "Inst 1"
+   }
+  }
+ },
+ "addplugin-expander-stereo-mine": {
+  "path": "addplugin-b09-expander-stereo-mine.logicx",
+  "note": "add-plugin --plugin Expander --channel 'Audio 2' on stockfx-dynamics2-mono: the packaged mono record re-stamped to the stereo channel (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 6,
+   "plugin": "Expander",
+   "width": 2
+  }
+ },
+ "addplugin-expander-stereo-logic": {
+  "path": "addplugin-b10-expander-stereo-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addplugin-expander-stereo-mine: the new slot byte for byte (2026-09-23)",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 6
+  }
+ },
+ "addplugin-fuzzwah-mono-mine": {
+  "path": "addplugin-b11-fuzzwah-mono-mine.logicx",
+  "note": "add-plugin --plugin Fuzz-Wah --channel 'Audio 1' (mono) on stockfx-dynamics2-mono: its one stereo build, as Logic writes it on a mono channel (2026-09-23)",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 9,
+   "plugin": "Fuzz-Wah",
+   "width": 2
+  }
+ },
+ "addplugin-fuzzwah-mono-logic": {
+  "path": "addplugin-b12-fuzzwah-mono-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addplugin-fuzzwah-mono-mine: the new slot byte for byte (2026-09-23)",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 9
+  }
+ },
+ "addplugin-ids-mine": {
+  "path": "addplugin-b13-ids-mine.logicx",
+  "note": "add-plugin --plugin 'Channel EQ' --channel 'Audio 1' --channel 'Audio 2' on autoset-resave-logic: each copy its own instance id (2026-09-23)",
+  "facts": {
+   "plugin": "Channel EQ",
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ]
+  }
+ },
+ "addplugin-ids-logic": {
+  "path": "addplugin-b14-ids-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addplugin-ids-mine: both ids as written (2026-09-23)",
+  "facts": {
+   "plugin": "Channel EQ"
+  }
+ },
+ "addplugin-ids-shared-mine": {
+  "path": "addplugin-b15-ids-shared-mine.logicx",
+  "note": "the same two Channel EQs as add-plugin wrote them before the ids were stamped: one id on both (2026-09-23)",
+  "facts": {
+   "plugin": "Channel EQ",
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ]
+  }
+ },
+ "addplugin-ids-shared-logic": {
+  "path": "addplugin-b16-ids-shared-logic.logicx",
+  "note": "Logic 12.3.1's re-save of addplugin-ids-shared-mine: Audio 2's copy given a fresh id (2026-09-23)",
+  "facts": {
+   "plugin": "Channel EQ",
+   "reassigned": "Audio 2"
+  }
+ },
+ "mb-neutral-mine": {
+  "path": "mb-m06-neutral-mine.logicx",
+  "note": "replace-plugin --at 4 --plugin Multipressor --translate on mb-promb: the 2-4 kHz stretch no Pro-MB band covers as band 3 at 0 dB, 1:1 both ways, no make-up (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 4,
+   "plugin": "Multipressor"
+  }
+ },
+ "mb-neutral-logic": {
+  "path": "mb-m07-neutral-logic.logicx",
+  "note": "Logic 12.3.1's re-save of mb-neutral-mine after its editor showed four live bands, band 3 at 0.00 dB, 1.000 and 1.00, 0.0 dB reduction and make-up, crossovers 120, 2000, 3900 Hz (2026-09-23)",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 4,
+   "plugin": "Multipressor",
+   "editor": {
+    "bands": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "band_3": {
+     "threshold": "0.00dB",
+     "ratio": "1.000",
+     "exp_ratio": "1.00",
+     "reduction": "0.0dB",
+     "make_up": "0.0dB"
+    },
+    "crossovers": [
+     "120Hz",
+     "2000Hz",
+     "3900Hz"
+    ]
+   }
+  }
+ },
+ "swap-ours": {
+  "path": "swap-p01-ours.logicx",
+  "note": "logic swap-plugin --from 'smart:comp 2' --to Compressor on sonible-mono: both channels' smart:comp 2 slots replaced by Compressors, stage 1 carried through the compressor vocabulary (2026-09-24)",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor"
+  }
+ },
+ "swap-resave-logic": {
+  "path": "swap-p02-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of swap-ours: opened, each channel's Compressor Controls view read the values below (Audio 1 in one session, Audio 2 in another), Save As (2026-09-24)",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Audio 1": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Auto Release": "0",
+     "Mix": "100.0 %"
+    },
+    "Audio 2": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Auto Release": "0",
+     "Mix": "100.0 %"
+    }
+   }
+  }
+ },
+ "trk-neutron-ours": {
+  "path": "trk-k01-neutron-ours.logicx",
+  "note": "logic tracking-chains on neutron-dialled: Audio 2's Neutron 5 (slot 4) became a Channel EQ with its three bands and a Compressor added after it (slot 5) with its Dynamics element's settings, the bypassed gate left out; the Pro-C 2 in slot 3 became a Compressor with its side chain (2026-09-24)",
+  "facts": {
+   "channel": "Audio 2",
+   "chain": [
+    "Compressor",
+    "Noise Gate",
+    "Compressor",
+    "Channel EQ",
+    "Compressor"
+   ]
+  }
+ },
+ "trk-neutron-resave-logic": {
+  "path": "trk-k02-neutron-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of trk-neutron-ours: opened, the Channel EQ's and the added Compressor's Controls views read the values below, Save As (2026-09-24)",
+  "facts": {
+   "channel": "Audio 2",
+   "shown": {
+    "Channel EQ": {
+     "Peak 1 Frequency": "150 Hz",
+     "Peak 1 Gain": "-4.0 dB",
+     "Peak 1 Q-Factor": "1.50",
+     "Peak 2 Frequency": "3000 Hz",
+     "Peak 2 Gain": "-6.0 dB",
+     "Peak 2 Q-Factor": "4.00",
+     "High Shelf Frequency": "2000 Hz",
+     "High Shelf Gain": "+3.0 dB",
+     "High Shelf Q-Factor": "2.00"
+    },
+    "Compressor@3": {
+     "Threshold": "-20.0 dB",
+     "Ratio": "2.9:1",
+     "Attack": "26.0 ms",
+     "Release": "120.0 ms",
+     "Make Up": "2.0 dB",
+     "Mix": "80.0 %",
+     "Auto Release": "1"
+    }
+   }
+  }
+ },
+ "trk-sonible-ours": {
+  "path": "trk-k03-sonible-ours.logicx",
+  "note": "logic tracking-chains on sonible-mono: both channels' smart:comp 2 and smart:gate became a Compressor and a Noise Gate with their settings, and the Linear Phase EQ, Multipressor, Adaptive Limiter and Limiter on Audio 1 and Output 1-2 were bypassed for their lookahead (2026-09-24)",
+  "facts": {
+   "chains": {
+    "Audio 1": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ],
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ],
+    "Audio 2": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ]
+    ],
+    "Output 1-2": [
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ]
+   }
+  }
+ },
+ "trk-sonible-resave-logic": {
+  "path": "trk-k04-sonible-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of trk-sonible-ours: opened with no other document open, Save As (2026-09-24); every swapped slot and every bypass as written",
+  "facts": {
+   "chains": {
+    "Audio 1": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ],
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ],
+    "Audio 2": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ]
+    ],
+    "Output 1-2": [
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ]
+   }
+  }
+ },
+ "strip-kick-ours": {
+  "path": "strips/Track/Example Tracking/Drums/Kick.cst",
+  "note": "strip-save of inserts-native-logic's Audio 1 (Channel EQ -> Compressor), the Kick strip of config/example-chains.json",
+  "facts": {
+   "chain": [
+    "Channel EQ",
+    "Compressor"
+   ]
+  }
+ },
+ "strip-snare-ours": {
+  "path": "strips/Track/Example Tracking/Drums/Snare.cst",
+  "note": "the same export as the Snare strip of config/example-chains.json",
+  "facts": {
+   "chain": [
+    "Channel EQ",
+    "Compressor"
+   ]
+  }
+ },
+ "strip-kit-mics-ours": {
+  "path": "strips/Track/Example Tracking/Drums/Kit Mics.cst",
+  "note": "strip-save of inserts-native-all-logic's Audio 1; the gain_invert donor (Gain, type 183) of config/example-chains.json",
+  "facts": {
+   "chain": [
+    "Channel EQ",
+    "Compressor",
+    "Gain",
+    "ChromaVerb",
+    "SilverVerb",
+    "EnVerb",
+    "Echo",
+    "Enveloper"
+   ]
+  }
+ },
+ "swap-packaged-ours": {
+  "path": "swap-p03-packaged-ours.logicx",
+  "note": "logic swap-plugin --from 'smart:comp 2' --to Compressor on sonible-mono with the packaged donors only (LOGICXKIT_DATA empty), 2026-09-25: the Compressor is the package's #default donor, stage 1 carried",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor",
+   "donor_label": "#default.pst"
+  }
+ },
+ "swap-packaged-resave-logic": {
+  "path": "swap-p04-packaged-resave-logic.logicx",
+  "note": "Logic 12.3.1's re-save of swap-packaged-ours: each channel's Compressor Controls view read the values below (Audio 1 in one session, Audio 2 in another), Save As (2026-09-25)",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Audio 1": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Limiter On": "0",
+     "Auto Release": "1",
+     "Mix": "100.0 %"
+    },
+    "Audio 2": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Limiter On": "0",
+     "Auto Release": "1",
+     "Mix": "100.0 %"
+    }
+   }
+  }
+ },
+ "strip-mixing-kick-ours": {
+  "path": "strips/Track/Example Mixing/Drums/Kick.cst",
+  "note": "strip-save of inserts-native-logic's Audio 1; the routing donor config/example-strips.json grafts Demo Trk - Kick from",
+  "facts": {
+   "chain": [
+    "Channel EQ",
+    "Compressor"
+   ]
+  }
+ },
+ "strip-mixing-sub-kick-ours": {
+  "path": "strips/Track/Example Mixing/Drums/Sub Kick.cst",
+  "note": "strip-save of inserts-native-logic's Audio 2 (no inserts); the routing donor config/example-strips.json grafts Demo Trk - Sub Kick from",
+  "facts": {
+   "chain": []
   }
  }
 }

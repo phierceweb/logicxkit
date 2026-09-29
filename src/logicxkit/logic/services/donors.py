@@ -22,10 +22,11 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes, atomic_write_json
 
 from .._binary import find_blocks
-from .insert import HEADER, VER_OFF, project_records
+from .insert import HEADER, VER_OFF, plugin_variant, project_records, slot_format
 
 SUFFIX = ".slot"
 MANIFEST = "manifest.json"
+WIDTH_NAMES = {1: "mono", 2: "stereo"}
 
 
 # The v3 <-> v5 record schema differs in exactly three places, measured by diffing the library's
@@ -92,33 +93,66 @@ def donor_key(type_id: int, version: int) -> str:
     return f"{type_id}-v{version}"
 
 
-def harvest_donors(data: bytes, library: Path, names: dict[int, str] | None = None,
-                   start: int = 24) -> list[str]:
-    """Store one slot record per (plugin, version) found in ``data``. Existing donors are kept.
+def harvest_donors(data: bytes, library: Path, names: dict | None = None,
+                   start: int = 24, owners: set[int] | None = None, refresh: bool = False,
+                   skip: set[str] = frozenset(), skipped: list[str] | None = None) -> list[str]:
+    """Store one slot record per (plugin, version) found in ``data`` — on the channels
+    ``owners`` when given. Existing donors are kept, or replaced with ``refresh``; a key in
+    ``skip`` is not written, and lands in ``skipped`` when given.
 
     Returns the keys written. The first instance of a plugin wins — they are interchangeable as
-    donors, since every parameter gets patched or replaced verbatim by the caller.
+    donors, since every parameter gets patched or replaced verbatim by the caller. ``names``
+    labels the donors, by type id or by ``(type id, variant base)`` where a type is shared.
     """
     library = Path(library)
     library.mkdir(parents=True, exist_ok=True)
     manifest = _read_manifest(library)
     written = []
     for record in project_records(data, start):
-        if record.tag != b"UCuA" or b"GAMETSPP" not in record.raw:
+        if record.tag != b"UCuA" or b"GAMETSPP" not in record.raw or (owners is not None and record.owner not in owners):
             continue
         blocks = find_blocks(record.raw[HEADER:])
         if not blocks:
             continue
-        type_id = blocks[0][1]
-        key = donor_key(type_id, record.ver)
+        type_id, variant = blocks[0][1], plugin_variant(record.raw[HEADER:])
+        width = slot_format(record.raw)
+        size = len(record.raw) - HEADER
+        stem = str(type_id)
+        first = manifest.get(f"{stem}-v{record.ver}")
+        member = names.get((type_id, variant)) if names and variant is not None else None
+        if member and names.get(type_id) not in (None, member):
+            stem = f"{type_id}v{variant}"       # not the namesake of a shared type: filed by variant
+            first = manifest.get(f"{stem}-v{record.ver}")
+        elif first is not None and variant is not None and first.get("variant") not in (None, variant):
+            # one block type, several plug-ins (Tape Delay and Echo): the variant base tells them apart
+            stem = f"{type_id}v{variant}"
+            first = manifest.get(f"{stem}-v{record.ver}")
+        key = f"{stem}-v{record.ver}"
+        if first is not None and width and first.get("width") not in (None, width) and first.get("bytes") != size \
+                and first.get("blocks", 1) >= len(blocks):
+            # a plug-in whose record differs in length by width could not be re-stamped from one
+            # to the other: file this width beside the first, both fixed. A record carrying more
+            # blocks than the first (a compare block, after its window was used) is longer for
+            # that reason, not its width, so it is not one.
+            key = f"{stem}-{WIDTH_NAMES[width]}-v{record.ver}"
+            first["fixed_width"] = True
         path = library / f"{key}{SUFFIX}"
-        if path.exists():
+        if key in skip:
+            if skipped is not None and key not in skipped:
+                skipped.append(key)
+            continue
+        if key in written or (path.exists() and not refresh):
             continue
         atomic_write_bytes(path, record.raw)
         manifest[key] = {"type": type_id, "version": record.ver,
-                         "floats": blocks[0][2], "bytes": len(record.raw) - HEADER}
-        if names and type_id in names:
-            manifest[key]["plugin"] = names[type_id]
+                         "floats": blocks[0][2], "bytes": size, "width": width, "blocks": len(blocks)}
+        if variant is not None:
+            manifest[key]["variant"] = variant
+        if first is not None and key != f"{stem}-v{record.ver}":
+            manifest[key]["fixed_width"] = True
+        label = names and (names.get((type_id, variant)) or names.get(type_id))
+        if label:
+            manifest[key]["plugin"] = label
         written.append(key)
     if written:
         atomic_write_json(library / MANIFEST, manifest, sort_keys=True, ensure_ascii=True)

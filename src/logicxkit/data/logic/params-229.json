@@ -1,0 +1,43 @@
+{
+ "type": 229,
+ "variant": 1104,
+ "name": "Scanner Vibrato",
+ "floats": 6,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Depth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Left Rate",
+   "unit": "",
+   "default": 6.85,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Right Rate",
+   "unit": "",
+   "default": 6.85,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Stereo Phase",
+   "unit": "",
+   "default": null,
+   "evidence": "order"
+  }
+ ],
+ "unmapped": [
+  "Type"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+}

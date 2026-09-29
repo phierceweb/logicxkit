@@ -1,0 +1,50 @@
+{
+ "type": 163,
+ "variant": 534,
+ "name": "Bitcrusher",
+ "floats": 7,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Drive",
+   "unit": "dB",
+   "default": 3.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Clip Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Resolution",
+   "unit": "",
+   "default": 8.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Downsampling",
+   "unit": "x",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Mix",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Clip Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 5 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

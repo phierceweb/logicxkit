@@ -1,0 +1,118 @@
+{
+ "type": 285,
+ "variant": 2247,
+ "name": "Vintage Graphic EQ",
+ "floats": 17,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 16,
+   "name": "16.0K",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 1,
+   "name": "8.0K",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 2,
+   "name": "4.0K",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 3,
+   "name": "2.0K",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 4,
+   "name": "1.0K",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 5,
+   "name": "500",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 6,
+   "name": "250",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 7,
+   "name": "125",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 8,
+   "name": "63",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 9,
+   "name": "31",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 12,
+   "name": "Detune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "Drive",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "In",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  }
+ ],
+ "unmapped": [
+  "Phase",
+  "Output Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 10 by order (2026-09-22). Popup rows unmapped."
+}

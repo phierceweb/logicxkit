@@ -1,0 +1,116 @@
+{
+ "type": 246,
+ "variant": 1266,
+ "name": "Match EQ",
+ "floats": 22,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Analyzer",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4,
+   "name": "Analyzer Top",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Match",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 7,
+   "name": "Apply Amount",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Smoothing",
+   "unit": "",
+   "default": 4.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Ease-In / Ease-Out",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 12,
+   "name": "Limit Boost",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 18,
+   "name": "Limit Cut",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 20,
+   "name": "Reference Material Learn",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Analyzer Position",
+  "Hide Other Channels",
+  "Phase",
+  "Channel Link",
+  "View",
+  "Ease-In High",
+  "Ease-Out Low",
+  "Ease-In Low",
+  "Ease-Out High",
+  "Max Boost",
+  "Max Cut",
+  "Current Material Learn",
+  "Select Channel",
+  "Reference Actions",
+  "Current Material Actions"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 9 indices matched by value between stockfx-dr2-defaults and stockfx-dr2-spots, 0 by order. Popup rows unmapped."
+}

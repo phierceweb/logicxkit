@@ -9,12 +9,15 @@ Records are version-tagged because a donor only drops cleanly into a project of 
 version.
 """
 
+import json
 import struct
 import tempfile
 import unittest
 from pathlib import Path
 
 from logicxkit.logic import donor_key, harvest_donors, load_donor_library
+from logicxkit.logic.services.donors import MANIFEST
+from logicxkit.logic.services.insert import SLOT_COUNT_AT
 
 HDR = 36
 
@@ -29,11 +32,20 @@ def rec(tag: bytes, owner: int, key: int, payload: bytes, ver: int = 5) -> bytes
     return bytes(h) + payload
 
 
-def slot(type_id: int, ver: int = 5, n: int = 8) -> bytes:
-    p = bytearray(220)
-    p[184:192] = b"GAMETSPP"
+def slot(type_id: int, ver: int = 5, n: int = 8, variant: int | None = None, width: int | None = None,
+         blocks: int = 1, extra: int = 0) -> bytes:
+    p = bytearray(220 + extra + (blocks - 1) * (24 + n * 4))
+    if variant is not None:                     # config index 1 at +81, the variant id at +116
+        p[81] = 1
+        struct.pack_into("<H", p, 116, variant)
+    if width is not None:
+        for at in SLOT_COUNT_AT:
+            p[at] = width
     struct.pack_into("<III", p, 172, 24 + n * 4, 1, n)
-    struct.pack_into("<I", p, 192, type_id)
+    for b in range(blocks):                     # a second block: the compare state a used window leaves
+        at = 184 + b * (24 + n * 4)
+        p[at:at + 8] = b"GAMETSPP"
+        struct.pack_into("<I", p, at + 8, type_id)
     return rec(b"UCuA", 0, 4, bytes(p), ver)
 
 
@@ -57,6 +69,40 @@ class HarvestTest(unittest.TestCase):
         self.tmp = __import__("tempfile").TemporaryDirectory()
         self.root = Path(self.tmp.name)
         self.addCleanup(self.tmp.cleanup)
+
+    def test_a_record_with_a_compare_block_is_not_a_width_sibling(self):
+        """The other width's record is filed beside the first only when it is longer for its
+        width, not for the compare block a used plug-in window leaves in it."""
+        clean_mono, edited_stereo = slot(154, width=1), slot(154, width=2, blocks=2)
+        self.assertEqual(harvest_donors(proj(clean_mono, edited_stereo), self.root), ["154-v5"])
+        manifest = json.loads((self.root / MANIFEST).read_text())
+        self.assertEqual((manifest["154-v5"]["blocks"], manifest["154-v5"].get("fixed_width")), (1, None))
+        longer_stereo = slot(154, width=2, extra=48)
+        self.assertEqual(harvest_donors(proj(longer_stereo), self.root), ["154-stereo-v5"])
+        manifest = json.loads((self.root / MANIFEST).read_text())
+        self.assertTrue(manifest["154-v5"]["fixed_width"] and manifest["154-stereo-v5"]["fixed_width"])
+
+    def test_a_shorter_record_of_the_other_width_is_a_sibling_even_after_a_two_block_first(self):
+        """BPM Counter's never-opened mono record carries two blocks and its stereo one a single
+        shorter block: both are Logic's, and both are filed."""
+        two_block_mono, stereo = slot(242, width=1, blocks=2), slot(242, width=2)
+        self.assertEqual(harvest_donors(proj(two_block_mono, stereo), self.root), ["242-stereo-v5", "242-v5"])
+
+    def test_a_second_plug_in_of_a_shared_block_type_files_beside_the_first(self):
+        data = proj(slot(147, variant=217), slot(147, variant=201), slot(147, variant=217))
+        keys = harvest_donors(data, self.root, {147: "Echo", (147, 200): "Tape Delay"})
+        self.assertEqual(keys, ["147-v5", "147v200-v5"])
+        manifest = json.loads((self.root / MANIFEST).read_text())
+        self.assertEqual((manifest["147-v5"]["variant"], manifest["147-v5"]["plugin"]), (216, "Echo"))
+        self.assertEqual((manifest["147v200-v5"]["variant"], manifest["147v200-v5"]["plugin"]), (200, "Tape Delay"))
+
+    def test_a_named_member_files_by_variant_whichever_comes_first(self):
+        """The type's own name (its `PLUGIN_NAMES` entry) marks the member that keeps the plain key."""
+        data = proj(slot(147, variant=201), slot(147, variant=217))
+        keys = harvest_donors(data, self.root, {147: "Echo", (147, 200): "Tape Delay", (147, 216): "Echo"})
+        self.assertEqual(keys, ["147-v5", "147v200-v5"])
+        manifest = json.loads((self.root / MANIFEST).read_text())
+        self.assertEqual((manifest["147-v5"]["plugin"], manifest["147v200-v5"]["plugin"]), ("Echo", "Tape Delay"))
 
     def test_harvests_one_record_per_plugin_version(self):
         data = proj(slot(287, 5), slot(150, 5), slot(287, 5))
@@ -101,6 +147,12 @@ class HarvestFromStripTest(unittest.TestCase):
 
     def test_project_offset_still_default(self):
         self.assertEqual(harvest_donors(proj(slot(199, 5)), self.root), ["199-v5"])
+
+    def test_a_key_to_skip_is_not_written_and_is_reported(self):
+        skipped: list[str] = []
+        written = harvest_donors(proj(slot(199, 5), slot(157, 5)), self.root, skip={"199-v5"}, skipped=skipped)
+        self.assertEqual((written, skipped), (["157-v5"], ["199-v5"]))
+        self.assertFalse((self.root / "199-v5.slot").exists())
 
 
 class BaseDonorFallbackTest(unittest.TestCase):

@@ -1,0 +1,30 @@
+{
+ "family": "gate",
+ "plugin": "smart:gate",
+ "component": [
+  "aufx",
+  "sGat",
+  "Soni"
+ ],
+ "decoder": "sonible",
+ "evidence": "sonible smart:gate's jucePluginState, message 3, matched to Logic's Controls view after every slider moved 500 units and the project saved (stockfx son2 session, 2026-09-22): 16 of 18 changed fields by value, in real units; 3.10 is Mode and 3.22 Impact Upper Frequency by the rows left. The AU state's id/value pairs never change and are not read.",
+ "items": {
+  "attack": {
+   "field": "3.3",
+   "param": "Attack"
+  },
+  "release": {
+   "field": "3.6",
+   "param": "Release"
+  },
+  "hold": {
+   "field": "3.7",
+   "param": "Release Hold"
+  }
+ },
+ "not_carried": {
+  "Threshold": "smart:gate's threshold is a percentage against its learned profile; no dB analogue",
+  "Tolerance": "a percentage of that profile, not a hysteresis in dB",
+  "Impact, Level Bias, Input Gain, Mode": "no analogue in a gate that does not learn"
+ }
+}

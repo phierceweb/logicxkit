@@ -43,8 +43,8 @@ class AutomationGoldensTest(unittest.TestCase):
 
     def test_a_plugin_parameter_point_carries_its_index_and_a_unit_float(self):
         lanes = _lanes("automation-plugin-point-logic")
-        (param,) = [ln for ln in lanes if ln["parameter"].startswith("plug-in parameter")]
-        self.assertEqual((param["parameter"], param["ticks"], param["values"]), ("plug-in parameter 26", [BAR_ONE], [1.0]))
+        (param,) = [ln for ln in lanes if ln["parameter"].startswith("insert ")]
+        self.assertEqual((param["parameter"], param["ticks"], param["values"]), ("insert 1 parameter 26", [BAR_ONE], [0.4961]))    # u32 3f7fff50 over 2^31: 0 dB of ±30
 
     def test_conversion_gives_the_region_its_own_lane(self):
         lanes = _lanes("automation-region-converted-logic")

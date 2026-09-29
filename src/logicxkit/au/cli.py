@@ -34,12 +34,16 @@ def _emit(payload, text: str, as_json: bool) -> int:
 
 def cmd_preset(args) -> int:
     p = Path(args.file).expanduser()   # every real preset lives under ~/Library or ~/Music
+    if not p.is_file():
+        raise ValueError(f"no such file: {args.file}")
     out = decode_preset_bytes(p.read_bytes(), suffix=p.suffix.lower(),
                               host=_host_or_none(args), name_hint=p.stem)
     return _emit(out, format_preset(out, args.all), args.json)
 
 
 def cmd_strip(args) -> int:
+    if not Path(args.file).expanduser().exists():
+        raise ValueError(f"no such file: {args.file}")
     states = decode_strip_path(args.file, host=_host_or_none(args))
     return _emit(states, format_strip(states, args.all), args.json)
 

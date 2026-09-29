@@ -19,11 +19,26 @@ def rec(tag: bytes, owner: int, key: int, payload: bytes, ver: int = 5) -> bytes
     return bytes(h) + payload
 
 
-def proj(*records: bytes) -> bytes:
+def proj(*records: bytes, ordered: bool = True) -> bytes:
+    """The records as a project; ``ordered`` puts the mixer records in owner order in the places
+    they take, as every Logic save has them."""
+    from logicxkit.logic.services.validate import FORMAT_AT, MEASURED_FORMAT, SIGNATURE
     body = b"".join(records)
     head = bytearray(24)
+    head[:len(SIGNATURE)] = SIGNATURE
+    struct.pack_into("<H", head, FORMAT_AT, MEASURED_FORMAT)
     struct.pack_into("<I", head, 0x10, len(body))
-    return bytes(head) + body
+    data = bytes(head) + body
+    return _owner_ordered(data) if ordered else data
+
+
+def _owner_ordered(data: bytes) -> bytes:
+    from logicxkit.logic.services.insert import is_mixer_record, project_records
+    records = project_records(data)
+    if b"".join(r.raw for r in records) != data[24:]:
+        return data
+    mixers = iter(sorted((r for r in records if is_mixer_record(r)), key=lambda r: r.owner))
+    return data[:24] + b"".join(next(mixers).raw if is_mixer_record(r) else r.raw for r in records)
 
 
 def uuid(n: int) -> bytes:

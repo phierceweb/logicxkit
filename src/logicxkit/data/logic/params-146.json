@@ -1,0 +1,52 @@
+{
+ "type": 146,
+ "variant": 147,
+ "name": "Flanger",
+ "floats": 8,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Mix",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Intensity",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Rate",
+   "unit": "Hz",
+   "default": 0.133,
+   "evidence": "order"
+  },
+  {
+   "index": 4,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 67.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Rate Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+}

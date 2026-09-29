@@ -1,0 +1,55 @@
+{
+ "family": "compressor",
+ "plugin": "smart:comp 2",
+ "component": [
+  "aufx",
+  "smC2",
+  "Soni"
+ ],
+ "decoder": "sonible",
+ "evidence": "sonible smart:comp 2's jucePluginState, message 3, matched to Logic's Controls view row by row after every slider moved 500 units and the project saved (stockfx son2 session, 2026-09-22): 42 of 45 changed fields by value, in real units (dB, ms, Hz, %); the ratio fields (3.12, 3.28) by the stage layout, every stage-1 field sitting 16 below its stage-2 twin. The AU state's id/value pairs never change and are not read.",
+ "items": {
+  "threshold": {
+   "field": "3.17",
+   "param": "Threshold 1"
+  },
+  "ratio": {
+   "field": "3.12",
+   "param": "Ratio 1"
+  },
+  "knee": {
+   "field": "3.10",
+   "param": "Knee 1"
+  },
+  "attack": {
+   "field": "3.4",
+   "param": "Attack Time 1"
+  },
+  "release": {
+   "field": "3.15",
+   "param": "Release Time 1"
+  },
+  "make_up": {
+   "field": "3.64",
+   "param": "Output Gain 1"
+  },
+  "mix": {
+   "field": "3.53",
+   "param": "Wet/Dry"
+  },
+  "auto_gain": {
+   "field": "3.43",
+   "param": "Auto Gain 1 On/Off",
+   "switch": true
+  },
+  "input_gain": {
+   "field": "3.58",
+   "param": "Input Gain 1"
+  }
+ },
+ "not_carried": {
+  "stage 2": "smart:comp 2's second stage (Threshold 2 \u2026 Release Time 2) has no analogue; only stage 1 crosses",
+  "Gain Riding, Color, Spectral Compression, Soft Limit": "sonible's adaptive and spectral controls have no analogue",
+  "SC Filter": "the side-chain filter bands and cuts are not carried"
+ }
+}

@@ -12,6 +12,7 @@ from logicxkit.logic.services.channel_alloc import (
     is_channel_count,
     is_mixer_record,
     new_audio_channel,
+    project_words,
 )
 from logicxkit.logic.services.inputs_create import ensure_inputs, mono_inputs
 from logicxkit.logic.services.insert import HEADER, project_records
@@ -45,7 +46,8 @@ class LogicAddsTest(unittest.TestCase):
     def test_fresh_record_equals_logics(self):
         logic = next(r for r in project_records(project_data(THREE)) if is_mixer_record(r) and r.owner == 27).raw
         p = logic[HEADER:]
-        ours = new_audio_channel(number=28, owner=27, object_uuid=p[-48:-32], output_uuid=p[-32:-16], input_uuid=p[-16:])
+        ours = new_audio_channel(number=28, owner=27, object_uuid=p[-48:-32], output_uuid=p[-32:-16], input_uuid=p[-16:],
+                                 words=project_words(project_data(BASE)))
         self.assertEqual(ours, logic)
 
     def test_three_adds_land_where_logic_put_them(self):

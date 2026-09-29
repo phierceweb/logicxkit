@@ -1,0 +1,121 @@
+{
+ "type": 147,
+ "variant": 200,
+ "name": "Tape Delay",
+ "floats": 26,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 61.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "High Cut",
+   "unit": "Hz",
+   "default": 1500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Low Cut",
+   "unit": "Hz",
+   "default": 520.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Smoothing",
+   "unit": "ms",
+   "default": 40.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Flutter Rate",
+   "unit": "Hz",
+   "default": 1.6,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Flutter Intensity",
+   "unit": "%",
+   "default": 13.0,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 0.38,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "LFO Intensity",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Freeze",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 20,
+   "name": "Dry",
+   "unit": "%",
+   "default": 90.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Wet",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 22,
+   "name": "Clip Threshold",
+   "unit": "dB",
+   "default": -5.4,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Stereo Spread",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Tempo Sync",
+  "Note",
+  "Deviation",
+  "Delay Time",
+  "Tape Head Mode",
+  "Halve Time",
+  "Double Time",
+  "Sync Time"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 13 indices matched by value between stockfx-dr2-defaults and stockfx-dr2-spots, 0 by order. Popup rows unmapped."
+}

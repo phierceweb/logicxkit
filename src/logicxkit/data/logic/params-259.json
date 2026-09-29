@@ -1,0 +1,40 @@
+{
+ "type": 259,
+ "variant": 1461,
+ "name": "Sample Delay",
+ "floats": 7,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Left Delay",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Right Delay",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Link Left & Right",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Unit"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-dr3-defaults and stockfx-dr3-spots, 0 by order. Popup rows unmapped."
+}

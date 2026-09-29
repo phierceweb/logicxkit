@@ -1,0 +1,238 @@
+{
+ "type": 288,
+ "variant": 2296,
+ "name": "Phat FX",
+ "floats": 245,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Bandpass On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "Distortion On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 27,
+   "name": "Filter On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "Mod FX On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 47,
+   "name": "Bass Enhancer On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 56,
+   "name": "Compressor On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 174,
+   "name": "XY Pad X On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 175,
+   "name": "XY Pad Y On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 3,
+   "name": "XY Pad X Depth 2",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "XY Pad Y Depth 2",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 211,
+   "name": "Envelope On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 29,
+   "name": "Envelope Release",
+   "unit": "s",
+   "default": 0.5,
+   "evidence": "value"
+  },
+  {
+   "index": 221,
+   "name": "LFO 1 On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 224,
+   "name": "LFO 1 Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 231,
+   "name": "LFO 2 On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 234,
+   "name": "LFO 2 Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Bandpass",
+  "Bandpass Low Cutoff",
+  "Bandpass High Cutoff",
+  "Bandpass Low Resonance",
+  "Bandpass High Resonance",
+  "Bandpass Reject Mix",
+  "Bandpass Type",
+  "Distortion",
+  "Distortion Type 1",
+  "Distortion Drive 1",
+  "Distortion Type 2",
+  "Distortion Drive 2",
+  "Distortion Type 3",
+  "Distortion Drive 3",
+  "Filter",
+  "Filter Type",
+  "Filter Cutoff",
+  "Filter Resonance",
+  "Filter Drive",
+  "Filter Mix",
+  "Mod FX",
+  "Mod FX Mix",
+  "Mod FX Rate",
+  "Mod FX Mode",
+  "Bass Enhancer",
+  "Bass Enhancer Amount",
+  "Bass Enhancer Tune",
+  "Bass Enhancer Mode",
+  "Compressor",
+  "Compressor Amount",
+  "Compressor Release",
+  "Compressor Mode",
+  "Master",
+  "Master Input Gain",
+  "Master Mix",
+  "Master Output",
+  "Master Limiter",
+  "XY Pad",
+  "Bandpass Low Cutoff - X",
+  "Bandpass High Cutoff - Y",
+  "XY Pad X Target 1",
+  "XY Pad X Depth 1",
+  "XY Pad X Target 2",
+  "XY Pad Y Target 1",
+  "XY Pad Y Depth 1",
+  "XY Pad Y Target 2",
+  "Envelope",
+  "Envelope Target",
+  "Envelope Attack",
+  "Envelope Depth",
+  "LFO 1",
+  "LFO 1 Target",
+  "LFO 1 Shape",
+  "LFO 1 Rate",
+  "LFO 1 Depth",
+  "LFO 2",
+  "LFO 2 Target",
+  "LFO 2 Shape",
+  "LFO 2 Rate",
+  "LFO 2 Depth"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 16 indices matched by value between stockfx-mfx-defaults and stockfx-mfx-spots, 0 by order. Popup rows unmapped."
+}

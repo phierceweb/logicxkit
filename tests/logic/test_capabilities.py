@@ -45,6 +45,13 @@ class CapabilityRegistryTest(unittest.TestCase):
             with self.subTest(cap.commands[0]):
                 self.assertIn(cap.level, LEVELS)
 
+    def test_no_catch_ends_in_a_full_stop(self):
+        """`catches()` adds the full stop; one in the catch doubles it in the doc."""
+        from logicxkit.logic._capabilities import CAPABILITIES
+        for cap in CAPABILITIES:
+            with self.subTest(cap.commands[0]):
+                self.assertFalse(cap.catch.endswith("."), cap.catch[-60:])
+
     def test_a_claim_that_is_not_confirmed_says_why(self):
         """Anything short of CONFIRMED must name what is missing, or the row is not actionable."""
         from logicxkit.logic._capabilities import CAPABILITIES

@@ -9,7 +9,7 @@ from __future__ import annotations
 import random
 from dataclasses import dataclass
 
-from groovebin.transforms import BY_NAME, Operation, Range, apply_all, position_ticks, run, select
+from groovebin.transforms import BY_NAME, Range, apply_all, position_ticks, run, select
 
 from .events import BAR_ONE
 from .midi import MidiRegion
@@ -90,7 +90,3 @@ def apply_transform(data: bytes, region: MidiRegion, transform: Transform, *, rn
         return new
     data = edit_region(data, region.slot, change, track_count=track_count)
     return data, reports[0]
-
-
-def operations_of(transform: Transform) -> list[Operation]:
-    return [o for kind, payload in transform.steps if kind == "ops" for o in payload]

@@ -1,0 +1,54 @@
+{
+ "type": 159,
+ "variant": 454,
+ "name": "Pitch Shifter",
+ "floats": 13,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Mix",
+   "unit": "%",
+   "default": 25.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Semitones",
+   "unit": "",
+   "default": 7.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Cents",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 12,
+   "name": "Latency Compensation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Delay",
+  "Crossfade",
+  "Stereo Link",
+  "Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

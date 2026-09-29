@@ -1,0 +1,298 @@
+{
+ "type": 231,
+ "variant": 1123,
+ "name": "Space Designer",
+ "floats": 108,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 20,
+   "name": "Output Dry",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Output Wet",
+   "unit": "dB",
+   "default": -10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Latency Compensation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 25,
+   "name": "Input Crossfeed",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "Reverse",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 29,
+   "name": "Volume Init Level",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Volume Attack X1",
+   "unit": "",
+   "default": 0.011,
+   "evidence": "value"
+  },
+  {
+   "index": 32,
+   "name": "Volume Attack Y1",
+   "unit": "",
+   "default": 0.58,
+   "evidence": "value"
+  },
+  {
+   "index": 33,
+   "name": "Volume Attack X2",
+   "unit": "",
+   "default": 0.448,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "Volume Attack Y2",
+   "unit": "",
+   "default": 0.89,
+   "evidence": "value"
+  },
+  {
+   "index": 36,
+   "name": "Volume Decay X1",
+   "unit": "",
+   "default": 0.647,
+   "evidence": "value"
+  },
+  {
+   "index": 37,
+   "name": "Volume Decay Y1",
+   "unit": "",
+   "default": 0.825,
+   "evidence": "value"
+  },
+  {
+   "index": 38,
+   "name": "Volume Decay X2",
+   "unit": "",
+   "default": 0.819,
+   "evidence": "value"
+  },
+  {
+   "index": 39,
+   "name": "Volume Decay Y2",
+   "unit": "",
+   "default": 0.337,
+   "evidence": "value"
+  },
+  {
+   "index": 40,
+   "name": "Volume End Level",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 43,
+   "name": "Filter Attack X1",
+   "unit": "",
+   "default": 0.025,
+   "evidence": "value"
+  },
+  {
+   "index": 44,
+   "name": "Filter Attack Y1",
+   "unit": "",
+   "default": 0.71,
+   "evidence": "value"
+  },
+  {
+   "index": 45,
+   "name": "Filter Attack X2",
+   "unit": "",
+   "default": 0.075,
+   "evidence": "value"
+  },
+  {
+   "index": 46,
+   "name": "Filter Attack Y2",
+   "unit": "",
+   "default": 0.64,
+   "evidence": "value"
+  },
+  {
+   "index": 49,
+   "name": "Filter Decay X1",
+   "unit": "",
+   "default": 0.4,
+   "evidence": "value"
+  },
+  {
+   "index": 50,
+   "name": "Filter Decay Y1",
+   "unit": "",
+   "default": 0.4,
+   "evidence": "value"
+  },
+  {
+   "index": 51,
+   "name": "Filter Decay X2",
+   "unit": "",
+   "default": 0.6,
+   "evidence": "value"
+  },
+  {
+   "index": 52,
+   "name": "Filter Decay Y2",
+   "unit": "",
+   "default": 0.35,
+   "evidence": "value"
+  },
+  {
+   "index": 54,
+   "name": "Filter",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 57,
+   "name": "Filter Resonance",
+   "unit": "",
+   "default": 0.6,
+   "evidence": "value"
+  },
+  {
+   "index": 58,
+   "name": "Low Shelf Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 59,
+   "name": "Low Shelf Freq",
+   "unit": "Hz",
+   "default": 200.0,
+   "evidence": "value"
+  },
+  {
+   "index": 60,
+   "name": "X-Over Freq",
+   "unit": "Hz",
+   "default": 230.0,
+   "evidence": "value"
+  },
+  {
+   "index": 63,
+   "name": "Rev. Vol. Comp.",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 41,
+   "name": "Stereo Spread High",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Predelay",
+  "Length",
+  "Quality",
+  "Volume Attack Time",
+  "Volume Decay Time",
+  "Filter Init Level",
+  "Filter Attack Time",
+  "Filter Max Level",
+  "Filter Decay Time",
+  "Filter End Level",
+  "Filter Mode",
+  "Stereo Spread Low",
+  "Volume Decay Mode",
+  "Init Density",
+  "End Density",
+  "Reflection Shape",
+  "Ramp Time",
+  "IR Offset",
+  "IR Mode",
+  "Load IR",
+  "Create IR",
+  "Decode IR",
+  "Reset ...",
+  "Envelope Mode",
+  "EQ",
+  "Low Shelf",
+  "Low Mid",
+  "High Mid",
+  "High Shelf",
+  "Low Mid Gain",
+  "Low Mid Freq",
+  "Low Mid Q",
+  "High Mid Gain",
+  "High Mid Freq",
+  "High Mid Q",
+  "High Shelf Gain",
+  "High Shelf Freq",
+  "Center Level",
+  "Balance F/R",
+  "Low Shelf Y",
+  "High Shelf Y",
+  "Process Mode",
+  "LFE to Rev",
+  "Predelay Sync",
+  "Size",
+  "Show Bezier Handles",
+  "Low Cut",
+  "Low Cut Order",
+  "Low Cut Freq",
+  "Low Cut Q",
+  "Low Shelf Q",
+  "High Shelf Q",
+  "High Cut",
+  "High Cut Order",
+  "High Cut Freq",
+  "High Cut Q",
+  "Volume",
+  "Density"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 30 indices matched by value between stockfx-dr-defaults and stockfx-dr-spots, 0 by order. Popup rows unmapped."
+}

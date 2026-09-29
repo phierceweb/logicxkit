@@ -1,0 +1,121 @@
+{
+ "type": 155,
+ "variant": 405,
+ "name": "Fuzz-Wah",
+ "floats": 19,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Wah Level",
+   "unit": "dB",
+   "default": -2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Pedal Position",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Pedal Range Start",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Pedal Range End",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Relative Q",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Auto Wah Attack",
+   "unit": "ms",
+   "default": 49.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Auto Wah Release",
+   "unit": "ms",
+   "default": 150.0,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Auto Gain",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 11,
+   "name": "Comp Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Fuzz Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Fuzz Tone",
+   "unit": "Hz",
+   "default": 6000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Comp",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 18,
+   "name": "Fuzz",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Auto Wah Depth",
+  "FX Order",
+  "Wah Mode",
+  "Wah"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 13 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

@@ -1,8 +1,8 @@
 """Environment objects: the `ivnE` records that name tracks and stack folders.
 
-`+16` object id, `+38` parent (u32 — bytes +39..41 are zero on every object in seven sessions,
-and 192/196 read back as the id where set), `+154` kind, `+158` u16-length name, and the
-instance UUID in the last 16 bytes. Payload length is 463 or 464 plus the name length.
+`+16` object id, `+38` parent (u32 — bytes +39..41 are zero on every object in the sessions
+measured, and nearly all read back as the id where set), `+154` kind, `+158` u16-length name,
+and the instance UUID in the last 16 bytes. Payload length is 463 or 464 plus the name length.
 
 The real-file part of tests/logic/test_environment.py; skips without the owner's files."""
 

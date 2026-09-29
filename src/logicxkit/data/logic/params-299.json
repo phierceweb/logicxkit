@@ -1,0 +1,111 @@
+{
+ "type": 299,
+ "variant": 2365,
+ "name": "Quantec Room Simulator",
+ "floats": 447,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Dry Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Reverb Level",
+   "unit": "dB",
+   "default": -6.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Reverb Delay",
+   "unit": "ms",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Reverb Time",
+   "unit": "s",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Freeze",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "Clear",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 12,
+   "name": "1st Reflection Delay",
+   "unit": "ms",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "1st Reflection Spread",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 26,
+   "name": "AD/DA Converters",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 123,
+   "name": "1st Phase Reverse",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Reverb Low x",
+  "Reverb High x",
+  "Room Size",
+  "Add",
+  "1st Reflection Level",
+  "Model",
+  "Enhance",
+  "AD/DA Drive",
+  "Output L R",
+  "Dry Source",
+  "1st Reflection Source"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 10 indices matched by value between stockfx-dr3-defaults and stockfx-dr3-spots, 0 by order. Popup rows unmapped."
+}

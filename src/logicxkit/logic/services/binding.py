@@ -10,7 +10,7 @@ Both live at the END of the `OCuA` channel payload, because its length varies pe
     +24, +25            01 01 once Logic has bound the channel to a track
     +60                 NUL-padded label with a leading space: ' Audio 1', ' Sub 1', ' Bus 15'
 
-Measured 59/59 in-use channels on seven sessions and the Recording template. Folder stacks
+Holds on every in-use channel of the sessions measured and the Recording template. Folder stacks
 bind to the `Sub N` strips, and every member channel carries N at +110.
 """
 

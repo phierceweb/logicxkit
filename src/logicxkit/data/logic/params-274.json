@@ -1,0 +1,125 @@
+{
+ "type": 274,
+ "variant": 2212,
+ "name": "Amp Designer",
+ "floats": 36,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Gain",
+   "unit": "",
+   "default": 4.5,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Bass",
+   "unit": "",
+   "default": 6.7,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Mids",
+   "unit": "",
+   "default": 3.1,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Treble",
+   "unit": "",
+   "default": 7.4,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Presence",
+   "unit": "",
+   "default": 8.3,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Master",
+   "unit": "",
+   "default": 9.4,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Output Level",
+   "unit": "dB",
+   "default": -7.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Mic Position X",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Mic Position Z",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "FX Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 26,
+   "name": "FX Depth",
+   "unit": "",
+   "default": 7.7,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Reverb Enable",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 33,
+   "name": "Reverb Level",
+   "unit": "",
+   "default": 2.2,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Main Knobs",
+  "Model Selectors",
+  "Model",
+  "Amp",
+  "EQ Model",
+  "Speaker",
+  "Microphone Type",
+  "Effects",
+  "FX Type",
+  "FX Sync Mode",
+  "FX Speed",
+  "Reverb Type"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 13 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

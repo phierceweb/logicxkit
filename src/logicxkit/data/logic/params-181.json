@@ -1,0 +1,138 @@
+{
+ "type": 181,
+ "variant": 760,
+ "name": "Modulation Delay",
+ "floats": 25,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Output Mix",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Flanger/Chorus",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Mod. Intensity",
+   "unit": "%",
+   "default": 25.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Rate LFO 1 L",
+   "unit": "Hz",
+   "default": 0.5,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Rate LFO 2 L",
+   "unit": "Hz",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "LFO Mix",
+   "unit": "%",
+   "default": 48.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 15.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Volume Modulation",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "De-Warble",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "Constant Mod",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 11,
+   "name": "LFO Phase",
+   "unit": "\u00b0",
+   "default": 180.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Rate LFO 1 R",
+   "unit": "Hz",
+   "default": 0.5,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Rate LFO 2 R",
+   "unit": "Hz",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Filter",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 24,
+   "name": "D-Mode",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Stereo",
+  "Low Cut",
+  "High Cut"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 14 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+}

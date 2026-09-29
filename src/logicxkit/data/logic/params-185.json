@@ -1,0 +1,61 @@
+{
+ "type": 185,
+ "variant": 832,
+ "name": "Tremolo",
+ "floats": 10,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Depth",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Symmetry",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Smoothing",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Stereophase",
+   "unit": "\u00b0",
+   "default": 180.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Offset",
+   "unit": "\u00b0",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Rate"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 6 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 0 by order. Popup rows unmapped."
+}

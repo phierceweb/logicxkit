@@ -1,0 +1,28 @@
+{
+ "type": 255,
+ "variant": 1415,
+ "name": "Level Meter",
+ "floats": 5,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Target Level",
+   "unit": "dB",
+   "default": -12.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Mode",
+  "Reset Margins",
+  "Peak",
+  "L",
+  "R",
+  "Margin L",
+  "Margin R"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 1 indices matched by value between stockfx-util-defaults and stockfx-util-spots, 0 by order. Popup rows unmapped."
+}

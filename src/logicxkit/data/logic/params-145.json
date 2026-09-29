@@ -1,0 +1,45 @@
+{
+ "type": 145,
+ "variant": 94,
+ "name": "Chorus",
+ "floats": 5,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Mix",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Intensity",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Rate",
+   "unit": "Hz",
+   "default": 0.5,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "D-Mode",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+}

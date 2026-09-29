@@ -1,6 +1,6 @@
 """Pair a template's tracks with a session's.
 
-Sessions cut from a template keep its Environment object ids, so the id pairs 56/56 rows on
+Sessions cut from a template keep its Environment object ids, so the id pairs every row on
 every session on hand; a track added or renamed since pairs by its mixer label, then by a
 unique name. Each pair records the rule that made it, so a plan can say why.
 """

@@ -1,0 +1,77 @@
+{
+ "type": 253,
+ "variant": 1397,
+ "name": "Test Oscillator",
+ "floats": 14,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Frequency",
+   "unit": "Hz",
+   "default": 1000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Sweep On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "Sweep Time",
+   "unit": "s",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Sweep Start Freq",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Sweep End Freq",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Sweep Trigger",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "Level",
+   "unit": "dB",
+   "default": -12.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Waveform",
+  "AntiAlias",
+  "Sweep Repeat",
+  "Sweep Mode",
+  "Dim",
+  "Decorrelated Noise"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 7 indices matched by value between stockfx-util-defaults and stockfx-util-spots, 0 by order. Popup rows unmapped."
+}

@@ -12,6 +12,9 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes
 
 from ._binary import find_blocks, identify_plugin, read_block_floats
+from ._add_plugin_cmd import register as register_add_plugin
+from ._donors_cmd import register as register_donors
+from ._settings_cmd import register as register_settings
 from ._apply import register as register_apply
 from ._apply_template import register as register_template
 from ._apply_tracks import register as register_tracks
@@ -35,6 +38,8 @@ from ._patch_cmd import register as register_patch
 from ._regions_cmd import register as register_regions
 from ._markers_cmd import register as register_markers
 from ._automation_cmd import register as register_automation
+from ._swap_plugin_cmd import register as register_swap_plugin
+from ._tracking_chains_cmd import register as register_tracking_chains
 from ._sessionplayer_cmd import register as register_sessionplayer
 from ._quantize_cmd import register as register_quantize
 from ._diagnose import register as register_diagnose
@@ -48,12 +53,11 @@ from ._inspect import (
     cmd_stacks,
 )
 from .services.comp import decode_comp
-from .services.library import factory_settings, strip_library, under_live_library
+from .services.library import strip_library, under_live_library
 from .services.eq import BAND_ORDER, decode_eq
 from .services.levels import PAN_CENTRE, UNITY, copy_levels, read_levels
 from .services.pst import output_root as pst_output_root
 from .services.pst import write_psts
-from .services.donors import harvest_donors, load_donor_library
 from .services.retrack import find_project, missing_strips, retrack_bundle
 from .services.spec import assemble, load_spec
 
@@ -103,6 +107,13 @@ def cmd_build(args) -> int:
             continue
         try:
             data = assemble(spec, preset, load, name)
+        except FileNotFoundError as e:
+            from .services.library import strip_library
+            root = spec.get("strip_root") or strip_library()
+            print(f"  !!  {name}: no strip at {e.filename} — strips resolve under {root}; set the spec's "
+                  "'strip_root' or LOGICXKIT_STRIP_ROOT (a checkout has the examples' under tests/corpus/strips)")
+            failed += 1
+            continue
         except Exception as e:
             print(f"  !!  {name}: {e}")
             failed += 1
@@ -236,38 +247,6 @@ def _retrack_channels(args) -> int:
     return 0
 
 
-def cmd_donors(args) -> int:
-    """Harvest plugin-slot donor records from a project into the reusable library."""
-    from ..utils.data import data_dir
-    from .services.chain_report import PLUGIN_NAMES
-    lib = Path(args.library) if args.library else data_dir("donors")
-    names = dict(PLUGIN_NAMES)
-    settings = factory_settings()
-    if settings.is_dir():
-        for folder in settings.iterdir():
-            for preset in list(folder.glob("*.pst"))[:3] if folder.is_dir() else []:
-                blocks = find_blocks(preset.read_bytes())
-                if blocks:
-                    names.setdefault(blocks[0][1], folder.name)
-                    break
-    total = []
-    src = Path(args.project)
-    if src.suffix == ".cst":
-        total += harvest_donors(src.read_bytes(), lib, names, start=0)
-    elif src.is_dir() and src.suffix != ".logicx" and not list(src.glob("*.logicx")):
-        for strip in sorted(src.rglob("*.cst")):        # a folder of strips
-            total += harvest_donors(strip.read_bytes(), lib, names, start=0)
-    else:
-        for data_file in sorted(find_project(src).glob("Alternatives/*/ProjectData")):
-            total += harvest_donors(data_file.read_bytes(), lib, names)
-    have = load_donor_library(lib)
-    print(f"library: {lib}\n  added {len(total)}: {', '.join(total) or '(nothing new)'}")
-    print(f"  now holds {len(have)} donor(s):")
-    for key, (_raw, type_id, ver) in sorted(have.items()):
-        print(f"    {key:12s} {names.get(type_id, 'type %d' % type_id):22s} class v{ver}")
-    return 0
-
-
 def _project_data_paths(project: Path) -> list[Path]:
     return sorted(project.glob("Alternatives/*/ProjectData"))
 
@@ -365,7 +344,7 @@ def cmd_decode(args) -> int:
 _PATH_ARGS = ("project", "logicx", "out", "to", "spec", "library", "file", "image", "map",
               "propose_map", "export", "from_", "config", "template", "src", "dst", "a", "b",
               "baseline", "apply", "backup_dir", "controlbar_from", "build", "audio",
-              "save_map", "db")
+              "save_map", "db", "maps")
 
 
 def _expand(value):
@@ -406,10 +385,8 @@ def main(argv: list[str] | None = None) -> int:
     rt.add_argument("--channel", action="append", metavar="LABEL=NAME.cst",
                     help="repoint one channel's reference (repeatable); the folder stays")
     rt.set_defaults(func=cmd_retrack)
-    dn = sub.add_parser("donors", help="harvest plugin-slot donors from a project")
-    dn.add_argument("project")
-    dn.add_argument("--library", default=None, help="donor library (default: the data root's donors/)")
-    dn.set_defaults(func=cmd_donors)
+    register_donors(sub)
+    register_add_plugin(sub)
     register_chains(sub)
     register_midi(sub)
     register_beats(sub)
@@ -419,8 +396,11 @@ def main(argv: list[str] | None = None) -> int:
     register_markers(sub)
     register_sessionplayer(sub)
     register_automation(sub)
+    register_swap_plugin(sub)
+    register_tracking_chains(sub)
     register_quantize(sub)
     register_drums_to_midi(sub)
+    register_settings(sub)
     register_capabilities(sub)
     register_header(sub)
     register_controlbar(sub)

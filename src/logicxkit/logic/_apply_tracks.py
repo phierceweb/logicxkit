@@ -145,7 +145,8 @@ def register(sub) -> None:
     at.add_argument("--name", required=True)
     at.add_argument("--after", required=True, metavar="TRACK", help="an existing track")
     at.add_argument("--input", type=int, default=1, metavar="N", help="Input N (default 1)")
-    at.add_argument("--stereo", action="store_true")
+    at.add_argument("--stereo", action="store_true",
+                    help="audio: record from the pair Input N-(N+1); instrument: a stereo channel")
     at.add_argument("--instrument", action="store_true", help="a software instrument track")
     at.set_defaults(func=cmd_add_track)
     sc = sub.add_parser("stack-create", help="make a folder stack from tracks (writes a copy)")

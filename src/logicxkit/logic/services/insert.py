@@ -21,6 +21,8 @@ from dataclasses import dataclass
 
 from .._binary import FLOAT_OFFSET as FLOAT_OFFSET_IN_CHUNK
 from .._binary import find_blocks, patch_block_floats
+from .slot_width import (MONO, PLUGIN_CFG, SLOT_BUS_AT, SLOT_CFG_AT,  # noqa: F401  (the callers import them from here)
+                         SLOT_COUNT_AT, SLOT_VARIANT_AT, STEREO, plugin_variant, set_slot_format, slot_format)
 
 
 HEADER = 36
@@ -30,23 +32,7 @@ BODY_START = 24
 # raw tag bytes; note Logic stores them reversed from how they read (OCuA displays as "AuCO")
 CHANNEL_TAG = b"OCuA"
 NO_KEY = 0xFFFF
-# WIDTH. A plugin instance carries its own width and Logic does NOT derive it from the channel
-# (its own files contain channel/slot disagreements), so a cloned mono donor stays mono on a
-# stereo bus. The channel's width is at OCuA payload+123 (a literal channel count).
-#
-# A slot's width is SEVEN fields, not six:
-#   +81            per-plugin config INDEX (not a channel count — Gain's stereo index is 3)
-#   +84, +118/+119 channel counts
-#   +116..117      plugin-VARIANT id, selecting the mono or stereo build of the plugin
-#   +156 (+157)    one byte per input bus: main, then side chain
-# Setting the counts without the variant id tells Logic "stereo" while still pointing it at the
-# mono build. +82/+83 (bus counts) must be left alone.
-CHANNEL_FMT_AT = 123
-SLOT_COUNT_AT = (84, 118, 119)
-SLOT_CFG_AT = 81
-SLOT_VARIANT_AT = 116
-SLOT_BUS_AT = (156, 157)
-MONO, STEREO = 1, 2
+CHANNEL_FMT_AT = 123    # the channel's own width: OCuA payload +123, a literal channel count
 
 # BYPASS — payload +112: 0 = active, 1 = bypassed. Confirmed in Logic: a build written with 1 on
 # nine Enveloper slots opened with them bypassed, and after they were enabled by hand the flag read
@@ -65,6 +51,14 @@ _PLUGIN_MARKS = (b"GAMETSPP", b"<plist")      # native chunks and XML AU states;
 
 
 CHANNEL_BASE_AT = 28          # every channel record's own copy of the project's slot base
+
+
+MIXER_MIN = 200                     # a channel record proper is longer than its stubs and 14-byte shells
+
+
+def is_mixer_record(record: ProjRecord) -> bool:
+    """The channel record proper, not a slot or a stub."""
+    return record.tag == CHANNEL_TAG and record.key == NO_KEY and len(record.raw) - HEADER > MIXER_MIN
 
 
 def slot_index_base(data: bytes) -> int:
@@ -101,17 +95,6 @@ def set_slot_bypass(raw: bytes, bypassed: bool) -> bytes:
 
 # config index per width, per plugin. `variant_id - config_index` is constant per plugin, so the
 # variant id is rebased rather than incremented — a blanket +1 is wrong for Gain.
-PLUGIN_CFG = {
-    236: {MONO: 1, STEREO: 2},   # Channel EQ
-    154: {MONO: 1, STEREO: 2},   # Compressor
-    157: {MONO: 1, STEREO: 2},   # Enveloper
-    199: {MONO: 1, STEREO: 2},   # Limiter
-    183: {MONO: 1, STEREO: 3},   # Gain
-    147: {MONO: 1, STEREO: 2},   # Echo
-    243: {MONO: 1, STEREO: 2},   # Linear Phase EQ
-    194: {MONO: 1, STEREO: 2},   # Multipressor
-    193: {MONO: 1, STEREO: 2},   # Adaptive Limiter
-}
 
 
 def instance_offsets(payloads: list[bytes], chunk_end: int) -> list[int]:
@@ -131,6 +114,17 @@ def instance_offsets(payloads: list[bytes], chunk_end: int) -> list[int]:
 _LABEL = re.compile(rb"(?<=\x00)[\x20-\x7e]{1,63}\.pst")
 
 
+def state_blocks(blocks: list[tuple[int, int, int]]) -> list[tuple[int, int, int]]:
+    """A record's live block and the same-size copies a Logic re-save writes right after it. A
+    value goes into every one, or Logic loads the stale copy (the logic README, gotcha 1)."""
+    run = blocks[:1]
+    for b in blocks[1:]:
+        if (b[1], b[2]) != (run[0][1], run[0][2]):
+            break
+        run.append(b)
+    return run
+
+
 def apply_float_overrides(raw: bytes, overrides: dict) -> bytes:
     """Set individual parameter floats, leaving every other value in the record untouched.
 
@@ -142,13 +136,14 @@ def apply_float_overrides(raw: bytes, overrides: dict) -> bytes:
     blocks = find_blocks(raw[HEADER:])
     if not blocks:
         return raw
-    idx, _tid, n = blocks[0]
+    n = blocks[0][2]
     body = bytearray(raw[HEADER:])
     for i, value in overrides.items():
         i = int(i)
         if not 0 <= i < n:
             raise ValueError(f"float index {i} is outside the plug-in's block of {n}")
-        struct.pack_into("<f", body, idx + FLOAT_OFFSET_IN_CHUNK + i * 4, float(value))
+        for idx, _tid, _n in state_blocks(blocks):
+            struct.pack_into("<f", body, idx + FLOAT_OFFSET_IN_CHUNK + i * 4, float(value))
     return raw[:HEADER] + bytes(body)
 
 
@@ -186,8 +181,8 @@ def channel_formats(data: bytes) -> dict[int, int]:
 
 
 # WIDTH, channel side. Three bytes move together, not just the count at +123. Measured per
-# session as the bytes where every stereo aux agrees and the mono one differs; identical in all
-# ten sessions across both class versions, and matched by the one session Logic itself wrote
+# session as the bytes where every stereo aux agrees and the mono one differs; identical in every
+# session measured, across both class versions, and matched by the one session Logic itself wrote
 # with a stereo Vox Slapback.
 CHANNEL_WIDTH = {78: {MONO: 211, STEREO: 215}, 86: {MONO: 0, STEREO: 1},
                  CHANNEL_FMT_AT: {MONO: MONO, STEREO: STEREO}}
@@ -237,53 +232,6 @@ def widen_channels(data: bytes, want: dict[int, int]) -> tuple[bytes, list[int]]
     result = bytes(head) + body
     require_valid(result)
     return result, sorted(changed)
-
-
-def slot_format(raw: bytes) -> int | None:
-    """The channel count a slot record declares, or None if it declares none."""
-    payload = raw[HEADER:]
-    seen = {payload[o] for o in SLOT_COUNT_AT if o < len(payload)} - {0}
-    return seen.pop() if len(seen) == 1 else None
-
-
-def set_slot_format(raw: bytes, fmt: int, type_id: int | None = None) -> bytes:
-    """Rewrite a slot's width — channel counts, config index and plugin-variant id together.
-
-    ``type_id`` is read from the record's own parameter chunk when not supplied.
-    """
-    if slot_format(raw) == fmt:
-        return raw          # already the right width — no mapping needed to change nothing
-    if type_id is None:
-        blocks = find_blocks(raw[HEADER:])
-        type_id = blocks[0][1] if blocks else None
-    cfg_map = PLUGIN_CFG.get(type_id)
-    if cfg_map is None:
-        raise ValueError(f"unknown plugin type {type_id}: refusing to guess its stereo config "
-                         "index (a blanket 2 is wrong for e.g. Gain, whose stereo index is 3)")
-    buf = bytearray(raw)
-    old_cfg = buf[HEADER + SLOT_CFG_AT]
-    new_cfg = cfg_map[fmt]
-
-    for off in SLOT_COUNT_AT:
-        at = HEADER + off
-        if at < len(buf) and buf[at] in (MONO, STEREO):
-            buf[at] = fmt
-    buf[HEADER + SLOT_CFG_AT] = new_cfg
-
-    at = HEADER + SLOT_VARIANT_AT
-    if at + 1 < len(buf):
-        variant = struct.unpack_from("<H", buf, at)[0]
-        if variant:  # 0 in class versions that do not carry it
-            struct.pack_into("<H", buf, at, variant - old_cfg + new_cfg)
-
-    main, side = (HEADER + o for o in SLOT_BUS_AT)
-    old_main = buf[main] if main < len(buf) else 0
-    if main < len(buf) and buf[main] in (MONO, STEREO):
-        buf[main] = fmt
-    # a stereo instance may legitimately keep a mono side chain — only follow when they agreed
-    if side < len(buf) and buf[side] in (MONO, STEREO) and buf[side] == old_main:
-        buf[side] = fmt
-    return bytes(buf)
 
 
 @dataclass(frozen=True)
@@ -352,13 +300,10 @@ def _stamp(raw: bytes, owner: int, key: int, floats, limit: int, seed: str,
     if label:
         buf = bytearray(relabel_slot(bytes(buf), label))
     if floats:
-        body = bytes(buf[HEADER:])
-        blocks = find_blocks(body)
-        if blocks:
-            idx, _tid, n = blocks[0]
-            inner = bytearray(body)
+        inner = bytearray(buf[HEADER:])
+        for idx, _tid, n in state_blocks(find_blocks(bytes(inner))):
             patch_block_floats(inner, idx, 0, list(floats)[:min(limit or len(floats), n)])
-            buf[HEADER:] = inner
+        buf[HEADER:] = inner
     if overrides:                                     # a dialled value wins over the strip's
         buf = bytearray(apply_float_overrides(bytes(buf), overrides))
     return bytes(buf)

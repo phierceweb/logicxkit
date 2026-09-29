@@ -1,0 +1,62 @@
+{
+ "type": 157,
+ "variant": 437,
+ "name": "Enveloper",
+ "floats": 8,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Attack Time",
+   "unit": "ms",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Attack Gain",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Release Time",
+   "unit": "ms",
+   "default": 200.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Release Gain",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Lookahead",
+   "unit": "ms",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Out Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 7 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 0 by order (2026-09-22). Popup rows unmapped."
+}

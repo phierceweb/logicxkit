@@ -4,6 +4,7 @@ chain."""
 
 from __future__ import annotations
 
+from collections import Counter
 from pathlib import Path
 
 from pf_core.utils.io import atomic_write_bytes
@@ -65,21 +66,31 @@ def cmd_send(args) -> int:
 
 def cmd_transplant(args) -> int:
     """Clone plugin slots channel-for-channel from SRC onto a copy of DST."""
+    if not (args.channel or args.stack):
+        print("  name the channels with --channel or --stack")
+        return 2
     src_project = find_project(Path(args.src))
     src = first_project_data(src_project)
     print(f"from : {src_project}")
     total = 0
 
-    def step(data, _count, _file):
+    def step(data, count, data_file):
         nonlocal total
-        for dst_label, src_label in pairs(args.channel):
+        alt = data_file.parent.name
+        targets = _targets(args, data, count)
+        uses = Counter(src_label for _dst, src_label in targets)
+        for dst_label, src_label in targets:
             s, d = owner_by_label(src, src_label), owner_by_label(data, dst_label)
-            data, report = transplant(src, data, src_owner=s, dst_owner=d, bypass=args.bypass,
-                                      force=args.force)
+            try:
+                data, report = transplant(src, data, src_owner=s, dst_owner=d, bypass=args.bypass,
+                                          force=args.force, fan_out=uses[src_label] > 1)
+            except ValueError as e:
+                raise CommandError(f"{alt}: {dst_label} <- {src_label}: {e}") from None
             warn = "  WIDTH MISMATCH" if report["width_mismatch"] else ""
-            print(f"  {dst_label:11s} <- {src_label:11s} {report['slots']} slot(s)"
+            shared = "  SHARED ID" if report["ids"] == "unmeasured" else ""
+            print(f"  {alt}: {dst_label:11s} <- {src_label:11s} {report['slots']} slot(s)"
                   f"{' replacing ' + str(report['replaced']) if report['replaced'] else ''}"
-                  f"{'  bypassed' if args.bypass else ''}{warn}")
+                  f"{'  bypassed' if args.bypass else ''}{warn}{shared}")
             total += report["slots"]
         return data
     args.project = args.dst
@@ -87,6 +98,30 @@ def cmd_transplant(args) -> int:
     if code == 0:
         print(f"\nTransplanted {total} slot(s). Open the copy in Logic before trusting it.")
     return code
+
+
+def _targets(args, data: bytes, count: int | None) -> list[tuple[str, str]]:
+    """(destination label, source label) for every ``--channel`` and every channel a ``--stack``
+    member is bound to, each destination once."""
+    from .services.stacks import read_stacks, read_tracks, rows_below
+
+    out = pairs(args.channel or [])
+    if args.stack:
+        stacks = read_stacks(data, count)
+        labels = {r["key"]: r["label"] for r in read_tracks(data, count)}
+        for spec in args.stack:
+            name, sep, src_label = (part.strip() for part in spec.partition("="))
+            stack = next((s for s in stacks if s.name == name), None)
+            if not sep or not src_label:
+                raise CommandError(f"--stack takes NAME=SRC_LABEL, e.g. 'Drums=Audio 2'; got {spec!r}")
+            if stack is None:
+                raise CommandError(f"no stack named {name!r} (have: {', '.join(sorted(s.name for s in stacks))})")
+            out += [(labels[key], src_label) for key, _n in rows_below(stacks, stack, headers=False)
+                    if labels.get(key)]
+    first: dict[str, str] = {}
+    for dst_label, src_label in out:
+        first.setdefault(dst_label, src_label)
+    return list(first.items())
 
 
 def cmd_bypass(args) -> int:
@@ -120,6 +155,11 @@ def cmd_strip_save(args) -> int:
         print(f"  {e}")
         return 1
     out = Path(args.out)
+    from .services.library import under_live_library
+    if under_live_library(out) and not args.install:
+        print(f"  refusing to write into Logic's own library at {out}: this is the library Logic loads, not a "
+              "scratch directory. Pass --install to write there on purpose, or give -o elsewhere.")
+        return 2
     if out.exists() and not args.overwrite:
         print(f"  {out} exists; pass --overwrite")
         return 1
@@ -146,12 +186,16 @@ def register(sub) -> None:
     tp.add_argument("src", help="project to take slots FROM")
     tp.add_argument("dst", help="project to put them ON (a copy is made)")
     tp.add_argument("--out", required=True, help="output directory")
-    tp.add_argument("--channel", action="append", required=True, metavar="LABEL[=SRC_LABEL]",
+    tp.add_argument("--channel", action="append", metavar="LABEL[=SRC_LABEL]",
                     help="mixer label, e.g. 'Audio 20' (repeatable)")
+    tp.add_argument("--stack", action="append", metavar="NAME=SRC_LABEL",
+                    help="every member of this folder stack takes SRC_LABEL's slots (repeatable)")
     tp.add_argument("--bypass", action="store_true", help="clone the slots bypassed")
     tp.add_argument("--force", action="store_true",
                     help="write past a refusal — a move that overruns the slot key range "
-                         "deletes the channel's .cst reference record")
+                         "deletes the channel's .cst reference record; a third-party slot of the "
+                         "other width loads at its saved width; copies with no measurable "
+                         "instance id share one")
     tp.set_defaults(func=cmd_transplant)
     bp = sub.add_parser("bypass", help="bypass every slot on a channel (writes a copy)")
     bp.add_argument("project")
@@ -183,6 +227,7 @@ def register(sub) -> None:
     ss = sub.add_parser("strip-save", help="export a channel as a .cst channel strip setting")
     ss.add_argument("project")
     ss.add_argument("--channel", required=True, metavar="LABEL", help="e.g. 'Audio 1'")
-    ss.add_argument("-o", "--out", required=True, help="output .cst path (never the Logic library)")
+    ss.add_argument("-o", "--out", required=True, help="output .cst path; under Logic's own library only with --install")
     ss.add_argument("--overwrite", action="store_true")
+    ss.add_argument("--install", action="store_true", help="allow writing into Logic's own library (refused without it)")
     ss.set_defaults(func=cmd_strip_save)

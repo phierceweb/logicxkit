@@ -1,0 +1,138 @@
+{
+ "type": 152,
+ "variant": 283,
+ "name": "Phaser",
+ "floats": 22,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "LFO Mix",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Sweep Floor",
+   "unit": "Hz",
+   "default": 550.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Sweep Ceiling",
+   "unit": "Hz",
+   "default": 13200.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Stages",
+   "unit": "",
+   "default": 12.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "LFO Env Follow",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Phase",
+   "unit": "\u00b0",
+   "default": 180.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Output Mix",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Env Follow",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Warmth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 13,
+   "name": "FB Filter",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "LP Cutoff",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "HP Cutoff",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "LFO 1 Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 20,
+   "name": "LFO 2 Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Rate LFO 1",
+  "Rate LFO 2",
+  "Sweep Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 15 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 0 by order. Popup rows unmapped."
+}

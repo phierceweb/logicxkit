@@ -216,7 +216,7 @@ class StripSourcedValuesTest(unittest.TestCase):
 class VerifyStripValuesTest(unittest.TestCase):
     """Read a WRITTEN project back and check every strip-sourced float against its strip.
 
-    Slot counts and structural validation both passed while three projects carried a factory
+    Slot counts and structural validation both passed while projects carried a factory
     Enveloper instead of the strip's, so success is measured by reading the result, not the report.
     """
 

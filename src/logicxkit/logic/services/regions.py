@@ -3,14 +3,14 @@ must follow the rows: the row count and the region placements.
 
 **Row count.** The container's `qeSM` carries the number of arrange rows times 60 as a u32
 269 bytes before its end (the name before it is variable-length, so the field is addressed
-from the end); 35/35 Logic files agree. Logic reads that many rows and drops the rest on
-its next save (measured 2026-09-04: 46 added rows, only the first 11 kept).
+from the end); every Logic file on hand agrees. Logic reads that many rows and drops the rest
+on its next save (measured 2026-09-04: after rows were added, only the first 11 were kept).
 
 **Region placement.** The container's `qSvE` is an event list of 80-byte entries and a
 16-byte tail. An entry that places a region carries the track's object id at `+16`, the
 track's **1-based arrange row** at `+20` (the object's first row, when a channel has two)
 and the region's own sequence slot at `+32`. Logic rewrites `+20` whenever a row moves
-(measured on its own add, `37 -> 38`); 1,055 entries on 35 files agree.
+(measured on its own add, `37 -> 38`); every entry on hand agrees.
 
 Every writer that adds or moves a row ends by syncing both.
 """

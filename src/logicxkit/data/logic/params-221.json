@@ -1,0 +1,289 @@
+{
+ "type": 221,
+ "variant": 1074,
+ "name": "EVOC 20 Filterbank",
+ "floats": 144,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 21,
+   "name": "Level 1 A",
+   "unit": "%",
+   "default": 28.4,
+   "evidence": "value"
+  },
+  {
+   "index": 47,
+   "name": "Level 2 A",
+   "unit": "%",
+   "default": 62.7,
+   "evidence": "value"
+  },
+  {
+   "index": 52,
+   "name": "Level 6 A",
+   "unit": "%",
+   "default": 52.6,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "Level 7 A",
+   "unit": "%",
+   "default": 68.099,
+   "evidence": "value"
+  },
+  {
+   "index": 62,
+   "name": "Level 8 A",
+   "unit": "%",
+   "default": 66.7,
+   "evidence": "value"
+  },
+  {
+   "index": 61,
+   "name": "Level 10 A",
+   "unit": "%",
+   "default": 55.0,
+   "evidence": "value"
+  },
+  {
+   "index": 63,
+   "name": "Level 15 A",
+   "unit": "%",
+   "default": 78.0,
+   "evidence": "value"
+  },
+  {
+   "index": 51,
+   "name": "Level 18 A",
+   "unit": "%",
+   "default": 69.4,
+   "evidence": "value"
+  },
+  {
+   "index": 40,
+   "name": "Level 20 A",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 108,
+   "name": "Boost A",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Bands",
+   "unit": "",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Stereo",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Low Frequency",
+   "unit": "Hz",
+   "default": 80.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "High Frequency",
+   "unit": "Hz",
+   "default": 8000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Formant Shift",
+   "unit": "",
+   "default": -0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Resonance",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 46,
+   "name": "Level 1 B",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 48,
+   "name": "Level 3 B",
+   "unit": "%",
+   "default": 46.7,
+   "evidence": "value"
+  },
+  {
+   "index": 49,
+   "name": "Level 4 B",
+   "unit": "%",
+   "default": 53.799,
+   "evidence": "value"
+  },
+  {
+   "index": 50,
+   "name": "Level 5 B",
+   "unit": "%",
+   "default": 91.8,
+   "evidence": "value"
+  },
+  {
+   "index": 53,
+   "name": "Level 7 B",
+   "unit": "%",
+   "default": 52.6,
+   "evidence": "value"
+  },
+  {
+   "index": 54,
+   "name": "Level 9 B",
+   "unit": "%",
+   "default": 84.0,
+   "evidence": "value"
+  },
+  {
+   "index": 55,
+   "name": "Level 10 B",
+   "unit": "%",
+   "default": 70.8,
+   "evidence": "value"
+  },
+  {
+   "index": 56,
+   "name": "Level 11 B",
+   "unit": "%",
+   "default": 51.4,
+   "evidence": "value"
+  },
+  {
+   "index": 57,
+   "name": "Level 12 B",
+   "unit": "%",
+   "default": 39.1,
+   "evidence": "value"
+  },
+  {
+   "index": 58,
+   "name": "Level 13 B",
+   "unit": "%",
+   "default": 76.599,
+   "evidence": "value"
+  },
+  {
+   "index": 59,
+   "name": "Level 14 B",
+   "unit": "%",
+   "default": 81.0,
+   "evidence": "value"
+  },
+  {
+   "index": 60,
+   "name": "Level 15 B",
+   "unit": "%",
+   "default": 70.8,
+   "evidence": "value"
+  },
+  {
+   "index": 64,
+   "name": "Level 19 B",
+   "unit": "%",
+   "default": 79.5,
+   "evidence": "value"
+  },
+  {
+   "index": 65,
+   "name": "Level 20 B",
+   "unit": "%",
+   "default": 61.4,
+   "evidence": "value"
+  },
+  {
+   "index": 109,
+   "name": "Boost B",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 66,
+   "name": "Level A<>B",
+   "unit": "%",
+   "default": 48.0,
+   "evidence": "value"
+  },
+  {
+   "index": 110,
+   "name": "Distortion",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 84,
+   "name": "LFO -> Xfade",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 20,
+   "name": "Output Level",
+   "unit": "dB",
+   "default": 7.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Level 3 A",
+  "Level 4 A",
+  "Level 5 A",
+  "Level 9 A",
+  "Level 11 A",
+  "Level 12 A",
+  "Level 13 A",
+  "Level 14 A",
+  "Level 16 A",
+  "Level 17 A",
+  "Level 19 A",
+  "Stereo Mode",
+  "Slope",
+  "LFO1 Rate",
+  "LFO Waveform",
+  "LFO -> Formant",
+  "Level 2 B",
+  "Level 6 B",
+  "Level 8 B",
+  "Level 16 B",
+  "Level 17 B",
+  "Level 18 B",
+  "Low Band Mode",
+  "High Band Mode",
+  "LFO2 Rate",
+  "LFO Waveform"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 35 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

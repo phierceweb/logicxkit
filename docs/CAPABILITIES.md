@@ -5,7 +5,8 @@ Logic project today?**
 
 Read the table, then the defect list, for anything you plan to run. Each row says what it was
 measured against and when. All of it is macOS-only: the writers target Logic Pro's own project
-format, and "confirmed" means the output was opened in Logic Pro itself.
+format, and "confirmed" means the output was opened in Logic Pro itself. Every measurement is on
+projects Logic 12.3.1 saved (file format 2513), and every writer refuses one it did not.
 
 The table is **generated from `src/logicxkit/logic/_capabilities.py`**, its rows declared in
 `_capabilities_table.py` — change a level there, not here. `bin/run logic capabilities -v`
@@ -30,6 +31,7 @@ how to stage your own.
 ## The table
 
 <!-- generated from src/logicxkit/logic/_capabilities.py — edit there, not here -->
+
 | Command | Level | Safe on a real song? |
 |---|---|---|
 | `project` `manifest` `diff` `decode` `neural` `recdiff` | — | yes, read-only |
@@ -62,8 +64,13 @@ how to stage your own.
 | `width` | **CONFIRMED** | yes, on a copy |
 | `tempo` | **CONFIRMED** | yes, on a copy |
 | `rename` `colour` `hide` | **CONFIRMED** | yes |
+| `settings` | **CONFIRMED** | yes; `--set` writes a copy |
 | `transplant` | **CONFIRMED** | yes, within the channel's key range |
 | `bypass` | **CONFIRMED** | yes |
+| `add-plugin` | **CONFIRMED** | yes, on a copy |
+| `tracking-chains` | **CONFIRMED** | yes, on a copy |
+| `swap-plugin` | **CONFIRMED** | yes, on a copy |
+| `remove-plugin` `replace-plugin` | **CONFIRMED** | yes, on a copy |
 | `clear-slots` | **CONFIRMED** | yes |
 | `header` | **CONFIRMED** | yes |
 | `prefs` | **CONFIRMED** | yes, with Logic closed |
@@ -72,16 +79,10 @@ how to stage your own.
 | `apply-template` | **CONFIRMED** | yes, with a map across lineages |
 | `migrate` | **CONFIRMED** | yes, on a renamed copy; across lineages only with `--map` or `--force` |
 
-**`build`/`pst` refuse Logic's own library without `--install`:** a relative `output_dir` in a
-spec resolves under `~/Music/Audio Music Apps`, the channel-strip and plug-in settings libraries
-Logic itself loads from, and writing there exits 2 unless `--install` is passed. An existing
-file is kept unless `--overwrite` is passed. To write elsewhere, set `output_root` (moves only
-the output, for both commands) or give an absolute `output_dir`; `strip_root` and
-`LOGICXKIT_STRIP_ROOT` also move `build`'s output, with its sources, but not `pst`'s.
-
 ## The catch, per command
 
 <!-- generated from src/logicxkit/logic/_capabilities.py — edit there, not here -->
+
 ### `project` `manifest` `diff` `decode` `neural` `recdiff`
 
 `project`'s "channels with inserts" counts `.cst` labels, not loaded plugins.
@@ -92,7 +93,7 @@ Names every slot's plug-in — Apple's by type id, a third-party one by the AU c
 
 ### `regions`
 
-Every MIDI and audio region, numbered, with its track, start, mute, loop and fades; an audio region's file record (name, format, frames, rate, channels, bits), its first frame and length in frames. Read from Logic's imports of two WAVs onto a blank-born project (2026-09-13) and Logic's own move, trim, split, mute, rename, loop, fade and import saves of one (2026-09-15, the `regions-a*` goldens): an entry pairs with its region record by slot word and piece number and with its file by slot on every project on hand (173 projects with audio, pieces up to 29), so a split's second piece reads its own record. Names are UTF-8 with a byte length (region), UTF-16 LE with a unit count (file): `Snare 🥁`, `Pad — é` and `v040-日本.wav` read back as Logic wrote them. `--audio` copies a PCM WAV at the project's rate into the bundle and writes the file, region and container records held field for field to Logic's own first, second and third imports; Logic re-saved two imports written onto a blank-born project with every region record, entry and registry id as written, rewriting only each file's folder path and size, and one word of the stereo file, on load (2026-09-14). It writes onto a project with no audio regions or one whose regions are laid out as Logic's imports and splits leave them (n file records numbered 0, 4, … 4(n-1) with their region records, an ordinal/link chain in file order, one registry entry each), and refuses any other layout, a WAV whose name the project already holds, and other rates and formats. The track selection is not moved. `--move`, `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in` and `--fade-out` write the fields Logic's own edits changed, and Logic re-saved a copy carrying all eight on audio and a move, both trims, a split and loops on MIDI with every region, record, entry and the split pieces' fields as written (2026-09-15, `regions-audio-edits-*` and `regions-midi-edits-*`). A split's second piece needs the file record's region count raised — Logic loads that many — and a MIDI piece plays its sequence from an offset, which the MIDI edits then refuse; an audio region's loop length is one measurement (its length in ticks times 1000). The inspector's Gain, Delay, Transpose, Fine Tune and Reverse, the Fade-Out type, the crossfade with the region over it and a region's colour read what Logic's own edits of one region wrote (2026-09-15, the `regions-b*` goldens; gain is a tens byte plus a signed five-bit remainder); `--gain`, `--delay`, `--transpose`, `--fine-tune`, `--reverse`, `--fade-out N=MS:CURVE:TYPE`, `--crossfade` and `--colour` write those fields the way Logic did, entry for entry on the save before its own, and Logic re-saved a copy carrying all of them with every field as written (`regions-params-*`), setting one more bit beside the crossfade's. Transpose on an unflexed region made Logic flex the track, which the writer does not; Logic kept the value on load, but whether it plays transposed is unheard.
+Every MIDI and audio region, numbered, with its track, start, mute, loop and fades; an audio region's file record (name, format, frames, rate, channels, bits), its first frame and length in frames. Read from Logic's imports of two WAVs onto a blank-born project (2026-09-13) and Logic's own move, trim, split, mute, rename, loop, fade and import saves of one (2026-09-15, the `regions-a*` goldens): an entry pairs with its region record by slot word and piece number and with its file by slot on every project on hand with audio, so a split's second piece reads its own record. Names are UTF-8 with a byte length (region), UTF-16 LE with a unit count (file): `Snare 🥁`, `Pad — é` and `v040-日本.wav` read back as Logic wrote them. `--audio` copies a PCM WAV at the project's rate into the bundle and writes the file, region and container records held field for field to Logic's own first, second and third imports; Logic re-saved two imports written onto a blank-born project with every region record, entry and registry id as written, rewriting only each file's folder path and size, and one word of the stereo file, on load (2026-09-14). It writes onto a project with no audio regions or one whose regions are laid out as Logic's imports and splits leave them (n file records numbered 0, 4, … 4(n-1) with their region records, an ordinal/link chain in file order, one registry entry each), and refuses any other layout, a WAV whose name the project already holds, and other rates and formats. The track selection is not moved. `--move`, `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in` and `--fade-out` write the fields Logic's own edits changed, and Logic re-saved a copy carrying all eight on audio and a move, both trims, a split and loops on MIDI with every region, record, entry and the split pieces' fields as written (2026-09-15, `regions-audio-edits-*` and `regions-midi-edits-*`). A split's second piece needs the file record's region count raised — Logic loads that many — and a MIDI piece plays its sequence from an offset, which the MIDI edits then refuse; an audio region's loop length is one measurement (its length in ticks times 1000). The inspector's Gain, Delay, Transpose, Fine Tune and Reverse, the Fade-Out type, the crossfade with the region over it and a region's colour read what Logic's own edits of one region wrote (2026-09-15, the `regions-b*` goldens; gain is a tens byte plus a signed five-bit remainder); `--gain`, `--delay`, `--transpose`, `--fine-tune`, `--reverse`, `--fade-out N=MS:CURVE:TYPE`, `--crossfade` and `--colour` write those fields the way Logic did, entry for entry on the save before its own, and Logic re-saved a copy carrying all of them with every field as written (`regions-params-*`), setting one more bit beside the crossfade's. Transpose on an unflexed region made Logic flex the track, which the writer does not; Logic kept the value on load, but whether it plays transposed is unheard.
 
 ### `markers`
 
@@ -112,7 +113,7 @@ A Session Player region's settings from the JSON in its MneG record — Complexi
 
 ### `automation`
 
-Reads track automation: the per-channel `*Automation` folders under the Track Automation Root Folder, their fader points (0x50: value byte, fader id) and plug-in parameter points (0x51: 0..1 float, parameter index; bit 14 of the type word, on two points of a real song, reads as flagged), and a region's own automation as the unreferenced sequence that names the track (2026-09-16, the `automation-*` goldens). Points were made with Create 1/2 Automation Point(s) for Visible Parameter (at the selected regions' borders) and in the Automation Event List, where Pan and the relative Volume lane were measured (the relative lane sets bit 7 of the type word's high byte). `--set`, `--copy` and `--clear` write a lane's points as the Event List does, in Logic's own order, into the track's existing folder; Logic listed three lanes written onto the blank as written and re-saved the folder byte for byte but for head +15, its selection state (`automation-ours-resave-logic`). A point's sub-tick fraction (head +2) is read and kept on a copy; Logic's own Automation Event List, read off the screen for every automation golden (2026-09-17), shows the same ticks and values as the reader, the half-tick point as the display tick before it.
+Reads track automation: the per-channel `*Automation` folders under the Track Automation Root Folder, their fader points (0x50: value byte, fader id) and plug-in parameter points (0x51-0x5F, 0x50 plus the mixer slot with empty slots counted, an instrument channel's instrument insert 1: a u32 over 2^31 and the parameter index; bit 14 of the type word, on some points of a real song, reads as flagged), and a region's own automation as the unreferenced sequence that names the track (2026-09-16, the `automation-*` goldens). Points were made with Create 1/2 Automation Point(s) for Visible Parameter (at the selected regions' borders) and in the Automation Event List, where Pan and the relative Volume lane were measured (the relative lane sets bit 7 of the type word's high byte). `--set`, `--copy` and `--clear` write a lane's points as the Event List does, in Logic's own order, into the track's existing folder; Logic listed three lanes written onto the blank as written and re-saved the folder byte for byte but for head +15, its selection state (`automation-ours-resave-logic`). A point's sub-tick fraction (head +2) is read and kept on a copy; Logic's own Automation Event List, read off the screen for every automation golden (2026-09-17), shows the same ticks and values as the reader, the half-tick point as the display tick before it. `--set "TRACK:slot N NAME=V@BAR"` writes a plug-in lane by mixer slot and parameter name in the parameter's own unit: the four natives with a map through their measured sliders (a value past a slider's end held there with a note), a third-party through its AU table (`autoset-*`); a value or bar that is not a finite number is refused. Logic's Event List named lanes at insert 4 as the Pro-Q 4 there and lanes at insert 1 as nothing (`slots-insert*`, 2026-09-23).
 
 ### `patch`
 
@@ -146,9 +147,13 @@ Replaces a channel's whole chain. `--plan` names every chain it would take off; 
 
 Changes a label, never a chain; basename-only library match. `--channel` repoints one channel at a time, so channels sharing a name can part ways: seven repointed on a tracking template showed on the Setting buttons and survived Logic's re-save byte for byte (2026-09-06).
 
+### `strip-save`
+
+A path under Logic's own library is refused without `--install` (2026-09-27).
+
 ### `send`
 
-Writes to buses the caller declared missing; no cross-project bus remap. A project with no send to clone gets Logic's own from a blank project (packaged), and Logic re-saved one such add byte for byte (2026-09-13).
+Writes to buses the caller declared missing; no cross-project bus remap. A project with no send to clone gets Logic's own from a blank project (packaged), and Logic re-saved one such add byte for byte (2026-09-13). A third send in a project whose slots start at key 2 moves the project to base 4 first, as Logic's own re-save does; left at 2 it shares slot 1's key and Logic drops the plug-in there (`legacy-migrate-fixed-*`, 2026-09-24).
 
 ### `stack-create`
 
@@ -156,7 +161,7 @@ Summing stacks unimplemented. A session with no stack patterns on Logic's own fi
 
 ### `add-track`
 
-Audio, instrument and aux adds; 46 in one migration survived Logic's own re-save row for row (2026-09-04). With no audio stub free a fresh channel is made where Logic makes one, and Logic's re-save kept three such byte for byte (2026-09-06). Keeps the song container's row count, the region placements and the registry's slot entries in step. `--stereo` binds the pair channel `Input N-(N+1)`, as Logic's own New Tracks did with an interface attached (2026-09-17); inside a nested stack the row takes the depth of its place.
+Audio, instrument and aux adds; every add in one migration survived Logic's own re-save row for row (2026-09-04). With no audio stub free a fresh channel is made where Logic makes one, and Logic's re-save kept three such byte for byte (2026-09-06). Keeps the song container's row count, the region placements and the registry's slot entries in step. `--stereo` binds the pair channel `Input N-(N+1)`, as Logic's own New Tracks did with an interface attached (2026-09-17); inside a nested stack the row takes the depth of its place. A fresh channel record goes after the highest owner below it and carries the project's slot base and shown-slot count; an instrument channel's default records are keyed to the project's slot and property bases. Logic re-saved ten chained adds with every plug-in and track (`addtrack-fresh-*`, 2026-09-23); a record out of owner order lost every plug-in (`addtrack-order-*`), and one instrument channel keyed for another base made a migration Logic would not open (`legacy-migrate-keyed-mine`). `--instrument --stereo` writes the width bytes Logic's own stereo instrument channel carries (`sessionplayer-track-logic`); a track added that way is not yet opened in Logic.
 
 ### `reorder`
 
@@ -188,7 +193,7 @@ The Metronome and Recording panes: nine boxes, the pre-roll time, the four Klopf
 
 ### `width`
 
-A channel's width and the build of every plug-in on it, measured across ten sessions and a Logic-written stereo bus; two auxes made stereo on two templates came back stereo from Logic's re-save, slots included (2026-09-08).
+A channel's width and the build of every plug-in on it, measured across real sessions and a Logic-written stereo bus; two auxes made stereo on two templates came back stereo from Logic's re-save, slots included (2026-09-08).
 
 ### `tempo`
 
@@ -198,13 +203,33 @@ Reads matched every project's LCD, ramps and steps included; `--set 180` showed 
 
 Applied across three legacy migrations Logic re-saved unchanged (2026-09-04); a rename marks the name as the user's, else the arrange shows the strip setting's name.
 
+### `settings`
+
+A slot's settings in its family's vocabulary through the plug-in's map (`data/translate`): a third-party's from its AU state's id/value pairs (Pro-C 2, with the normalized ratio, attack and release read off curves the AU host sampled) or its vendor blob (sonible's smart:comp 2 and smart:gate, real units in their protobuf block, `sonible-*`), its FabFilter binary state by band (Pro-Q 4) or its zlib JSON state (iZotope's Neutron 5, real units by module: a compressor, a gate and an EQ at once, a line per family, `neutron-*`), one of Logic's own from its measured table (Compressor, Noise Gate, Channel EQ, Multipressor), a multiband's as bands by frequency range (Pro-MB, Multipressor). A slot without a map says so. `--set` writes the same names into one slot: one of Logic's own through its table, each value held to its measured slider's ends and put on the nearer sampled position — the knob rows are sampled at every unit, the dB rows every few, where a value between samples is written as given with a note (`snap-*`), FabFilter's pairs or binary state patched in place inside the record's plist at the same length (sonible's protobuf and iZotope's JSON are read, not written); an EQ takes `band N=<shape> <freq> …`, rewriting that band and no other. `--at` is the mixer slot. Three items written into a Pro-C 2 came back from Logic's re-save shown as written, the other nine and the side chain untouched (`write-proc-*`, 2026-09-23).
+
 ### `transplant`
 
-Refuses a move that overruns the slot key range — which deletes the channel's `.cst` reference record, a loss `validate_project` cannot see — and one that crosses a record class version; `--force` writes anyway. Clones take the destination's own slot keys (2 in projects whose slots start there). Two native slots moved between blank-born projects came back from Logic's re-save byte for byte (2026-09-13).
+Each slot's side chain follows its source's name into the destination (payload +144/+145, the `sidechain-*` goldens) or is cleared with a report line. Refuses a move that overruns the slot key range — which deletes the channel's `.cst` reference record, a loss `validate_project` cannot see — and one that crosses a record class version; `--force` writes anyway. Clones take the destination's own slot keys (2 in projects whose slots start there). Two native slots moved between blank-born projects came back from Logic's re-save byte for byte (2026-09-13). One source fanned out to several channels gives each copy its own instance id, measured from a second instance of that plug-in in the source; without one the fan-out is refused. So is a third-party slot onto an audio channel of the other width (Logic's own are re-stamped; an instrument channel's width byte says nothing about its plug-in). `--stack NAME=SRC` targets a folder stack's members. One Auto-Align 2 fanned out onto a tracking song's seventeen drum channels came back from Logic's re-save with every slot byte for byte, the seventeen stamped ids included (2026-09-21, `transplant-fanout-*`). The destination's plug-in automation lanes are left as they are.
 
 ### `bypass`
 
 Flips the bypass bit on the slots a channel already carries; adds nothing and removes nothing. Two bypassed slots came back from Logic's re-save with the bits as written (2026-09-13).
+
+### `add-plugin`
+
+A library plug-in into mixer slot N (from 1, empty slots counted — the insert automation names), the end without: an empty slot takes it where it is, an occupied one moves it and every later slot down a key with their automation lanes (`slots-front-*`: Logic's Event List named every lane's plug-in, 2026-09-23). An instrument channel's slot 1 is its instrument; an effect is refused there and an append lands at 2 (`slots-inst-*`). `--set` on one of Logic's own holds a value to its slider's measured ends with a note and puts it on the slider's grid. The donor is stamped as `transplant` stamps one (owner, key, index, width for Logic's own, id, bypass, the side chain `--side-chain NAME` asks for by name, none otherwise — Logic showed a written one in the plug-in header and re-saved it as written, `sidechain-ours-resave-logic`), the slots from that position on move down a key, header key and +6 index both, and the channel's Smart Control mappings move with them (without that Logic reset the channel). A chain reaching the two keys under the reference record moves the reference, the records under it and the archives above it up on every channel, and every channel record's shown-slot count follows. Logic's own appends on the `master-track-*` saves are reproduced slot for slot and the channel record byte for byte; Logic re-saved a mid-chain insert and an append with every slot, archive and channel record as written but a per-plug-in token on the new slot (2026-09-21, `addplugin-mid-*`, `addplugin-end-*`), and Auto-Align 2 into slot 1 of a tracked song's seventeen drum channels in front of their chains, the range grown by the project's own headroom (`addplugin-front-*`). Third-party plug-ins come from `logic donors PROJECT [--as NAME] [--refresh]`, one donor per width. A side chain may also be an input of the interface or an instrument track (`sidechain-input2-logic`, `sidechain-inst-*`).
+
+### `tracking-chains`
+
+Every third-party slot with a translation map replaced by Logic's own of its family with the settings carried (the `replace-plugin --translate` path; Neutron 5 one native per live element, the extras added after the first), a third-party without a map removed, the natives that carry lookahead bypassed, one it made from a third-party too (a Pro-MB's Multipressor, `mb-promb`). Logic-confirmed 2026-09-24 (`trk-*`): a Neutron 5 read back as the Channel EQ and Compressor it became, both Controls views on the carried values, and a re-save kept every swap and every bypass on two channels and the output. An instrument channel keeps its instrument, whatever it is (2026-09-27).
+
+### `swap-plugin`
+
+Every slot holding one plug-in replaced by another across the project, each through the `replace-plugin --translate` path: settings through the family vocabulary, side chains and automation lanes carried, a slot whose settings cannot cross left as it is with the reason; a `--from` no slot holds, or one naming the `--to` plug-in, refused before a copy is made. The replacement and the carry are the Logic-confirmed ones (`slots-replace4-*`, `translate-*`, `auto-lanes-*`); the loop itself Logic-confirmed on two smart:comp 2 slots into Compressors, both channels' Controls views reading the carried values (`swap-*`, 2026-09-24), and again with the packaged donors only (`swap-packaged-*`, 2026-09-25): the same carried values, and Auto Release reading 1 — the packaged `#default` donor's — where the data root's `Drum Mix` donor had read 0. The 2026-09-24 copies, and the `translate-*` ones, took a Compressor donor harvested from a real project — the packaged donor's layout and length, its preset name, values and instance id aside.
+
+### `remove-plugin` `replace-plugin`
+
+The plug-in in mixer slot N out of a channel, the slots after it moved up a key with their automation lanes and Smart Control mappings, the removed slot's dropped (`slots-remove-*`, Logic's Event List named the rest on their own plug-ins, 2026-09-23); an instrument channel's instrument leaves its slot empty. `replace-plugin` is that removal and an `add-plugin` at the same slot. Logic re-saved both with every slot as written, the replace's archives and channel record too (2026-09-22, `addplugin-remove-*`, `addplugin-replace-*`); the key range is left for Logic to re-lay out on save. `replace-plugin --translate` carries the old slot's settings through the family vocabulary: a Pro-C 2 dialled in Logic to -30 dB / 3.06:1 / 10.72 ms / 115 ms / 6 dB knee / +3 dB / 80 % went into a Compressor that Logic showed as -30 dB, 3.1:1, 10.5 ms, 110 ms, +3 dB, knee 0.1, 80 % and kept so on re-save (`translate-*`, 2026-09-22) — its own grids, which the map rounds to; attack and release sit on their knobs' positions and are written as read (a smart:comp 2 into a Compressor and a smart:gate into a Noise Gate came back the same way, `translate-sonible-resave-logic`). Knee is approximate (dB/72); Pro-C 2's look-ahead, auto gain, range, hold and style have no analogue and are reported, not guessed, as is the Compressor's circuit the other way; the target keeps its own. An EQ crosses as bands: a Pro-Q 4 dialled to nine bands went into a Channel EQ that Logic showed with the low cut, four bells, high shelf and high cut as planned and re-saved as written but for its knobs' own frequency and Q positions (250.01 Hz to 250, Q 2.43 to 2.50; `translate-proq-*`, 2026-09-22); the notch and the fifth bell were reported, not placed. The slot's automation lanes follow the translation (`automation_remap`): a Pro-C 2's threshold, ratio and attack lanes landed on the Compressor's indices in its slider units and Logic's Event List listed them by name, its Controls view following them in Read — -30, -24, -12 dB, 3.9:1 and 2.7:1, 16 ms (`auto-lanes-*`, 2026-09-23); a lookahead lane with no analogue was dropped with a line. An EQ's or a multiband's lanes cross by band, onto the band the plan placed each in: a Pro-Q 4's low-cut on/off, bell gain and bell frequency lanes reached the Channel EQ's Low Cut, Peak 1 and Peak 3 and read 1/0/1, -4/0/+6 dB and 1000/2000 Hz, a Pro-MB's threshold, ratio and level lanes the Multipressor's band 1 and 4 and read -20/-12/-30 dB, 3.675 and 1.977 (its ratio knob's grid), +1 dB (`auto-eqlanes-*`, `auto-mblanes-*`, 2026-09-23); the four natives' sliders are measured for it. `--keep-automation` leaves the lanes; with neither they are dropped with a line, and so is the side chain. The other way round, a FabFilter replacement takes the plan into its own state: Logic's Compressor into a Pro-C 2 that Logic showed as -30 dB, 3.10:1, 10.49 ms, 109.8 ms, +7.20 dB knee, +3 dB, 80 % (attack and release land between the sampled curve's points; `write-comp2proc-*`), and a Channel EQ into a Pro-Q 4 whose seven bands Logic showed as written, the off low shelf left out (`write-eq2proq-*`, 2026-09-23); what the donor keeps of its own is reported. A multiband compressor crosses as bands by frequency range: a Pro-MB's three bands went into a Multipressor Logic showed as written but for its ratio and crossover knobs (4.0 as 3.675, 4 kHz as 3.9), and that re-save came back into a Pro-MB as written (`mb-*`, 2026-09-23). A stretch no source band covers is a live band at ratio 1, since an off band's range goes to the next live one (`mb-neutral-*`); Pro-MB's range limit and percentage times, and a Multipressor band's expander beside its compressor, are reported, not guessed.
 
 ### `clear-slots`
 
@@ -228,11 +253,11 @@ Every box and the member events measured on twenty-eight single-change saves (20
 
 ### `apply-template`
 
-Same lineage pairs by object id; across lineages `--map FILE` says how tracks pair (`--propose-map` drafts it, `(none)` leaves a track alone). Three legacy songs migrated onto a mixing template opened in Logic and re-saved with the identical row list (2026-09-04). Never removes a send; inputs past the session's count are made before planning (Logic re-saved six); the template's groups are made and joined by name (2026-09-05, confirmed on the same song). Legacy bus returns the template duplicates are silenced; `-` lines in the map leave template tracks out. A song whose slots start at key 2 beside three sends is moved to base 4 in the same pass, as Logic's own re-save does; a project born at base 2 without that collision is left there (`logic/README.md`: slot keys). Also carries the track power state, icons, header components and the control bar; not the project's own tempo, meter or key, which stay the song's. The current tracking template applied onto a tracked song (2026-09-16) re-saved in Logic with the identical row list and strip references, two of them repointed per channel.
+Same lineage pairs by object id; across lineages `--map FILE` says how tracks pair (`--propose-map` drafts it, `(none)` leaves a track alone). Legacy songs migrated onto a mixing template opened in Logic and re-saved with the identical row list (2026-09-04). Never removes a send; inputs past the session's count are made before planning (Logic re-saved six); the template's groups are made and joined by name (2026-09-05, confirmed on the same song). Legacy bus returns the template duplicates are silenced; `-` lines in the map leave template tracks out. A song whose slots start at key 2 beside three sends is moved to base 4 in the same pass, as Logic's own re-save does; a project born at base 2 without that collision is left there (`logic/README.md`: slot keys). Also carries the track power state, icons, header components and the control bar; not the project's own tempo, meter or key, which stay the song's. The current tracking template applied onto a tracked song (2026-09-16) re-saved in Logic with the identical row list and strip references, two of them repointed per channel.
 
 ### `migrate`
 
-Composes `propose-map` (or `--map FILE`) with `apply-template`'s step into `CLAUDE migrated - <song>.logicx`: the ops are apply-template's CONFIRMED writers, A session of the template's lineage pairs by object id and the draft is not applied. `--verify` drives Logic Pro — opens the copy, Save As through `tools/driver`, closes without saving — and compares the row lists ignoring only the flag word; it runs from a checkout on macOS with Logic installed and has not yet been run against Logic. Logic re-saved a migrated legacy session with its 57 rows as written and `--verify` found the row lists equal (2026-09-15, `legacy-migrate-*`).
+Composes `propose-map` (or `--map FILE`) with `apply-template`'s step into `CLAUDE migrated - <song>.logicx`: the ops are apply-template's CONFIRMED writers, A session of the template's lineage pairs by object id and the draft is not applied. `--verify` drives Logic Pro — opens the copy, Save As through `tools/driver`, closes without saving — and compares the row lists ignoring only the flag word; it runs from a checkout on macOS with Logic installed and has not yet been run against Logic. Logic re-saved a migrated legacy session with every row and plug-in as written (2026-09-24, `legacy-migrate-fixed-*`).
 
 ## The two rules that matter most
 
@@ -242,7 +267,7 @@ unrelated projects both have an `Audio 1`, so the label rule pairs them happily:
 that meant renaming *Guitar 1* to *Kick In* and *Bass* to *Snare Up*.
 
 `match_quality` scores the share of rows paired by object id, and the command refuses below
-`LINEAGE_FLOOR` (0.5). Seven songs cut from one recording template score 1.00; three legacy
+`LINEAGE_FLOOR` (0.5). Songs cut from one recording template score 1.00; the legacy
 songs score 0.02 and are refused by name, with an example of what would have been
 renamed. `--force` overrides, and says so loudly.
 
@@ -252,7 +277,8 @@ at 0.5 rather than near 1.
 **2. Every write is gated, but a gate is not an audition.** `services/integrity.py` holds
 a project against the input it was given and refuses on any regression — new record-level
 problems, more sequence link errors, objects whose mixer index stopped matching their channel,
-channels whose send flags stopped matching their sends. It runs in `_edit.edit_copy` — the
+channels whose send flags stopped matching their sends, a strip reference placed outside its
+channel's records. It runs in `_edit.edit_copy` — the
 path every `ProjectData` writer takes except `retrack --map` — and in `chains`, before the write
 and again by reading the file back. A refused run discards the whole copy rather than leaving a bundle that
 disagrees with its own metadata.

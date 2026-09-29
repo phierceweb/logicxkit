@@ -1,0 +1,337 @@
+{
+ "type": 236,
+ "variant": 1189,
+ "name": "Channel EQ",
+ "floats": 52,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Low Cut On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 2,
+   "name": "Low Cut Frequency",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Low Cut Q-Factor",
+   "unit": "",
+   "default": 0.71,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Low Shelf On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 6,
+   "name": "Low Shelf Frequency",
+   "unit": "Hz",
+   "default": 75.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Low Shelf Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Low Shelf Q-Factor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Peak 1 On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "Peak 1 Frequency",
+   "unit": "Hz",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Peak 1 Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Peak 1 Q-Factor",
+   "unit": "",
+   "default": 0.6,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Peak 2 On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "Peak 2 Frequency",
+   "unit": "Hz",
+   "default": 250.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Peak 2 Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Peak 2 Q-Factor",
+   "unit": "",
+   "default": 0.3,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Peak 3 On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 18,
+   "name": "Peak 3 Frequency",
+   "unit": "Hz",
+   "default": 1040.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "Peak 3 Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 20,
+   "name": "Peak 3 Q-Factor",
+   "unit": "",
+   "default": 0.41,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Peak 4 On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 22,
+   "name": "Peak 4 Frequency",
+   "unit": "Hz",
+   "default": 2500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 23,
+   "name": "Peak 4 Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Peak 4 Q-Factor",
+   "unit": "",
+   "default": 0.2,
+   "evidence": "value"
+  },
+  {
+   "index": 25,
+   "name": "High Shelf On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 26,
+   "name": "High Shelf Frequency",
+   "unit": "Hz",
+   "default": 7500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "High Shelf Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "High Shelf Q-Factor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 29,
+   "name": "High Cut On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 30,
+   "name": "High Cut Frequency",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 32,
+   "name": "High Cut Q-Factor",
+   "unit": "",
+   "default": 0.71,
+   "evidence": "value"
+  },
+  {
+   "index": 33,
+   "name": "Master",
+   "unit": "Gain:dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "Analyzer On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 36,
+   "name": "Analyzer Top",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 41,
+   "name": "Analyzer Decay",
+   "unit": "dB/s",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 42,
+   "name": "Gain-Q Coupling",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 49,
+   "name": "Oversampling",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 47,
+   "name": "Visualize Master Gain",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 45,
+   "name": "EQ Scale Shift",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order"
+  }
+ ],
+ "unmapped": [
+  "Low Cut Slope",
+  "High Cut Slope",
+  "Analyzer Resolution",
+  "Analyzer Position",
+  "Analyzer Mode",
+  "Gain-Q Couple Mode",
+  "Channel Processing",
+  "EQ dB Scale Mode",
+  "Analyzer Range"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 37 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 1 by order (2026-09-22). Popup rows unmapped."
+}

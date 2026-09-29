@@ -1,0 +1,110 @@
+{
+ "type": 314,
+ "variant": 2466,
+ "name": "Remix FX",
+ "floats": 4102,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Filter Drive",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Motion X",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Motion Y",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 29,
+   "name": "Orbit Depth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 37,
+   "name": "Repeater Mix",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 38,
+   "name": "Reverb Mix",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 44,
+   "name": "Delay Feedback",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Reverb Tone",
+  "Downsampler Mode",
+  "Filter Mode",
+  "Gater Noise",
+  "Orbit Mode",
+  "Beat Ratio",
+  "Reset",
+  "FX L",
+  "Pad L Lock",
+  "FX R",
+  "Pad R Lock",
+  "Pad L MotionEnable",
+  "Pad R MotionEnable",
+  "Filter Cutoff",
+  "Filter Resonance",
+  "Filter On/Off",
+  "Wobble Rate",
+  "Wobble Depth",
+  "Wobble On/Off",
+  "Orbit Rate",
+  "Orbit On/Off",
+  "Repeater Rate",
+  "Repeater On/Off",
+  "Reverb Time",
+  "Reverb On/Off",
+  "Delay Rate",
+  "Delay On/Off",
+  "Gater Rate",
+  "Gater On/Off",
+  "Downsampler Frequency",
+  "Downsampler On/Off",
+  "Reverse Rate",
+  "Reverse On/Off",
+  "Scratcher Rate",
+  "Scratcher On/Off",
+  "Tape Stop Speed",
+  "Tape Stop On/Off",
+  "Reverse Note Value L",
+  "Reverse Note Value R",
+  "Scratch Note Value L",
+  "Scratch Note Value R",
+  "Tape Stop Note Value L",
+  "Tape Stop Note Value R",
+  "Repeater Note Grid",
+  "Wobble Note Grid",
+  "Delay Note Grid",
+  "Gater Note Grid"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 7 indices matched by value between stockfx-mfx-defaults and stockfx-mfx-spots, 0 by order. Popup rows unmapped."
+}

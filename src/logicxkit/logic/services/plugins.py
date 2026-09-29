@@ -13,16 +13,17 @@ from __future__ import annotations
 import re
 import shutil
 import subprocess
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from ...au.services.aupreset import parse_au_state
 from ...au.services.embed import find_au_plists
 from .._binary import find_blocks
 from .binding import channels
-from .chain_report import PLUGIN_NAMES
-from .insert import HEADER, project_records
+from .chain_report import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name
+from .insert import HEADER, plugin_variant, project_records
 from .project import _plugin_name
 from .sends import is_send
+from .sidechain import side_chain, source_name
 
 APPLE = "appl"
 _AUVAL_LINE = re.compile(r"^(.{4}) (.{4}) (.{4})\s+-\s+")
@@ -35,6 +36,7 @@ class PluginRef:
     name: str
     native: bool
     component: tuple[str, str, str] | None     # (type, subtype, manufacturer) of a third-party AU
+    side_chain: str | None = None              # what the project calls the slot's side-chain source
 
 
 @dataclass(frozen=True)
@@ -51,7 +53,7 @@ def _ref(label: str, key: int, payload: bytes) -> PluginRef | None:
     blocks = find_blocks(payload)
     if blocks:
         type_id = blocks[0][1]
-        return PluginRef(label, key, _plugin_name(payload) or PLUGIN_NAMES.get(type_id) or f"type {type_id}", True, None)
+        return PluginRef(label, key, _plugin_name(payload) or native_name(type_id, plugin_variant(payload)) or f"type {type_id}", True, None)
     for _off, plist in find_au_plists(payload):
         if "manufacturer" not in plist:
             continue
@@ -61,17 +63,43 @@ def _ref(label: str, key: int, payload: bytes) -> PluginRef | None:
     return None
 
 
-def project_plugins(data: bytes) -> list[PluginRef]:
-    """Every plug-in slot in record order, with its channel's label."""
+def plugin_identity(payload: bytes) -> tuple | None:
+    """``("native", type_id)`` — ``("native", type_id, variant)`` where the type is shared
+    (`PLUGIN_VARIANTS`) — or ``("au", type, subtype, manufacturer)`` for a slot payload."""
+    blocks = find_blocks(payload)
+    if blocks:
+        type_id = blocks[0][1]
+        return ("native", type_id, plugin_variant(payload)) if type_id in PLUGIN_VARIANTS else ("native", type_id)
+    ref = _ref("", 0, payload)
+    return ("au", *ref.component) if ref is not None and ref.component else None
+
+
+def is_instrument_plugin(payload: bytes) -> bool:
+    """An instrument or generator — what an instrument channel's slot 1 holds."""
+    identity = plugin_identity(payload)
+    if identity is None:
+        return False
+    return identity[1] in NATIVE_INSTRUMENTS if identity[0] == "native" else identity[1] in ("aumu", "augn")
+
+
+def slot_payloads(data: bytes) -> list[tuple[PluginRef, bytes]]:
+    """Every plug-in slot in record order, with its channel's label and its payload."""
     labels = {o: c.label for o, c in channels(data).items()}
     out = []
     for r in project_records(data):
         if r.tag != b"UCuA" or r.owner not in labels or is_send(r):
             continue
-        ref = _ref(labels[r.owner], r.key, r.raw[HEADER:])
+        payload = r.raw[HEADER:]
+        ref = _ref(labels[r.owner], r.key, payload)
         if ref is not None:
-            out.append(ref)
+            sc = side_chain(payload)
+            out.append((replace(ref, side_chain=source_name(data, sc)) if sc else ref, payload))
     return out
+
+
+def project_plugins(data: bytes) -> list[PluginRef]:
+    """Every plug-in slot in record order, with its channel's label."""
+    return [ref for ref, _payload in slot_payloads(data)]
 
 
 def installed_from_auval(text: str) -> set[tuple[str, str, str]]:

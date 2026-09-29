@@ -1,0 +1,76 @@
+{
+ "type": 187,
+ "variant": 885,
+ "name": "SubBass",
+ "floats": 10,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Dry",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Freq Mix",
+   "unit": "",
+   "default": 57.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Ratio High",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Ratio Low",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Center High",
+   "unit": "Hz",
+   "default": 130.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Bandwidth High",
+   "unit": "",
+   "default": 0.26,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Center Low",
+   "unit": "Hz",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Bandwidth Low",
+   "unit": "",
+   "default": 0.33,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Wet",
+   "unit": "%",
+   "default": 110.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 9 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

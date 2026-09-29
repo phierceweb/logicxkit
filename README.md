@@ -2,8 +2,24 @@
 
 [![PyPI](https://img.shields.io/pypi/v/logicxkit)](https://pypi.org/project/logicxkit/)
 
-Read and edit Logic Pro projects, channel strips and Audio Unit plugin state from the command
-line.
+Read and change Logic Pro projects from the command line without opening Logic: tracks, regions,
+the mixer, plug-in settings and MIDI, in one project or across a batch.
+
+## Why logicxkit
+
+While working in Logic sessions, sound engineers continually make improvements, innovations, workflow tweaks, etc. Maybe 7 songs into mixing an album, you discover that bussing the vocal reverbs to their own bus, then applying an EQ with a side chain that knocks out some of the overlapping frequencies on the reverbs from the main vocals increases clarity. But now that has to be applied to every previous song. Through the Logic Pro interface, this is tedious work, especially if the bus numbers differ or inputs are different.
+
+Or maybe between projects, you've really enhanced your workflow. Your track colors, transport preferences and preferred track headers have changed, and maybe you've added aux channels to send different portions of a MIDI instrument to.
+
+Or maybe the hi hat is too loud when open but too quiet when closed.
+
+I built this project to assist me with all of that. Reading my high-latency mix templates and applying plugins and parameters to create low-latency stock logic versions for tracking. Then taking a whole batch of projects and converting them back to the mix template in seconds, driven by an AI coding agent.
+
+Along the way I started [groovebin][groovebin] to assist with MIDI drums (and later MIDI instruments).
+
+New capability requests are welcome as [issues](https://github.com/phierceweb/logicxkit/issues).
+
+## Description
 
 A `.logicx` project and a `.cst` channel strip setting are opaque binary containers. Everything
 about a session — which plugin sits in which slot, what that plugin's saved state actually
@@ -41,8 +57,10 @@ the same table.** Read it before you point a writer at a session you care about.
 - **macOS.** There is no Linux or Windows path. CI runs on a macOS runner with the public golden
   corpus tracked in the repo, so the synthetic layer and every public golden run there; the owner's goldens
   (real sessions) and `tests/rig` (a physical console's scene) skip.
-- **Logic Pro** — the tool reads and writes its file formats, and confirming any change means
-  opening the result in Logic.
+- **Logic Pro 12.3.1** — the tool reads and writes its file formats, and confirming any change
+  means opening the result in Logic. The writers take a project last saved by Logic 12.3.1 and
+  refuse any other, naming the format they found: open an older project in Logic and save it
+  first. The readers run on older saves, where tracks may read unnamed.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
   `PYTHON=python3.13` (or any 3.12+) to use another interpreter.
 - **A Swift toolchain** (`swift`) — the headless AU host and the Apple Vision OCR are Swift
@@ -91,6 +109,10 @@ bin/run logic beats compose "<song.logicx>" --out DIR --track NAME --group TEXT 
 bin/run logic beats generate "<song.logicx>" --out DIR --track NAME --bar N --meter 4/4 --bars 8  # a phrase from library bars
 bin/run logic migrate "<song.logicx>" --template "<t.logicx>" --out DIR  # a song onto a template
 bin/run logic plugins "<song.logicx | folder>"            # plug-ins referenced, and which are missing
+bin/run logic settings "<song.logicx>"                    # each slot's settings in one vocabulary
+bin/run logic add-plugin "<song.logicx>" --channel "Audio 1" --plugin Compressor --out DIR  # a plug-in into a slot
+bin/run logic swap-plugin "<song.logicx>" --from "Pro-C 2" --to Compressor --out DIR  # every slot, settings carried
+bin/run logic tracking-chains "<song.logicx>" --out DIR   # Logic's own plug-ins for tracking, lookahead bypassed
 bin/run logic patch "<name.patch | folder>"               # a Library patch: channels, strips, plug-ins
 bin/run logic regions "<song.logicx>"                     # every MIDI and audio region, with files
 bin/run logic markers "<song.logicx>"                     # the marker track
@@ -111,7 +133,8 @@ bin/run logic capabilities -v                            # what each writer is t
   mixer as Logic drew it); **`logic levels`** (fader + pan, read and copy between projects);
   **`logic stacks`** (folder stacks and the arrange track list, and `--move` to put a track into
   a stack); **`logic midi`** (MIDI regions, their export as a `.mid`, edits and Logic's Transform window — a selection with operations, or a preset — by region number); **`logic plugins`**
-  (every referenced plug-in, and which this Mac lacks); **`logic patch`** (a Library patch
+  (every referenced plug-in, and which this Mac lacks — a check that runs Apple's `auval -a`
+  scan and can take 25 seconds or more); **`logic patch`** (a Library patch
   bundle's channels, strips and plug-ins, and `--build` to make one); **`logic regions`** (MIDI and audio regions with their files, mutes, loops and fades; `--audio` imports a WAV and `--move`, `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in`, `--fade-out` edit one by its number); **`logic markers`** (the marker track, with add, rename, move and delete); **`logic sessionplayer`**
   (a Session Player region's settings and generated notes); **`logic beats`** (patterns from a
   [groovebin][groovebin] library placed, composed or generated as regions); **`logic
@@ -121,11 +144,23 @@ bin/run logic capabilities -v                            # what each writer is t
   header, control bar, toolbar, transport modes, metronome, channel width, mixer groups,
   arrangement sections, tempo, time signature and key, track add/rename/colour/hide/reorder,
   sends, routing, `apply-template` to move a session onto another project's layout, and
-  `migrate` to do that in one run with an optional Logic re-save check. See
+  `migrate` to do that in one run with an optional Logic re-save check. The plug-in editors
+  change one slot without touching the rest of the chain: **`logic add-plugin`**,
+  **`remove-plugin`** and **`replace-plugin`** insert, take out or swap a plug-in from the donor
+  library, and `--side-chain` points a slot at a track, bus or aux by name. **`logic settings`**
+  reads a compressor's, gate's, EQ's or multiband's settings in one vocabulary whichever plug-in
+  holds them, so `replace-plugin --translate` can move a Pro-C 2's settings into Logic's
+  Compressor, or a Channel EQ's bands into Pro-Q 4, along with the slot's automation lanes.
+  **`logic swap-plugin`** makes that swap on every slot holding one plug-in across a project.
+  **`logic tracking-chains`** makes a copy for recording, where plug-in latency gets in the way:
+  each third-party plug-in with a translation map becomes Logic's own of its family with its
+  settings carried, and the natives that carry lookahead are bypassed. See
   [`src/logicxkit/logic/README.md`][logic-fmt].
-- **`logicxkit.au`** — Audio Unit preset/state decoder (read-only): FabFilter `.ffp` +
+- **`logicxkit.au`** — Audio Unit preset/state decoder: FabFilter `.ffp` +
   `.aupreset` parsing, Waves XPst, **TR5 chain XML** (module chain + per-module params from the
-  ValueTree `Chain` prop), **sonible protobuf field walk** (values, unnamed), and a **headless
+  ValueTree `Chain` prop), **sonible protobuf field walk** (values by field number), **iZotope
+  Neutron 5 state** (zlib JSON in real units), a writer that patches a FabFilter state in place
+  (Pro-C 2 and Pro-MB by parameter id, Pro-Q 4 by band), and a **headless
   AU host** (`src/logicxkit/native/auprobe.swift`) that loads any installed plugin's state and
   dumps every parameter with real names and UI-formatted values. `au strip` decodes the
   3rd-party states **embedded in `.cst` strips and `.logicx` projects** — the layer Logic
@@ -159,7 +194,7 @@ confirms a write.
 
 Three more things write outside `--out`, and one warning:
 
-- **`logic build` and `logic pst` can write your channel-strip and plug-in settings library,
+- **`logic build`, `logic pst` and `logic strip-save` can write your channel-strip and plug-in settings library,
   but only if you ask.** A relative `output_dir` in a spec resolves under
   `~/Music/Audio Music Apps` — Logic's own live library, not a scratch directory — so a write
   that lands there is **refused unless you pass `--install`**, and a spec cannot reach your
@@ -278,6 +313,6 @@ Apache License 2.0. See [`LICENSE`][license] and [`NOTICE`][notice].
 [ci]: https://github.com/phierceweb/logicxkit/blob/main/.github/workflows/ci.yml
 [contributing]: https://github.com/phierceweb/logicxkit/blob/main/CONTRIBUTING.md
 [pf-core]: https://pypi.org/project/pf-core/
-[groovebin]: https://pypi.org/project/groovebin/
+[groovebin]: https://github.com/phierceweb/groovebin
 [license]: https://github.com/phierceweb/logicxkit/blob/main/LICENSE
 [notice]: https://github.com/phierceweb/logicxkit/blob/main/NOTICE

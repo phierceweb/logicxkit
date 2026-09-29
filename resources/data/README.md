@@ -5,8 +5,8 @@ package carries its own copy of what Logic wrote on a blank project — `src/log
 record templates and native donors regenerated from the public corpus by `bin/regen_data.py` —
 so a fresh clone needs this root only for third-party donors and AU tables, each generated on
 your own machine from your own plugins. `resources/data` is the default root; point
-`LOGICXKIT_DATA` at a directory of the same shape to use another copy. A file here shadows the
-packaged one of the same name.
+`LOGICXKIT_DATA` at a directory of the same shape to use another copy. The packaged file wins
+over one here of the same name, and `logic donors` leaves the plug-ins the package ships to it.
 
     donors/     plugin-slot donor records (`*.slot`) and `manifest.json`. Made by
                 `bin/run logic donors PROJECT_OR_STRIP` from any project or channel strip that

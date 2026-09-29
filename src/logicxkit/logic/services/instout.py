@@ -1,6 +1,6 @@
 """An aux fed by a software instrument's extra output — how the Drums MIDI auxes take the
 drum instrument's hi-hat, overhead and room outputs. Measured on two Logic 12.3.1 saves
-(2026-09-05) against nine projects of the template's lineage.
+(2026-09-05) against the projects of the template's lineage.
 
 The aux's channel record: `+95` = 1 and `+94` = a source id Logic hands out in order, the
 first being the project's mono input count (20 inputs -> 20, 21, 22 as auxes were bound);

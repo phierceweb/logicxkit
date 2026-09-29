@@ -19,6 +19,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+from .sidechain import with_side_chain
 from .chains_channels import CHANNEL_NAMES, channel_name, plan_channels, resolve_params  # noqa: F401
 from .comp import build_comp
 from .eq import build_eq
@@ -27,7 +28,7 @@ from .insert import project_records, slot_index_base
 REF_MAX = 400  # a channel's reference record is small; plugin slots are far bigger
 _REF = re.compile(rb"[\x20-\x7e]{2,60}\.cst")
 EQ_TYPE, COMP_TYPE, ENV_TYPE = 236, 154, 157
-EQ_USER_FLOATS, COMP_USER_FLOATS = 33, 14   # what build_eq/build_comp emit
+EQ_USER_FLOATS, COMP_USER_FLOATS = 33, 15   # what build_eq/build_comp emit
 # (type, older count, current count): the older block is the current one minus trailing floats,
 # so its floats copy positionally and the donor's tail stands. Channel EQ: class v2 vs v3+.
 OLDER_LAYOUTS = {(EQ_TYPE, 51, 52)}
@@ -229,7 +230,7 @@ def verify_strip_values(data: bytes, config: dict) -> list[str]:
     """Every strip-sourced float in a WRITTEN project, checked against the strip it came from.
 
     The build reporting success is not evidence the values landed: cloning a donor verbatim
-    shipped a factory Enveloper into three projects while every count and validation passed.
+    shipped a factory Enveloper into projects while every count and validation passed.
     This reads the result back instead.
     """
     from .._binary import find_blocks, read_block_floats
@@ -396,7 +397,8 @@ def chain_plan(data: bytes, config: dict, eq_donor: bytes | None, comp_donor: by
                               False, resolve_params(tid, params.get(name, {}), f"{ref}: {name}", raw)))
                 key += 1
         if slots:
-            plan[owner] = slots
+            # a donor's side chain names a channel of the project it was saved from
+            plan[owner] = [(with_side_chain(entry[0], None), *entry[1:]) for entry in slots]
             matched.add(ref)
         if ((eq_floats is not None and not eq_donor)
                 or (comp_floats is not None and not comp_donor)

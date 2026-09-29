@@ -45,8 +45,8 @@ STAMP_AT, STAMP_STEP_AT = 82, 86
 STAMP_SHIFT, FRESH_STEP = 66, 0x42
 STATE_AT = 45
 NAMED_BIT = 1                     # +45 bit 0: the name is the user's; clear, the arrange shows
-                                  # the channel-strip setting's name instead (1,327 named
-                                  # tracks on 39 files set it; Logic's own fresh adds do not)
+                                  # the channel-strip setting's name instead (every named
+                                  # track on hand sets it; Logic's own fresh adds do not)
 STACK_NUMBER_AFTER_NAME = 3
 _NAME_MAX = 63
 
@@ -173,7 +173,7 @@ def object_record(records, object_id: int) -> bytes:
 def next_object_id(records) -> int:
     """The id Logic gives the next object: the next multiple of four past the highest.
 
-    Track rows count too. Nine of the ten sessions on hand have `karT` rows naming ids above
+    Track rows count too. Most sessions on hand have `karT` rows naming ids above
     every `ivnE`, so scanning the objects alone returns an id a row already claims and the new
     object shares it — a duplicate row in the flat mixer list.
     """

@@ -12,7 +12,7 @@ from logicxkit.logicx import channel_blocks, channel_label, first_alternative
 from .._binary import find_blocks, identify_plugin, read_block_floats
 from .comp import decode_comp
 from .eq import decode_eq
-from .insert import HEADER, project_records
+from .insert import HEADER, plugin_variant, project_records
 from .slots import is_plugin_slot
 
 # Canonical plugin display names, most-specific needle first.
@@ -55,12 +55,12 @@ def _slot_name(payload: bytes) -> str | None:
     if name is not None:
         return name
     from .._binary import find_blocks
-    from .chain_report import NATIVE_INSTRUMENTS, PLUGIN_NAMES
+    from .chain_report import NATIVE_INSTRUMENTS, native_name
     blocks = find_blocks(payload)
     if not blocks or blocks[0][1] in NATIVE_INSTRUMENTS:
         return None
     type_id = blocks[0][1]
-    return PLUGIN_NAMES.get(type_id) or f"type {type_id}"
+    return native_name(type_id, plugin_variant(payload)) or f"type {type_id}"
 
 
 def _preset_name(window: bytes) -> str | None:
@@ -127,14 +127,27 @@ def _chain_from_windows(seg: bytes) -> list[tuple[str, str | None]]:
 
 
 def channel_natives(seg: bytes) -> list[tuple[str, dict]]:
-    """Decoded native (Channel EQ / Compressor) GAMETSPP params in a channel."""
+    """Decoded native GAMETSPP params in a channel: Channel EQ and Compressor by their own
+    decoders, any other plug-in by its measured table (`plugin_params`)."""
+    from .plugin_params import decode, load_tables, table_for
     out: list[tuple[str, dict]] = []
-    for idx, _size, n in find_blocks(seg):
+    tables = load_tables()
+    last: tuple | None = None                           # (record start, type, count) of the block before
+    for idx, type_id, n in find_blocks(seg):
+        record = seg.rfind(b"UCuA", 0, idx)
+        if (record, type_id, n) == last:                # the copy a re-save writes after the live block
+            continue
+        last = (record, type_id, n)
         plug = identify_plugin(seg, idx)
         if plug == "Compressor" and n >= 14:
             out.append((plug, decode_comp(read_block_floats(seg, idx, n))))
         elif plug == "Channel EQ" and n >= 33:
             out.append((plug, decode_eq(read_block_floats(seg, idx, n))))
+        else:
+            start = seg.rfind(b"UCuA", 0, idx)             # the block's own slot record, for its variant
+            table = table_for(tables, type_id, plugin_variant(seg[start + HEADER:idx]) if start >= 0 else None)
+            if table is not None:
+                out.append((table.name, decode(table, read_block_floats(seg, idx, n))))
     return out
 
 
@@ -174,7 +187,10 @@ def analyze(project_data: bytes) -> dict:
 
 def project_metadata(logicx: Path, alt: str | None = None) -> dict:
     alt = alt or first_alternative(logicx)
-    md = plistlib.loads((logicx / "Alternatives" / alt / "MetaData.plist").read_bytes())
+    try:
+        md = plistlib.loads((logicx / "Alternatives" / alt / "MetaData.plist").read_bytes())
+    except FileNotFoundError:
+        raise FileNotFoundError(f"{logicx}: Alternatives/{alt} has no MetaData.plist — not a Logic project") from None
     out = {
         "tracks": md.get("NumberOfTracks"),
         "bpm": md.get("BeatsPerMinute"),

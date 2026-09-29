@@ -68,9 +68,8 @@ def sequences(records: list[ProjRecord]) -> list[Triple]:
 
 def _table_score(payload: bytes, object_ids: set[int]) -> int:
     """How many distinct channel objects the entries name with a real slot word, less any
-    repeated ids — the index table has one entry per track. Templates and mixes hold larger
-    qSvEs (490 to 21,000 entries: zeroed, or regions repeating a track's id), so size alone
-    misleads."""
+    repeated ids — the index table has one entry per track. Templates and mixes hold far larger
+    qSvEs (zeroed entries, or regions repeating a track's id), so size alone misleads."""
     if len(payload) % TABLE_ENTRY not in (0, 16):
         return -1
     entries = table_entries(payload)

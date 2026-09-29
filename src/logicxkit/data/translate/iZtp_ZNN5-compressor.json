@@ -1,0 +1,53 @@
+{
+ "family": "compressor",
+ "plugin": "Neutron 5",
+ "component": [
+  "aufx",
+  "ZNN5",
+  "iZtp"
+ ],
+ "decoder": "izotope",
+ "modules": [
+  "Dynamics 0",
+  "Dynamics 1"
+ ],
+ "evidence": "iZotope Neutron 5's state: zlib over typed JSON (au/services/izotope); its Dynamics elements' band 0 in real units (dB, ms, a ratio, a percent), read from an instance 2026-09-23. The first Dynamics element not bypassed is the one read.",
+ "items": {
+  "threshold": {
+   "field": "Band 0 Comp Threshold",
+   "param": "Comp Threshold"
+  },
+  "ratio": {
+   "field": "Band 0 Comp Ratio",
+   "param": "Comp Ratio"
+  },
+  "attack": {
+   "field": "Band 0 Comp Attack",
+   "param": "Comp Attack"
+  },
+  "release": {
+   "field": "Band 0 Comp Release",
+   "param": "Comp Release"
+  },
+  "knee": {
+   "field": "Band 0 Comp Soft Knee",
+   "param": "Comp Soft Knee",
+   "approx": "Neutron's soft knee is its own scale"
+  },
+  "make_up": {
+   "field": "Band 0 Gain",
+   "param": "Gain"
+  },
+  "mix": {
+   "field": "Band 0 Mix",
+   "param": "Mix"
+  },
+  "output_gain": {
+   "field": "Global Gain",
+   "param": "Global Gain"
+  }
+ },
+ "not_carried": {
+  "punch, auto attack and release, detection, sidechain filter, bands 1 and 2": "Neutron's own; a multiband Dynamics element belongs to the multiband family"
+ }
+}

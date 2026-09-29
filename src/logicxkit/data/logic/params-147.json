@@ -1,0 +1,45 @@
+{
+ "type": 147,
+ "variant": 216,
+ "name": "Echo",
+ "floats": 28,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 18,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 64.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "Color",
+   "unit": "",
+   "default": 37.0,
+   "evidence": "value"
+  },
+  {
+   "index": 20,
+   "name": "Dry",
+   "unit": "%",
+   "default": 96.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Wet",
+   "unit": "%",
+   "default": 20.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Time",
+  "Halve Time",
+  "Double Time"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-dr-defaults and stockfx-dr-spots, 0 by order. Popup rows unmapped."
+}

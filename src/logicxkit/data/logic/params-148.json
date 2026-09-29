@@ -1,0 +1,125 @@
+{
+ "type": 148,
+ "variant": 232,
+ "name": "Stereo Delay",
+ "floats": 28,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Left Mix",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Right Mix",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Left Feedback",
+   "unit": "%",
+   "default": 35.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Right Feedback",
+   "unit": "%",
+   "default": 35.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Crossfeed L->R",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Crossfeed R->L",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Beat Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 23,
+   "name": "Left High Cut",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Left Low Cut",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 25,
+   "name": "Right High Cut",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 26,
+   "name": "Right Low Cut",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "Stereo Link",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Left Delay Time",
+  "Right Delay Time",
+  "Left Note",
+  "Left Deviation",
+  "Right Note",
+  "Right Deviation",
+  "Left Input",
+  "Right Input",
+  "Left Feedback Phase",
+  "Right Feedback Phase",
+  "Crossfeed L->R Phase",
+  "Crossfeed R->L Phase",
+  "Left Halve Time",
+  "Left Double Time",
+  "Right Halve Time",
+  "Right Double Time",
+  "Left Sync Time",
+  "Right Sync Time",
+  "Routing Preset"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 12 indices matched by value between stockfx-dr2-defaults and stockfx-dr2-spots, 0 by order. Popup rows unmapped."
+}

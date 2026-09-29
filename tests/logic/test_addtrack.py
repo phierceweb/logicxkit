@@ -27,3 +27,25 @@ class HelpersTest(unittest.TestCase):
             obj = channel_objects(b"\x00" * 24 + out)[508]
             self.assertEqual((obj.name, obj.colour, obj.parent), (name, 16, 0))
             self.assertEqual(struct.unpack_from("<H", out, 10)[0], 508)
+
+
+class TableEntryFallbackTest(unittest.TestCase):
+    """The pattern track's index-table entry is stale: the clone comes from the highest object
+    of the same kind with a sound entry, before any other kind."""
+
+    def test_the_fallback_keeps_to_the_pattern_kind(self):
+        from types import SimpleNamespace
+        from unittest import mock
+
+        from logicxkit.logic.services import addtrack
+        objs = dict.fromkeys((100, 104, 108))
+        owners_of = {100: 1, 104: 2, 108: 30}
+        chans = {1: SimpleNamespace(label="Audio 1"), 2: SimpleNamespace(label="Audio 2"),
+                 30: SimpleNamespace(label="Aux 1")}
+        sound = {100, 108}                               # 104, the pattern, is stale
+        records = [SimpleNamespace(raw=b"")]
+        with mock.patch("logicxkit.logic.services.sequence.index_table", return_value=0), \
+                mock.patch("logicxkit.logic.services.sequence.sequences", return_value=[]), \
+                mock.patch.object(addtrack, "_sound_entry", lambda r, t, s, oid: oid in sound):
+            self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Audio ", 104), 100)
+            self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Inst ", 104), 108)

@@ -14,6 +14,7 @@ from logicxkit.logic.services.levels import (
     PAN_CENTRE,
     UNITY,
     copy_levels,
+    match_by_reference,
     read_levels,
     set_levels,
 )
@@ -124,6 +125,18 @@ class CopyLevelsTest(unittest.TestCase):
         _out, report = copy_levels(src, dst, by="owner")
         self.assertEqual(report["changed"], [])
         self.assertEqual(report["unchanged"], 1)
+
+
+class ReferenceMatchTest(unittest.TestCase):
+    """Channels pair on the strip reference they carry; a repeated reference pairs in order."""
+
+    def test_repeats_pair_in_order_and_a_reference_the_source_lacks_stays_out(self):
+        def ref(owner: int, name: str) -> bytes:
+            return rec(b"UCuA", owner, 13, bytes(16) + name.encode().ljust(176, b"\0"))
+        src = proj(chan(0), ref(0, "Rack.cst"), chan(1), ref(1, "Rack.cst"), chan(2), ref(2, "Kick.cst"))
+        dst = proj(chan(5), ref(5, "Kick.cst"), chan(6), ref(6, "Rack.cst"), chan(7), ref(7, "Rack.cst"),
+                   chan(8), ref(8, "Snare.cst"))
+        self.assertEqual(match_by_reference(src, dst), {5: 2, 6: 0, 7: 1})
 
 
 class LabelMatchTest(unittest.TestCase):

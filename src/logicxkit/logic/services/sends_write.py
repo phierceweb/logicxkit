@@ -70,10 +70,11 @@ def _clone(template: bytes, *, owner: int, key: int, bus: int, bus_uuid: bytes, 
 
 def _place(records: list[ProjRecord], owner: int, new: bytes) -> list[ProjRecord]:
     """``new`` into the owner's satellite run in key order: before the first satellite with a
-    higher key, else after the last one, else right after the owner's longest channel record."""
+    higher key or a slot at its own, else after the last one, else right after the owner's
+    longest channel record."""
     key = struct.unpack_from("<H", new, KEY_OFF)[0]
     sats = [i for i, r in enumerate(records) if r.owner == owner and r.tag == SEND_TAG]
-    later = [i for i in sats if records[i].key > key]
+    later = [i for i in sats if records[i].key > key or (records[i].key == key and not is_send(records[i]))]
     if later:
         at = later[0]
     elif sats:
@@ -87,9 +88,12 @@ def _place(records: list[ProjRecord], owner: int, new: bytes) -> list[ProjRecord
 
 
 def _finish(data: bytes, records: list[ProjRecord], owner: int) -> bytes:
+    """The records written back; a third send in a base-2 project takes slot 1's key, and Logic
+    drops the plug-in there, so the project moves to Logic 12's layout (`slotkeys`)."""
+    from .slotkeys import needs_rebase, rebase                # slotkeys reads sends
     out = sync_key_flags(reassemble(data, [r.raw for r in records]))
     require_valid(out)
-    return out
+    return rebase(out)[0] if needs_rebase(out) else out
 
 
 def add_send(data: bytes, *, owner: int, bus: int, key: int | None = None) -> tuple[bytes, dict]:

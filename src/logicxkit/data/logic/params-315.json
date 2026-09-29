@@ -1,0 +1,27 @@
+{
+ "type": 315,
+ "variant": 2480,
+ "name": "Loudness Meter",
+ "floats": 4,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Target Level",
+   "unit": "",
+   "default": -14.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Start/Pause",
+  "Reset",
+  "Momentary",
+  "Short",
+  "Integrated",
+  "Loudness Range"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 1 indices matched by value between stockfx-util-defaults and stockfx-util-spots, 0 by order. Popup rows unmapped."
+}

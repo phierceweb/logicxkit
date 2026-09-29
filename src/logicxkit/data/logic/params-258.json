@@ -1,0 +1,41 @@
+{
+ "type": 258,
+ "variant": 1444,
+ "name": "Spreader",
+ "floats": 5,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "LFO Intensity",
+   "unit": "%",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Channel Delay",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Mix",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 0 by order. Popup rows unmapped."
+}

@@ -1,6 +1,6 @@
 """Retargeting a slot record between class versions.
 
-No v3 project on disk contains a native algorithmic reverb, so the three v3 sessions could not
+No v3 project on disk contains a native algorithmic reverb, so the v3 sessions could not
 be given one. The v3/v5 schema delta was measured by diffing the library's own pairs — Channel
 EQ, Compressor, Echo and Klopfgeist, four plugins of very different sizes — and is three
 things: a payload-header constant, the plugin-variant id, and four trailing bytes.
@@ -9,7 +9,7 @@ things: a payload-header constant, the plugin-variant id, and four trailing byte
 import struct
 import unittest
 
-from logicxkit.utils.data import data_dirs
+from logicxkit.utils.data import data_dir
 
 from logicxkit.logic._binary import find_blocks
 from logicxkit.logic.services.donors import (
@@ -26,8 +26,9 @@ HDR = 36
 
 
 def _lib():
+    """The data root's pairs: each plug-in saved at both versions with the same settings."""
     return {k: (v[0] if isinstance(v, tuple) else v) for k, v in
-            load_donor_library(data_dirs("donors")).items()}
+            load_donor_library([data_dir("donors")]).items()}
 
 
 @needs("donors", *(f"{tid}-v{v}.slot" for tid in (236, 154, 147) for v in (3, 5)))

@@ -11,8 +11,18 @@ from __future__ import annotations
 
 import struct
 
-from .automation import (FADER_POINT, FOLDER_NAME, FRACTION_UNIT, QESM_OBJECT_AT, RELATIVE,
-                         is_fader_point, named)
+from .automation import (
+    FADER_POINT,
+    FOLDER_NAME,
+    FRACTION_UNIT,
+    PARAM_LAST,
+    param_slot,
+    QESM_OBJECT_AT,
+    RELATIVE,
+    VALUE_UNIT,
+    is_fader_point,
+    named,
+)
 from .events import LINE, events
 from .groups import FADER_IDS
 from .insert import HEADER, project_records, reassemble
@@ -41,6 +51,23 @@ def fader_event(tick: int, value: int, fader: int, relative: bool = False, fract
     return bytes(head)
 
 
+def param_event(tick: int, value: float, index: int, fraction: int = 0, slot: int = 1) -> bytes:
+    """One plug-in parameter point of insert ``slot`` (from 1; the type word is 0x50 + slot):
+    the 0..1 value as a u32 over 2^31 at +8, the parameter index at +12."""
+    if not 0.0 <= value <= 1.0:
+        raise ValueError(f"a parameter point is 0 to 1, not {value}")
+    if not 0 <= index <= 255:
+        raise ValueError(f"a parameter index is 0 to 255, not {index}")
+    if not 1 <= slot <= PARAM_LAST - FADER_POINT:
+        raise ValueError(f"an insert is 1 to {PARAM_LAST - FADER_POINT}, not {slot}")
+    if not 0 <= tick <= MAX_TICK:
+        raise ValueError(f"a point's tick is 0 to {MAX_TICK}, not {tick}")
+    head = bytearray(LINE)
+    struct.pack_into("<HHII", head, 0, FADER_POINT + slot, fraction, tick, min(int(round(value * VALUE_UNIT)), VALUE_UNIT - 1))
+    head[12] = index
+    return bytes(head)
+
+
 def _folder_record(records, track_object: int) -> int:
     for t in sequences(records):
         q = records[t.start].raw[HEADER:]
@@ -52,6 +79,10 @@ def _folder_record(records, track_object: int) -> int:
 
 def _is_lane(e, fader: int, relative: bool) -> bool:
     return is_fader_point(e) and e.head[12] == fader and bool(e.type & RELATIVE) == relative
+
+
+def _is_param_lane(e, index: int, slot: int) -> bool:
+    return param_slot(e.type) == slot and e.head[12] == index
 
 
 def _order(raw: bytes) -> tuple:
@@ -84,6 +115,28 @@ def set_lane(data: bytes, track_object: int, fader: int, points, *, relative: bo
     i = _folder_record(records, track_object)
     out = [r.raw for r in records]
     out[i] = _with_lane(records, i, fader, relative, new)
+    result = reassemble(data, out)
+    require_valid(result)
+    return result
+
+
+def set_param_lane(data: bytes, track_object: int, index: int, points, slot: int = 1) -> bytes:
+    """A plug-in parameter lane's points (insert from 1, parameter index) replaced by ``points`` —
+    (tick, value 0..1) or (tick, value, fraction) — every other lane of the folder kept."""
+    spec = [(p[0], p[1], p[2] if len(p) > 2 else 0) for p in points]
+    positions = [(t, f) for t, _v, f in spec]
+    if len(set(positions)) < len(positions):
+        dup = next(p for p in positions if positions.count(p) > 1)
+        raise ValueError(f"two points at tick {dup[0]} (fraction {dup[1]}); a position holds one point")
+    new = [param_event(t, v, index, f, slot) for t, v, f in sorted(spec, key=lambda p: (p[0], p[2]))]
+    records = project_records(data)
+    i = _folder_record(records, track_object)
+    payload = records[i].raw[HEADER:]
+    evs = events(payload)
+    body = sum(LINE + LINE * len(e.lines) for e in evs)
+    kept = [e.head + b"".join(e.lines) for e in evs if not _is_param_lane(e, index, slot)]
+    out = [r.raw for r in records]
+    out[i] = rec(records[i].tag, records[i].raw, b"".join(sorted(kept + new, key=_order)) + payload[body:])
     result = reassemble(data, out)
     require_valid(result)
     return result

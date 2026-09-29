@@ -3,7 +3,8 @@
 Both sit at the END of the `OCuA` payload because its length varies per session (257, 265,
 269 bytes at one class version): `[len-48:len-32]` is the bound object's UUID, `[len-32:len-16]`
 the destination channel's own UUID. `+110` is the Sub number of the channel's stack.
-Measured 59/59 on seven sessions and the Recording template, 2026-09-01."""
+Holds on every in-use channel of the sessions measured and the Recording template,
+2026-09-01."""
 
 import unittest
 from _records import chan, env_obj, proj, uuid

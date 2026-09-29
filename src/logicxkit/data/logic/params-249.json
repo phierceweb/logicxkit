@@ -1,0 +1,70 @@
+{
+ "type": 249,
+ "variant": 1348,
+ "name": "Vocal Transformer",
+ "floats": 11,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Pitch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Formant",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Mix",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Robotize",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 7,
+   "name": "Glide",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Grain Size",
+   "unit": "",
+   "default": null,
+   "evidence": "order"
+  },
+  {
+   "index": 8,
+   "name": "Fine Pitch",
+   "unit": "ct",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Pitch Base",
+  "Pitch Tracking",
+  "Formants"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 6 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 1 by order. Popup rows unmapped."
+}

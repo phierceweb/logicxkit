@@ -3,6 +3,126 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.0 — 2026-09-29
+
+### Added
+
+- `logic add-plugin --plugin NAME --channel LABEL | --stack NAME [--at N]` puts a plug-in from the
+  donor library into mixer slot N of a copy (from 1, empty slots counted; after the last without
+  `--at`). An empty slot takes it where it is; an occupied one moves it and every later slot down,
+  with their automation lanes and Smart Control mappings. On an instrument channel slot 1 is the
+  instrument: an effect is refused there and an append lands at slot 2. `--bypass`,
+  `--side-chain NAME` and `--set NAME=VALUE` set the slot up on the way in. Each copy gets its own
+  instance id where the plug-in's id bytes are measured; Logic gives the rest one on load. A
+  third-party plug-in is refused on an audio channel of the other width unless the library holds
+  that width, and so is one of Logic's own whose other width is unmeasured (Binaural
+  Post-Processing, Correlation Meter, Direction Mixer, Stereo Spread and Pedalboard's Tru-Tape
+  Delay go on stereo channels only); `--force` writes past a width or class-version refusal.
+- `logic remove-plugin --at N` takes the plug-in in mixer slot N out and moves the later slots up
+  with their lanes and mappings; the removed slot's lanes and mappings go with it. Removing an
+  instrument leaves slot 1 empty.
+- `logic replace-plugin --at N --plugin NAME` puts another plug-in in the slot. `--translate`
+  carries the old slot's settings, side chain and automation lanes across through the family maps
+  and reports what has no analogue, was clamped or is approximate; `--keep-automation` leaves the
+  lanes as they are; with neither, the lanes are dropped with a line, and so is the side chain.
+- `logic settings PROJECT` lists every slot's settings in its family's terms — compressor, gate,
+  EQ by band, multiband by band — by mixer slot. Maps: Logic's Compressor, Noise Gate, Channel EQ
+  and Multipressor; FabFilter Pro-C 2, Pro-Q 4 and Pro-MB; sonible smart:comp 2 and smart:gate;
+  iZotope Neutron 5 (compressor, gate and EQ). `--set NAME=VALUE` or `--set "band N=<shape>
+  <frequency> …" --channel LABEL --at N --out DIR` writes one slot of a copy (Logic's own and the
+  FabFilter plug-ins; sonible's and iZotope's are read only); a band edit changes that band only.
+- Parameter tables for 66 of Logic's own plug-ins and packaged donors for 71, at both widths where
+  Logic has two. `project` names a slot's parameters from them; `add-plugin --set` dials them, each
+  value held to the slider's measured ends (with a note) and put on the slider's grid, where Logic
+  keeps it on load. Plug-ins that share a block type (Tape Delay and Echo, Phaser and Microphaser,
+  Pedalboard and its stompbox) are told apart.
+- `logic automation --set "TRACK:slot N NAME=V@BAR,…"` (and `--clear`) writes a plug-in parameter
+  lane by mixer slot and parameter name, in the parameter's own unit: Logic's Compressor, Noise
+  Gate, Channel EQ and Multipressor through their measured sliders, a third-party plug-in through
+  its AU table. TRACK is the track's name or its mixer label. A value past a native slider's end is
+  held there with a note; a value or bar that is not a finite number is refused. The listing names a
+  plug-in lane `insert N parameter M`, and `--json` carries `slot`.
+- `logic swap-plugin --from NAME --to NAME --out DIR`: every slot holding one plug-in replaced
+  by another across the project (`--channel`/`--stack` narrow it), settings carried through the
+  family vocabulary, side chains and automation lanes with them, a slot whose settings cannot
+  cross left as it is with the reason; `--plan` writes nothing. A `--from` no slot holds, or one
+  naming the `--to` plug-in, is refused before anything is written. Logic-confirmed (`swap-*`).
+- `logic tracking-chains PROJECT --out DIR`: a project's chains made low-latency and native on a
+  copy — every third-party slot with a map becomes Logic's own of its family with the settings
+  carried (Neutron 5 one native per live element), the rest removed unless `--keep-unmapped`,
+  the natives carrying lookahead bypassed unless `--keep-lookahead`, one it made from a
+  third-party (a Pro-MB's Multipressor) too; `--plan` writes nothing.
+  Logic-confirmed (`trk-*`).
+- Side chains: `plugins` shows each slot's source; `add-plugin` and `replace-plugin --side-chain
+  NAME` set one by the name of a track (audio or instrument), a bus or an aux return, or as
+  `Input N`; `transplant` and `apply-template` carry each slot's side chain to the channel of the
+  same name in the destination, or clear it with a report line.
+- `logic donors PROJECT [--as NAME]` harvests third-party plug-ins, one donor per plug-in, width
+  and class version; `--refresh` replaces the donors the library already holds.
+- `logic transplant --stack NAME=SRC_LABEL` puts SRC_LABEL's slots on every member of a folder
+  stack.
+
+### Changed
+
+- The write gate (`services/integrity.py`) also refuses a strip reference placed outside its
+  channel's records.
+- `config/example-chains.json` and `config/example-strips.json` run as shipped from a checkout
+  against the strips under `tests/corpus/strips/` (`LOGICXKIT_STRIP_ROOT=tests/corpus/strips`),
+  exported by `strip-save` from the public corpus; `build` names a missing strip and the root it
+  looked under.
+- `logic transplant` from one source to several channels gives each copy its own instance id and
+  refuses the fan-out when it cannot; a third-party slot onto an audio channel of the other width
+  is refused (`--force` writes anyway). The destination's plug-in automation lanes are left as
+  they are.
+- `logic donors` in an installed copy refuses until `LOGICXKIT_DATA` or `--library` names a
+  folder.
+- Every writer refuses a result whose channel records are out of owner order, whose plug-in
+  record's slot index disagrees with its key, or whose channel archive sits off its key.
+- The packaged Space Designer donor names a neutral impulse-response path: choose the IR again
+  after `add-plugin`.
+- The package's own data files win over the data root's of the same name: record templates,
+  native donors, parameter tables and translation maps. The data root adds what the package lacks,
+  and `logic donors` into it leaves the plug-ins the package ships.
+- A translation from a Pro-C 2 reports its style, range and hold as not carried, and one from
+  Logic's Compressor its circuit type.
+- Every writer refuses a project Logic 12.3.1 did not save (file format 2513) before anything is
+  copied, naming the alternative and the format it found; a project from an earlier Logic is
+  opened and saved in the current one first. The readers run on any save.
+
+### Fixed
+
+- A spec's `auto_release` and `limiter` set the Compressor's Auto Release and Limiter On; 0.6.0
+  wrote `auto_release` to Limiter On and `limiter` to Limiter Threshold. A strip or chain 0.6.0
+  built from a spec with `auto_release` has the Limiter on and Auto Release as the donor held it:
+  rebuild it.
+- `add-track`: a fresh channel record goes in owner order and carries the project's mixer-wide
+  fields (the slot base, the shown-slot count and four more) instead of its template's, a fresh
+  aux the values of Logic's own new aux channel strip, and an instrument track's default records
+  are keyed to the project. 0.6.0 could write a project where Logic dropped every plug-in on load,
+  or the plug-ins of Audio 1 and the Stereo Out after ten adds, or, with an instrument track, one
+  Logic would not open.
+- A third send on a channel of a project whose slots start at key 2 (`send`, `apply-template`,
+  `migrate`) moves the project to base 4 first; 0.6.0 put it on slot 1's key and Logic dropped the
+  plug-in there.
+- `apply-template`'s `refs` op onto a channel carrying no strip reference puts the record among
+  that channel's own; 0.6.0 put it at the end of the file, on no channel.
+- Every writer's copy leaves `Alternatives/*/Autosave` behind. A source open in Logic carried its
+  pre-edit autosave into the copy, and Logic offered that version on open.
+- `project` listed a slot's second state copy — the one Logic writes after the live block — as
+  another plug-in, under its parameter table's names.
+- `add-plugin --set`, `chains` and the other slot writers patch a donor's state copies along with
+  its block, as `build` does; a two-block donor kept the copy's old values, which Logic may load.
+- `tracking-chains` keeps an instrument channel's instrument; a third-party or Apple AU instrument
+  in slot 1 was removed as a plug-in with no native analogue.
+- `strip-save -o` under Logic's own library is refused without `--install`, as `build` and `pst`
+  are; 0.6.0 wrote there.
+- A bundle without `MetaData.plist` and an `--out` naming a file are refused in a sentence, not an
+  errno.
+- `add-track --instrument --stereo` makes the instrument channel stereo; `--stereo` was ignored
+  on an instrument track.
+- `settings` and the translation notes print a value of 10,000 or more in full (`20000 Hz`, not
+  `2e+04 Hz`).
+
 ## 0.6.0 — 2026-09-17
 
 ### Added
@@ -12,7 +132,7 @@ versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
   from Logic's `*Automation` folders (the `automation-*` goldens); `--set`, `--copy` and `--clear` write a
   lane's points the way the Automation Event List does, Pan and the relative Volume lane included; Logic
   listed three lanes written onto the blank as written and re-saved them (`automation-ours-resave-logic`).
-  A parameter point whose type word carries bit 14 (two on a real song) reads as flagged rather than
+  A parameter point whose type word carries bit 14 (seen on a real song) reads as flagged rather than
   being dropped. A point's sub-tick fraction (head +2; Logic's region-border points sit half a tick
   off) is read, kept on a copy and written in Logic's own order, so the re-save is our write byte for
   byte but for Logic's selection byte; two points at one position are refused; a tick past the

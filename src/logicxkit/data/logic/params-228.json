@@ -1,0 +1,61 @@
+{
+ "type": 228,
+ "variant": 1088,
+ "name": "Distortion II",
+ "floats": 8,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Pre Gain",
+   "unit": "dB",
+   "default": 5.5,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Drive",
+   "unit": "",
+   "default": 0.77,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Tone",
+   "unit": "dB",
+   "default": 1.75,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Distortion Output Level",
+   "unit": "dB",
+   "default": 3.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Mix",
+   "unit": "%",
+   "default": 88.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Level Compensation",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Distortion Type"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 6 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

@@ -1,0 +1,475 @@
+{
+ "family": "multiband",
+ "plugin": "Pro-MB",
+ "component": [
+  "aumf",
+  "FPMb",
+  "FabF"
+ ],
+ "evidence": "FabFilter Pro-MB through the AU host, 2026-09-23: band 1's state, dynamics mode and solo/mute read by name; threshold and ratio stepped over 0..1 in 41 steps and the display read (threshold -90 dB at 0, -48 at 0.2, 0 at 1; ratio 1:1 at 0, 4:1 at 0.6, 100:1 at 1); crossovers 2^value (4.907 = 30 Hz, 14.873 = 30 kHz); range, knee, level and lookahead as displayed; attack and release are percentages. A band is 22 parameters from id 22*(n-1). Mix x100, input and output level 36 dB per unit with -1 silent.",
+ "bands": {
+  "count": 6,
+  "stride": 22,
+  "state": 0,
+  "low": 1,
+  "high": 3,
+  "mode": 5,
+  "threshold": 6,
+  "range": 7,
+  "ratio": 8,
+  "attack": 9,
+  "release": 10,
+  "knee": 11,
+  "lookahead": 12,
+  "level": 13
+ },
+ "states": [
+  "disabled",
+  "enabled",
+  "unused"
+ ],
+ "modes": [
+  "compress",
+  "expand"
+ ],
+ "frequency": "log2",
+ "curves": {
+  "threshold": [
+   [
+    0.0,
+    -90.0
+   ],
+   [
+    0.025,
+    -85.5
+   ],
+   [
+    0.05,
+    -81.0
+   ],
+   [
+    0.075,
+    -76.5
+   ],
+   [
+    0.1,
+    -72.0
+   ],
+   [
+    0.125,
+    -66.0
+   ],
+   [
+    0.15,
+    -60.0
+   ],
+   [
+    0.175,
+    -54.0
+   ],
+   [
+    0.2,
+    -48.0
+   ],
+   [
+    0.225,
+    -46.5
+   ],
+   [
+    0.25,
+    -45.0
+   ],
+   [
+    0.275,
+    -43.5
+   ],
+   [
+    0.3,
+    -42.0
+   ],
+   [
+    0.325,
+    -40.5
+   ],
+   [
+    0.35,
+    -39.0
+   ],
+   [
+    0.375,
+    -37.5
+   ],
+   [
+    0.4,
+    -36.0
+   ],
+   [
+    0.425,
+    -34.5
+   ],
+   [
+    0.45,
+    -33.0
+   ],
+   [
+    0.475,
+    -31.5
+   ],
+   [
+    0.5,
+    -30.0
+   ],
+   [
+    0.525,
+    -28.5
+   ],
+   [
+    0.55,
+    -27.0
+   ],
+   [
+    0.575,
+    -25.5
+   ],
+   [
+    0.6,
+    -24.0
+   ],
+   [
+    0.625,
+    -22.5
+   ],
+   [
+    0.65,
+    -21.0
+   ],
+   [
+    0.675,
+    -19.5
+   ],
+   [
+    0.7,
+    -18.0
+   ],
+   [
+    0.725,
+    -16.5
+   ],
+   [
+    0.75,
+    -15.0
+   ],
+   [
+    0.775,
+    -13.5
+   ],
+   [
+    0.8,
+    -12.0
+   ],
+   [
+    0.825,
+    -10.5
+   ],
+   [
+    0.85,
+    -9.0
+   ],
+   [
+    0.875,
+    -7.5
+   ],
+   [
+    0.9,
+    -6.0
+   ],
+   [
+    0.925,
+    -4.5
+   ],
+   [
+    0.95,
+    -3.0
+   ],
+   [
+    0.975,
+    -1.5
+   ],
+   [
+    1.0,
+    0.0
+   ]
+  ],
+  "ratio": [
+   [
+    0.0,
+    1.0
+   ],
+   [
+    0.025,
+    1.02
+   ],
+   [
+    0.05,
+    1.05
+   ],
+   [
+    0.075,
+    1.08
+   ],
+   [
+    0.1,
+    1.1
+   ],
+   [
+    0.125,
+    1.14
+   ],
+   [
+    0.15,
+    1.17
+   ],
+   [
+    0.175,
+    1.21
+   ],
+   [
+    0.2,
+    1.25
+   ],
+   [
+    0.225,
+    1.31
+   ],
+   [
+    0.25,
+    1.38
+   ],
+   [
+    0.275,
+    1.44
+   ],
+   [
+    0.3,
+    1.5
+   ],
+   [
+    0.325,
+    1.62
+   ],
+   [
+    0.35,
+    1.75
+   ],
+   [
+    0.375,
+    1.88
+   ],
+   [
+    0.4,
+    2.0
+   ],
+   [
+    0.425,
+    2.19
+   ],
+   [
+    0.45,
+    2.38
+   ],
+   [
+    0.475,
+    2.56
+   ],
+   [
+    0.5,
+    2.75
+   ],
+   [
+    0.525,
+    3.06
+   ],
+   [
+    0.55,
+    3.38
+   ],
+   [
+    0.575,
+    3.69
+   ],
+   [
+    0.6,
+    4.0
+   ],
+   [
+    0.625,
+    4.5
+   ],
+   [
+    0.65,
+    5.0
+   ],
+   [
+    0.675,
+    5.5
+   ],
+   [
+    0.7,
+    6.0
+   ],
+   [
+    0.725,
+    6.5
+   ],
+   [
+    0.75,
+    7.0
+   ],
+   [
+    0.775,
+    7.5
+   ],
+   [
+    0.8,
+    8.0
+   ],
+   [
+    0.825,
+    8.5
+   ],
+   [
+    0.85,
+    9.0
+   ],
+   [
+    0.875,
+    9.5
+   ],
+   [
+    0.9,
+    10.0
+   ],
+   [
+    0.925,
+    14.5
+   ],
+   [
+    0.95,
+    24.4
+   ],
+   [
+    0.975,
+    54.78
+   ],
+   [
+    1.0,
+    100.0
+   ]
+  ]
+ },
+ "items": {
+  "mix": {
+   "id": 133,
+   "param": "Mix",
+   "scale": 100,
+   "min": 0,
+   "max": 200,
+   "raw": [
+    0,
+    2
+   ]
+  },
+  "input_gain": {
+   "id": 134,
+   "param": "Input Level",
+   "scale": 36,
+   "floor": -1,
+   "min": -36,
+   "max": 36,
+   "raw": [
+    -1,
+    1
+   ]
+  },
+  "output_gain": {
+   "id": 136,
+   "param": "Output Level",
+   "scale": 36,
+   "floor": -1,
+   "min": -36,
+   "max": 36,
+   "raw": [
+    -1,
+    1
+   ]
+  },
+  "lookahead_on": {
+   "id": 141,
+   "param": "Lookahead Enabled",
+   "switch": true,
+   "raw": [
+    0,
+    1
+   ]
+  }
+ },
+ "not_carried": {
+  "attack and release": "percentages of a program-dependent time (the manual), no milliseconds to carry",
+  "range": "the limit on a band's gain change has no analogue in a compressor without one",
+  "crossover slopes, stereo link, side chain, pan": "cross as the target has them"
+ },
+ "range_hz": [
+  30,
+  30000
+ ],
+ "band_raw": {
+  "state": [
+   0,
+   2
+  ],
+  "low": [
+   4.906890869,
+   14.872673988
+  ],
+  "high": [
+   4.906890869,
+   14.872673988
+  ],
+  "mode": [
+   0,
+   1
+  ],
+  "threshold": [
+   0,
+   1
+  ],
+  "range": [
+   -30,
+   30
+  ],
+  "ratio": [
+   0,
+   1
+  ],
+  "attack": [
+   0,
+   100
+  ],
+  "release": [
+   0,
+   100
+  ],
+  "knee": [
+   0,
+   48
+  ],
+  "lookahead": [
+   0,
+   20
+  ],
+  "level": [
+   -30,
+   30
+  ]
+ }
+}

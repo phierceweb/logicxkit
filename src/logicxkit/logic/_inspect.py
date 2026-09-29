@@ -17,6 +17,13 @@ from .services.project import project_metadata, read_project, window_image_path
 _NEURAL_NOISE = {"metronomeParameters", "tunerParameters"}  # UI state, not tone
 
 
+def _shown(value):
+    """A stored float32 as the figure it was set to: six significant digits, a hair off zero as 0."""
+    if not isinstance(value, float):
+        return value
+    return 0.0 if abs(value) < 1e-9 else float(f"{value:.6g}")
+
+
 def cmd_project(args) -> int:
     """Read-only inventory of a .logicx project: per-channel chains, presets, track names."""
     report = read_project(Path(args.logicx))
@@ -33,7 +40,8 @@ def cmd_project(args) -> int:
         cst = f"   ⟨loads {', '.join(c['cst'])}⟩" if c.get("cst") else ""
         print(f"    {c['label']:10s} {chain}{cst}")
         for plug, params in c.get("native", []):
-            print(f"        {plug}: {params}")
+            shown = {k: _shown(v) for k, v in params.items()}
+            print(f"        {plug}: {shown}")
     names = report["track_names"]
     if names:
         print(f"\n  track names ({len(names)}): " + ", ".join(n for n, _ in names))

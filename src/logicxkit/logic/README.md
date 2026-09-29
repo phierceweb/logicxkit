@@ -87,8 +87,8 @@ Measured float indices, one slider step per save (`services/output_params.py`):
 | Adaptive Limiter | 2, 3, 5, 6 | Gain (dB), Out Ceiling (dB), Lookahead (ms), Remove DC (1/0) |
 | Limiter | 1, 2, 4, 5 | Gain (dB), Lookahead (ms), Release (ms), Output Level (dB) |
 
-The plug-in window's Controls view lists every parameter in the plug-in's own order (the row
-tables are in `.ai/plans/v0.6.0/controls-*.txt`); the float order is not that order one for one.
+The plug-in window's Controls view lists every parameter in the plug-in's own order; the float
+order is not that order one for one ("Parameter tables from the Controls view", below).
 
 ### Gotchas learned from reading real strips
 
@@ -101,7 +101,11 @@ tables are in `.ai/plans/v0.6.0/controls-*.txt`); the float order is not that or
    block *and* every immediately-following same-size copy (writing only the
    user-param region, so each copy's trailing internal floats survive). Without
    this you get the classic "my edits didn't take / every strip sounds the same"
-   symptom — Logic loads the stale copy.
+   symptom — Logic loads the stale copy. The slot writers do the same through
+   `insert.state_blocks` (`add-plugin --set`, `chains`, the float overrides),
+   and `project` reports the copy as part of its block, not as another plug-in.
+   Projects carry the pairs too: across the real saves on hand most are equal in the user
+   region and a few differ.
 2. **Donor routing comes along.** The un-patched header layer carries the
    donor's fader, pan, output bus, and sends — cloning a whole `template` strip
    applies those too, not just the plugins (a strip cloned from `OH L.cst`
@@ -133,7 +137,7 @@ if you want to build your own.
 
 ```
 +0   4  tag            stored REVERSED — the channel tag's bytes are OCuA, and it READS "AuCO"
-+4   2  class version  bumps when Logic upgrades the file (see "Schema versions" below)
++4   2  class version  bumps when Logic upgrades the file (see "File formats" below)
 +14  2  owner          which channel this record belongs to
 +18  2  key            the record's role within that channel
 +28  4  payload size   next record starts at pos + 36 + size
@@ -143,6 +147,23 @@ A `.cst` starts with the channel record at offset 0. `ProjectData` has a **24-by
 first, and a total at **0x10 == filesize - 24** that must be rewritten after any length change.
 There is no offset table, record count or checksum anywhere, which is what makes writing into
 a project possible at all.
+
+#### File formats
+
+The file header starts `23 47 c0 ab`, and its u16 at **+4** names the format. Record classes
+move with it (every file on hand, 2026-09-29; the classes are each record's own `+4`):
+
+| header word | saved by | `ivnE` | `OCuA` | `UCuA` | `karT` | `gnoS` | `gRuA` |
+|---|---|---|---|---|---|---|---|
+| 2513 | Logic 12.3.1 | 12 | 7 | 5 | 6 | 8 | 3 |
+| 2512 | an earlier Logic 12 | 12 | 7 | 5 | 6 | 6 | 3 |
+| 2511 | Logic 11.2 | 12 | 6 | 4 | 5 | 6 | 2 |
+| 2509, 2510 | before 11.2 | 11 | 6 | 2, 3 | 5 | 5, 6 | 2 |
+
+Every offset in this document is measured on 2513, and the writers take nothing else
+(`validate.require_measured_format`, called before a project is copied). A class-6 channel
+record is the class-7 record without its last 32 bytes, so what `route` writes as the input UUID
+lands on the channel's own.
 
 Keys: **0-2 sends**, then the **plugin slots** from the project's slot base — 2 with up to one send anywhere in the project, 3 with two, 4 with three (Logic re-keys every channel when a send pushes it, and each channel record carries the base at +28; measured 2026-09-12) — and higher keys per-channel properties (the `.cst`
 reference sits at a key that moves with the Logic build — 9, 10, 12 and 13 all occur, so never
@@ -182,7 +203,14 @@ mono plugin on a stereo path.
   one byte per input bus, main then side chain.
 
 Rebase the variant id rather than incrementing it: `new = old - old_cfg + new_cfg`. The config
-index is **not** always the channel count — Gain's stereo index is 3. Leave `+82`/`+83` (bus
+index is **not** always the channel count — Gain's stereo index is 3, as are SilverVerb's, EnVerb's,
+Delay Designer's, ChromaVerb's, Stereo Delay's, Sample Delay's, AutoFilter's and the Modulation
+group's; Space Designer's is 9 and Quantec Room Simulator's 10. Fuzz-Wah, Spectral Gate and Rotor
+Cabinet have one build: on a mono channel Logic inserts them Mono → Stereo and writes the stereo
+record (counts 2, index 2), so `set_slot_format` leaves a `PLUGIN_CFG` entry with equal indices
+alone. The channel record's width byte is then the chain's output: Logic's re-save of a mono strip
+given a Fuzz-Wah wrote it stereo, the mono builds before it unchanged (`addplugin-fuzzwah-mono-*`),
+so a channel carrying a one-build plug-in is not width-judged. EVOC 20 Filterbank's mono record counts read 2, 1, 2 (`+84`, `+118`, `+119`). Leave `+82`/`+83` (bus
 counts) alone, and only follow `+157` to `+156` when the two already agreed, or you destroy a
 legitimately mono side chain on a stereo compressor.
 
@@ -191,17 +219,272 @@ writes a copy through `widen_channels`, which moves the channel's three width by
 re-stamps each slot on it. **Confirmed 2026-09-08:** two drum-MIDI auxes made stereo on both
 templates came back from Logic's re-save with the channels and their slots still stereo.
 
+### Side chains
+
+The source a plug-in's Side Chain menu selects is two bytes of its own slot record: payload
+`+144` the kind — 0 with none set, `0x40` an audio channel, `0x41` an input, `0x45` a bus — and
+`+145` the channel's zero-based number. A Compressor on Audio 2 pointed at Bus 1, Bus 2 and
+Audio 1, one save each, changed that word and nothing else in the project (the `sidechain-*`
+goldens, 2026-09-22); a Noise Gate and Pro-C 2 pointed at Bus 1 carry the same word at the same
+place, so it is Logic's, not the plug-in's. Over the owner's mixes the slots read as audio
+channels and buses that way, and one as an input. The word names the channel by number, so
+`sidechain.carry` moves a slot between projects by its source's *name* — the bound track's or
+aux return's, else the mixer label — and clears it, reported, when the destination has no such
+channel. A Noise Gate written with `add-plugin --side-chain 'Bus 2'` opened in Logic with Bus 2 in
+its header and re-saved as written (`sidechain-ours-resave-logic`). The menu showed the two
+buses as "Bus 1 (Drums)" and "Bus 2 (Cymbals)"; the file holds
+no such names (its aux returns are unnamed `Aux 1`/`Aux 2`), so the tools name a bus by the aux
+track it feeds or fall back to `Bus N`.
+
+### Settings across plug-ins
+
+A family's vocabulary (`services/translate.VOCABULARY`: a compressor's threshold dB, ratio,
+attack ms, release ms, knee dB, make-up dB, mix %, auto release, auto gain, look-ahead ms, input
+and output gain dB) and one map per plug-in under `data/translate/` say how each plug-in stores
+each item. Pro-C 2 keeps threshold, knee and side-chain level in dB as stored, its gains at 36 dB
+per unit with -1 silent, mix x100, and ratio, attack and release normalized on curves — sampled
+through the AU host at 41 points each (2026-09-22): ratio 0.6 is 4:1, attack 0.4 is 16 ms,
+release 0.4 is 198 ms. Logic's Compressor is its measured table; its knee runs 0..1 with no dB
+scale, so a knee crosses as dB/72 and the report says approximate. A -> B goes through the
+vocabulary; what B lacks is reported, never guessed. Logic keeps a Compressor's values on grids
+— threshold, make-up and the gains in 0.5 dB, ratio and knee in 0.1, mix in 0.5 % — and rounds
+a written value to them on load (a 3.06:1 / 2.999 dB / 0.083 knee came back 3.1 / 3.0 / 0.1,
+`translate-ours-resave-logic`), so the map rounds first. Attack and release, and the Noise
+Gate's attack, hold and release, sit on their knobs' own positions rather than a uniform grid
+(10.72 ms came back 10.5 and 40 came back 41; 115 ms came back 110 and 400 back 390; a gate
+release of 350 came back 351), so those are written as read and Logic settles them on load;
+measuring each knob's positions would make the write exact.
+
+sonible's smart:gate and smart:comp 2 keep their values in the `jucePluginState` protobuf's
+message 3, in real units — dB, ms, Hz, % — one field per parameter; the AU state's id/value
+pairs beside it never change and are not read. Matched to Logic's Controls view row by row after
+every slider moved 500 units (`sonible-*`, 2026-09-22: 42 of 45 changed fields on smart:comp 2
+and 16 of 18 on smart:gate by value). smart:comp 2's two stages sit 16 fields apart (Threshold 1
+at 3.17, Threshold 2 at 3.33; the ratios 3.12 and 3.28 are the pair left, placed by that
+layout); only stage 1 crosses to a Compressor. smart:gate's threshold and tolerance are
+percentages against its learned profile, so only its attack, hold and release cross to a Noise
+Gate, and the report says why the rest do not.
+
+iZotope's Neutron 5 keeps its state as a 16-byte header (magic `0x0080fb83`, a version, the
+packed and the plain length) over zlib-compressed JSON of typed values
+(`au/services/izotope`), every parameter in real units under
+`DSP State/Value/DSP Elements/Value/<Module>/Value/<Parameter>`. It carries three families, so
+it has three maps (`iZtp_ZNN5-compressor`, `-gate`, `-eq`) and `settings` prints a line per
+family: a Dynamics element's band 0 (threshold dB, ratio, attack and release ms, knee, gain,
+mix %), the first of the two not bypassed, with a note when both are; the Gate Expander's band
+0 (threshold — its Open — attack and release in ms, hold in seconds, hysteresis — its Close — a
+positive amount where the vocabulary's is negative); the Dynamic EQ's twelve bands, a band's
+Enable its existence, a band with its dynamics on flagged and its static curve crossed. Its
+thirteen shapes, in the popup's order, cross as bells (Proportional Q, Bell, Band Shelf), low
+shelves (Analog, Baxandall, Vintage), high shelves (the same three), high cuts (Flat and
+Resonant Lowpass) and low cuts (Flat and Resonant Highpass). Its ratio expander, its punch,
+its side-chain filters and bands 1 and 2 stay its own; the state is read, not written.
+Logic-confirmed 2026-09-23 (`neutron-*`): a fresh instance's Controls view dialled — the C1
+rows are Dynamics 0, the G1 rows the Gate Expander, EQ Main B1-B3 the Dynamic EQ — read back
+as dialled through the three maps, and each family carried into a Compressor, a Noise Gate
+and a Channel EQ, Logic showing the plans.
+
+An EQ crosses as bands. Pro-Q 4 keeps its state in `FabFilterPluginState`, the `.ffp` layout
+(`FFBS`, a version, 600 values by parameter id, then a trailer with the preset name): a band is
+23 values from id 23(n-1) — Used, Enabled, frequency as log2 Hz, gain in dB, Q normalized on a
+log curve (0.025 at 0, 1.0 at 0.5, 40 at 1), shape (Bell, Low Shelf, Low Cut, High Shelf, High
+Cut, Notch, Band Pass, Tilt Shelf, Flat Tilt, All Pass), slope (0..96 dB/oct, brickwall), stereo
+placement, the dynamics — read off the AU host, 2026-09-22. Channel EQ has one slot per shape
+(Low Cut, Low Shelf, Peak 1-4, High Shelf, High Cut) in its measured table, so a Pro-Q 4's bands
+land by shape, bells by rising frequency, and a fifth bell, a notch or a tilt is reported; the
+cut slopes and the dynamics are not carried, and a shelf's or cut's Q is marked approximate
+between two filter designs. Logic-confirmed 2026-09-22 (`translate-proq-*`): nine bands dialled
+on a Pro-Q 4 read as its window showed them, and the Channel EQ written from them came back
+from Logic's re-save with every float as written but the frequencies and one Q, which sit on
+its knobs' own positions (250.01 Hz to 250, Q 2.43 to 2.50); gains step 0.1 dB.
+
+**Writing a FabFilter state** (`services/translate_write`, `au/services/austate_write`): the
+record's XML plist holds the state as base64 `<data>` elements (wrapped at 68 characters, a
+tab per line), so a value is patched into the decoded blob — a pair's float32 by id for Pro-C 2
+and Pro-MB, a float32 LE by id in the FFBS blob for Pro-Q 4 — and the blob re-encoded into the
+same span, base64 characters replaced in place and the whitespace kept; the record, the XML
+length word in front of it (u32 LE at xml − 4, the text plus its newline) and every field after
+it stay as Logic wrote them. A map item's `min`/`max` clamps a write with a note, and one of
+Logic's own is held to its measured slider's ends the same way. Logic-confirmed
+2026-09-23 (`write-*`): three items written into a Pro-C 2 in place, and a Compressor carried
+into a Pro-C 2, came back from Logic's re-save shown as written; a normalized curve item
+(attack, release) lands between the sampled points (10.5 ms shown as 10.49, 110 as 109.8). A
+Channel EQ's seven live slots went into a Pro-Q 4's first seven bands (the off low shelf left
+out, its cuts at 12 dB/oct for want of the table's slope), band 8 Unused, every value shown as
+written; a band without a slope of its own gets 12 dB/oct — `None` in the slope list means
+brickwall.
+
+A multiband compressor crosses as bands by frequency range (`services/translate_mb`). Pro-MB's
+state is 151 id/value pairs: a band is 22 from id 22(n-1) — state (0 disabled, 1 enabled,
+2 unused), low and high crossover as log2 Hz (4.907 = 30 Hz, 14.873 = 30 kHz), slopes, dynamics
+mode (0 compress, 1 expand), threshold normalized on a sampled curve (-90 dB at 0, -48 at 0.2,
+0 at 1), range ±30 dB (the limit on the gain change; negative is downward), ratio normalized
+(1:1 at 0, 4:1 at 0.6, 100:1 at 1), attack and release as percentages of a program-dependent
+time, knee dB, lookahead ms, level dB — read off the AU host, 2026-09-23; mix ×100, input and
+output level 36 dB per unit with -1 silent. Multipressor holds four bands between three
+crossovers in its measured table, each a compressor and a downward expander, `Band N Monitor`
+its on/off. Across the two the spectrum is segmented into at most the target's count of bands
+(a stretch no band covers is a band turned off, a stretch under two thirds of an octave joins
+its neighbour, past the count the narrowest merges with a note); Pro-MB's expand mode lands in
+the expander, its range and percentage times are reported, and the other way a band's expander
+beside its compressor is reported and Pro-MB's range set to its widest (-30 dB). Logic-confirmed
+2026-09-23 (`mb-*`): three bands dialled on a Pro-MB read as its window showed; the Multipressor
+written from them came back with thresholds, make-up, lookahead, output and the off band as
+written and its ratios and top crossover on its knobs' positions (4.0 shown as 3.675, 4000 Hz as
+3900 — where the writer now puts them itself, `slider.snap`); that re-save carried back into a
+Pro-MB read as written, its crossovers from 30 Hz.
+
 ### Per-instance ids — measure, never assume
 
 Two instances of the same plugin differ in a few trailer bytes carrying a per-instance id.
-**Their position is plugin-specific**: Channel EQ (432 B payload) uses 414, 415, 420-427, while
-Enveloper (248 B) uses 228-231, 236-243. Applying one plugin's offsets to another overwrites
-live parameter data — that is what makes a project fail to open.
+**Their absolute position is plugin-specific**: Channel EQ (432 B payload) uses 414, 415,
+420-427, while Enveloper (248 B) uses 228-231, 236-243. Applying one plugin's offsets to another
+overwrites live parameter data — that is what makes a project fail to open.
+
+Counted from the payload's end they share one window: the last 20 bytes but the final four.
+Across every Logic-written `ProjectData` under `resources/` and `in/` (2026-09-21), the pairs
+of same-plugin, same-length instances that agree everywhere else differ only at −20..−5, never
+in the last four — Channel EQ, Compressor, Enveloper, Gain, Auto-Align 2, Neural DSP, FabFilter
+and Waves among them. Other pairs are identical outright, so Logic itself sometimes saves
+two instances with one id. The window is **not** always an id: a quarter of all slots carry
+zeros or parameter floats there, which is why the bytes are still measured, not assumed.
 
 `instance_offsets()` derives them by diffing real instances of that exact plugin; with fewer
-than two available it returns nothing and the clone is copied verbatim.
+than two available it returns nothing and the clone is copied verbatim. `transplant.id_offsets`
+diffs only inside the window, so two instances saved with different settings are not mistaken
+for an id; `transplant` uses it only when one source is fanned out onto several channels. A
+one-to-one move copies the id with the slot, which is what apply-template's chains op relies
+on to converge and what Logic re-saved byte for byte.
+
+### The slot key range grows with the longest chain (every save under `tests/corpus` and `resources/experiments`, 2026-09-21)
+
+One key layout serves every channel of a project: sends from 0, slots from the base, then
+**two keys** that hold the non-slot satellites (the 200-byte recording record at reference −2
+or −1, the 68-byte aux record at −1), the `.cst` reference, an empty key, and the two
+keyed-archive records at reference +2 and +3 (`slots.archive_index`). In the blank-born
+public saves, which carry no reference, the archives sit at base + highest slot index + 5 and
++6 on every save (the reference's place, highest key + 3); Logic's own appends on
+Audio 1 (`master-track-*`) moved the archives of every channel up one key per plug-in. The
+headroom depends on the project's origin — the owner's base-4 sessions put the reference at
+highest key + 6, base-2 sessions with references at + 5 — and **Logic sets it on every
+save**: its re-save of a fan-out that shortened every chain moved the references from 13 to
+11 (`transplant-fanout-logic`), and its re-save of a copy left at 10 moved them to 13 with no
+chain change (`songb-drums-to-midi-logic`). That re-layout drops what lands past the channel
+records' flag words: a write that grew a base-4 session by three keys instead of its six came
+back with every channel's second archive gone (2026-09-21). So a writer grows the
+range to the project's own headroom, measured from the input: `add_plugin.headroom` and
+`grow_range` move everything from reference −2 up by the deficit, and `property_key_base`
+reads the reference's place from the archive pair when no channel names a strip.
+
+**The two archives are the channel's Smart Controls**: the first an `NSMutableDictionary` of
+knob number → `NSMutableArray` of `MAPlugInParameterMapping`, each naming the plug-in it
+reads by **slot index** (`slot`) and parameter (`parameterIndex_1`); the second holds the
+layout name (`contentTagLayoutName`). Payload `+16` is the bplist's size, the bplist from
+`+20`, then a 16-byte tail. A plug-in moved to another slot without its mappings made Logic
+reset the channel to an unused stub on load (2026-09-21); `smart_controls.shift_mapping_slots`
+moves them with the slots, and Logic re-saved that archive byte for byte
+(`addplugin-mid-logic`). A slot's payload `+76` u16 is a per-plug-in token Logic recomputes
+on load (the same value for the same plug-in on two channels of one save; the owner's
+library donor's stale value came back as 0, the packaged donor's unchanged). The other field
+Logic may rewrite on a new slot is its preset label
+at payload `+14`: a third-party donor saved with an empty label came back reading `Untitled`
+on one re-save (`addplugin-front-logic`) and empty on another (`transplant-fanout-logic`).
+
+**Channel record `+30`** is the number of insert slots the mixer shows — the longest chain
+plus one empty slot, highest slot key − base + 2 — one value on every channel record of the
+project, the 201-byte stubs included (5 on a tracked song whose longest chain is 4; 6, 7 and 9
+on the `master-track-*` saves as Audio 1 grew to slot 5, 6 and 8). Logic recomputes it on
+save too (5 → 3 on the shortened fan-out, a stale 2 → 5 on the drums-to-midi copy);
+`add_plugin.show_slots` raises it to what the new chain needs, which is what makes the
+reproduced append match Logic's channel record byte for byte. It is one of six u16 words every
+channel record of a project carries alike — `+28` the slot base, `+30`, and `+34 +36 +38 +42`,
+unnamed — on all 467 corpus saves and the owner's; Logic's re-save rewrote a fresh record that
+disagreed (`addtrack-fresh-*`), so a fresh channel takes them from the project, not its template
+(`channel_alloc.project_words`).
+
+### Parameter tables from the Controls view (2026-09-22)
+
+A plug-in window's Controls view lists every parameter in Logic's order — rows of label,
+display value and slider — but the float block is not that list: the Compressor's 27 rows
+hold popups with no slider (Peak/RMS, Circuit Type, Side Chain Detection), divider gaps, and
+floats the rows skip, so "float = row + 1" holds only up to the first popup. What pins a
+table is one save at defaults and one after **every** slider row was moved one unit (and
+every checkbox pressed): each changed float then matches its row by value — 25 of 25 on the
+Dynamics group, none left to order. The tables live in `data/logic/params-<type>.json`
+(`services/plugin_params`); popup rows stay unmapped until measured another way, and a
+parameter whose display is not its float (the Vintage Graphic EQ's bands, mostly) carries
+`"evidence": "order"` — its row, not a value match, and only when one row and one float were
+left (a wider leftover is a guess and stays unmapped). Repeated labels take their section
+header or nearest `Band N` as a prefix. Measured so far (`stockfx-dynamics*`, `stockfx-eq-*`,
+`stockfx-dr-*`): Compressor 14 of 27 rows, DeEsser 2 4/7, Expander 7/9, Adaptive Limiter 6/9,
+Channel EQ 38/47, Linear Phase EQ 37/46, Single Band EQ 2/4, Vintage Console EQ 13/15,
+Vintage Graphic EQ 14/16, Vintage Tube EQ 18/23, Multipressor 54/59, Enveloper 7/7, Tru-Tape
+Delay 7/9, Delay Designer 5/28 (the taps are not in the float block), Space Designer 30/88
+(nor are the envelope handles' displayed values), Echo 4/7, ChromaVerb 51/62, SilverVerb 12/12,
+EnVerb 14/14, Tape Delay 13/21, Stereo Delay 12/31, Match EQ 9/24, Noise Gate 11/13
+(`stockfx-dr2-*`), Quantec Room Simulator 10/21, Sample Delay 3/4 (`stockfx-dr3-*`; Logic's
+own Sample Delay is type 259 and sits under Apple's AUSampleDelay in the menu's search),
+Chorus 4/4, Ensemble 14/14, Flanger 5/5, Microphaser 3/4, Modulation Delay 15/18, Phaser
+15/18, Ringshifter 20/30, Scanner Vibrato 4/5, Spreader 4/4, Tremolo 6/7 (`stockfx-mod-*`),
+Bitcrusher 5/6, Clip Distortion 10/10, Distortion 4/4, Distortion II 6/7, Overdrive 4/4, Phase
+Distortion 7/7, AutoFilter 23/30, EVOC 20 Filterbank 35/61, Fuzz-Wah 13/17, Spectral Gate
+11/11, Rotor Cabinet 5/14 (`stockfx-dist-*`), Amp Designer 13/25, Bass Amp Designer 27/46,
+Pedalboard 8/63 (its 2001 floats hold every pedal's parameters), Pitch Correction 7/36, Pitch
+Shifter 4/8, Vocal Transformer 7/10, Exciter 3/4, SubBass 9/9 (`stockfx-amp-*`; Denoiser and
+Speech Enhancer are no longer in Logic 12.3.1's menu), Direction Mixer 3/4, Stereo Spread 5/5,
+Level Meter 1/8, Loudness Meter 1/7, MultiMeter 9/20, Tuner 2/4, Gain 2/6, Test Oscillator
+7/13 (`stockfx-util-*`; BPM Counter and Correlation Meter have no slider to move, and Down
+Mixer no row on an audio track). BPM Counter's never-opened mono record carries two parameter
+blocks (440 B) against its stereo one's single block (316 B), so the library files both. The
+multi-FX carry pattern data — Step FX 29019 floats, Remix FX 4102, Beat Breaker 452, Phat FX
+245 — and one slider moves many of them, so their tables hold what matched by value: Beat
+Breaker 14 of 174 rows, Step FX 49/276, Remix FX 7/54, Phat FX 16/76 (`stockfx-mfx-*`);
+Binaural Post-Processing has no slider, and I/O's row the OCR never read. A save
+made after a plug-in's window was opened and a parameter moved carries its record with a
+second `GAMETSPP` block appended (the compare state), so the `-spots` and `-mono` saves' edited
+records are longer than the `-defaults` save's.
+
+**A block type is not always one plug-in.** The word after `GAMETSPP` is shared by Tape Delay
+and Echo (147), by Pedalboard and its Tru-Tape Delay stompbox (273) and by Phaser and
+Microphaser (152); what tells them apart
+is the slot's variant id at `+116`, a per-plug-in base plus the config index at `+81`. The
+base is the same for the mono and stereo builds and, over 429 goldens, the same in every Logic
+version that writes it (class v2/v3 records carry none). `slot_width.plugin_variant` reads it,
+`chain_report.PLUGIN_VARIANTS` names the shared types' members, a table names its `variant`
+(`plugin_params.table_for`) and a donor of a shared type files as `<type>v<variant>-v<ver>`.
+Bases seen: Chorus 94, Flanger 147 (type 146), Tape Delay 200, Echo 216, Stereo Delay 232,
+SilverVerb 249, Phaser 283, Microphaser 336, Compressor 389, Fuzz-Wah 405, Expander 421,
+Enveloper 437, Klopfgeist 453, Pitch Shifter 454, Ensemble 486, AutoFilter 517, Bitcrusher 534,
+Distortion 550, Overdrive 566, EnVerb 582, Spectral Gate 615, Noise Gate 728, Modulation Delay
+760, Direction Mixer 813, Gain 815, Tremolo 832, SubBass 885, Clip Distortion 905, Adaptive
+Limiter 938, Multipressor 954, Phase Distortion 986, Exciter 1002, Stereo Spread 1018, Limiter
+1020, EVOC 20 Filterbank 1074, Distortion II 1088, Scanner Vibrato 1104, Rotor Cabinet 1121,
+Space Designer 1123, Pitch Correction 1173, Channel EQ 1189, Tuner 1208, MultiMeter 1222,
+Correlation Meter 1231, BPM Counter 1232, Linear Phase EQ 1234, Match EQ 1266, Delay Designer
+1310, Vocal Transformer 1348, Ringshifter 1380, Test Oscillator 1397, Level Meter 1415, Spreader
+1444, Sample Delay 1461, Binaural Post-Processing 1590, Pedalboard 1623, Tru-Tape Delay 2050,
+Amp Designer 2212, Vintage Tube EQ 2231, Vintage Graphic EQ 2247, Vintage Console EQ 2263,
+ChromaVerb 2279, Phat FX 2296, Step FX 2313, DeEsser 2 2331, Bass Amp Designer 2349, Quantec
+Room Simulator 2365, Beat Breaker 2419, Single Band EQ 2442, Remix FX 2466, Loudness Meter 2480.
+The type's `PLUGIN_NAMES` entry marks the member that keeps the plain table and donor
+keys; the others file by variant.
 
 ### Donor rules
+
+A plug-in's mono and stereo records are the same length on every plug-in measured (eighteen,
+`stockfx-*-defaults` against `-mono`, 2026-09-22): the width is in the fields above, and
+re-stamping them is how a donor of one width goes onto a channel of the other (Logic has
+accepted that for the Compressor, `chains`). The records that read longer were edited ones — a
+save made after a plug-in's window was opened carries the record with a compare block
+appended — which is why `bin/regen_data.py` harvests each group's never-opened strip only.
+Should a plug-in's records ever differ in length by width, `harvest_donors` files a real
+record per width (`<type>-stereo-v5`, `fixed_width` in the manifest) and `add-plugin` takes
+the channel's.
+
+Space Designer's record names its impulse response by path — twice, once beside a file
+bookmark that carries the volume name — so the public saves and the donor cut from them have
+that path replaced in place at the same length (`tools/stage_public.py`, counted under
+`scrubbed` in the manifest); a strip given the donor loads with no IR until one is chosen.
 
 A slot record can only be cloned into a project when:
 
@@ -292,7 +575,7 @@ the **arrange list**, and a record's `key` is its display position. 58 bytes at 
 | `+0` | u32 flags; `0x1` base, bit `0x04000000` = hidden, bit `0x20000000` = **track off** (the power button; switching one on in Logic cleared it and nothing else), bit `0x10000` on the selected row when it is an instrument |
 | `+4` | u32, 0 on a fresh row; a word on rows inside some stacks — not the group, which never changes it |
 | `+8` | object id in the Environment's space |
-| `+14` | **1 = this row sits inside the stack above it**, 0 = header or top level. 113/113 rows on two files, including the Click and trigger-aux rows inside Drums MIDI that carry no stack index on their channel; a dragged-in track goes 0 -> 1 |
+| `+14` | **1 = this row sits inside the stack above it**, 0 = header or top level. Holds on every row measured, including the Click and trigger-aux rows inside Drums MIDI that carry no stack index on their channel; a dragged-in track goes 0 -> 1 |
 | `+24..39` | the row's own UUID |
 | `+40` | bit `0x80` = expanded (stack headers, and every fresh top-level row; no member row); bit `0x20` = selected |
 | `+43` | `0x40` on the selected row |
@@ -331,13 +614,13 @@ version), so these are addressed from the end:
 | `+24, +25` | `01 01` once bound |
 | `+60` | NUL-padded label with a leading space: ` Audio 1`, ` Sub 1`, ` Bus 15` |
 
-Measured 59/59 in-use channels on seven sessions and the template. **Folder stacks bind to
+Holds on every in-use channel of the sessions measured and the template. **Folder stacks bind to
 the `Sub 1-7` strips**, which is where a stack's fader lives; the three kind-0 objects bound to
 Aux strips (Room, Drum FX, Vox Verb) are input-less auxes, not stacks. `services/binding.py`.
 
 ### Instrument outputs — an aux fed by a software instrument's extra output
 
-Measured on two saves (2026-09-05) against nine projects of the template's lineage: the aux's
+Measured on two saves (2026-09-05) against the projects of the template's lineage: the aux's
 channel carries `+95` = 1 and at `+94` a source id Logic hands out in order, starting at the
 project's mono input count (Logic renumbers them on load, so a written id only has to be
 unique); the input UUID in the tail stays zero. Under the aux sits one 68-byte `UCuA` at the key
@@ -389,9 +672,9 @@ slots (key 4+). 78 sends across three Logic 12.3.1 saves:
 
 The channel's own `OCuA` mirrors every satellite: from `+132`, one u32 per record key (sends
 0-2 at `+132/+136/+140`, plugin slots from key 4 at `+148`, the reference and the rest after),
-1 exactly when a `UCuA` with that key exists under the owner — 78,666 words on nineteen Logic
-files, no exception. **`+26` is the flag-word count and sizes the record**: payload = 201 +
-4 x `+26` on all 21,772 version-7 channel records on hand (a 201-byte stub has no flag
+1 exactly when a `UCuA` with that key exists under the owner — every word on the Logic files
+measured, no exception. **`+26` is the flag-word count and sizes the record**: payload = 201 +
+4 x `+26` on every version-7 channel record on hand (a 201-byte stub has no flag
 words; the 20 zero bytes, one byte and three UUIDs after the flags never move). A flag left
 set for a missing record is a file Logic refuses to open (measured 2026-09-04: slots removed
 without their flags), and so is a record shorter than its `+26` says (measured the same day:
@@ -468,14 +751,14 @@ ordinal), and a type-0x24 entry in the song container whose `+44` word is that s
 (A04) adds a second `gRuA` right after the parent's with the same slot and the piece's number in
 the header owner (`+14`), and an entry with that number at `+40`: entry `(+44, +40)` pairs with
 record `(slot, owner)` and the file is the record with the entry's slot, on every project on hand
-(173 with audio, 1,045 entries, pieces up to 29; earlier the entries were ranked onto the records
-by counter order, which mispaired every region after a split). The file record: `+8` u16 the
+with audio (earlier the entries were ranked onto the records by counter order, which mispaired
+every region after a split). The file record: `+8` u16 the
 name's length in UTF-16 units, `+10` the name in UTF-16 LE (`v040-é.wav` in the NFD form the file
 system keeps, `🥁` as a surrogate pair), then `LFUA`; from that magic `+7` u8 1 on the newest
 import only, `+138` the Media folder's path in a 256-byte NUL-padded buffer, `+400` u8 channels,
 `+406` u32 file size, `+456` the format as a reversed four-CC (`EVAW`), `+464` u32 data offset,
 `+468` u32 frames, `+476` u32 sample rate, `+480` u16 channels, `+482` u16 bits, `+508` u32 the number
-of region records on the file (2857 of 2858 file records on hand agree; Logic loads that many, so a
+of region records on the file (every file record on hand but one agrees; Logic loads that many, so a
 split's second piece with the count left at 1 was dropped), `+512` u32 ord
 (1-based), `+518` u32 link — the next file's word, `0xFFFFFFFF` on the last — the file as Logic
 stored it, converted to the project's rate on import. The region record: `+5` bit 1 Mute
@@ -534,9 +817,53 @@ per channel, the referenced table slot at data +0) sits one `*Automation` folder
 id at `+8`, the owner of the `qSvE` that holds the points. An event's head +2 is the sub-tick
 fraction (u16, 0x8000 half a tick): Logic's region-border point sits at 38399 + 0x8000. A fader
 point is a 0x50 event — tick at head +4, fader id at head +12 (Volume 7, Pan 10), the fader byte
-at head +11 (unity 90); a plug-in parameter point is 0x51 with the 0..1 float at head +8 and the
-parameter index at +12 (bit 14 of its type word, 0x4051, is set on two of a real song's parameter
-points and read as `flagged`; meaning unknown). Head +15 is the Event List's selection state on a
+at head +11 (unity 90); a plug-in parameter point is 0x51 to 0x5F — the type's low byte less
+0x50 is the insert, 1 to 15 (Logic wrote 0x52 for a point it made on insert 2, 2026-09-23) — with
+the value at head +8..+11 and the parameter index at +12: one of Logic's own numbers its
+parameters by float index less one (the Compressor's Threshold is 0, its Knee 5), a third-party by
+AU parameter id; a number past the plug-in's count names nothing in the Event List. The value
+is the u32 at +8 over 2^31 (its top byte the Event List's val, 0..127). Logic lays it on the
+parameter's Controls slider: units = floor(value × per), a rate per row — 128 for most, 201.5
+for the Compressor's Mix and the Noise Gate's Release (0..200 units), 483.75 for the Channel
+EQ's gains (0..480), 1058 for its frequencies (0..1050), 161.25 for the Multipressor's
+compression thresholds (0..160) — clamped at the slider's top (the Compressor's Threshold 100,
+Ratio 85, Knee 10, so Knee's automation reaches only 10/128 — a lane carried onto such a short
+slider, four times shorter than its automation reaches, gets a note: nearly a switch); the slider's own scale then
+gives the value, read at up to 44 positions into each native map's `automation` table
+(Compressor, Noise Gate, Channel EQ and Multipressor, 2026-09-23; the rates from every row
+read at eleven automation values, `auto_value_probe.py`; a switch is on from one unit; a
+written point aims at the middle of its unit so no rounding tips it down). `automation --set
+"TRACK:slot N NAME=V@BAR,…"` writes such a lane from the parameter's own values: one of Logic's
+own by its table name onto the slider unit nearest each value, a third-party by its AU table's
+parameter name or id, or its map's vocabulary name, as the fraction of its range. Logic-confirmed
+2026-09-23 (`autoset-*`): the
+Event List named four lanes so written — a Compressor's threshold on units 40, 52 and 76, its
+Auto Release 127 and 0, a Noise Gate's hold 25 and 20, a Pro-C 2's threshold 85 and 106 of 128 —
+and the Controls view showed a Multipressor's band 1 expander threshold, reduction and response
+on the written units, the points kept as written. The same tables
+give the settings writers their grid: a native value is put on the nearer of the two sampled
+slider positions around it before it is written (`slider.snap`; a tie goes down — Logic's own
+choice at a midpoint depends on the knob), so the re-save keeps it as written — the knob-shaped
+rows are sampled at every unit for that (ratios, times, Q, the Channel EQ's frequencies at all
+1051 positions), the linear dB rows every few. The Multipressor's expander threshold, reduction
+and response rows carry no band name in the Controls view or the Event List (Logic's own
+parameter names lack one); the view lists them band 4 first, and a lane on each band's row
+found them (`mbx` probe, 2026-09-23): the thresholds run 161.25 per 1.0 like the compression
+thresholds, the other two 128, every band alike. Logic-confirmed 2026-09-23 (`snap-*`): raw floats
+between positions came back on the positions the snap picks — a Compressor ratio 4.0 as 3.9,
+attack 20.5 as 20, release 115 as 110; the Noise Gate's hold 205 as 210, a midpoint Logic
+took up where the snap takes it down — and a copy written through the snap came back with
+every float as written. The Noise Gate's release positions are not round numbers (351 came
+back 350.99: the display's tenth hides the rest), so there the snap is exact to a hundredth. A third-party's
+value spans its AU parameter's range (`raw` in its map: Pro-C 2's threshold -60..0 dB). Bit 14
+of the type word (0x4051) is set on some of a real song's parameter points and read as
+`flagged`; meaning unknown. Logic-confirmed 2026-09-23 (`auto-lanes-*`): four lanes written on a
+Pro-C 2 and carried into a Compressor by `replace-plugin --translate` came back from Logic's
+Event List by name with the written units (40, 52, 76 on Threshold), and the Compressor's
+Controls view followed them in Read (-30, -24, -12 dB); a band's lanes the same way, a Pro-Q 4's
+onto the Channel EQ slots the plan placed its bands in and a Pro-MB's onto the Multipressor's
+(`auto-eqlanes-*`, `auto-mblanes-*`: 1/0/1, -4/0/+6 dB, 1000/2000 Hz; -20/-12/-30 dB, 3.675/1.977,
++1 dB). Head +15 is the Event List's selection state on a
 point it just made (1, 0x81 on the anchor), rewritten on save. Every folder keeps its points in
 (tick, fraction, type, fader, relative) order. Logic's Automation Event List (read for every
 automation golden, 2026-09-17) shows a fader point at the tick and value the reader reads, the
@@ -636,7 +963,7 @@ project is private, so the facts are pinned here and in synthetic tests.
   `+8` its id, `+88` the region length in ticks with fraction, **`+102` i16 the Quantize value**
   — 0 Off, `-2·(7 − log2 d)` for 1/d (1/4 = -10, 1/8 = -8, 1/16 = -6, 1/32 = -4). Logic then
   writes one transient marker per detected hit with the target on the grid; on the first
-  quantize only the first Q-Reference region carried them (214 markers for 12 regions), a later
+  quantize only the first Q-Reference region carried them (the markers for every region), a later
   value change wrote the full list on every member. **Logic does not rebuild the markers on
   load**: a save with the markers stripped and the parameter kept came back with two anchors
   per region. The markers are the quantize; a writer has to make them.
@@ -647,9 +974,9 @@ project is private, so the facts are pinned here and in synthetic tests.
   no block precedes the first entry, and blocks need not start `07` or end `03`. Every entry
   whose `+32` is not `0xFFFFFFFF` names a sequence triple whose `<0x17><slot>` pair is in both
   `gnoS` stride runs; an audio entry with no sequence carries `0xFFFFFFFF`. Hit targets rise
-  strictly within every marker list (787,931 adjacent pairs). 10,999 of 11,065 entries naming an
-  RBA Sequence have `+48` bit 7 clear; 44 saves carry 4,943 RBA Sequences no entry names; 2,701
-  audio entries in 233 saves name a 309-byte empty sequence called **MIDI Region**, not RBA Sequence.
+  strictly within every marker list. Nearly every entry naming an RBA Sequence has `+48` bit 7
+  clear; many saves carry RBA Sequences no entry names; many audio entries name a 309-byte empty
+  sequence called **MIDI Region**, not RBA Sequence.
 - **Per channel object** (`ivnE`): `+80` = 1 while the track is selected (many at once);
   `+154` bit 4 = **Q-Reference off** (`0x80` → `0x90`), bit 5 = flex mode other than Slicing;
   three bytes at the padded name's end + 402 − 18 hold the **flex mode**: `02 03 02` Slicing,
@@ -687,7 +1014,7 @@ else accounted for):
   UUID and its time; the 16-byte `<0x17><4>` and `<0x17><8>` stamps (the arrange and flat
   lists) refreshed; and the selection fields (`+94`, `+210`, `+214`). Everything else in gnoS
   that moves also moves on a no-op save — per-save nonces.
-- The index table — the `qSvE` with one entry per track object (not the largest: a mixed project holds a region table of 21,000 entries repeating track ids) — 80-byte entries, then a 16-byte tail — gains one
+- The index table — the `qSvE` with one entry per track object (not the largest: a mixed project holds a far larger region table repeating track ids) — 80-byte entries, then a 16-byte tail — gains one
   entry **before the tail**: the object id at `+16`, the sequence index at `+20`, and at
   `+32` the lowest slot word (multiples of 4 from 20) no other entry uses. Every entry whose
   sequence index is at or past the new one moves up by one.
@@ -713,6 +1040,18 @@ Audio tracks never do this because `Audio 1-35` stubs pre-exist. `logic add-trac
 does all of it; the index table and count record it writes are byte-identical to Logic's.
 **Confirmed in Logic 12.3.1 on 2026-09-01** (both tracks present, the click still plays).
 
+**Where a fresh channel record goes, and its keys.** Every Logic save keeps the mixer records in
+owner order (every golden). A fresh channel takes an owner, every channel from it moves up
+one, and its record goes after the highest owner below it; placed after the channel records'
+trailing 14-byte shells instead, Logic's re-save dropped every plug-in in the project
+(`addtrack-order-*`, 2026-09-23). The default instrument records in `inst-track-12.3.1.json` were
+measured at slot base 4, property base 12 (keys 4 and 15): the instrument sits at slot index 0,
+the keyed archive at the property base + 3, so in another project they take that project's keys.
+Left at 4 and 15 in a base-2 project, Logic refused to open a migration ("The operation could not
+be completed.") — and opened the same file once only those two records' fresh ids were changed
+(`legacy-migrate-keyed-mine`, `-idswap-mine`, 2026-09-24). `validate_project` refuses both
+shapes: a plug-in whose +6 index disagrees with its key, a keyed archive off its key.
+
 **The sequence triple and the index table are linked by slot.** The three records of a
 triple share a header slot (`+10`); the table entry with that slot word at `+32` names the
 object (`+16`) and its index (`+20`, 17 + mixer rank), and the `qeSM` repeats both: `+234`
@@ -729,20 +1068,20 @@ re-save drops or misplaces rows (measured 2026-09-04; `services/regions.py`,
 
 - **The song container's row count.** The `qeSM` of the triple that holds the arrange rows
   carries `rows x 60` as a u32 269 bytes before its end (its name is variable-length, so the
-  field is addressed from the end; 39/39 files). Logic reads that many rows and silently
-  drops the rest on its next save — a 57-row migration came back as the first 11 plus Master.
+  field is addressed from the end; every file on hand). Logic reads that many rows and silently
+  drops the rest on its next save — a migration came back as its first 11 rows plus Master.
 - **Region placement.** The same container's `qSvE` is an event list of 80-byte entries and
   a 16-byte tail; an entry placing a region carries the track's object id at `+16`, the
   track's 1-based arrange row at `+20` (the object's first row when a channel has two) and the
-  region's slot at `+32`. Logic renumbers `+20` when a row moves (`37 -> 38`); 1,055 entries
-  agree. Left stale, a region shows on whatever track now sits at that row.
+  region's slot at `+32`. Logic renumbers `+20` when a row moves (`37 -> 38`); every entry
+  on hand agrees. Left stale, a region shows on whatever track now sits at that row.
 - **Registry slot entries.** gnoS's two `0x17` runs hold one entry per multiple of 4 from 0
   to the highest sequence slot in use; a slot past their end gets appended, with every
   skipped word, the way Logic's re-save extends them.
 
 **The track name is the user's only when `ivnE +45` bit 0 is set**: clear, the arrange shows
-the channel-strip setting's name instead (`Rack 2` read `Rack`, four vocal tracks read `Vox -
-Lead`). 1,327 named tracks on 39 files set it; Logic's own fresh adds, auto-named `Audio N`,
+the channel-strip setting's name instead (`Rack 2` read `Rack`, the vocal tracks read `Vox -
+Lead`). Every named track on hand sets it; Logic's own fresh adds, auto-named `Audio N`,
 do not. `rename_track` sets it; `add-track` sets it unless the name is the strip's own label.
 
 **Selection** lives in four places Logic moves together — the row (`+40` bit `0x20`, `+43`
@@ -759,8 +1098,8 @@ and rewrites the channel's `.cst` reference label to the new strip name.
 moved); `logic colour` writes it. `+45` is a state flag a fresh object clears.
 
 **A stale index-table entry is not a pattern.** Logic's own files keep a few entries whose
-triple carries object 0 and reads as a group's (`link_errors` lists them; 8 in one project, 13
-in another). A track cloned from one comes back as a group with no registry entry and the
+triple carries object 0 and reads as a group's (`link_errors` lists them).
+A track cloned from one comes back as a group with no registry entry and the
 write gate refuses the copy. The add path takes a pattern only when its entry leads to a track
 triple carrying the object itself (`addtrack._sound_entry`, 2026-09-08).
 
@@ -817,7 +1156,8 @@ The capabilities over them, one command each: `addtrack.py` (`add-track`), `stac
 hide are decoded from reads only — no Logic save of either has been measured. The CLI
 side is `_apply.py` (channels) and `_apply_tracks.py` (tracks) over `_edit.edit_copy`, which
 copies the project — the whole folder when the bundle has an `Audio Files` sibling, so the
-recordings come along — and runs one step over every ProjectData; the input is never written.
+recordings come along, and without `Alternatives/*/Autosave`, which Logic would offer on open
+in place of the edit — and runs one step over every ProjectData; the input is never written.
 
 ### Track header components — `DisplayState.plist`, not ProjectData
 
@@ -902,7 +1242,7 @@ General > Editing (*Fade tool click zones*, *Marquee tool click zones*), one set
 whole machine, stored in `~/Library/Preferences/com.apple.logic10.plist` as
 `FadeToolClickZones` / `MarqueeToolClickZones` (with `TakeClickZones` for Quick Swipe). Every
 project on the Mac behaves the same; nothing in the bundle changes with them (checked: the
-Mix template's four files hold no such key).
+Mix template's files hold no such key).
 
 `logic prefs` reads the settings `services/prefs_table.py` names, key by key through
 `defaults` (the whole-file XML export needs its control characters stripped first);
@@ -950,8 +1290,8 @@ guessed. `--keep-levels` leaves faders alone; `--skip chains,refs,...` leaves ou
 `--track NAME` / `--stack NAME` restrict it to those rows (a stack's members), which is how a
 mix template lands on the drums alone. Where the template channel carries no slots the
 session's are removed (`clear-slots` does the same by hand). On
-the seven sessions on hand the plan is fields only: every one was cut from the Recording
-template and still pairs 56/56 by object id (`orchestrators/apply_template.py`).
+the sessions on hand the plan is fields only: every one was cut from the Recording
+template and still pairs every row by object id (`orchestrators/apply_template.py`).
 
 **Old projects and alternatives.** A project saved by Logic Pro X reads with no track names
 (its Environment objects are not found); opening a copy in Logic and saving rewrites only the
@@ -975,8 +1315,8 @@ rows an earlier structural round made stay paired with the template row they sta
 added again every round). A session stack counts as the template stack its header pairs
 with, whatever it is called.
 
-**Confirmed on three legacy songs (2026-09-04):** all three migrated onto the Mix template —
-248-306 ops each, the drum, MIDI, bass, guitar and vocal stacks made, every template track
+**Confirmed on the legacy songs (2026-09-04):** each migrated onto the Mix template — the
+drum, MIDI, bass, guitar and vocal stacks made, every template track
 added, chains, references, routing, sends, levels, colours and hidden rows applied — and Logic's
 own re-save of each returned the identical row list. What stays refused: sends the legacy
 session has and the template lacks (never removed), and inputs past the session's count. Groups
@@ -993,7 +1333,10 @@ series, two drum instruments on one channel, prompts for plugins the old chain u
 also stamps the base into every channel record: the u16 at +28 of a channel's `OCuA` is the slot
 base it was written with, 2 or 4 to match the slot keys, and left at 2 under keys that sit at 4
 Logic drops the plugin at slot 0 on any channel that also carries three sends. Stamped 4, the same file keeps them, and the 2020 song migrates in one pass
-(2026-09-06); **send destinations** — a send's `+20` counts from the project's device input
+(2026-09-06). A third send written into a base-2 project collides the same way — Logic dropped
+the Channel EQ in slot 1 of four channels apply-template gave a third send — so the send writers
+move the project to base 4 first, each send ahead of the slots (`legacy-migrate-fixed-*`,
+2026-09-24); **send destinations** — a send's `+20` counts from the project's device input
 count, not from 31 (`sends.send_base`); **mixer-only returns** — a legacy song returns its buses
 through auxes that have no arrange track, and once a template aux track returns the same bus the
 old return is silenced (`return` op: input cleared, slots removed), or every bus plays twice;
@@ -1033,7 +1376,7 @@ and the two `gnoS` registry entries all have to exist and agree.
 | offset | meaning |
 |---|---|
 | `+6` | the channel's own number (`0` is "Audio 1"); label at `+60`, NUL-padded |
-| `+116..119` | fader as u32, **8.24 fixed point**; `+85` and `+119` repeat its integer part (0-127) and all three must agree — 532/532 records on nine files. `levels` copies the exact value |
+| `+116..119` | fader as u32, **8.24 fixed point**; `+85` and `+119` repeat its integer part (0-127) and all three must agree, and do on every record measured. `levels` copies the exact value |
 | `+89` | pan 0-127, 64 centre; Logic displays it as `byte - 64` |
 
 Verified against Logic's mixer, byte -> dB: 47 -> -11.3 · 60 -> -7.1 · 90 -> 0.0 · 92 -> 0.4 ·
@@ -1111,6 +1454,12 @@ Then in Logic: right-click a channel strip → **Load Channel Strip Setting…**
 ```bash
 bin/run logic chains <project> --out <dir> --config config/example-chains.json
 ```
+
+When the chains to copy live in a mix session rather than in saved strips, `tracking-chains
+PROJECT --out DIR` derives them in place: each third-party slot becomes Logic's own of the same
+family through the translation maps, with its settings, side chain and lanes carried; a
+plug-in with no native analogue is removed and a native carrying lookahead is bypassed. What
+comes out is a project, so Logic can save it as the tracking template.
 
 Copies a project (APFS clone, so a multi-GB song folder with its `Audio Files` sibling is
 instant and costs no disk) and gives its channels native low-latency chains. **This is the
@@ -1256,7 +1605,7 @@ byte 7 has the top bit set continues the event before it (0x88 is the data line;
 line holds the slot of the section's `qSxT` text record at +0, the section kind at +8
 (0 custom or intro, 1 verse, 2 chorus, 3 bridge, 4 outro) and the length in ticks at +12.
 The text record's name is NUL-terminated at +98, or an RTF document whose text is the name.
-Twelve sections of one song, with quarter-bar lengths, reproduced Logic's display exactly.
+Every section of one song, with quarter-bar lengths, reproduced Logic's display exactly.
 
 **Tempo** (`services/tempo.py`): `gnoS +110` is `bpm × 10000` — the tempo the LCD showed
 when the song was saved — and +114 the tempo at bar 1 (+198 repeats it). Events of type
@@ -1265,7 +1614,7 @@ ramp (one every 480 ticks); data +8 is the point's time in 1/2000 s from Logic's
 (01:00:00:00 = 7 200 000 at bar 1), which Logic's own list points and curve runs carry to the
 digit. A step Logic draws from the tempo track is two events one tick
 apart with 0xb4/0xb1 lines; one added from the Tempo List is a single bare event. Matched on
-every song on hand, a ramp and two step songs included. The 0xb4 line's four fields are
+every song on hand, ramps and steps included. The 0xb4 line's four fields are
 undecoded. The event type is the u16 at +0: a change Logic added carried a nonzero word at +2.
 
 Edits (`--out` required, on a copy): `arrangement --rename N=NAME`, `--move N=BAR`,

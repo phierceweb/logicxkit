@@ -4,6 +4,7 @@ a real file: the arithmetic is groovebin's, the timeline conversion and the comm
 import argparse
 import contextlib
 import io
+import os
 import shutil
 import tempfile
 import unittest
@@ -150,8 +151,10 @@ class DefaultDbTest(unittest.TestCase):
 
     def db(self, value=None):
         from logicxkit.logic._beats_cmd import default_db
-        env = {} if value is None else {"XDG_CACHE_HOME": value}
-        with mock.patch.dict("os.environ", env, clear=value is None):
+        env = {k: v for k, v in os.environ.items() if k == "HOME"}    # the expected paths read it
+        if value is not None:
+            env["XDG_CACHE_HOME"] = value
+        with mock.patch.dict("os.environ", env, clear=True):
             return default_db()
 
     def test_the_cache_root_is_groovebins_own_with_an_empty_value_read_as_unset(self):

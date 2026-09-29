@@ -1,0 +1,100 @@
+{
+ "type": 240,
+ "variant": 1222,
+ "name": "MultiMeter",
+ "floats": 40,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Analyzer Top",
+   "unit": "dB",
+   "default": 5.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Analyzer Range",
+   "unit": "dB",
+   "default": 60.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Gonio Decay",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Gonio AutoGain",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Level Peak Hold",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 27,
+   "name": "Target Level",
+   "unit": "dB",
+   "default": -12.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "Target Loudness",
+   "unit": "",
+   "default": -14.0,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Analyzer Peak Hold",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 34,
+   "name": "Gonio Peak Hold",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Display Select",
+  "Analyzer Input Mode",
+  "Analyzer Bar Mode",
+  "Level Hold Time",
+  "Correlation",
+  "Levelmeter Mode",
+  "Level Return Rate",
+  "Analyzer Bands",
+  "Analyzer Hold Time",
+  "Analyzer Return Rate",
+  "Gonio Hold Time"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 9 indices matched by value between stockfx-util-defaults and stockfx-util-spots, 0 by order. Popup rows unmapped."
+}

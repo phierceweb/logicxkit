@@ -20,7 +20,7 @@ from .binding import bound_channels
 from .channel_alloc import is_mixer_record
 from .environment import channel_objects, name_end, object_record
 from .groups import group_errors
-from .insert import HEADER, project_records
+from .insert import CHANNEL_TAG, HEADER, project_records
 from .integrity_regions import (
     RegionKey, dangling_files, marker_block_errors, placed, region_regressions, unregistered_slots,
 )
@@ -29,7 +29,10 @@ from .regions import region_errors, row_count_errors
 from .registry import slot_errors
 from .sends import SEND_FLAG_AT, SEND_TAG
 from .sequence import link_errors
+from .slots import property_key_base
 from .validate import validate_project
+
+_SHELL_MAX = 14                     # payload of the OCuA shells before Audio 1 and past the last channel
 
 
 def _bad_object_index(records, data: bytes) -> list[int]:
@@ -63,10 +66,26 @@ def _bad_send_flags(records, data: bytes) -> list[int]:
     return out
 
 
+def _misplaced_references(records, data: bytes) -> list[int]:
+    """Owners whose strip reference sits outside their channel's record run — after another
+    channel's records, or past the shells that close the mixer. Not `is_mixer_record`: a 2020
+    save's channel records are 196 bytes, under its floor."""
+    base = property_key_base(data)
+    current, out = None, []
+    for record in records:
+        if record.tag == CHANNEL_TAG and len(record.raw) - HEADER > _SHELL_MAX:
+            current = record.owner
+        elif (record.tag == b"UCuA" and record.key == base and len(record.raw) - HEADER < 400
+              and b".cst" in record.raw and record.owner != current):
+            out.append(record.owner)
+    return out
+
+
 def _empty() -> dict:
     return {"validate": [], "link_errors": 0, "bad_object_index": [], "bad_send_flags": [],
             "bad_key_flags": [], "bad_region_tracks": [], "bad_row_count": [], "bad_slot_entries": [],
-            "bad_groups": [], "regions": [], "dangling_files": {"entries": [], "records": [], "unfiled": [], "files": [], "doubled": [], "rba": []},
+            "bad_groups": [], "misplaced_references": [], "regions": [],
+            "dangling_files": {"entries": [], "records": [], "unfiled": [], "files": [], "doubled": [], "rba": []},
             "unregistered_slots": [], "marker_blocks": [], "unreadable": None}
 
 
@@ -86,6 +105,7 @@ def structural_report(data: bytes) -> dict:
             "bad_row_count": row_count_errors(data),
             "bad_slot_entries": slot_errors(data),
             "bad_groups": group_errors(data),
+            "misplaced_references": _misplaced_references(records, data),
             "regions": placed(records),
             "dangling_files": dangling_files(records),
             "unregistered_slots": unregistered_slots(records),
@@ -119,7 +139,9 @@ def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (
                           "not there, events that do not match the members, a slot without its "
                           "registry pair"),
                          ("bad_row_count", "song container row count off — Logic reads that many "
-                          "rows and drops the rest")):
+                          "rows and drops the rest"),
+                         ("misplaced_references", "strip reference(s) placed outside their channel's "
+                          "records")):
         fresh = sorted(set(now[field]) - set(was[field]))
         if fresh:
             out.append(f"{len(fresh)} {label}: {fresh}")

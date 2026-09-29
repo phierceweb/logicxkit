@@ -1,0 +1,58 @@
+{
+ "type": 230,
+ "variant": 1121,
+ "name": "Rotor Cabinet",
+ "floats": 19,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 5,
+   "name": "Rotor Fast Rate",
+   "unit": "",
+   "default": 6.2,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Acc/Dec Scale",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Horn Stereo Width",
+   "unit": "",
+   "default": 1.2,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Drum Stereo Width",
+   "unit": "",
+   "default": 1.2,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "Balance",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Rotor Speed",
+  "Cabinet",
+  "Horn Deflector",
+  "Motor Control",
+  "Mic Distance",
+  "Mic Angle",
+  "Mic Position",
+  "Horn Mic",
+  "Drum Mic"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 5 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

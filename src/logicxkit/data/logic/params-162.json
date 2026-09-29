@@ -1,0 +1,206 @@
+{
+ "type": 162,
+ "variant": 517,
+ "name": "AutoFilter",
+ "floats": 40,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Pre Filter Distortion",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Post Filter Distortion",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 70.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Fatness",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Stereo Phase",
+   "unit": "\u00b0",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Pulsewidth",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "LFO Cutoff Mod",
+   "unit": "%",
+   "default": 14.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "Retrigger",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 18,
+   "name": "Decay",
+   "unit": "ms",
+   "default": 52.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "Sustain",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 20,
+   "name": "Release",
+   "unit": "ms",
+   "default": 52.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Env Cutoff Mod",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 22,
+   "name": "Env Dynamic",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 23,
+   "name": "Main Out",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 25,
+   "name": "Beat Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 31,
+   "name": "Dry Signal",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "Filter",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 35,
+   "name": "Envelope",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 36,
+   "name": "LFO",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 37,
+   "name": "Distortion",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Filter Mode",
+  "Waveform",
+  "Rate",
+  "Sync Phase",
+  "Stereo Spread",
+  "Pre Filter Distortion Mode",
+  "Post Filter Distortion Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 23 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

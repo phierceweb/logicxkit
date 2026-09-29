@@ -1,0 +1,259 @@
+{
+ "family": "eq",
+ "plugin": "Pro-Q 4",
+ "component": [
+  "aumf",
+  "FQ4p",
+  "FabF"
+ ],
+ "decoder": "ffbs",
+ "evidence": "FabFilter Pro-Q 4's FabFilterPluginState (the .ffp layout: FFBS, version, 600 values by parameter id) through the AU host, 2026-09-22: band 1's shape 0..9, slope 0..10 and stereo placement read by name, Q stepped over 0..1 in 41 steps and read (0.025 at 0, 1.000 at 0.5, 40.00 at 1), frequency 2^value (3.32 = 10 Hz, 14.87 = 30 kHz), gain dB as stored. A band is 23 parameters from id 23*(n-1); 'Used' says it exists, 'Enabled' that it is not bypassed.",
+ "bands": {
+  "count": 24,
+  "stride": 23,
+  "used": 0,
+  "enabled": 1,
+  "frequency": 2,
+  "gain": 3,
+  "q": 4,
+  "shape": 5,
+  "slope": 6,
+  "dynamic_range": 9,
+  "dynamics_enabled": 10
+ },
+ "frequency": "log2",
+ "q_curve": [
+  [
+   0.0,
+   0.025
+  ],
+  [
+   0.025,
+   0.03
+  ],
+  [
+   0.05,
+   0.036
+  ],
+  [
+   0.075,
+   0.043
+  ],
+  [
+   0.1,
+   0.052
+  ],
+  [
+   0.125,
+   0.063
+  ],
+  [
+   0.15,
+   0.076
+  ],
+  [
+   0.175,
+   0.091
+  ],
+  [
+   0.2,
+   0.109
+  ],
+  [
+   0.225,
+   0.131
+  ],
+  [
+   0.25,
+   0.158
+  ],
+  [
+   0.275,
+   0.19
+  ],
+  [
+   0.3,
+   0.229
+  ],
+  [
+   0.325,
+   0.275
+  ],
+  [
+   0.35,
+   0.331
+  ],
+  [
+   0.375,
+   0.398
+  ],
+  [
+   0.4,
+   0.478
+  ],
+  [
+   0.425,
+   0.575
+  ],
+  [
+   0.45,
+   0.692
+  ],
+  [
+   0.475,
+   0.832
+  ],
+  [
+   0.5,
+   1.0
+  ],
+  [
+   0.525,
+   1.203
+  ],
+  [
+   0.55,
+   1.446
+  ],
+  [
+   0.575,
+   1.739
+  ],
+  [
+   0.6,
+   2.091
+  ],
+  [
+   0.625,
+   2.515
+  ],
+  [
+   0.65,
+   3.024
+  ],
+  [
+   0.675,
+   3.637
+  ],
+  [
+   0.7,
+   4.373
+  ],
+  [
+   0.725,
+   5.259
+  ],
+  [
+   0.75,
+   6.325
+  ],
+  [
+   0.775,
+   7.606
+  ],
+  [
+   0.8,
+   9.146
+  ],
+  [
+   0.825,
+   11.0
+  ],
+  [
+   0.85,
+   13.23
+  ],
+  [
+   0.875,
+   15.91
+  ],
+  [
+   0.9,
+   19.13
+  ],
+  [
+   0.925,
+   23.0
+  ],
+  [
+   0.95,
+   27.66
+  ],
+  [
+   0.975,
+   33.26
+  ],
+  [
+   1.0,
+   40.0
+  ]
+ ],
+ "shapes": [
+  "bell",
+  "low_shelf",
+  "low_cut",
+  "high_shelf",
+  "high_cut",
+  "notch",
+  "band_pass",
+  "tilt_shelf",
+  "flat_tilt",
+  "all_pass"
+ ],
+ "slopes": [
+  0,
+  6,
+  12,
+  18,
+  24,
+  30,
+  36,
+  48,
+  72,
+  96,
+  null
+ ],
+ "not_carried": {
+  "Output Level, Gain Scale, Auto Gain": "Pro-Q 4's output stage is not carried",
+  "dynamic bands": "a band's dynamic range and threshold have no analogue; its static curve crosses",
+  "stereo placement": "left, right, mid and side bands cross as stereo"
+ },
+ "band_raw": {
+  "used": [
+   0,
+   1
+  ],
+  "enabled": [
+   0,
+   1
+  ],
+  "frequency": [
+   3.321928,
+   14.872675
+  ],
+  "gain": [
+   -30,
+   30
+  ],
+  "q": [
+   0,
+   1
+  ],
+  "shape": [
+   0,
+   9
+  ],
+  "slope": [
+   0,
+   10
+  ],
+  "dynamic_range": [
+   -30,
+   30
+  ],
+  "dynamics_enabled": [
+   0,
+   1
+  ]
+ }
+}

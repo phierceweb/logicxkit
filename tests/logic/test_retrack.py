@@ -27,10 +27,8 @@ def ref_record(name: str, category: str) -> bytes:
 
 
 def project(*names: tuple[str, str]) -> bytes:
-    body = b"".join(ref_record(n, c) for n, c in names)
-    head = bytearray(b"HDR!" + b"\x00" * 20)
-    struct.pack_into("<I", head, 0x10, len(body))
-    return bytes(head) + body
+    from _records import proj
+    return proj(*(ref_record(n, c) for n, c in names), ordered=False)
 
 
 class ReadReferencesTest(unittest.TestCase):
@@ -167,7 +165,7 @@ class ProjectFolderTest(unittest.TestCase):
             folder = root / "in/Song"
             bundle = folder / "Song.logicx"
             (bundle / "Alternatives/000").mkdir(parents=True)
-            (bundle / "Alternatives/000/ProjectData").write_bytes(b"x")
+            (bundle / "Alternatives/000/ProjectData").write_bytes(project())
             (folder / "Audio Files").mkdir()
             (folder / "Audio Files/take.wav").write_bytes(b"RIFF" + b"\x00" * 64)
             copied = copy_project(bundle, root / "out")
@@ -182,9 +180,37 @@ class ProjectFolderTest(unittest.TestCase):
             root = Path(tmp)
             bundle = root / "in/templates/Song.logicx"
             (bundle / "Alternatives/000").mkdir(parents=True)
-            (bundle / "Alternatives/000/ProjectData").write_bytes(b"x")
+            (bundle / "Alternatives/000/ProjectData").write_bytes(project())
             copied = copy_project(bundle, root / "out")
             self.assertEqual(copied["dest"], root / "out/Song.logicx")
+
+    def test_logic_autosaves_stay_behind(self):
+        """Logic offers an autosave on open, and the source's predates every edit to the copy."""
+        from logicxkit.logic.services.retrack import copy_project
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            alt = root / "in/Song/Song.logicx/Alternatives/000"
+            (alt / "Autosave").mkdir(parents=True)
+            (alt / "Autosave/2026-09-25 02:48:04Z.songData").write_bytes(b"before the edit")
+            (alt / "ProjectData").write_bytes(project())
+            copied = copy_project(root / "in/Song", root / "out")
+            self.assertEqual([p.name for p in (copied["dest"] / "Alternatives/000").iterdir()], ["ProjectData"])
+            self.assertTrue((alt / "Autosave/2026-09-25 02:48:04Z.songData").exists())
+
+    def test_the_copytree_fallback_leaves_them_too(self):
+        import subprocess
+        from unittest import mock
+
+        from logicxkit.logic.services.retrack import copy_project
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bundle = root / "in/templates/Song.logicx"
+            (bundle / "Alternatives/000/Autosave").mkdir(parents=True)
+            (bundle / "Alternatives/000/ProjectData").write_bytes(project())
+            with mock.patch("logicxkit.logic.services.retrack.subprocess.run",
+                            return_value=subprocess.CompletedProcess([], 1)):
+                copied = copy_project(bundle, root / "out")
+            self.assertEqual([p.name for p in (copied["dest"] / "Alternatives/000").iterdir()], ["ProjectData"])
 
 
 class DestructiveOutputGuardTest(unittest.TestCase):
@@ -252,7 +278,7 @@ class NestedOutputTest(unittest.TestCase):
     def _project(self, root: Path, name: str) -> Path:
         bundle = root / name / f"{name}.logicx"
         (bundle / "Alternatives/000").mkdir(parents=True)
-        (bundle / "Alternatives/000/ProjectData").write_bytes(b"\x00" * 64)
+        (bundle / "Alternatives/000/ProjectData").write_bytes(project())
         return root / name
 
     def test_pointing_out_at_a_previous_copy_is_refused(self):

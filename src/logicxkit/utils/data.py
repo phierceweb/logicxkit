@@ -1,14 +1,16 @@
-"""Where the data lives: Logic-written record templates, the plugin-slot donor library and the
-AU parameter tables. None of it is authored here — Logic and the plugin vendors wrote those
-bytes. Two places, the first wins:
+"""Where the data lives: Logic-written record templates, the plugin-slot donor library, the
+translation maps and the AU parameter tables. The maps and the native parameter tables are
+measured and written here; Logic and the plugin vendors wrote the rest. The package's own file
+wins; the data root supplies what the package lacks, so a checkout runs what a wheel runs:
 
-    LOGICXKIT_DATA          env override, absolute
-    <repo>/resources/data   the default root, gitignored; see resources/data/README.md
-    logicxkit/data/         the package's own copy of what Logic wrote on a blank project
-                            (`logic/` templates, `donors/` native plug-ins only)
+    logicxkit/data/         the package's own copy: `logic/` templates and native parameter
+                            tables, `donors/` native plug-ins only, `translate/` maps
+    LOGICXKIT_DATA          the data root, an env override, absolute
+    <repo>/resources/data   its default, gitignored; see resources/data/README.md
 
-    <root>/donors/*.slot     plugin-slot donors and their manifest (`logic donors` harvests them)
-    <root>/logic/*.json      record templates Logic saved (aux, instrument, audio, group, section)
+    <root>/donors/*.slot     third-party donors and their manifest (`logic donors` harvests them)
+    <root>/logic/*.json      record templates the package lacks
+    <root>/translate/*.json  translation maps the package lacks (`services/translate`)
     <root>/au/*.json         AU parameter tables (`au params` regenerates them) — root only
 """
 
@@ -16,12 +18,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .env import env_path
+from .env import env_path, env_str
 
 ENV = "LOGICXKIT_DATA"
-KINDS = ("donors", "logic", "au")
+KINDS = ("donors", "logic", "au", "translate")
 PACKAGED = Path(__file__).resolve().parents[1] / "data"
-PACKAGED_KINDS = ("donors", "logic")
+PACKAGED_KINDS = ("donors", "logic", "translate")
+DEFAULT_ROOT = Path(__file__).resolve().parents[3] / "resources" / "data"
 
 
 class MissingData(FileNotFoundError):
@@ -29,7 +32,16 @@ class MissingData(FileNotFoundError):
 
 
 def data_root() -> Path:
-    return env_path(ENV, Path(__file__).resolve().parents[3] / "resources" / "data")
+    return env_path(ENV, DEFAULT_ROOT)
+
+
+def writable_root() -> Path:
+    """The data root a harvest writes into. An installed copy's default resolves beside
+    site-packages, where what is written vanishes with the venv, so there it must be named."""
+    if not env_str(ENV) and not DEFAULT_ROOT.parent.is_dir():
+        raise MissingData(f"no data root to write to: set {ENV}, or pass --library; the default "
+                          f"({DEFAULT_ROOT}) is not in a checkout")
+    return data_root()
 
 
 def data_dir(kind: str) -> Path:
@@ -39,13 +51,13 @@ def data_dir(kind: str) -> Path:
 
 
 def data_dirs(kind: str) -> list[Path]:
-    """Every directory holding ``kind``, the data root first, the package second."""
-    candidates = [data_dir(kind)] + ([PACKAGED / kind] if kind in PACKAGED_KINDS else [])
+    """Every directory holding ``kind``, the package first, the data root second."""
+    candidates = ([PACKAGED / kind] if kind in PACKAGED_KINDS else []) + [data_dir(kind)]
     return [d for d in candidates if d.is_dir()]
 
 
 def data_file(kind: str, name: str) -> Path:
-    """One data file: the data root's, else the package's, else `MissingData` naming both."""
+    """One data file: the package's, else the data root's, else `MissingData` naming both."""
     for d in data_dirs(kind):
         if (d / name).exists():
             return d / name

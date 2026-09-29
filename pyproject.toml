@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logicxkit"
-version = "0.6.0"
+version = "0.7.0"
 description = "Logic Pro project and channel-strip tooling, and Audio Unit preset and state decoding"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -46,6 +46,8 @@ dev = [
     # tests/test_declared_dependencies.py reads the pins above. pytest happens to pull this in;
     # the check must not rest on that.
     "packaging>=23",
+    # tests/test_sdist.py builds the sdist and the wheel; without it the test skips, in CI too.
+    "build>=1.0",
 ]
 # Opt-in: only tests/rig needs it, and only on a machine with the real scene. Nothing in
 # src/ imports it. Its own pf-core pin is ~=0.22.0, which is why the two resolve together.
@@ -59,7 +61,7 @@ where = ["src"]
 # The Swift scripts are run by `swift` at call time, so they must land beside the package
 # in a wheel as well as in a checkout — see logicxkit/utils/swiftrun.py.
 [tool.setuptools.package-data]
-logicxkit = ["native/*.swift", "py.typed", "data/logic/*.json", "data/donors/*"]
+logicxkit = ["native/*.swift", "py.typed", "data/logic/*.json", "data/donors/*", "data/translate/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

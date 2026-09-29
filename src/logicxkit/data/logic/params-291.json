@@ -1,0 +1,45 @@
+{
+ "type": 291,
+ "variant": 2331,
+ "name": "DeEsser 2",
+ "floats": 11,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Max Reduction",
+   "unit": "dB",
+   "default": 20.0
+  },
+  {
+   "index": 2,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -9.5
+  },
+  {
+   "index": 4,
+   "name": "Detector Frequency",
+   "unit": "Hz",
+   "default": 7001.0
+  },
+  {
+   "index": 6,
+   "name": "Filter Solo",
+   "unit": "",
+   "default": 0.0,
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Range",
+  "Filter Mode",
+  "Threshold Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; each index matched by value between stockfx-dynamics-defaults and stockfx-dynamics-spots (2026-09-22). Popup rows unmapped."
+}

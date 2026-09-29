@@ -31,5 +31,27 @@ class PackagedMatchesCorpusTest(unittest.TestCase):
                 self.assertEqual(packaged, make())
 
 
+class PackagedDonorsMatchCorpusTest(unittest.TestCase):
+    """The packaged donor library is exactly a fresh harvest of `DONOR_KEYS`, manifest included:
+    nothing in it the corpus does not hold (a scrubbed save regenerates its donor)."""
+
+    def test_a_fresh_harvest_is_the_packaged_library(self):
+        import tempfile
+        missing = [k for k, _label in regen_data.DONOR_KEYS if _goldens.path(k) is None]
+        if missing:
+            self.skipTest(f"golden(s) not on this machine: {', '.join(missing)}")
+        packaged = regen_data.OUT / "donors"
+        with tempfile.TemporaryDirectory() as tmp:
+            fresh = Path(tmp) / "donors"
+            regen_data.donors(fresh)
+            self.assertEqual(sorted(p.name for p in fresh.iterdir()), sorted(p.name for p in packaged.iterdir()))
+            for f in sorted(fresh.iterdir()):
+                with self.subTest(f.name):
+                    if f.suffix == ".json":
+                        self.assertEqual(json.loads(f.read_text()), json.loads((packaged / f.name).read_text()))
+                    else:
+                        self.assertEqual(f.read_bytes(), (packaged / f.name).read_bytes())
+
+
 if __name__ == "__main__":
     unittest.main()

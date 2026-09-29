@@ -13,7 +13,7 @@
     +60   16    the destination `Bus N` channel's own UUID (`binding.py`)
 
 The channel's own `OCuA` mirrors them: u32 flags at +132, +136, +140 read 1 when send
-slot 0, 1, 2 exists (every Logic-written channel on hand, 17,430 of them).
+slot 0, 1, 2 exists (every Logic-written channel on hand).
 
 Measured on 78 sends across three Logic 12.3.1 saves: every bus resolves to a `Bus N`
 channel record whose UUID the send repeats at +60. Two Logic re-saves left every send
@@ -56,7 +56,7 @@ LEVEL_AT = 17
 LEVEL_FIXED_AT = 24
 
 
-_SEND_MAX = 128                 # every send is 76 bytes (1,197 on 39 files); a project whose
+_SEND_MAX = 128                 # every send on hand is 76 bytes; a project whose
                                 # plugin slots start at key 2 carries kilobyte slots under those keys
 
 

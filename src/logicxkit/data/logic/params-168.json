@@ -1,0 +1,90 @@
+{
+ "type": 168,
+ "variant": 615,
+ "name": "Spectral Gate",
+ "floats": 13,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -30.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Sub Energy",
+   "unit": "dB",
+   "default": -20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Super Energy",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Speed",
+   "unit": "Hz",
+   "default": 0.499,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Center Frequency",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Bandwidth",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "CF Modulation",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "BW Modulation",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Low Level",
+   "unit": "dB",
+   "default": -100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "High Level",
+   "unit": "dB",
+   "default": -100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 11 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

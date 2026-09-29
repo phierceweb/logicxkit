@@ -1,0 +1,62 @@
+{
+ "type": 156,
+ "variant": 421,
+ "name": "Expander",
+ "floats": 10,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -20.0
+  },
+  {
+   "index": 2,
+   "name": "Ratio",
+   "unit": ":1",
+   "default": 0.8
+  },
+  {
+   "index": 3,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 0.0
+  },
+  {
+   "index": 4,
+   "name": "Release",
+   "unit": "ms",
+   "default": 98.0
+  },
+  {
+   "index": 5,
+   "name": "Gain",
+   "unit": "dB",
+   "default": 0.0
+  },
+  {
+   "index": 6,
+   "name": "Knee",
+   "unit": "",
+   "default": 1.0
+  },
+  {
+   "index": 8,
+   "name": "Auto Gain",
+   "unit": "",
+   "default": 1.0,
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Peak/RMS",
+  "Output Clip"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; each index matched by value between stockfx-dynamics-defaults and stockfx-dynamics-spots (2026-09-22). Popup rows unmapped."
+}

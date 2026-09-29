@@ -33,8 +33,8 @@ def proj(*records: bytes) -> bytes:
 class ChannelWidthTest(unittest.TestCase):
     """Widening a channel is THREE bytes, not just the channel count at +123. Measured by
     taking, in each session, the bytes where every stereo aux agrees and the mono one differs:
-    +78 211->215, +86 0->1, +123 1->2. Identical in all ten sessions across both class
-    versions, and matched by the one session whose Vox Slapback Logic itself wrote stereo."""
+    +78 211->215, +86 0->1, +123 1->2. Identical in every session measured, across both
+    class versions, and matched by the one session whose Vox Slapback Logic itself wrote stereo."""
 
     def _chan(self, width: int) -> bytes:
         p = bytearray(257)

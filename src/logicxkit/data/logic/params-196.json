@@ -1,0 +1,70 @@
+{
+ "type": 196,
+ "variant": 986,
+ "name": "Phase Distortion",
+ "floats": 8,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Mix",
+   "unit": "%",
+   "default": 40.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Intensity",
+   "unit": "%",
+   "default": 60.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Delay",
+   "unit": "%",
+   "default": 30.3,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Cutoff",
+   "unit": "Hz",
+   "default": 4200.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Monitor",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 7,
+   "name": "Phase Reverse",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 7 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

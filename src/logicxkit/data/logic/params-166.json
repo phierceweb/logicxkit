@@ -1,0 +1,111 @@
+{
+ "type": 166,
+ "variant": 582,
+ "name": "EnVerb",
+ "floats": 16,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Dry Signal Delay",
+   "unit": "ms",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Predelay",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Decay",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Sustain",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Hold",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Release",
+   "unit": "ms",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Density",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Crossover",
+   "unit": "Hz",
+   "default": 500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Low Freq Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "High Cut",
+   "unit": "Hz",
+   "default": 5000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Spread",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "Dry",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Wet",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 14 indices matched by value between stockfx-dr-defaults and stockfx-dr-spots, 0 by order. Popup rows unmapped."
+}

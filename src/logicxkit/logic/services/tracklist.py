@@ -65,7 +65,7 @@ def track_runs(records: list[ProjRecord]) -> list[list[int]]:
 def arrange_run(records: list[ProjRecord], track_count: int | None = None) -> list[int]:
     """The arrange list's record indices: the run nearest ``track_count + 1`` rows; without a
     count, the first run whose objects all sit in a longer run (the mixer-order list holds
-    every arranged track and more — 35/35 files agree with the count), else the longest."""
+    every arranged track and more — each file on hand agrees with the count), else the longest."""
     runs = track_runs(records)
     if not runs:
         raise ValueError("no track list in this project")

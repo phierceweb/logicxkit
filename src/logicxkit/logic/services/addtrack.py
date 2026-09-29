@@ -31,6 +31,7 @@ from .channel_alloc import (
     new_audio_channel,
     new_aux_channel,
     bump_channel_count,
+    channel_run_end,
     default_inst_records,
     free_audio_stub,
     is_channel_count,
@@ -38,6 +39,7 @@ from .channel_alloc import (
     is_mixer_record,
     mixer_record,
     new_inst_channel,
+    project_words,
     shifted_channel,
 )
 from .environment import (
@@ -53,13 +55,15 @@ from .environment import (
     object_stamp,
     shifted_object,
 )
-from .insert import HEADER, project_records, reassemble
+from .add_plugin import show_slots, shown_slots
+from .insert import HEADER, project_records, reassemble, slot_index_base
 from .keyflags import sync_key_flags
 from .recbuild import fresh_uuid, rec
 from .registry import GNOS_TAG, register_object
 from .regions import sync_region_tracks, sync_row_count
 from .selection import select_track
 from .sequence import QESM_FRESH, plan_sequence
+from .slots import property_key_base
 from .tracklist import (
     MEMBER_AT,
     ROW_TYPE,
@@ -108,7 +112,7 @@ def _sound_entry(records, table: bytes, seqs, oid: int) -> bool:
     return struct.unpack_from("<H", q, HEADER + QESM_OBJECT_AT)[0] == oid
 
 
-def _with_table_entry(records, objs: dict, owners_of: dict, prefix: str, like: int) -> int:
+def _with_table_entry(records, objs: dict, owners_of: dict, chans: dict, prefix: str, like: int) -> int:
     """``like`` if it has a sound index-table entry, else the highest same-kind object that
     has one, else any track object with one — the entry and triple are cloned from it."""
     from .sequence import index_table, sequences
@@ -116,8 +120,8 @@ def _with_table_entry(records, objs: dict, owners_of: dict, prefix: str, like: i
     seqs = sequences(records)
     if _sound_entry(records, table, seqs, like):
         return like
-    same_kind = sorted((oid for oid, own in owners_of.items() if oid in objs
-                        and owners_of[oid] in owners_of.values() and str(prefix)), reverse=True)
+    same_kind = sorted((oid for oid, own in owners_of.items()
+                        if oid in objs and chans[own].label.startswith(prefix)), reverse=True)
     for oid in same_kind:
         if _sound_entry(records, table, seqs, oid):
             return oid
@@ -165,7 +169,7 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     owners_of = bound_channels(data)
     prefix = _PREFIX[kind]
     like, like_owner = _pattern(objs, chans, owners_of, prefix, by_owner=kind == "aux")
-    like = _with_table_entry(records, objs, owners_of, prefix, like)
+    like = _with_table_entry(records, objs, owners_of, chans, prefix, like)
     object_id = next_object_id(records)
     top = max(objs)
     stereo_out = _by_label(chans, "Output 1-2")
@@ -253,9 +257,10 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
                             chans=chans, like=like)
     flat_row = clone_flat_row(records[flat[flat_pos]].raw, object_id)
 
-    anchor_owner = owner - 1 if created_audio else like_owner
-    last_like_record = max(i for i, r in enumerate(records)
-                           if is_channel_record(r) and r.owner == anchor_owner)
+    # the fresh record takes `owner` and every channel from it moves up one, so it goes after
+    # the highest owner below it: Logic keeps the channel records in owner order
+    anchor_owner = max(r.owner for r in records if is_mixer_record(r) and r.owner < owner)
+    last_like_record = channel_run_end(records, anchor_owner)
     inst_records: list[bytes] = []
     number = None
     creating = kind != "audio" or created_audio
@@ -263,18 +268,20 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
         number = 1 + sum(1 for o, c in chans.items() if c.label.startswith(prefix) and o < owner)
         inst_records = [new_audio_channel(number=number, owner=owner, object_uuid=obj_uuid,
                                           output_uuid=output_uuid, input_uuid=source.uuid,
-                                          stereo=stereo, stack_index=stack_index)]
+                                          words=project_words(data), stereo=stereo,
+                                          stack_index=stack_index)]
     elif kind == "instrument":
         chan_rec, number = new_inst_channel(mixer_record(records, like_owner), owner=owner,
                                             object_uuid=obj_uuid, output_uuid=output_uuid,
-                                            stack_index=stack_index)
-        inst_records = [chan_rec] + default_inst_records(owner)
+                                            stack_index=stack_index, stereo=stereo)
+        inst_records = [chan_rec] + default_inst_records(owner, slot_base=slot_index_base(data),
+                                                          property_base=property_key_base(data))
     elif kind == "aux":
         highest = max(int(c.label.split(" ", 1)[1]) for c in chans.values() if c.label.startswith(prefix))
         inst_records = [new_aux_channel(number=highest, owner=owner, object_uuid=obj_uuid,
                                         output_uuid=output_uuid,
                                         input_uuid=source.uuid if source else None,
-                                        stack_index=stack_index)]
+                                        words=project_words(data), stack_index=stack_index)]
         number = highest + 1
     gnos_uuid = fresh_uuid()
 
@@ -311,6 +318,9 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     result = reassemble(data, out)
     result = reassemble(result, renumbered(project_records(result)))
     result = sync_key_flags(result)                  # a cloned channel carries its pattern's flags
+    # a fresh channel record carries its template's shown-slot count; one value serves the
+    # project, and Logic drops chains past a smaller one on load
+    result = show_slots(result, shown_slots(result))
     result = sync_row_count(result, None if track_count is None else track_count + 1)
     result = sync_region_tracks(result, None if track_count is None else track_count + 1)
     result = select_track(result, object_id, None if track_count is None else track_count + 1)

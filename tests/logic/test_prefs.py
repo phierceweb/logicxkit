@@ -1,10 +1,24 @@
 """Logic's own settings: the name table, the value reader over a captured set, and the
 control bar default's shape."""
 
+import tempfile
 import unittest
+from pathlib import Path
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.prefs import BY_KEY, SETTINGS, controlbar_default, plist_fragment, read_settings
+from logicxkit.logic.services.prefs import (
+    BY_KEY, DOMAIN, SETTINGS, backup, controlbar_default, plist_fragment, prefs_plist, read_settings,
+)
+
+
+class BackupTest(unittest.TestCase):
+    @unittest.skipUnless(prefs_plist(DOMAIN).exists(), "no Logic preferences on this machine")
+    def test_a_dated_copy_of_the_settings_file_lands_under_the_folder(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            saved = backup(Path(tmp) / "prefs-backup")
+            self.assertEqual((saved.parent, saved.suffix), (Path(tmp) / "prefs-backup", ".plist"))
+            self.assertTrue(saved.name.startswith(f"{DOMAIN}."), saved.name)
+            self.assertEqual(saved.read_bytes(), prefs_plist(DOMAIN).read_bytes())
 
 
 class TableTest(unittest.TestCase):

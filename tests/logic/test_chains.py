@@ -252,13 +252,14 @@ class ChainsDiscardTest(unittest.TestCase):
         from pathlib import Path
         from unittest import mock
         from pf_core.exceptions import PreconditionError
+        from _records import proj as blank
         from logicxkit.logic import _chains_cmd
 
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
             src = root / "Song.logicx"
             (src / "Alternatives" / "000").mkdir(parents=True)
-            (src / "Alternatives" / "000" / "ProjectData").write_bytes(b"x")
+            (src / "Alternatives" / "000" / "ProjectData").write_bytes(blank())
             out = root / "out"
             cfg = root / "cfg.json"
             cfg.write_text('{"chains": {}, "donors": {}}')

@@ -1,0 +1,83 @@
+{
+ "type": 191,
+ "variant": 905,
+ "name": "Clip Distortion",
+ "floats": 11,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Clip Drive",
+   "unit": "dB",
+   "default": 15.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Clip Tone",
+   "unit": "Hz",
+   "default": 170.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Clip Symmetry",
+   "unit": "%",
+   "default": -16.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Mix",
+   "unit": "%",
+   "default": 45.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Clip Filter",
+   "unit": "Hz",
+   "default": 4400.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "LP Filter",
+   "unit": "Hz",
+   "default": 5300.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "High Shelf Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "High Shelf Freqency",
+   "unit": "Hz",
+   "default": 980.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Input Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Output Gain",
+   "unit": "dB",
+   "default": 5.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 10 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

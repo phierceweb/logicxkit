@@ -39,11 +39,11 @@ that depends on it so the two move together:
 
 | Doc | Covers |
 |---|---|
-| [`src/logicxkit/logic/README.md`](../src/logicxkit/logic/README.md) | The `.logicx` project and `.cst` strip formats: the `GAMETSPP` float block, the record container, `karT` track lists, `ivnE` Environment objects, `OCuA` channel blocks, sends, groups, `DisplayState.plist`, and Logic's own settings plist |
-| [`src/logicxkit/au/README.md`](../src/logicxkit/au/README.md) | Audio Unit preset and state formats: FabFilter `.ffp` and `.aupreset`, Waves XPst, TR5 chain XML, sonible protobuf, and the headless AU host |
+| [`src/logicxkit/logic/README.md`](../src/logicxkit/logic/README.md) | The `.logicx` project and `.cst` strip formats: the `GAMETSPP` float block, the record container, `karT` track lists, `ivnE` Environment objects, `OCuA` channel blocks, sends, groups, side chains, plug-in parameter tables and settings across plug-ins, `DisplayState.plist`, and Logic's own settings plist |
+| [`src/logicxkit/au/README.md`](../src/logicxkit/au/README.md) | Audio Unit preset and state formats: FabFilter `.ffp` and `.aupreset`, Waves XPst, TR5 chain XML, sonible protobuf, iZotope Neutron 5 state, the in-place FabFilter state writer, and the headless AU host |
 
-Do not move these into `docs/`. `CLAUDE.md` designates them as the home of format knowledge,
-and a format note is only trustworthy while it sits next to the parser it describes.
+Do not move these into `docs/`. They are the home of format knowledge, and a format note is
+only trustworthy while it sits next to the parser it describes.
 
 **Provenance, strongest first: the file, then a person who was there, then the vendor manual
 (authoritative for meaning, never for byte layout), then inference.** Mark inference as

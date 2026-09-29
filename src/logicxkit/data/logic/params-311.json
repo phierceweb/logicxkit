@@ -1,0 +1,30 @@
+{
+ "type": 311,
+ "variant": 2442,
+ "name": "Single Band EQ",
+ "floats": 7,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Frequency",
+   "unit": "Hz",
+   "default": 1000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Q-Factor",
+   "unit": "",
+   "default": 0.71,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "EQ Mode",
+  "Slope"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 2 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 0 by order (2026-09-22). Popup rows unmapped."
+}

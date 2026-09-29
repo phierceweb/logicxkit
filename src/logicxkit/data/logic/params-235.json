@@ -1,0 +1,108 @@
+{
+ "type": 235,
+ "variant": 1173,
+ "name": "Pitch Correction",
+ "floats": 62,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 27,
+   "name": "Detune",
+   "unit": "ct",
+   "default": -41.0,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Response",
+   "unit": "ms",
+   "default": 378.0,
+   "evidence": "value"
+  },
+  {
+   "index": 37,
+   "name": "Bypass All",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "Tolerance",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 44,
+   "name": "Global Tuning",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 59,
+   "name": "Follow Song Key",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 61,
+   "name": "Neural Pitch Detection",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Reference",
+  "Use C",
+  "Use C#",
+  "Use D",
+  "Use D#",
+  "Use E",
+  "Use F",
+  "Use F#",
+  "Use G",
+  "Use G#",
+  "Use A",
+  "Use A#",
+  "Use B",
+  "Root Note",
+  "Scale/Chord Type",
+  "Bypass C",
+  "Bypass C#",
+  "Bypass D",
+  "Bypass D#",
+  "Bypass E",
+  "Bypass F",
+  "Bypass F#",
+  "Bypass G",
+  "Bypass G#",
+  "Bypass A",
+  "Bypass A#",
+  "Bypass B",
+  "Pitch Range",
+  "Show Pitch"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 7 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

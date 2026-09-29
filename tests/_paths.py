@@ -11,6 +11,14 @@ from logicxkit.utils.env import env_path, env_str
 
 REPO = Path(__file__).resolve().parent.parent
 
+
+def tracked(*paths: str) -> list[str] | None:
+    """git's index under ``paths``, or None outside a checkout (an unpacked sdist, a git archive)."""
+    import subprocess
+    run = subprocess.run(["git", "ls-files", "-z", "--", *paths], capture_output=True, cwd=REPO)
+    names = [n for n in run.stdout.decode().split("\0") if n]
+    return names if run.returncode == 0 and names else None
+
 # Anchored to the repo, not the process cwd: a run started elsewhere would find no goldens at
 # all and skip the whole layer green.
 RESOURCES = env_path("LOGICXKIT_RESOURCES", REPO / "resources")
@@ -65,7 +73,7 @@ def staged(name: str) -> Path:
     carry.
 
     Two copies saved by the *same* Logic build are a tie, and picking one by list order chose
-    a golden baseline by accident — two differing 6.5 MB files once sat staged like that. So a
+    a golden baseline by accident — two differing copies once sat staged like that. So a
     tie is raised rather than resolved.
     """
     candidates = [RESOURCES / "templates" / f"{PROJECT_PREFIX} - {name}.logicx"]

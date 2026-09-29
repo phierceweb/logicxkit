@@ -58,6 +58,16 @@ jobs:
           assert swift, f"no .swift in {wheel.name} — package-data regressed"
           leaked = [n for n in names if n.endswith((".logicx", ".cst", ".pst", ".scn", ".wav", ".aif"))]
           assert not leaked, f"reference material in the wheel: {leaked}"
+          import importlib.util
+          spec = importlib.util.spec_from_file_location("stage_public", "tools/stage_public.py")
+          stage = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(stage)
+          whl = zipfile.ZipFile(wheel)
+          marked = [n for n in names if n.startswith("logicxkit/data/") and stage.bookmark_leaks(whl.read(n))]
+          assert not marked, f"a bookmark field names the machine that saved it: {marked}"
+          shapes = [b"/" + part + b"/" for part in (b"Users", b"Volumes")]      # built from parts: the leak gate reads this file
+          homes = [n for n in names if any(s in whl.read(n) for s in shapes)]
+          assert not homes, f"a home or volume path in the wheel: {homes}"
           print(f"{wheel.name}: {len(swift)} swift helper(s), no reference material")
           PY
 

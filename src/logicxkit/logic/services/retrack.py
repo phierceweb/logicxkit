@@ -22,7 +22,7 @@ import re
 import shutil
 import struct
 import subprocess
-from .validate import require_valid
+from .validate import FORMAT_AT, require_measured_format, require_valid
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -156,13 +156,20 @@ def _clone_tree(src: Path, dest: Path) -> None:
     ``cp -c`` makes copy-on-write clones: effectively instant and no extra disk, while still
     producing fully independent files. On failure it can leave a partial destination, so that
     is cleared before falling back rather than letting copytree trip over it.
+
+    A bundle's ``Alternatives/*/Autosave*`` stays behind: Logic offers it on open, and it holds
+    the source as it was before any edit to the copy.
     """
     done = subprocess.run(["cp", "-c", "-R", str(src), str(dest)], capture_output=True)
-    if done.returncode == 0:
-        return
-    if dest.exists():
-        shutil.rmtree(dest)
-    shutil.copytree(src, dest)
+    if done.returncode != 0:
+        if dest.exists():
+            shutil.rmtree(dest)
+        shutil.copytree(src, dest)
+    for autosave in [*dest.glob("Alternatives/*/Autosave*"), *dest.glob("*.logicx/Alternatives/*/Autosave*")]:
+        if autosave.is_dir():
+            shutil.rmtree(autosave)
+        else:
+            autosave.unlink()
 
 
 def _refuse_destructive_output(project: Path, root: Path, dest_root: Path) -> None:
@@ -194,6 +201,17 @@ def _refuse_nested_output(root: Path, dest_dir: Path) -> None:
             f"'{dest_dir / root.name}' and the stale one keeps the path you open.")
 
 
+def _refuse_unmeasured(project: Path) -> None:
+    """Every alternative in the writers' format, or nothing is copied."""
+    for data_file in sorted(project.glob("Alternatives/*/ProjectData")):
+        with data_file.open("rb") as f:
+            head = f.read(FORMAT_AT + 2)
+        try:
+            require_measured_format(head)
+        except ValueError as e:
+            raise ValueError(f"Alternatives/{data_file.parent.name}: {e}") from None
+
+
 def project_folder(project: Path) -> Path:
     """The folder a project lives in when Logic keeps its recordings beside it (an `Audio
     Files` sibling), else the bundle itself. A copy that took only the bundle would open with
@@ -214,7 +232,10 @@ def copy_project(src: Path, dest_dir: Path) -> dict:
     dest_root = dest_dir / root.name
     _refuse_destructive_output(project, root, dest_root)
     _refuse_nested_output(root, dest_dir)
+    _refuse_unmeasured(project)
 
+    if dest_dir.exists() and not dest_dir.is_dir():
+        raise ValueError(f"--out {dest_dir} is a file, not a directory")
     dest_dir.mkdir(parents=True, exist_ok=True)
     staging = dest_dir / f".{root.name}.partial"
     if staging.exists():
@@ -241,7 +262,10 @@ def retrack_bundle(src: Path, dest_dir: Path, mapping: dict[str, str], category:
     root = src if src.is_dir() and src.suffix != ".logicx" else project_folder(project)
     dest_root = dest_dir / root.name
     _refuse_destructive_output(project, root, dest_root)
+    _refuse_unmeasured(project)
 
+    if dest_dir.exists() and not dest_dir.is_dir():
+        raise ValueError(f"--out {dest_dir} is a file, not a directory")
     dest_dir.mkdir(parents=True, exist_ok=True)
     staging = dest_dir / f".{root.name}.partial"
     if staging.exists():

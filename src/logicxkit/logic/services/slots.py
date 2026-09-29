@@ -14,10 +14,25 @@ _DEFAULT_PROPERTY_KEY = 10
 
 
 def property_key_base(data: bytes) -> int:
-    """The key of the `.cst` reference record — the first key that is a property, not a slot."""
-    keys = [r.key for r in project_records(data)
-            if r.tag == b"UCuA" and len(r.raw) - HEADER < 400 and b".cst" in r.raw]
-    return min(keys) if keys else _DEFAULT_PROPERTY_KEY
+    """The key of the `.cst` reference record — the first key that is a property, not a slot.
+    A project whose channels carry no reference (blank-born) still places the two archive
+    records every channel carries at that key + 2 and + 3 (the logic README, "The slot key
+    range grows"), so their pair says where it would be."""
+    records = [r for r in project_records(data) if r.tag == b"UCuA"]
+    keys = [r.key for r in records if len(r.raw) - HEADER < 400 and b".cst" in r.raw]
+    if keys:
+        return min(keys)
+    archives = {n: {r.key for r in records if archive_index(r.raw) == n} for n in (1, 2)}
+    pairs = [k for k in archives[1] if k + 1 in archives[2]]
+    return min(pairs) - 2 if pairs else _DEFAULT_PROPERTY_KEY
+
+
+def archive_index(raw: bytes) -> int | None:
+    """1 or 2 for the two keyed-archive records a channel carries past its reference key."""
+    payload = raw[HEADER:]
+    if payload[4:6] == b"\x07\x00" and payload[7] == 0 and b"bplist" in payload[:40]:
+        return payload[6]
+    return None
 
 
 def is_plugin_slot(record: ProjRecord, base: int, index_base: int) -> bool:

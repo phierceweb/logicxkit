@@ -1,0 +1,127 @@
+{
+ "type": 286,
+ "variant": 2263,
+ "name": "Vintage Console EQ",
+ "floats": 16,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 15,
+   "name": "High Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 1,
+   "name": "Mid Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 3,
+   "name": "Mid Freq",
+   "unit": "kHz",
+   "default": 3.2,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Low Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  },
+  {
+   "index": 5,
+   "name": "Low Freq",
+   "unit": "Hz",
+   "default": 110.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Low Cut",
+   "unit": "Hz",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "High Frequency On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 8,
+   "name": "Mid Frequency On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 9,
+   "name": "Low Frequency On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "High Pass On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 13,
+   "name": "Drive",
+   "unit": "",
+   "default": 4.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "EQ",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "order"
+  }
+ ],
+ "unmapped": [
+  "Phase",
+  "Output Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 10 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 3 by order (2026-09-22). Popup rows unmapped."
+}

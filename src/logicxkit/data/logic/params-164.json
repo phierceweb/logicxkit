@@ -1,0 +1,45 @@
+{
+ "type": 164,
+ "variant": 550,
+ "name": "Distortion",
+ "floats": 6,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Drive",
+   "unit": "dB",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Tone",
+   "unit": "Hz",
+   "default": 1100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Output",
+   "unit": "dB",
+   "default": -0.5,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Level Compensation",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+}

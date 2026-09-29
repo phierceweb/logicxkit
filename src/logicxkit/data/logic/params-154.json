@@ -1,0 +1,119 @@
+{
+ "type": 154,
+ "variant": 389,
+ "name": "Compressor",
+ "floats": 31,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -20.0
+  },
+  {
+   "index": 2,
+   "name": "Ratio",
+   "unit": ":1",
+   "default": 2.1
+  },
+  {
+   "index": 3,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 15.0
+  },
+  {
+   "index": 4,
+   "name": "Release",
+   "unit": "ms",
+   "default": 51.0
+  },
+  {
+   "index": 5,
+   "name": "Make Up",
+   "unit": "dB",
+   "default": 0.0
+  },
+  {
+   "index": 6,
+   "name": "Knee",
+   "unit": "",
+   "default": 0.7
+  },
+  {
+   "index": 12,
+   "name": "Limiter Threshold",
+   "unit": "dB",
+   "default": 0.0
+  },
+  {
+   "index": 13,
+   "name": "Limiter On",
+   "unit": "",
+   "default": 0.0,
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "Auto Release",
+   "unit": "",
+   "default": 1.0,
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 18,
+   "name": "Frequency",
+   "unit": "Hz",
+   "default": 7040.0
+  },
+  {
+   "index": 19,
+   "name": "Q",
+   "unit": "",
+   "default": 1.0
+  },
+  {
+   "index": 25,
+   "name": "Mix",
+   "unit": "%",
+   "default": 100.0
+  },
+  {
+   "index": 27,
+   "name": "Input Gain",
+   "unit": "dB",
+   "default": 0.0
+  },
+  {
+   "index": 28,
+   "name": "Output Gain",
+   "unit": "dB",
+   "default": 0.0
+  }
+ ],
+ "unmapped": [
+  "Peak/RMS",
+  "Auto Gain",
+  "Distortion",
+  "Circuit Type",
+  "Side Chain Detection",
+  "Side Chain Filter",
+  "State",
+  "Mode",
+  "Gain",
+  "Output Mix",
+  "Gain Reduction",
+  "Display Select",
+  "View Select"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; each index matched by value between stockfx-dynamics-defaults and stockfx-dynamics-spots (2026-09-22). Popup rows unmapped."
+}

@@ -1,0 +1,180 @@
+{
+ "type": 252,
+ "variant": 1380,
+ "name": "Ringshifter",
+ "floats": 32,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 5,
+   "name": "Env->Osc Modulation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "LFO->Osc Modulation",
+   "unit": "",
+   "default": 0.244,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Feedback",
+   "unit": "",
+   "default": 0.63,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Stereo Width",
+   "unit": "",
+   "default": 0.8,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Dry/Wet",
+   "unit": "",
+   "default": 0.62,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Env->Dry/Wet Modulation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 14,
+   "name": "LFO->Dry/Wet Modulation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Envelope Follower Follower On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 17,
+   "name": "Envelope Follower Sensitivity",
+   "unit": "dB",
+   "default": -0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 18,
+   "name": "Envelope Follower Attack",
+   "unit": "ms",
+   "default": 0.1,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "Envelope Follower Release",
+   "unit": "ms",
+   "default": 0.1,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "LFO On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 22,
+   "name": "LFO Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 23,
+   "name": "LFO Rate",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "LFO Symmetry",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 25,
+   "name": "LFO Smooth",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "Delay Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "Delay Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 30,
+   "name": "Delay Low Cut",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Delay High Cut",
+   "unit": "Hz",
+   "default": 10000.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Oscillator",
+  "Frequency",
+  "Freq. Shift Mode",
+  "General",
+  "Operating Mode",
+  "Mix",
+  "Envelope Follower",
+  "Lfo",
+  "Delay",
+  "Delay Time"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 20 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 0 by order. Popup rows unmapped."
+}

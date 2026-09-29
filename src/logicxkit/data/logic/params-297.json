@@ -1,0 +1,250 @@
+{
+ "type": 297,
+ "variant": 2349,
+ "name": "Bass Amp Designer",
+ "floats": 68,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "DI Gain",
+   "unit": "dB",
+   "default": 13.4,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "DI HF Cut",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4,
+   "name": "DI Tone On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 9,
+   "name": "Bright",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 11,
+   "name": "Gain",
+   "unit": "",
+   "default": 3.2,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "EQ",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 13,
+   "name": "Bass",
+   "unit": "",
+   "default": 3.4,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Mids",
+   "unit": "",
+   "default": 6.7,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Mid Range",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Treble",
+   "unit": "",
+   "default": 6.7,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Master",
+   "unit": "",
+   "default": 4.5,
+   "evidence": "value"
+  },
+  {
+   "index": 25,
+   "name": "Comp",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 26,
+   "name": "Comp Amount",
+   "unit": "",
+   "default": 4.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "Comp Gain",
+   "unit": "",
+   "default": 5.4,
+   "evidence": "value"
+  },
+  {
+   "index": 30,
+   "name": "Graph/Par EQ",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 33,
+   "name": "40 Hz",
+   "unit": "dB",
+   "default": 5.6,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "100 Hz",
+   "unit": "dB",
+   "default": 3.6,
+   "evidence": "value"
+  },
+  {
+   "index": 35,
+   "name": "250 Hz",
+   "unit": "dB",
+   "default": 0.4,
+   "evidence": "value"
+  },
+  {
+   "index": 36,
+   "name": "625 Hz",
+   "unit": "dB",
+   "default": 3.0,
+   "evidence": "value"
+  },
+  {
+   "index": 37,
+   "name": "1560 Hz",
+   "unit": "dB",
+   "default": 5.2,
+   "evidence": "value"
+  },
+  {
+   "index": 38,
+   "name": "3900 Hz",
+   "unit": "dB",
+   "default": 5.6,
+   "evidence": "value"
+  },
+  {
+   "index": 39,
+   "name": "6600 Hz",
+   "unit": "dB",
+   "default": 6.2,
+   "evidence": "value"
+  },
+  {
+   "index": 51,
+   "name": "Microphone Pos X",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 53,
+   "name": "Microphone Pos Z",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 64,
+   "name": "Amp/DI Mix",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 65,
+   "name": "Output Gain",
+   "unit": "dB",
+   "default": 4.5,
+   "evidence": "value"
+  },
+  {
+   "index": 67,
+   "name": "DI Delay Compensation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "DI",
+  "DI Tone",
+  "Amp Input",
+  "Channel",
+  "Main Knobs",
+  "Low",
+  "High",
+  "Compressor",
+  "Comp Attack",
+  "Graph/Par EQ",
+  "Graph/Par EQ Position",
+  "Graph/Par EQ Type",
+  "Model selectors",
+  "Model",
+  "Amp",
+  "Speaker",
+  "Microphone Type",
+  "Gain Reduction",
+  "Output"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 27 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

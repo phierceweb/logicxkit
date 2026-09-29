@@ -1,0 +1,80 @@
+{
+ "type": 248,
+ "variant": 1310,
+ "name": "Delay Designer",
+ "floats": 14,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 0,
+   "name": "Sync to Tempo",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 3,
+   "name": "Feedback Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "Feedback Amount",
+   "unit": "dB",
+   "default": -6.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Dry",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Wet",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Tap Record",
+  "Last Tap",
+  "Grid",
+  "Swing",
+  "Feedback Tap",
+  "Add Tap",
+  "Delete Tap",
+  "Tap by Name",
+  "Tap by Time",
+  "tap data",
+  "Tap Time",
+  "Tap Level",
+  "Tap Mute",
+  "Pan Amount",
+  "Pan Stereo Spread",
+  "Pan Flip Left/Right",
+  "Filter HighPass Freq",
+  "Filter LowPass Freq",
+  "Filter Enable",
+  "Filter Resonance",
+  "Filter Slope",
+  "Pitch Transpose",
+  "Pitch Enable"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 5 indices matched by value between stockfx-dr-defaults and stockfx-dr-spots, 0 by order. Popup rows unmapped."
+}

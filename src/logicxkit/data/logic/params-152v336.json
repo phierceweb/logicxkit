@@ -1,0 +1,40 @@
+{
+ "type": 152,
+ "variant": 336,
+ "name": "Microphaser",
+ "floats": 22,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Feedback",
+   "unit": "%",
+   "default": 37.0,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Intensity",
+   "unit": "%",
+   "default": 41.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "LFO Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "LFO Rate"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 0 by order. Popup rows unmapped."
+}

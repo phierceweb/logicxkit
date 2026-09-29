@@ -32,7 +32,8 @@ def cmd_plugins(args) -> int:
         v = verdict(refs_by_project[project], installed, validated)
         report.append({"project": str(project), "clean": v.clean,
                        "slots": [{"channel": r.channel, "key": r.key, "name": r.name, "native": r.native,
-                                  "component": list(r.component) if r.component else None, "status": s}
+                                  "component": list(r.component) if r.component else None, "status": s,
+                                  "side_chain": r.side_chain}
                                  for r, s in v.slots]})
         if args.json:
             continue
@@ -46,7 +47,8 @@ def cmd_plugins(args) -> int:
                 if len(projects) > 1 and status not in ("missing", "broken"):
                     continue
                 ident = " ".join(r.component) if r.component else "native"
-                print(f"  {r.channel:16s} key {r.key:2d}  {r.name:28s} {ident:16s} {status}")
+                tail = f"  side chain: {r.side_chain}" if r.side_chain else ""
+                print(f"  {r.channel:16s} key {r.key:2d}  {r.name:28s} {ident:16s} {status}{tail}")
     if args.json:
         print(json.dumps(report, indent=1))
     elif len(projects) > 1:
@@ -56,7 +58,11 @@ def cmd_plugins(args) -> int:
 
 
 def register(sub) -> None:
-    ap = sub.add_parser("plugins", help="which plug-ins a project references and which this Mac lacks")
+    ap = sub.add_parser("plugins", help="which plug-ins a project references and which this Mac lacks",
+                        description="Every plug-in the project's slots reference, and which third-party "
+                                    "ones this Mac lacks. Checking a third-party plug-in runs Apple's "
+                                    "auval -a scan of every installed Audio Unit, once per run; with many "
+                                    "installed it takes 25 seconds or more.")
     ap.add_argument("project", help="a .logicx bundle, or a folder to scan")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--validate", action="store_true",

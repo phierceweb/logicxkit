@@ -13,6 +13,7 @@ from .services.integrity import require_no_regression
 from .services.project import project_metadata
 from .services.retrack import copy_project, find_project
 from .services.transplant import owner_of
+from .services.validate import tolerating
 
 
 class CommandError(Exception):
@@ -36,7 +37,8 @@ def edit_copy(project: Path, out: Path, step: Step, moved: Moved | None = None) 
         for data_file in sorted(dest.rglob("Alternatives/*/ProjectData")):
             count = project_metadata(data_file.parents[2], data_file.parent.name).get("tracks")
             before = data_file.read_bytes()
-            after = step(before, count, data_file)
+            with tolerating(before):                 # a step answers for what it changes; the gate below for the rest
+                after = step(before, count, data_file)
             try:
                 require_no_regression(before, after, removed=moved(before, count, data_file) if moved else ())
             except ValueError as e:

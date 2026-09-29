@@ -1,8 +1,8 @@
 """The channel record's key flags: from `+132`, one u32 per satellite key (sends at keys
 0-2, plugin slots from 4, the reference and the rest after), 1 when a `UCuA` record with
-that key exists under the owner, 0 otherwise — 78,666 words on nineteen Logic files, no
-exception. `+26` is the flag-word count and sizes the record: 201 + 4 x words on all
-21,772 version-7 channel records on hand (169 + 4 x words on the version-6 records old
+that key exists under the owner, 0 otherwise — every word on the Logic files measured, no
+exception. `+26` is the flag-word count and sizes the record: 201 + 4 x words on every
+version-7 channel record on hand (169 + 4 x words on the version-6 records old
 backups carry; older versions are left alone); the 20 zero bytes, one byte and three
 UUIDs after the flags never move. A set flag without its record, or a record shorter than its
 `+26` says, is a file Logic refuses to open; a record without its flag it tolerates. Every

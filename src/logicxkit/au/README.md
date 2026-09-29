@@ -1,9 +1,10 @@
-# logicxkit.au — Audio Unit preset/state decoder (read-only)
+# logicxkit.au — Audio Unit preset/state decoder
 
 Decodes 3rd-party plugin settings wherever they live: standalone preset files
 (`.ffp`, `.aupreset`, `.pst`) and the AU states **embedded in `.cst` channel
 strips and `.logicx` ProjectData** — the layer `logicxkit.logic` reports as
-"preset name only". Everything here is read-only.
+"preset name only". Everything here reads, except the in-place FabFilter state
+writer (`services/austate_write.py`) the `logic` plug-in writers go through.
 
 macOS only: the AU host loads the plugins you actually have installed, through
 Audio Unit APIs and a `swift` toolchain. The static paths below parse files and
@@ -37,8 +38,22 @@ Per-state ladder in `au strip`: **NDSP** → the `juce` JUCE decoders ·
   (`type`/`subtype`/`manufacturer`) + preset `name` + state. Classic plugins
   (Pro-C 2, Pro-MB, iZotope, Ampeg) use the AU-standard `data` key: 12B header
   (8 reserved + u32 BE pair count) + (u32 BE id, f32 BE value) pairs. Newer
-  FabFilter (Pro-Q 4) uses a `FabFilterPluginState` blob (`FFBS`, 24 bands ×
-  24 floats + 75 globals) — opaque statically, fully readable via the host.
+  FabFilter (Pro-Q 4) uses a `FabFilterPluginState` blob in the `.ffp` layout
+  (`FFBS`, a version, 600 float32 LE values by parameter id, then a trailer
+  with the preset name); band n is the 23 values from id 23(n−1), 24 bands
+  (`data/translate/FabF_FQ4p.json` names them).
+- **iZotope Neutron 5** — its `data` blob is not pairs: a 16-byte header
+  (magic `0x0080fb83`, a version, the packed and the plain length) over
+  zlib-compressed JSON of typed values in real units, under
+  `DSP State/Value/DSP Elements/Value/<Module>/Value/<Parameter>`
+  (`services/izotope.py`). Read, not written.
+- **Writing a FabFilter state in place** (`services/austate_write.py`) — the
+  record's XML plist holds the state as base64 `<data>`, wrapped at 68
+  characters with a tab per line. A value is patched into the decoded blob (a
+  pair's float32 BE by id for Pro-C 2 and Pro-MB, a float32 LE by id in the
+  FFBS blob for Pro-Q 4) and re-encoded into the same span, the whitespace
+  kept, so the XML's length word and every byte around it stay as Logic wrote
+  them.
 - **Waves `Waves_XPst`** — binary head + `<PresetChunkXMLTree>` XML whose
   `RealWorld` parameter text is positional real-unit values (`*` = unset).
   WaveShell AUs crash headless (objc class collision), so XPst is the only
@@ -46,8 +61,10 @@ Per-state ladder in `au strip`: **NDSP** → the `juce` JUCE decoders ·
 - **sonible `jucePluginState`** — protobuf, no published schema. Decoded via a
   schema-less wire walk (`services/sonible.py`): message 3 = the parameter
   block, values legible but keyed by field number, not name (the AU crashes
-  headless, so no name source). Naming needs a one-knob-at-a-time calibration
-  against the UI. The big trailing field is learned/NN state, summarized.
+  headless, so no name source). smart:comp 2's and smart:gate's fields are
+  named in real units by their translation maps (`data/translate/Soni_*.json`),
+  matched to Logic's Controls view one slider move at a time; other sonible
+  plug-ins stay unnamed. The big trailing field is learned/NN state, summarized.
 - **TR5 Suite** — the AU exposes only 16 shallow params; the real state is a
   JUCE ValueTree whose binary `Chain` prop holds a plain `<Session>` XML:
   A/B/C/D snapshots, module GUIDs + bypass, and every module parameter as

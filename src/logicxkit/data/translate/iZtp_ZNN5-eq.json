@@ -1,0 +1,46 @@
+{
+ "family": "eq",
+ "plugin": "Neutron 5",
+ "component": [
+  "aufx",
+  "ZNN5",
+  "iZtp"
+ ],
+ "decoder": "izotope",
+ "modules": [
+  "Dynamic EQ"
+ ],
+ "evidence": "iZotope Neutron 5's Dynamic EQ element, twelve bands in real units (Hz, dB, Q) from its JSON state; a band's Enable is its existence. Shape indexes 0..12 as the Controls view's Shape popup lists them (walked top to bottom, `neutron-dial`, 2026-09-23): Proportional Q, Bell, Band Shelf, Analog / Baxandall / Vintage Low Shelf, Analog / Baxandall / Vintage High Shelf, Flat / Resonant Lowpass, Flat / Resonant Highpass \u2014 carried as the vocabulary shapes beside them, the three bell-like ones as bells, the three shelf designs as one shelf.",
+ "bands": {
+  "module": "Dynamic EQ",
+  "count": 12,
+  "fields": {
+   "on": "Enable",
+   "frequency": "Frequency",
+   "gain": "Gain",
+   "q": "Q",
+   "shape": "Shape",
+   "static": "is static (dynamics off)"
+  }
+ },
+ "shapes": [
+  "bell",
+  "bell",
+  "bell",
+  "low_shelf",
+  "low_shelf",
+  "low_shelf",
+  "high_shelf",
+  "high_shelf",
+  "high_shelf",
+  "high_cut",
+  "high_cut",
+  "low_cut",
+  "low_cut"
+ ],
+ "not_carried": {
+  "dynamic bands": "a band's threshold and dynamics mode have no analogue; its static curve crosses",
+  "shape designs": "Proportional Q and Band Shelf cross as bells, the analog, Baxandall and vintage shelves as shelves, resonant cuts as cuts",
+  "Demasking, Sculptor": "Neutron's own"
+ }
+}

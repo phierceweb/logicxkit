@@ -5,8 +5,8 @@ bit, and the writer's bounds and order are Logic's."""
 import struct
 import unittest
 
-from logicxkit.logic.services.automation import PARAM_FLAG, PARAM_POINT, Point, _lanes
-from logicxkit.logic.services.automation_write import MAX_TICK, _order, fader_event
+from logicxkit.logic.services.automation import PARAM_FLAG, PARAM_POINT, VALUE_UNIT, Point, _lanes
+from logicxkit.logic.services.automation_write import MAX_TICK, _order, fader_event, param_event
 from logicxkit.logic.services.events import END_TYPE, LINE
 from logicxkit.logic.services.groups import FADER_IDS
 
@@ -14,10 +14,9 @@ VOLUME, PAN = FADER_IDS["Volume"], FADER_IDS["Pan"]
 END = struct.pack("<HHI", END_TYPE, 0, 0x3FFFFFFF).ljust(LINE, b"\0")
 
 
-def param_point(tick: int, value: float, index: int, flag: int = 0, fraction: int = 0) -> bytes:
+def param_point(tick: int, value: float, index: int, flag: int = 0, fraction: int = 0, slot: int = 1) -> bytes:
     head = bytearray(LINE)
-    struct.pack_into("<HHI", head, 0, PARAM_POINT | flag, fraction, tick)
-    struct.pack_into("<f", head, 8, value)
+    struct.pack_into("<HHII", head, 0, PARAM_POINT + slot - 1 | flag, fraction, tick, int(round(value * VALUE_UNIT)))
     head[12] = index
     return bytes(head)
 
@@ -40,13 +39,26 @@ class ReaderTest(unittest.TestCase):
         got = lanes(param_point(38400, 0.5, 3) + param_point(40000, 0.0, 3, PARAM_FLAG) + END)
         (points,) = got.values()
         self.assertEqual([(p.tick, p.flagged) for p in points], [(38400, False), (40000, True)])
-        self.assertEqual(list(got), [("param", 3, False)])
+        self.assertEqual(list(got), [("param", 3, 1)])                     # (kind, index, insert)
 
     def test_nothing_after_the_end_marker_is_read(self):
         self.assertEqual(lanes(END + param_point(38400, 0.5, 3)), {})
 
     def test_a_point_carries_its_position(self):
         self.assertEqual(Point(38400, 90.0, 0x4000).position, 38400.25)
+
+
+class ParamWriterTest(unittest.TestCase):
+    def test_a_parameter_point_lays_out_like_logic_own(self):
+        self.assertEqual(param_event(38400, 0.5, 26), param_point(38400, 0.5, 26))
+        self.assertEqual(param_event(38400, 0.5, 1, slot=2)[:2].hex(), "5200")          # insert 2's type word
+        self.assertEqual(lanes(param_event(38400, 0.5, 1, slot=2) + END)[("param", 1, 2)][0].value, 0.5)
+        self.assertEqual(param_event(38400, 0.5, 26, fraction=0x8000)[2:4].hex(), "0080")
+        got = lanes(param_event(38400, 0.25, 3) + param_event(42240, 1.0, 3) + END)
+        self.assertEqual([(p.tick, round(p.value, 6)) for p in got[("param", 3, 1)]], [(38400, 0.25), (42240, 1.0)])   # 1.0 is 2^31 - 1
+        for kwargs in ({"value": 1.5}, {"value": -0.1}, {"index": 256}, {"tick": MAX_TICK + 1}):
+            with self.subTest(kwargs), self.assertRaises(ValueError):
+                param_event(**{"tick": 0, "value": 0.5, "index": 1, **kwargs})
 
 
 class WriterTest(unittest.TestCase):

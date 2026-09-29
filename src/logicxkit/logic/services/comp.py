@@ -2,8 +2,10 @@
 
 float layout: [0] opaque; [1] Threshold dB; [2] Ratio; [3] Attack ms; [4] Release ms;
 [5] Gain dB; [6] Knee; [7] Peak/RMS (0=peak,1=rms); [8] Auto Gain; [9] Output Dist;
-[10] Circuit Type; [11] Lim Threshold; [12] Limiter; [13] Auto Release.
-We patch [1..13]; [0] and [14:] are left as the template has them.
+[10] Circuit Type; [11] unmeasured (Side Chain Detection by Controls order); [12] Limiter
+Threshold; [13] Limiter On; [14] Auto Release — 12..14 measured by value on Logic's own
+save (`stockfx-dynamics-spots`, 2026-09-22; `data/logic/params-154.json`).
+We patch [1..14]; [0] and [15:] are left as the template has them.
 """
 
 from __future__ import annotations
@@ -16,7 +18,7 @@ CIRCUITS_INV = {v: k for k, v in CIRCUITS.items()}
 
 
 def build_comp(comp_spec: dict) -> list[float]:
-    """Returns floats[0..13] (14 values). float[0] is 0.0 (opaque, matches factory)."""
+    """Returns floats[0..14] (15 values). float[0] is 0.0 (opaque, matches factory)."""
     c = comp_spec
     circ = c.get("circuit", "Platinum")
     if circ not in CIRCUITS:
@@ -33,9 +35,10 @@ def build_comp(comp_spec: dict) -> list[float]:
         float(c.get("auto_gain", 0)),          # [8]
         float(c.get("output_dist", 0)),        # [9]
         float(CIRCUITS[circ]),                 # [10]
-        float(c.get("limiter_threshold", 0)),  # [11]
-        float(c.get("limiter", 0)),            # [12]
-        float(c.get("auto_release", 0)),       # [13]
+        float(c.get("side_chain_detection", 0)),  # [11] unmeasured; carried as decoded
+        float(c.get("limiter_threshold", 0)),  # [12]
+        float(c.get("limiter", 0)),            # [13]
+        float(c.get("auto_release", 0)),       # [14]
     ]
 
 
@@ -50,5 +53,8 @@ def decode_comp(floats: list[float]) -> dict:
         "knee": round(floats[6], 3),
         "peak_rms": round(floats[7], 3),
         "auto_gain": int(round(floats[8])),
-        "auto_release": int(round(floats[13])),
+        "side_chain_detection": int(round(floats[11])) if len(floats) > 11 else 0,
+        "limiter_threshold": round(floats[12], 2) if len(floats) > 12 else 0.0,
+        "limiter": int(round(floats[13])) if len(floats) > 13 else 0,
+        "auto_release": int(round(floats[14])) if len(floats) > 14 else 0,
     }

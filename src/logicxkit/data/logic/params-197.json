@@ -1,0 +1,40 @@
+{
+ "type": 197,
+ "variant": 1002,
+ "name": "Exciter",
+ "floats": 5,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Frequency",
+   "unit": "Hz",
+   "default": 2000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Harmonics",
+   "unit": "%",
+   "default": 10.6,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Dry Signal",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Color"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

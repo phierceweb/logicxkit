@@ -94,8 +94,13 @@ saves are made.
 
 **The data root** (`LOGICXKIT_DATA`) — optional. The package carries Logic's own record templates
 and native plug-in donors (`src/logicxkit/data`, regenerated from the public corpus by
-`bin/regen_data.py`); a data root adds third-party donor records and AU parameter tables dumped
-from installed plugins, and its files take precedence over the packaged ones.
+`bin/regen_data.py`), the native plug-ins' parameter tables and the translation maps; a data root
+adds third-party donor records and AU parameter tables dumped from installed plugins. Where both
+hold a file of one name the package's wins, so a checkout runs what an installed copy runs, and
+`logic donors` into the root leaves the plug-ins the package ships. A checkout's default root is
+`resources/data`; an installed copy has none, so `logic donors` refuses to harvest until
+`LOGICXKIT_DATA` names a folder (or `--library` does) — a third-party plug-in needs its donor
+harvested before `add-plugin` can place it.
 [`resources/data/README.md`](../resources/data/README.md) says how to regenerate each part
 (`logic donors`, `logic recdiff`, and `auprobe.swift list` for the AU tables).
 

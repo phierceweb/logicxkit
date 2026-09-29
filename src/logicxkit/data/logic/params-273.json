@@ -1,0 +1,125 @@
+{
+ "type": 273,
+ "variant": 1623,
+ "name": "Pedalboard",
+ "floats": 2001,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 52,
+   "name": "Macro A Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 54,
+   "name": "Macro B Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 56,
+   "name": "Macro C Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 58,
+   "name": "Macro D Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 60,
+   "name": "Macro E Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 62,
+   "name": "Macro F Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 64,
+   "name": "Macro G Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 66,
+   "name": "Macro H Value",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "--- Macro Controls ---",
+  "Macro A Target",
+  "Macro B Target",
+  "Macro C Target",
+  "Macro D Target",
+  "Macro E Target",
+  "Macro F Target",
+  "Macro G Target",
+  "Macro H Target",
+  "--- Stompbox Type Read-Outs by Slot ---",
+  "Slot 1 Stompbox Type",
+  "Slot 2 Stompbox Type",
+  "Slot 3 Stompbox Type",
+  "Slot 4 Stompbox Type",
+  "Slot 5 Stompbox Type",
+  "Slot 6 Stompbox Type",
+  "Slot 7 Stompbox Type",
+  "Slot 8 Stompbox Type",
+  "Slot 9 Stompbox Type",
+  "Slot 10 Stompbox Type",
+  "Slot 11 Stompbox Type",
+  "Slot 12 Stompbox Type",
+  "Slot 13 Stompbox Type",
+  "Slot 14 Stompbox Type",
+  "--- Stompbox State Switches by Slot ---",
+  "--- Routing Parameters by Slot ---",
+  "--- Stomp-Box Parameters ---",
+  "Stompbox A",
+  "Stompbox A Type",
+  "Stompbox B",
+  "Stompbox B Type",
+  "Stompbox C",
+  "Stompbox C Type",
+  "Stompbox D",
+  "Stompbox D Type",
+  "Stompbox E",
+  "Stompbox E Type",
+  "Stompbox F",
+  "Stompbox F Type",
+  "Stompbox G",
+  "Stompbox G Type",
+  "Stompbox H",
+  "Stompbox H Type",
+  "Stompbox I",
+  "Stompbox I Type",
+  "Stompbox J",
+  "Stompbox J Type",
+  "Stompbox K",
+  "Stompbox K Type",
+  "Stompbox L",
+  "Stompbox L Type",
+  "Stompbox M",
+  "Stompbox M Type",
+  "Stompbox N",
+  "Stompbox N Type"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 8 indices matched by value between stockfx-amp-defaults and stockfx-amp-spots, 0 by order. Popup rows unmapped."
+}

@@ -1,0 +1,756 @@
+{
+ "type": 289,
+ "variant": 2313,
+ "name": "Step FX",
+ "floats": 29019,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Filter On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 15,
+   "name": "Distortion On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 23,
+   "name": "Mod FX On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 34,
+   "name": "Delay On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "Delay Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 47,
+   "name": "Reverb On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 163,
+   "name": "XY Pad X On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 164,
+   "name": "XY Pad Y On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "XY Pad X Depth 2",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "XY Pad Y Depth 2",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 202,
+   "name": "Step Mod 1 On",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 27,
+   "name": "Step Mod 1 Attack Curve",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 170,
+   "name": "Step Mod 1 Release Curve",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 216,
+   "name": "Step Mod 1 Num Steps",
+   "unit": "",
+   "default": 16.0,
+   "evidence": "value"
+  },
+  {
+   "index": 729,
+   "name": "Step Mod 1 Tie 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 730,
+   "name": "Step Mod 1 Tie 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 731,
+   "name": "Step Mod 1 Tie 6",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 733,
+   "name": "Step Mod 1 Tie 7",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 734,
+   "name": "Step Mod 1 Tie 8",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 735,
+   "name": "Step Mod 1 Tie 11",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 736,
+   "name": "Step Mod 1 Tie 12",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 738,
+   "name": "Step Mod 1 Tie 13",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 739,
+   "name": "Step Mod 1 Tie 14",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 740,
+   "name": "Step Mod 1 Tie 15",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 741,
+   "name": "Step Mod 1 Tie 16",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 742,
+   "name": "Step Mod 1 Rest 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 743,
+   "name": "Step Mod 1 Rest 5",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1753,
+   "name": "Step Mod 1 Rest 6",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1754,
+   "name": "Step Mod 1 Rest 7",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1755,
+   "name": "Step Mod 1 Rest 8",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1756,
+   "name": "Step Mod 1 Rest 9",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1757,
+   "name": "Step Mod 1 Rest 10",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1758,
+   "name": "Step Mod 1 Rest 11",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1759,
+   "name": "Step Mod 1 Rest 12",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1760,
+   "name": "Step Mod 1 Rest 13",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1761,
+   "name": "Step Mod 1 Rest 14",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1762,
+   "name": "Step Mod 1 Rest 15",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1763,
+   "name": "Step Mod 1 Rest 16",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1764,
+   "name": "Step Mod 2 On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 1765,
+   "name": "Step Mod 2 Hold",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 1768,
+   "name": "Step Mod 3 Rest 8",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4329,
+   "name": "Step Mod 3 Rest 9",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4330,
+   "name": "Step Mod 3 Rest 10",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4331,
+   "name": "Step Mod 3 Rest 11",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4332,
+   "name": "Step Mod 3 Rest 12",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4333,
+   "name": "Step Mod 3 Rest 13",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4334,
+   "name": "Step Mod 3 Rest 14",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4335,
+   "name": "Step Mod 3 Rest 15",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4336,
+   "name": "Step Mod 3 Rest 16",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Multimode Filter",
+  "Filter Type",
+  "Filter Cutoff",
+  "Filter Resonance",
+  "Filter Mix",
+  "Distortion",
+  "Distortion Exciter",
+  "Distortion Dirt",
+  "Mod FX",
+  "Mod FX Delay",
+  "Mod FX Rate",
+  "Mod FX Depth",
+  "Mod FX Feedback",
+  "Mod FX Mix",
+  "Delay",
+  "Delay Feedback",
+  "Delay Cutoff",
+  "Delay Mix",
+  "Delay L Rate",
+  "Delay R Rate",
+  "Delay Mode",
+  "Reverb",
+  "Reverb Time",
+  "Reverb Mix",
+  "Reverb Mode",
+  "Master",
+  "Master Input Gain",
+  "Master Mix",
+  "Master Output",
+  "XY Pad",
+  "Step Mod 1 Depth - X",
+  "Reverb Mix - Y",
+  "XY Pad X Target 1",
+  "XY Pad X Depth 1",
+  "XY Pad X Target 2",
+  "XY Pad Y Target 1",
+  "XY Pad Y Depth 1",
+  "XY Pad Y Target 2",
+  "Step Modulator 1",
+  "Step Mod 1 Target",
+  "Step Mod 1 Depth",
+  "Step Mod 1 Rate",
+  "Step Mod 1 Swing",
+  "Step Mod 1 Attack",
+  "Step Mod 1 Hold",
+  "Step Mod 1 Release",
+  "Step Mod 1 Value 1",
+  "Step Mod 1 Value 2",
+  "Step Mod 1 Value 3",
+  "Step Mod 1 Value 4",
+  "Step Mod 1 Value 5",
+  "Step Mod 1 Value 6",
+  "Step Mod 1 Value 7",
+  "Step Mod 1 Value 8",
+  "Step Mod 1 Value 9",
+  "Step Mod 1 Value 10",
+  "Step Mod 1 Value 11",
+  "Step Mod 1 Value 12",
+  "Step Mod 1 Value 13",
+  "Step Mod 1 Value 14",
+  "Step Mod 1 Value 15",
+  "Step Mod 1 Value 16",
+  "Step Mod 1 Tie 1",
+  "Step Mod 1 Tie 4",
+  "Step Mod 1 Tie 5",
+  "Step Mod 1 Tie 9",
+  "Step Mod 1 Tie 10",
+  "Step Mod 1 Length 1",
+  "Step Mod 1 Length 2",
+  "Step Mod 1 Length 3",
+  "Step Mod 1 Length 4",
+  "Step Mod 1 Length 5",
+  "Step Mod 1 Length 6",
+  "Step Mod 1 Length 7",
+  "Step Mod 1 Length 8",
+  "Step Mod 1 Length 9",
+  "Step Mod 1 Length 10",
+  "Step Mod 1 Length 11",
+  "Step Mod 1 Length 12",
+  "Step Mod 1 Length 13",
+  "Step Mod 1 Length 14",
+  "Step Mod 1 Length 15",
+  "Step Mod 1 Length 16",
+  "Step Mod 1 Rest 1",
+  "Step Mod 1 Rest 2",
+  "Step Mod 1 Rest 3",
+  "Step Modulator 2",
+  "Step Mod 2 Target",
+  "Step Mod 2 Depth",
+  "Step Mod 2 Rate",
+  "Step Mod 2 Swing",
+  "Step Mod 2 Attack",
+  "Step Mod 2 Attack Curve",
+  "Step Mod 2 Release",
+  "Step Mod 2 Release Curve",
+  "Step Mod 2 Num Steps",
+  "Step Mod 2 Value 1",
+  "Step Mod 2 Value 2",
+  "Step Mod 2 Value 3",
+  "Step Mod 2 Value 4",
+  "Step Mod 2 Value 5",
+  "Step Mod 2 Value 6",
+  "Step Mod 2 Value 7",
+  "Step Mod 2 Value 8",
+  "Step Mod 2 Value 9",
+  "Step Mod 2 Value 10",
+  "Step Mod 2 Value 11",
+  "Step Mod 2 Value 12",
+  "Step Mod 2 Value 13",
+  "Step Mod 2 Value 14",
+  "Step Mod 2 Value 15",
+  "Step Mod 2 Value 16",
+  "Step Mod 2 Tie 1",
+  "Step Mod 2 Tie 2",
+  "Step Mod 2 Tie 3",
+  "Step Mod 2 Tie 4",
+  "Step Mod 2 Tie 5",
+  "Step Mod 2 Tie 6",
+  "Step Mod 2 Tie 7",
+  "Step Mod 2 Tie 8",
+  "Step Mod 2 Tie 9",
+  "Step Mod 2 Tie 10",
+  "Step Mod 2 Tie 11",
+  "Step Mod 2 Tie 12",
+  "Step Mod 2 Tie 13",
+  "Step Mod 2 Tie 14",
+  "Step Mod 2 Tie 15",
+  "Step Mod 2 Tie 16",
+  "Step Mod 2 Length 1",
+  "Step Mod 2 Length 2",
+  "Step Mod 2 Length 3",
+  "Step Mod 2 Length 4",
+  "Step Mod 2 Length 5",
+  "Step Mod 2 Length 6",
+  "Step Mod 2 Length 7",
+  "Step Mod 2 Length 8",
+  "Step Mod 2 Length 9",
+  "Step Mod 2 Length 10",
+  "Step Mod 2 Length 11",
+  "Step Mod 2 Length 12",
+  "Step Mod 2 Length 13",
+  "Step Mod 2 Length 14",
+  "Step Mod 2 Length 15",
+  "Step Mod 2 Length 16",
+  "Step Mod 2 Rest 1",
+  "Step Mod 2 Rest 2",
+  "Step Mod 2 Rest 3",
+  "Step Mod 2 Rest 4",
+  "Step Mod 2 Rest 5",
+  "Step Mod 2 Rest 6",
+  "Step Mod 2 Rest 7",
+  "Step Mod 2 Rest 8",
+  "Step Mod 2 Rest 9",
+  "Step Mod 2 Rest 10",
+  "Step Mod 2 Rest 11",
+  "Step Mod 2 Rest 12",
+  "Step Mod 2 Rest 13",
+  "Step Mod 2 Rest 14",
+  "Step Mod 2 Rest 15",
+  "Step Mod 2 Rest 16",
+  "Step Modulator 3",
+  "Step Mod 3 On",
+  "Step Mod 3 Target",
+  "Step Mod 3 Depth",
+  "Step Mod 3 Rate",
+  "Step Mod 3 Swing",
+  "Step Mod 3 Attack",
+  "Step Mod 3 Attack Curve",
+  "Step Mod 3 Hold",
+  "Step Mod 3 Release",
+  "Step Mod 3 Release Curve",
+  "Step Mod 3 Num Steps",
+  "Step Mod 3 Value 1",
+  "Step Mod 3 Value 2",
+  "Step Mod 3 Value 3",
+  "Step Mod 3 Value 4",
+  "Step Mod 3 Value 5",
+  "Step Mod 3 Value 6",
+  "Step Mod 3 Value 7",
+  "Step Mod 3 Value 8",
+  "Step Mod 3 Value 9",
+  "Step Mod 3 Value 10",
+  "Step Mod 3 Value 11",
+  "Step Mod 3 Value 12",
+  "Step Mod 3 Value 13",
+  "Step Mod 3 Value 14",
+  "Step Mod 3 Value 15",
+  "Step Mod 3 Value 16",
+  "Step Mod 3 Tie 1",
+  "Step Mod 3 Tie 2",
+  "Step Mod 3 Tie 3",
+  "Step Mod 3 Tie 4",
+  "Step Mod 3 Tie 5",
+  "Step Mod 3 Tie 6",
+  "Step Mod 3 Tie 7",
+  "Step Mod 3 Tie 8",
+  "Step Mod 3 Tie 9",
+  "Step Mod 3 Tie 10",
+  "Step Mod 3 Tie 11",
+  "Step Mod 3 Tie 12",
+  "Step Mod 3 Tie 13",
+  "Step Mod 3 Tie 14",
+  "Step Mod 3 Tie 15",
+  "Step Mod 3 Tie 16",
+  "Step Mod 3 Length 1",
+  "Step Mod 3 Length 2",
+  "Step Mod 3 Length 3",
+  "Step Mod 3 Length 4",
+  "Step Mod 3 Length 5",
+  "Step Mod 3 Length 6",
+  "Step Mod 3 Length 7",
+  "Step Mod 3 Length 8",
+  "Step Mod 3 Length 9",
+  "Step Mod 3 Length 10",
+  "Step Mod 3 Length 11",
+  "Step Mod 3 Length 12",
+  "Step Mod 3 Length 13",
+  "Step Mod 3 Length 14",
+  "Step Mod 3 Length 15",
+  "Step Mod 3 Length 16",
+  "Step Mod 3 Rest 1",
+  "Step Mod 3 Rest 2",
+  "Step Mod 3 Rest 3",
+  "Step Mod 3 Rest 4",
+  "Step Mod 3 Rest 5",
+  "Step Mod 3 Rest 6",
+  "Step Mod 3 Rest 7"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 49 indices matched by value between stockfx-mfx-defaults and stockfx-mfx-spots, 0 by order. Popup rows unmapped."
+}

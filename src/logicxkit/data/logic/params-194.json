@@ -1,0 +1,449 @@
+{
+ "type": 194,
+ "variant": 954,
+ "name": "Multipressor",
+ "floats": 62,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Lookahead",
+   "unit": "ms",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Band 4 Xover Frequency 3/4",
+   "unit": "Hz",
+   "default": 7500.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Band 4 Response",
+   "unit": "ms",
+   "default": 50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Band 4 Reduction",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Band 4 Exp. Threshold",
+   "unit": "dB",
+   "default": -50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "Band 4 Exp. Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Band 4 Comp. Threshold",
+   "unit": "dB",
+   "default": -12.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Band 4 Comp. Ratio",
+   "unit": "",
+   "default": 2.022,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Band 4 Make Up",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 11,
+   "name": "Band 4 Attack",
+   "unit": "ms",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 12,
+   "name": "Band 4 Release",
+   "unit": "ms",
+   "default": 49.0,
+   "evidence": "value"
+  },
+  {
+   "index": 13,
+   "name": "Band 4 Monitor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "Band 3 Xover Frequency 2/3",
+   "unit": "Hz",
+   "default": 1100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Band 3 Response",
+   "unit": "ms",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Band 3 Reduction",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Band 3 Exp. Threshold",
+   "unit": "dB",
+   "default": -50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 18,
+   "name": "Band 3 Exp. Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 19,
+   "name": "Band 3 Comp. Threshold",
+   "unit": "dB",
+   "default": -15.0,
+   "evidence": "value"
+  },
+  {
+   "index": 20,
+   "name": "Band 3 Comp. Ratio",
+   "unit": "",
+   "default": 2.022,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Band 3 Make Up",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 22,
+   "name": "Band 3 Attack",
+   "unit": "ms",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 23,
+   "name": "Band 3 Release",
+   "unit": "ms",
+   "default": 49.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Band 3 Monitor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 25,
+   "name": "Band 2 Xover Frequency 1/2",
+   "unit": "Hz",
+   "default": 160.0,
+   "evidence": "value"
+  },
+  {
+   "index": 26,
+   "name": "Band 2 Response",
+   "unit": "ms",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "Band 2 Reduction",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 28,
+   "name": "Band 2 Exp. Threshold",
+   "unit": "dB",
+   "default": -50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 29,
+   "name": "Band 2 Exp. Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 30,
+   "name": "Band 2 Comp. Threshold",
+   "unit": "dB",
+   "default": -15.0,
+   "evidence": "value"
+  },
+  {
+   "index": 31,
+   "name": "Band 2 Comp. Ratio",
+   "unit": "",
+   "default": 2.022,
+   "evidence": "value"
+  },
+  {
+   "index": 32,
+   "name": "Band 2 Make Up",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 33,
+   "name": "Band 2 Attack",
+   "unit": "ms",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "Band 2 Release",
+   "unit": "ms",
+   "default": 49.0,
+   "evidence": "value"
+  },
+  {
+   "index": 35,
+   "name": "Band 2 Monitor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 37,
+   "name": "Band 1 Response",
+   "unit": "ms",
+   "default": 200.0,
+   "evidence": "value"
+  },
+  {
+   "index": 38,
+   "name": "Band 1 Reduction",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 39,
+   "name": "Band 1 Exp. Threshold",
+   "unit": "dB",
+   "default": -50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 40,
+   "name": "Band 1 Exp. Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 41,
+   "name": "Band 1 Comp. Threshold",
+   "unit": "dB",
+   "default": -18.0,
+   "evidence": "value"
+  },
+  {
+   "index": 42,
+   "name": "Band 1 Comp. Ratio",
+   "unit": "",
+   "default": 2.511,
+   "evidence": "value"
+  },
+  {
+   "index": 43,
+   "name": "Band 1 Make Up",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 44,
+   "name": "Band 1 Attack",
+   "unit": "ms",
+   "default": 2.0,
+   "evidence": "value"
+  },
+  {
+   "index": 45,
+   "name": "Band 1 Release",
+   "unit": "ms",
+   "default": 61.0,
+   "evidence": "value"
+  },
+  {
+   "index": 46,
+   "name": "Band 1 Monitor",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 47,
+   "name": "Master Gain",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 50,
+   "name": "Auto Gain",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 51,
+   "name": "Band 4 Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 52,
+   "name": "Band 3 Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 53,
+   "name": "Band 2 Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 54,
+   "name": "Band 1 Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 55,
+   "name": "Band 4 Solo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 56,
+   "name": "Band 3 Solo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 57,
+   "name": "Band 2 Solo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 49,
+   "name": "Band 1 Solo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "---",
+  "Band 1 Gain Reduction",
+  "Band 2 Gain Reduction",
+  "Band 3 Gain Reduction",
+  "Band 4 Gain Reduction"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 53 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 1 by order (2026-09-22). Popup rows unmapped."
+}

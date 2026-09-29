@@ -1,0 +1,34 @@
+{
+ "type": 239,
+ "variant": 1208,
+ "name": "Tuner",
+ "floats": 6,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Reference",
+   "unit": "Hz",
+   "default": 440.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Output Mute",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Deviation",
+  "Note"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 2 indices matched by value between stockfx-util-defaults and stockfx-util-spots, 0 by order. Popup rows unmapped."
+}

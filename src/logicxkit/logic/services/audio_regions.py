@@ -5,8 +5,8 @@ An import adds an `lFuA` file record and a `gRuA` region record before the first
 carrying the same slot word in their header (+10), and an 80-byte entry of type 0x24 in the song
 container (`regions.py`) whose `+44` word is that slot. A split adds a second region record with
 the same slot and the piece's number in the header owner (+14), and an entry with that number
-at `+40`; entry `(+44, +40)` pairs with record `(slot, owner)` on every project on hand (173
-projects, 1045 entries, pieces up to 29), and the file is the record with the entry's slot.
+at `+40`; entry `(+44, +40)` pairs with record `(slot, owner)` on every project on hand with
+audio, and the file is the record with the entry's slot.
 
 The file record: `+8` u16 the name's length in UTF-16 units, `+10` the name (UTF-16 LE), then
 `LFUA`; from that magic, `+138` the Media folder's path in a 256-byte NUL-padded buffer, `+406`

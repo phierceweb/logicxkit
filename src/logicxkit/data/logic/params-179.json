@@ -1,0 +1,101 @@
+{
+ "type": 179,
+ "variant": 728,
+ "name": "Noise Gate",
+ "floats": 16,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Threshold",
+   "unit": "dB",
+   "default": -50.0,
+   "evidence": "value"
+  },
+  {
+   "index": 2,
+   "name": "Hysteresis",
+   "unit": "dB",
+   "default": -3.0,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Reduction",
+   "unit": "dB",
+   "default": -100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 4,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 3.0,
+   "evidence": "value"
+  },
+  {
+   "index": 5,
+   "name": "Hold",
+   "unit": "ms",
+   "default": 40.0,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Release",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "High Cutoff",
+   "unit": "Hz",
+   "default": 20000.0,
+   "evidence": "value"
+  },
+  {
+   "index": 8,
+   "name": "Low Cutoff",
+   "unit": "Hz",
+   "default": 20.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Lookahead",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value"
+  },
+  {
+   "index": 10,
+   "name": "Monitor",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 13,
+   "name": "Filter On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Characteristics",
+  "Mode"
+ ],
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 11 indices matched by value between stockfx-dr2-defaults and stockfx-dr2-spots, 0 by order. Popup rows unmapped."
+}

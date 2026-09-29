@@ -175,7 +175,7 @@ def arrangement_track(pair: tuple[str, str]) -> dict:
 def midi_region(pair: tuple[str, str], track_label: str) -> dict:
     """The region Logic made on the strip labelled ``track_label``: its sequence triple and the
     song container's 80-byte entry for it."""
-    from logicxkit.logic.services.regions import ENTRY, TAIL, placements, song_container
+    from logicxkit.logic.services.regions import ENTRY, placements, song_container
     from logicxkit.logic.services.sequence import sequences, triple_by_slot
     data = _load(pair[1])
     records = project_records(data)
@@ -240,18 +240,67 @@ TEMPLATES = {
 }
 
 
-# the saves the packaged donor library is harvested from, in order: the nine native inserts on
-# Audio 1, then the four output plug-ins on Audio 1 (mono donors; the writer widens them)
-DONOR_KEYS = ("inserts-native-all-logic", "master-track-limiter-logic")
+# the saves the packaged donor library is harvested from, in order, as (key, channel): the strip
+# whose plug-ins were inserted and never opened — a save made after a plug-in's window was used
+# carries that record with a compare block appended, and a group's `-mono` save is its `-spots`
+# save plus the mono strip. Mono instances first; a stereo record of another length files beside
+# them (`harvest_donors`).
+DONOR_KEYS = (("inserts-native-all-logic", None), ("master-track-limiter-logic", None),
+              ("stockfx-dynamics2-mono", "Audio 1"), ("stockfx-dynamics-defaults", "Audio 2"),
+              ("stockfx-dynamics2-defaults", "Audio 2"),
+              ("stockfx-eq-mono", "Audio 1"), ("stockfx-eq-defaults", "Audio 2"),
+              ("stockfx-dr-mono", "Audio 1"), ("stockfx-dr-defaults", "Audio 2"),
+              ("stockfx-dr2-mono", "Audio 1"), ("stockfx-dr2-defaults", "Audio 2"),
+              ("stockfx-dr3-mono", "Audio 1"), ("stockfx-dr3-defaults", "Audio 2"),
+              ("stockfx-mod-mono", "Audio 1"), ("stockfx-mod-defaults", "Audio 2"),
+              ("stockfx-dist-mono", "Audio 1"), ("stockfx-dist-defaults", "Audio 2"),
+              ("stockfx-amp-mono", "Audio 1"), ("stockfx-amp-defaults", "Audio 2"),
+              ("stockfx-util-mono", "Audio 1"), ("stockfx-util-defaults", "Audio 2"),
+              ("stockfx-mfx-mono", "Audio 1"), ("stockfx-mfx-defaults", "Audio 2"))
 
 
-def donors() -> list[str]:
+def donors(lib: Path = OUT / "donors") -> list[str]:
     import shutil
-    from logicxkit.logic.services.chain_report import PLUGIN_NAMES
+    from logicxkit.logic.services.chain_report import native_names
     from logicxkit.logic.services.donors import harvest_donors
-    lib = OUT / "donors"
     shutil.rmtree(lib, ignore_errors=True)
-    return [k for key in DONOR_KEYS for k in harvest_donors(_load(key), lib, PLUGIN_NAMES)]
+    from logicxkit.logic._edit import owner_by_label
+    written = []
+    for key, label in DONOR_KEYS:
+        data = _load(key)
+        owners = None if label is None else {owner_by_label(data, label)}
+        written += harvest_donors(data, lib, native_names(), owners=owners)
+    id_offsets(lib)
+    return written
+
+
+def id_offsets(lib: Path) -> None:
+    """Each native donor's instance-id bytes, measured against the other instances of its
+    plug-in (same record length) in the donor saves, into the manifest; `add-plugin` stamps a
+    copy's own id there."""
+    from logicxkit.logic._binary import find_blocks
+    from logicxkit.logic.services.donors import MANIFEST
+    from logicxkit.logic.services.insert import slot_index_base
+    from logicxkit.logic.services.plugins import plugin_identity
+    from logicxkit.logic.services.slots import is_plugin_slot, property_key_base
+    from logicxkit.logic.services.transplant import window_offsets
+    pool: dict = {}
+    for key, _label in DONOR_KEYS:
+        data = _load(key)
+        base, first = property_key_base(data), slot_index_base(data)
+        for r in project_records(data):
+            p = r.raw[HEADER:]
+            if is_plugin_slot(r, base, first) and find_blocks(p):
+                pool.setdefault((plugin_identity(p), len(p)), set()).add(p)
+    manifest = json.loads((lib / MANIFEST).read_text())
+    for key, entry in manifest.items():
+        p = (lib / f"{key}.slot").read_bytes()[HEADER:]
+        others = sorted(pool.get((plugin_identity(p), len(p)), set()) - {p})
+        found = window_offsets(p, others) if others else ()
+        if found:
+            entry["id_offsets"] = list(found)
+    from pf_core.utils.io import atomic_write_json
+    atomic_write_json(lib / MANIFEST, manifest, sort_keys=True, ensure_ascii=True)
 
 
 def main() -> int:
