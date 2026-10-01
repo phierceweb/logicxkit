@@ -66,6 +66,13 @@ class ResolveTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "several channels"):
             resolve(data, "Kick In")
 
+    def test_an_object_whose_name_does_not_decode_does_not_stop_a_lookup(self):
+        data = proj(env_obj(88, "Kick In"), env_obj(900, b"Gitarre \xfc"),
+                    chan(2, "Audio 3", uuid=uuid(88)), chan(9, "Audio 10", uuid=uuid(900)),
+                    track(0, 88), track(1, 900))
+        self.assertEqual(resolve(data, "Kick In"), SideChain(0x40, 2))
+        self.assertEqual(source_name(data, SideChain(0x40, 9)), "Audio 10")
+
     def test_source_names(self):
         data = session()
         self.assertEqual(source_name(data, SideChain(0x45, 0)), "Drums")

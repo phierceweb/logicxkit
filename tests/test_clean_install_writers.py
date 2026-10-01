@@ -1,4 +1,5 @@
-"""With the data root empty, the writers that used to need it still write (packaged data)."""
+"""With the data root empty, every writer that loads a template or a donor writes from the
+packaged data."""
 
 import os
 import subprocess

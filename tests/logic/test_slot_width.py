@@ -14,7 +14,7 @@ class ChannelFormatTest(unittest.TestCase):
     Verified across the native instances on hand: the channel record holds 1 (mono) or
     2 (stereo) at payload+123, and the slot record repeats that value at payload offsets
     81, 84, 118, 119, 156, 157. Cloning a mono donor onto a stereo bus therefore yields a
-    MONO plugin on a stereo path — which is what was heard on the bus EQs.
+    MONO plugin on a stereo path.
 
     Channel EQ always holds 0 at +157 regardless of format, so only bytes already holding a
     1 or a 2 are rewritten.
@@ -79,9 +79,9 @@ class ChannelFormatTest(unittest.TestCase):
 
 
 class PluginVariantIdTest(unittest.TestCase):
-    """Width is 7 fields, not 6: a plugin-variant id at payload+116..117 selects the mono or
-    stereo BUILD of the plugin. Setting channel counts without it leaves Logic pointed at the
-    mono build while told to expect stereo."""
+    """A plugin-variant id at payload+116..117 selects the mono or stereo BUILD of the plugin.
+    Setting channel counts without it leaves Logic pointed at the mono build while told to
+    expect stereo."""
 
     def _slot(self, tid: int, cfg: int, variant: int) -> bytes:
         payload = bytearray(200)
@@ -137,7 +137,7 @@ class PluginVariantIdTest(unittest.TestCase):
 class WidthNoOpTest(unittest.TestCase):
     """Converting width needs a per-plugin config index, known only for mapped plugins. But when
     the donor's width ALREADY matches the target there is nothing to convert — demanding a
-    mapping there would block plugins needlessly (it blocked the reverbs)."""
+    mapping there would block plugins needlessly."""
 
     def _slot(self, fmt: int, type_id: int) -> bytes:
         p = bytearray(220)

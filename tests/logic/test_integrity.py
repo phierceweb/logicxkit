@@ -5,7 +5,7 @@ flexed entry with its marker blocks."""
 import struct
 import unittest
 
-from _records import _slotted, env_obj, gnos, proj, rec, seq_triple, track
+from _records import _slotted, chan, env_obj, gnos, proj, rec, seq_triple, track, uuid
 from test_regions import flat, song
 
 from logicxkit.logic.services.integrity import regressions, require_no_regression, structural_report
@@ -61,17 +61,18 @@ def rba_named(triple: bytes) -> bytes:
 
 def project(entries: list[bytes], *, files: tuple = FILES, regions=2,
             registered: tuple[int, ...] | None = (100,), triples: tuple[int, ...] = (100,),
-            rba: tuple[int, ...] = ()) -> bytes:
+            rba: tuple[int, ...] = (), extra: tuple[bytes, ...] = ()) -> bytes:
     """Kick with a MIDI region (slot 100), Bass with two audio regions (slots 0 and 4, playing
     ``files`` by position — None keeps a slot empty), Keys empty; the arrange rows in their song
     container, then the flat list. ``regions``: a count, or the record slots' indexes with
     ``(index, piece)`` for a split's piece. ``registered=None`` leaves the gnoS record out;
-    ``rba`` names those slots' triples RBA Sequence."""
+    ``rba`` names those slots' triples RBA Sequence; ``extra`` records go in after the objects."""
     rows = [track(0, KICK), track(1, BASS), track(2, KEYS), track(3, 80, flag=3)]
     registry = () if registered is None else (gnos(KICK, BASS, KEYS, 80, slots=registered),)
     which = range(regions) if isinstance(regions, int) else regions
     return proj(*registry,
                 env_obj(KICK, "Kick"), env_obj(BASS, "Bass"), env_obj(KEYS, "Keys"), env_obj(80, "Master", grouping=True),
+                *extra,
                 *(audio_file(name, 4 * k) for k, name in enumerate(files) if name),
                 *(audio_region(*k) if isinstance(k, tuple) else audio_region(k) for k in which),
                 *song(rows, entries),
@@ -306,6 +307,15 @@ class MarkerBlocksTest(unittest.TestCase):
         data = project(entries)
         self.assertEqual(len(structural_report(data)["marker_blocks"]), 1)
         self.assertEqual(regressions(data, move_track(data, KEYS, before=KICK, track_count=COUNT)), [])
+
+
+class NamelessObjectIndexTest(unittest.TestCase):
+    def test_the_index_of_an_object_whose_name_does_not_decode_is_checked(self):
+        nameless = (env_obj(500, b"Gitarre \xfc"), chan(272, "Audio 1", uuid=uuid(500)))
+        data = project(standard(), extra=nameless)
+        report = structural_report(data)
+        self.assertIsNone(report["unreadable"])
+        self.assertEqual(report["bad_object_index"], [500])
 
 
 if __name__ == "__main__":

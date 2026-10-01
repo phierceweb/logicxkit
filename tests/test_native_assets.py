@@ -1,8 +1,7 @@
 """The Swift scripts must resolve from an installed package, not just from a checkout.
 
-`native_dir()` used to walk up to the repo root, which is only correct for an editable install:
-from a wheel it pointed at a directory beside `site-packages` that does not exist, and `logic
-ocr` surfaced the miss as a Swift compiler error naming an internal path.
+`native_dir()` is `logicxkit/native` beside the package, so a wheel under `site-packages` finds
+the scripts as a checkout does.
 """
 
 import unittest

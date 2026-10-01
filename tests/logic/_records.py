@@ -46,11 +46,11 @@ def uuid(n: int) -> bytes:
     return struct.pack("<IIII", 0x94C011EF, n, n * 7 + 1, 0xE1E1)
 
 
-def env_obj(object_id: int, name: str, *, grouping: bool = False, uuid: bytes | None = None,
+def env_obj(object_id: int, name: str | bytes, *, grouping: bool = False, uuid: bytes | None = None,
             parent: int = 0, ver: int = 12, group: int = 0) -> bytes:
     from logicxkit.logic.services.environment import (
         CHANNEL_OBJECT, GROUPING, KIND_AT, NAME_AT, PARENT_AT)
-    encoded = name.encode()
+    encoded = name if isinstance(name, bytes) else name.encode()
     p = bytearray(463 + len(encoded) + len(encoded) % 2)   # names are padded to even length
     struct.pack_into("<I", p, 0, CHANNEL_OBJECT[ver])
     struct.pack_into("<I", p, 16, object_id)

@@ -1,5 +1,5 @@
-"""Logic's Library saves of one strip, one change per save, and one from a summing stack (session C,
-2026-09-16): what a patch bundle carries and what the reader reads from it."""
+"""Logic's Library saves of one strip, one change per save, and one from a summing stack
+(2026-09-16): what a patch bundle carries and what the reader reads from it."""
 
 import unittest
 import _goldens

@@ -160,6 +160,9 @@ move with it (every file on hand, 2026-09-29; the classes are each record's own 
 | 2511 | Logic 11.2 | 12 | 6 | 4 | 5 | 6 | 2 |
 | 2509, 2510 | before 11.2 | 11 | 6 | 2, 3 | 5 | 5, 6 | 2 |
 
+Logic 12.4 (6707) writes 2513 too, with the same classes on the one save measured
+(`names-non-ascii-logic`, 2026-09-30; it holds no `gRuA`).
+
 Every offset in this document is measured on 2513, and the writers take nothing else
 (`validate.require_measured_format`, called before a project is copied). A class-6 channel
 record is the class-7 record without its last 32 bytes, so what `route` writes as the input UUID
@@ -596,7 +599,7 @@ is not the arrange hierarchy.
 | `+82` | u32 per-object stamp: a fresh object gets its pattern's plus the pattern's `+86` (64 or 66); a channel insert moves every object above the pattern's up by 66 |
 | `+86` | u16, `0x42` on a fresh object (`0x40` on older ones) |
 | `+154` | kind; **0** marks a grouping object — folder stacks, plus Logic's own Preview/Click/Master |
-| `+158` | u16-length-prefixed name, immediately following, padded to an even length |
+| `+158` | u16-length-prefixed name, immediately following, padded to an even length; UTF-8, the length in bytes (`names-non-ascii-logic`) |
 | name end | u16 = the bound channel's owner + 1, kept live when owners shift; +3 on a stack object holds its Sub number |
 | last 16 bytes | the object's instance **UUID** (v1, `94 c0 11 ef` in the middle) |
 

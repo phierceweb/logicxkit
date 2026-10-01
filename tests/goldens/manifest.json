@@ -21523,5 +21523,19 @@
   "facts": {
    "chain": []
   }
+ },
+ "names-non-ascii-logic": {
+  "path": "names-01-non-ascii-tracks.logicx",
+  "note": "Logic 12.4's save of tracks-three-audio-logic with Audio 1 renamed Gitarre \u00fc and Audio 2 renamed to a guitar emoji and Lead, each by the header's name field",
+  "facts": {
+   "tracks": 3,
+   "names": [
+    "Gitarre \u00fc",
+    "\ud83c\udfb8 Lead",
+    "Audio 3"
+   ],
+   "logic": "12.4 (6707)",
+   "format": 2513
+  }
  }
 }

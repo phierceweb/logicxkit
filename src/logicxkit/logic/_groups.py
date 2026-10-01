@@ -13,7 +13,7 @@ def _print(groups, objs) -> None:
     if not groups:
         print("  no groups")
     for g in groups:
-        members = ", ".join(objs[m].name if m in objs else str(m) for m in g.members)
+        members = ", ".join((objs[m].name if m in objs else None) or str(m) for m in g.members)
         print(f"  {g.number:2d}  {g.label:16s} {', '.join(g.settings)}{'' if g.on else '  (off)'}")
         print(f"      {members or '(no members)'}")
 

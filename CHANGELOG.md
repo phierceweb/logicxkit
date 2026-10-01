@@ -3,6 +3,20 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.7.1 — 2026-09-30
+
+### Changed
+
+- logicxkit depends on `groovebin~=0.4.1` and `pf-core~=0.24.0`. The `rig` extra pins
+  `x32scene~=0.6.0`, the first x32scene on that pf-core.
+
+### Fixed
+
+- Track names outside ASCII read as Logic shows them (Logic 12.4's save,
+  `names-non-ascii-logic`). 0.7.0 dropped such a track's object, so an `add-track` above its
+  channel left its mixer index stale and the write gate did not see it. An object whose name is
+  not UTF-8 text stays in the reader with no name. Writing a name outside ASCII is still refused.
+
 ## 0.7.0 — 2026-09-29
 
 ### Added
@@ -122,6 +136,14 @@ versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
   on an instrument track.
 - `settings` and the translation notes print a value of 10,000 or more in full (`20000 Hz`, not
   `2e+04 Hz`).
+- `add-track` whose pattern track has a stale index-table entry clones the entry from a track of
+  the same kind; it could take an aux's or an instrument's.
+- `au preset` and `au strip` refuse a missing path in a sentence (`no such file: PATH`), not an
+  errno.
+- `project`'s listing prints plug-in values without float32 noise (`0.0`, not `5.3e-15`);
+  `--json` keeps the stored values.
+- The tests run from an unpacked sdist or a git archive: the git-index checks skip there, and the
+  cache-path test no longer depends on `HOME`.
 
 ## 0.6.0 — 2026-09-17
 

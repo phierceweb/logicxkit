@@ -112,8 +112,7 @@ class TemplateGroupsTest(unittest.TestCase):
 
 @_goldens.needs("stack-folder-flattened-logic")
 class EventsSurviveAddTrackTest(unittest.TestCase):
-    """A track added after members were assigned used to leave a group short of fader events
-    ("2 event(s) for 2 member(s), 4 expected"); on Logic's blank-born project it does not."""
+    """A track added after members were assigned keeps one fader event per member per fader."""
 
     def test_the_group_keeps_one_event_per_member_per_fader(self):
         from logicxkit.logic.services.addtrack import add_track

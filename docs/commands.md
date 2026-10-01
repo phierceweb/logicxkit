@@ -55,11 +55,12 @@ next section before using one.
 **Every project-mutating command requires `--out` and works on a copy. The input is never
 modified.** There is no in-place mode and none will be added.
 
-**Every writer takes a project last saved by Logic 12.3.1** — file format 2513, the u16 at +4 of
-`ProjectData` — and refuses any other before anything is copied, naming the alternative and the
-format it found. Logic moves record layouts between builds, so a field written where another
-build keeps something else is damage no later check sees. Open the project in the current Logic
-and save it, every alternative, then run the command. The readers take any save as they find it.
+**Every writer takes a project in file format 2513** — the u16 at +4 of `ProjectData`, which
+Logic 12.3.1 and 12.4 write — and refuses any other before anything is copied, naming the
+alternative and the format it found. Logic moves record layouts between builds, so a field
+written where another build keeps something else is damage no later check sees. Open the project
+in the current Logic and save it, every alternative, then run the command. The readers take any
+save as they find it.
 
 Most editors route through `_edit.edit_copy`, which holds the result against its input using
 `logic/services/integrity.py` (region, file and marker checks in `integrity_regions.py`, marker

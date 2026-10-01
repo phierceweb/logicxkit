@@ -300,3 +300,18 @@ class RegisterGroupTest(unittest.TestCase):
 
     def test_object_entries_are_not_mistaken_for_group_entries(self):
         self.assertEqual(group_entries(gnos(KICK, SNARE)[HEADER:], 24), [])
+
+
+class ListingTest(unittest.TestCase):
+    def test_a_member_whose_name_does_not_decode_is_listed_by_its_id(self):
+        import io
+        from contextlib import redirect_stdout
+
+        from logicxkit.logic._groups import _print
+        from logicxkit.logic.services.environment import channel_objects
+        from logicxkit.logic.services.groups import Group
+        objs = channel_objects(proj(env_obj(500, b"Gitarre \xfc")))
+        out = io.StringIO()
+        with redirect_stdout(out):
+            _print([Group(1, 0, 1, "Drums", DEFAULT_FLAGS, (500,), 0)], objs)
+        self.assertIn("500", out.getvalue())

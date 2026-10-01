@@ -57,10 +57,11 @@ the same table.** Read it before you point a writer at a session you care about.
 - **macOS.** There is no Linux or Windows path. CI runs on a macOS runner with the public golden
   corpus tracked in the repo, so the synthetic layer and every public golden run there; the owner's goldens
   (real sessions) and `tests/rig` (a physical console's scene) skip.
-- **Logic Pro 12.3.1** — the tool reads and writes its file formats, and confirming any change
-  means opening the result in Logic. The writers take a project last saved by Logic 12.3.1 and
-  refuse any other, naming the format they found: open an older project in Logic and save it
-  first. The readers run on older saves, where tracks may read unnamed.
+- **Logic Pro 12.3.1 or 12.4** — the tool reads and writes their file format, and confirming any
+  change means opening the result in Logic; every confirmation so far was made in 12.3.1. The
+  writers take a project in the format both save (2513) and refuse any other, naming the format
+  they found: open an older project in Logic and save it first. The readers run on older saves,
+  where tracks may read unnamed.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
   `PYTHON=python3.13` (or any 3.12+) to use another interpreter.
 - **A Swift toolchain** (`swift`) — the headless AU host and the Apple Vision OCR are Swift

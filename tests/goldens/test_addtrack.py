@@ -95,5 +95,27 @@ class StereoPairInputTest(unittest.TestCase):
             add_track(base, name="Audio 4", after=after, stereo=True, input_number=2)
 
 
+@_goldens.needs("tracks-three-audio-logic")
+class NamelessObjectTest(unittest.TestCase):
+    """An object whose name does not decode (one byte of `Stereo Out` put outside ASCII) is still
+    bound, so the insert moves its stored index with its channel."""
+
+    def test_the_index_of_a_nameless_bound_object_follows_its_channel(self):
+        import struct
+
+        from logicxkit.logic.services.addtrack import add_track
+        from logicxkit.logic.services.binding import channels
+        from logicxkit.logic.services.environment import NAME_AT, name_end, object_record
+        from logicxkit.logic.services.insert import HEADER, project_records
+        data = project_data(_goldens.path("tracks-three-audio-logic"))
+        at = data.index(object_record(project_records(data), 80)) + HEADER + NAME_AT + 2
+        data = data[:at] + b"\xfc" + data[at + 1:]
+        out, _ = add_track(data, name="Keys", after=88, kind="instrument")
+        obj = object_record(project_records(out), 80)
+        owner = next(o for o, c in channels(out).items() if c.uuid == obj[-16:])
+        index = struct.unpack_from("<H", obj, HEADER + name_end(obj[HEADER:]))[0]
+        self.assertEqual(index, owner + 1)
+
+
 if __name__ == "__main__":
     unittest.main()

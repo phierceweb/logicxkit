@@ -1,5 +1,5 @@
 """The output plug-ins on the Stereo Out and on a track, and one parameter per save, as Logic's
-own saves wrote them (session C, 2026-09-16). Skips without the public corpus."""
+own saves wrote them (2026-09-16). Skips without the public corpus."""
 
 import unittest
 import _goldens

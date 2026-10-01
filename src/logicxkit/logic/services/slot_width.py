@@ -14,7 +14,7 @@ from .records import HEADER
 # (its own files contain channel/slot disagreements), so a cloned mono donor stays mono on a
 # stereo bus. The channel's width is at OCuA payload+123 (a literal channel count).
 #
-# A slot's width is SEVEN fields, not six:
+# A slot's width is seven fields:
 #   +81            per-plugin config INDEX (not a channel count — Gain's stereo index is 3)
 #   +84, +118/+119 channel counts
 #   +116..117      plugin-VARIANT id, selecting the mono or stereo build of the plugin

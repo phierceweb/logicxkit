@@ -42,6 +42,17 @@ class ChannelObjectsTest(unittest.TestCase):
         self.assertEqual(channel_objects(data)[88].name, "Kick In")
         self.assertEqual(CHANNEL_OBJECT[11], 1728)
 
+    def test_an_object_whose_name_does_not_decode_is_kept_without_a_name(self):
+        for raw in (b"Gitarre \xfc", b"Kick\x07In"):      # not UTF-8; a control character
+            obj = channel_objects(proj(env_obj(500, raw)))[500]
+            self.assertIsNone(obj.name, raw)
+            self.assertEqual(obj.uuid, uuid(500))
+
+    def test_a_name_is_utf8(self):
+        family = "\U0001F468\u200d\U0001F469\u200d\U0001F467 Trio"
+        for name in ("Gitarre \u00fc", "\U0001F3B8 Lead", family):
+            self.assertEqual(channel_objects(proj(env_obj(500, name)))[500].name, name)
+
 
 class SetParentTest(unittest.TestCase):
     def test_writes_all_four_bytes(self):

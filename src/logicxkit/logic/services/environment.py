@@ -10,7 +10,7 @@
     +86    u16   0x42 on a fresh object
     +154   u8    kind; 0 marks a grouping object (stack folders, Logic's Preview/Click/Master)
     +155   u8    track colour, a palette index (drums 96, guitars 81; a recolour moved 96 -> 64)
-    +158   u16   name length, the name follows (padded to an even length)
+    +158   u16   name length in bytes, the UTF-8 name follows (padded to an even length)
     name end     u16 = the bound channel's owner + 1, kept live when owners shift; on a
     name end +3  stack object, its Sub number
     last 16      the object's instance UUID; a mixer channel binds to an object by carrying it
@@ -54,7 +54,7 @@ _NAME_MAX = 63
 @dataclass(frozen=True)
 class EnvObject:
     object_id: int
-    name: str
+    name: str | None                  # None: the bytes are not UTF-8 text
     kind: int
     parent: int
     uuid: bytes
@@ -76,16 +76,26 @@ def _is_channel_object(payload: bytes, constant: int | None) -> bool:
             and struct.unpack_from("<I", payload, 0)[0] & TYPE_MASK == constant)
 
 
-def _name(payload: bytes) -> str | None:
+def _name_bytes(payload: bytes) -> bytes | None:
+    """The name's bytes, or None when the length field is not one."""
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
     if not (0 < n <= _NAME_MAX) or NAME_AT + 2 + n > len(payload):
         return None
-    raw = payload[NAME_AT + 2:NAME_AT + 2 + n]
-    return raw.decode("latin-1") if all(32 <= c < 127 for c in raw) else None
+    return payload[NAME_AT + 2:NAME_AT + 2 + n]
+
+
+def _name(raw: bytes) -> str | None:
+    """UTF-8, as Logic writes it; None for other bytes or a control character."""
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return None
+    return None if any(ord(ch) < 32 or 127 <= ord(ch) < 160 for ch in text) else text
 
 
 def channel_objects(data: bytes) -> dict[int, EnvObject]:
-    """object id -> the channel-type Environment objects whose name decodes."""
+    """object id -> every channel-type Environment object with a name field; ``name`` is None
+    where its bytes are not UTF-8 text, so binding and the write gate still see the object."""
     records = project_records(data)
     constant = _constant(records)
     out: dict[int, EnvObject] = {}
@@ -97,12 +107,12 @@ def channel_objects(data: bytes) -> dict[int, EnvObject]:
         payload = record.raw[HEADER:]
         if not _is_channel_object(payload, constant):
             continue
-        name = _name(payload)
-        if name is None:
+        raw_name = _name_bytes(payload)
+        if raw_name is None:
             continue
         object_id = struct.unpack_from("<I", payload, OBJECT_ID_AT)[0]
         out[object_id] = EnvObject(
-            object_id=object_id, name=name, kind=payload[KIND_AT],
+            object_id=object_id, name=_name(raw_name), kind=payload[KIND_AT],
             parent=struct.unpack_from("<I", payload, PARENT_AT)[0],
             uuid=payload[-UUID_LEN:], size=len(payload), colour=payload[COLOUR_AT],
             icon=struct.unpack_from("<H", payload, ICON_AT)[0])
@@ -209,8 +219,8 @@ def _with_name(payload: bytes, name: str) -> bytearray:
     """The payload with the name field rewritten; everything after it keeps its place."""
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
     if not name.isascii() or not name.isprintable():
-        raise ValueError("a track name is printable ASCII here — no file on hand shows how Logic "
-                         "stores anything else")
+        raise ValueError("a track name is written as printable ASCII only — Logic stores others "
+                         "as UTF-8, and no Logic re-save confirms one written here")
     encoded = name.encode("ascii")
     if not 0 < len(encoded) <= _NAME_MAX:
         raise ValueError(f"a track name is 1-{_NAME_MAX} characters")
@@ -228,8 +238,8 @@ def rename_object(raw: bytes, name: str) -> bytes:
 
 
 def rename_track(data: bytes, object_id: int, name: str) -> bytes:
-    """Rename one track's object; the only field a rename touches (unmeasured: no Logic
-    rename save on hand, but the object is the sole holder of the name)."""
+    """Rename one track's object: the name field and the user-named bit, which is all Logic's
+    own rename changed in the object (`names-non-ascii-logic`)."""
     require_full_walk(data)
     records = project_records(data)
     out, hit = [], False

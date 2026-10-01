@@ -66,7 +66,7 @@ def _names(data: bytes) -> dict[int, str]:
     objects = channel_objects(data)
     out = {}
     for obj, owner in bound_channels(data).items():
-        name = objects[obj].name.strip() if obj in objects else ""
+        name = (objects[obj].name or "").strip() if obj in objects else ""
         if name:
             out[owner] = name
     return out

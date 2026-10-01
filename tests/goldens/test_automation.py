@@ -1,4 +1,4 @@
-"""Track automation as Logic's own point creates wrote it (session C, 2026-09-16): a volume
+"""Track automation as Logic's own point creates wrote it (2026-09-16): a volume
 point at the region border, two more, a plug-in parameter point, the lane converted to region
 automation. Skips without the public corpus."""
 

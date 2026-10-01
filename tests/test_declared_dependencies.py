@@ -3,9 +3,7 @@
 `pip check` reads the *installed* logicxkit metadata, so an editable install keeps answering for
 the pin it was built with: `pyproject.toml` can move to a version that does not exist anywhere and
 `pip check` still reports "No broken requirements found" while the suite runs green against a
-source tree whose distribution says otherwise. That is how `groovebin~=0.3.0` was committed with
-only 0.1.0 and 0.2.0 on PyPI — every local signal was green and CI's install step was the first
-thing to see it.
+source tree whose distribution says otherwise.
 
 This reads the pins from the file rather than from metadata, so it cannot be fooled the same way.
 It does not reach the network: an unpublished version is caught here only when the venv does not

@@ -72,3 +72,9 @@ class StackChannelTest(unittest.TestCase):
         diffs = [i for i, (a, b) in enumerate(zip(raw, out, strict=True)) if a != b]
         self.assertEqual(diffs, [36 + 110])
         self.assertEqual(out[36 + 110], 3)
+
+
+class NamelessObjectTest(unittest.TestCase):
+    def test_a_channel_bound_to_an_object_whose_name_does_not_decode_is_bound(self):
+        data = proj(env_obj(500, b"Gitarre \xfc"), chan(272, "Audio 1", uuid=uuid(500)))
+        self.assertEqual(bound_channels(data), {500: 272})

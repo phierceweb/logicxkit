@@ -1,4 +1,4 @@
-"""A stack inside a stack, as Logic's own creates and drags wrote it (session C, 2026-09-16), and
+"""A stack inside a stack, as Logic's own creates and drags wrote it (2026-09-16), and
 our moves held against those drags: membership, depth and stack index per row — not row order,
 which a drag chooses and a write appends."""
 

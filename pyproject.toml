@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "logicxkit"
-version = "0.7.0"
+version = "0.7.1"
 description = "Logic Pro project and channel-strip tooling, and Audio Unit preset and state decoding"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -26,9 +26,9 @@ classifiers = [
 dependencies = [
     # Foundation tier + the pf_core.guards gate bin/run lint runs. Must match
     # x32scene's pin, or pip cannot resolve the two together.
-    "pf-core~=0.22.0",
+    "pf-core~=0.24.0",
     # General MIDI: files, note maps, transforms and the pattern library. The same pf-core pin.
-    "groovebin~=0.3.0",
+    "groovebin~=0.4.1",
 ]
 
 [project.urls]
@@ -50,9 +50,9 @@ dev = [
     "build>=1.0",
 ]
 # Opt-in: only tests/rig needs it, and only on a machine with the real scene. Nothing in
-# src/ imports it. Its own pf-core pin is ~=0.22.0, which is why the two resolve together.
+# src/ imports it. Its pf-core pin must be the one above, or pip cannot resolve the two.
 rig = [
-    "x32scene~=0.2.0",
+    "x32scene~=0.6.0",
 ]
 
 [tool.setuptools.packages.find]

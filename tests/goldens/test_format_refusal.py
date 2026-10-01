@@ -1,5 +1,6 @@
 """A project Logic 11.2 saved, set up as a bundle of its own: every writer refuses it and
-nothing is copied. Skips without the owner's files."""
+nothing is copied (skips without the owner's files). Logic 12.4's public save is the format the
+writers take."""
 
 import shutil
 import struct
@@ -51,6 +52,22 @@ class Logic112RefusedTest(unittest.TestCase):
         code, text = run("project", project)
         self.assertEqual(code, 0, text)
         self.assertIn(f"{_goldens.fact(KEYS[0], 'tracks')} tracks", text)
+
+
+@_goldens.needs("names-non-ascii-logic")
+class Logic124AcceptedTest(unittest.TestCase):
+    def test_its_save_is_the_measured_format(self):
+        import plistlib
+
+        from logicxkit.logic.services.validate import (
+            MEASURED_FORMAT, file_format, require_measured_format)
+        project = _goldens.path("names-non-ascii-logic")
+        data = (project / "Alternatives" / "000" / "ProjectData").read_bytes()
+        with (project / "Resources" / "ProjectInformation.plist").open("rb") as f:
+            saved_from = plistlib.load(f)["LastSavedFrom"]
+        self.assertEqual(saved_from, f"Logic Pro {_goldens.fact('names-non-ascii-logic', 'logic')}")
+        self.assertEqual(file_format(data), MEASURED_FORMAT)
+        require_measured_format(data)
 
 
 if __name__ == "__main__":
