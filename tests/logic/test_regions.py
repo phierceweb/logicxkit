@@ -5,7 +5,7 @@ import struct
 import unittest
 
 from _records import env_obj, marker, proj, rec, track
-from logicxkit.logic.services.insert import project_records
+from logicxkit.logic.services.stream import project_records
 from logicxkit.logic.services.regions import (
     ENTRY, ROW_COUNT_FROM_END, ROW_UNIT, TAIL, placements, region_errors, row_count_errors,
     sync_region_tracks, sync_row_count,
@@ -93,7 +93,7 @@ class RowCountTest(unittest.TestCase):
 
     def test_row_count_reads_the_container(self):
         from logicxkit.logic.services.regions import row_count, song_container
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         from logicxkit.logic.services.tracklist import arrange_run
         data = proj(*song([track(0, 88), track(1, 80, flag=3)], []), *flat(88, 80, 500))
         recs = project_records(data)

@@ -1,8 +1,9 @@
 """The orchestrator: the plan names every difference with the rule that paired the rows, and
 apply runs it as the chain of atomic writers."""
 
+import struct
 import unittest
-from _records import chan, env_obj, marker, proj, track, uuid
+from _records import chan, count_record, env_obj, marker, proj, track, uuid
 from logicxkit.logic.orchestrators.apply_template import KINDS, apply_template, plan
 from logicxkit.logic.services.stacks import read_tracks
 from _data import needs
@@ -37,6 +38,54 @@ class PlanTest(unittest.TestCase):
 
     def test_every_kind_is_known(self):
         self.assertEqual(len(set(KINDS)), len(KINDS))
+
+
+def routed_session() -> bytes:
+    """Kick In from Input 1 and Vox from Input 2, both to Output 1-2, by uuid."""
+    return proj(env_obj(88, "Kick In"), env_obj(504, "Vox"), env_obj(80, "Master", grouping=True),
+                chan(0, "Audio 1", uuid=uuid(88), dest=uuid(80), source=uuid(601)),
+                chan(19, "Audio 20", uuid=uuid(504), dest=uuid(80), source=uuid(602)),
+                chan(256, "Input 1", uuid=uuid(601), size=201),
+                chan(257, "Input 2", uuid=uuid(602), size=201),
+                chan(258, "Input 3", uuid=uuid(603), size=201),
+                chan(402, "Output 1-2", uuid=uuid(80), size=201),
+                track(0, 88), track(1, 504), track(2, 80, flag=3), marker())
+
+
+def word_routed_template(*, kick_input: int = 0, fmt: int = 2511) -> bytes:
+    """The same rows as Logic 11.2 saves them: class-6 channels routed by index words."""
+    data = bytearray(proj(
+        count_record(1, [0, 0, 0, 0, 32], 1),
+        env_obj(88, "Kick In", type_value=1760), env_obj(504, "Vox", type_value=1760),
+        env_obj(80, "Master", grouping=True, type_value=1760),
+        chan(0, "Audio 1", uuid=uuid(88), size=233, ver=6, words=(0, kick_input)),
+        chan(19, "Audio 20", uuid=uuid(504), size=233, ver=6, words=(0, 1)),
+        chan(402, "Output 1-2", uuid=uuid(80), size=233, ver=6),
+        track(0, 88), track(1, 504), track(2, 80, flag=3), marker()))
+    struct.pack_into("<H", data, 4, fmt)
+    return bytes(data)
+
+
+class WordRoutedTemplateTest(unittest.TestCase):
+    """A Logic 11.2 template routes by index words: read, they are compared like any other
+    routing; not read, they plan nothing — never `-> no input`."""
+
+    def _routing_ops(self, template: bytes) -> list[tuple[str, str, str]]:
+        ops = plan(template, routed_session(), template_count=2, session_count=2)
+        return [(op.kind, op.target, op.detail) for op in ops if op.kind in ("input", "output")]
+
+    def test_the_same_routing_plans_nothing(self):
+        self.assertEqual(self._routing_ops(word_routed_template()), [])
+
+    def test_a_different_input_is_planned_by_its_label(self):
+        ops = plan(word_routed_template(kick_input=2), routed_session(), template_count=2,
+                   session_count=2)
+        (op,) = [op for op in ops if op.kind == "input"]
+        self.assertEqual((op.target, op.detail, op.args),
+                         ("Kick In (Audio 1)", "-> Input 3", {"owner": 0, "dest": 258}))
+
+    def test_routing_that_is_not_read_plans_nothing(self):
+        self.assertEqual(self._routing_ops(word_routed_template(fmt=2510)), [])
 
 
 class FilterTest(unittest.TestCase):
@@ -221,7 +270,7 @@ class ReturnsTest(unittest.TestCase):
         self.assertEqual({op.kind: op.status for op in done}, {"return": "done"})
         self.assertIsNone(input_routing(out).get(280))
         self.assertEqual(channel_slots(out, 280), [])
-        from logicxkit.logic.services.insert import project_records as _recs
+        from logicxkit.logic.services.stream import project_records as _recs
         orphan = next(r for r in _recs(out) if r.owner == 280 and r.tag == b"OCuA")
         self.assertEqual(orphan.raw[36 + 94:36 + 96], b"\xff\xff")
 

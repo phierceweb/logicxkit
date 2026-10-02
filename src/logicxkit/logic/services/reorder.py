@@ -5,7 +5,7 @@ header moves with its member rows as one block. Moving a row into a stack is
 
 from __future__ import annotations
 
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import with_key
 from .regions import sync_region_tracks
 from .selection import select_track

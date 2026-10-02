@@ -16,7 +16,7 @@ from _paths import REPO
 from _records import chan, proj, rec
 
 from logicxkit.cli import main as logicxkit_main
-from logicxkit.logic.services.insert import slot_bypassed
+from logicxkit.logic.services.slots import slot_bypassed
 from logicxkit.logic.services.project import read_project
 from logicxkit.logic.services.transplant import channel_slots, copy_reference
 

@@ -14,7 +14,7 @@ from __future__ import annotations
 import struct
 
 from .events import DATA_LINE, LINE, PPQ, Event, events
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec
 from .registry import GNOS_TAG
 from .tempo import (

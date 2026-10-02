@@ -9,7 +9,8 @@ import unittest
 
 from _records import proj
 from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.insert import HEADER, KEY_OFF, SLOT_INDEX_AT, project_records
+from logicxkit.logic.services.slots import SLOT_INDEX_AT
+from logicxkit.logic.services.stream import HEADER, KEY_OFF, project_records
 from logicxkit.logic.services.transplant import channel_slots
 from test_transplant_ids import MONO, STEREO, TAIL, au, mono_chan, native, ref
 

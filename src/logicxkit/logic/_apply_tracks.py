@@ -91,15 +91,17 @@ def cmd_add_track(args) -> int:
 
 
 def cmd_stack_create(args) -> int:
-    """Make a folder stack from existing top-level tracks; bumps NumberOfTracks."""
+    """Make a folder or summing stack from existing top-level tracks; bumps NumberOfTracks."""
     from .services.stack_create import create_stack
+    from .services.stack_summing import create_summing_stack
 
     def step(data, count, data_file):
         members = [object_by_name(data, name, count) for name in args.track]
-        data, report = create_stack(data, name=args.name, members=members, track_count=count,
-                                    colour=args.colour)
+        make = create_summing_stack if args.summing else create_stack
+        data, report = make(data, name=args.name, members=members, track_count=count, colour=args.colour)
         tracks = bump_track_count(data_file)
-        print(f"  {data_file.parent.name}: {args.name!r}: {report['label']} (owner {report['owner']}), object "
+        fed = f", fed from {report['bus']}" if args.summing else ""
+        print(f"  {data_file.parent.name}: {args.name!r}: {report['label']} (owner {report['owner']}){fed}, object "
               f"{report['object_id']}, sequence {report['sequence']}, "
               f"{len(report['members'])} member(s); NumberOfTracks -> {tracks}")
         return data
@@ -149,11 +151,14 @@ def register(sub) -> None:
                     help="audio: record from the pair Input N-(N+1); instrument: a stereo channel")
     at.add_argument("--instrument", action="store_true", help="a software instrument track")
     at.set_defaults(func=cmd_add_track)
-    sc = sub.add_parser("stack-create", help="make a folder stack from tracks (writes a copy)")
+    sc = sub.add_parser("stack-create", help="make a folder or summing stack from tracks (writes a copy)")
     sc.add_argument("project")
     sc.add_argument("--out", required=True)
     sc.add_argument("--name", required=True, help="the stack's name")
     sc.add_argument("--track", action="append", required=True, metavar="NAME",
-                    help="a top-level track to put inside (repeatable)")
+                    help="a track to put inside (repeatable): all at the top level, or all direct "
+                         "members of one stack")
     sc.add_argument("--colour", type=int, default=16, metavar="INDEX")
+    sc.add_argument("--summing", action="store_true",
+                    help="a summing stack: an aux fed from a free bus, every member's output sent to it")
     sc.set_defaults(func=cmd_stack_create)

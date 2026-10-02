@@ -4,12 +4,14 @@
 objects (names), and the `OCuA` channels each row is bound to. A stack is a grouping object
 bound to a `Sub N` strip; its members are the rows below it whose +14 byte is set."""
 
+import struct
 import unittest
 from _records import chan, env_obj, marker, proj, track, uuid
 from logicxkit.logic.services.stacks import (
     FOLDER,
     HIDDEN_BIT,
     HIDDEN_FLAG,
+    SUMMING,
     arrange_list,
     move_to_stack,
     read_stacks,
@@ -38,6 +40,17 @@ def session(*extra: bytes) -> bytes:
         track(8, 80, flag=3))
 
 TRACKS = 8
+
+
+def retyped(data: bytes, type_value: int) -> bytes:
+    """``data`` with every object's type word set to ``type_value``."""
+    from logicxkit.logic.services.stream import HEADER, project_records
+    buf, at = bytearray(data), 24
+    for record in project_records(data):
+        if record.tag == b"ivnE":
+            struct.pack_into("<I", buf, at + HEADER, type_value)
+        at += len(record.raw)
+    return bytes(buf)
 
 
 class TrackListTest(unittest.TestCase):
@@ -101,6 +114,21 @@ class StackTest(unittest.TestCase):
         stacks = read_stacks(data, 3)
         self.assertEqual([n for _k, n in stacks[0].members], ["Click", "Hi Hat MIDI"])
 
+    def test_an_aux_inside_a_folder_stack_is_a_member_not_a_summing_stack(self):
+        """An aux track carries the grouping flag; the row after it at its own depth is its
+        sibling, and only a row one level deeper makes it a summing header."""
+        data = proj(
+            env_obj(272, "Drums", grouping=True), env_obj(208, "Drum Verb", grouping=True),
+            env_obj(88, "Kick In"), env_obj(300, "Vocals", grouping=True), env_obj(92, "Lead"),
+            chan(384, "Sub 1", uuid=uuid(272)), chan(67, "Aux 1", uuid=uuid(208)),
+            chan(0, "Audio 1", uuid=uuid(88)), chan(68, "Aux 2", uuid=uuid(300)),
+            chan(1, "Audio 2", uuid=uuid(92)),
+            track(0, 272), track(1, 208, member=True), track(2, 88, member=True),
+            track(3, 300), track(4, 92, member=True))
+        stacks = read_stacks(data, 4)
+        self.assertEqual([(s.name, s.kind, [n for _k, n in s.members]) for s in stacks],
+                         [("Drums", FOLDER, ["Drum Verb", "Kick In"]), ("Vocals", SUMMING, ["Lead"])])
+
     def test_rows_report_member_and_expanded(self):
         rows = read_tracks(session(), TRACKS)
         self.assertEqual([r["member"] for r in rows[:4]], [False, True, True, False])
@@ -156,6 +184,12 @@ class MoveToStackTest(unittest.TestCase):
         data = session() + b"\x00" * 5          # a tail the walk cannot consume
         with self.assertRaises(ValueError):
             move_to_stack(data, 152, 192, track_count=TRACKS)
+
+
+class Logic112MoveTest(unittest.TestCase):
+    def test_a_1760_typed_track_takes_the_stack_as_its_parent(self):
+        out = move_to_stack(retyped(session(), 1760), 152, 192, track_count=TRACKS)
+        self.assertEqual(stack_parents(out).get(152), 192)
 
 
 class HideTest(unittest.TestCase):

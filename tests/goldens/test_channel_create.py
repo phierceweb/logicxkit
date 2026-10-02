@@ -7,15 +7,11 @@ import unittest
 from logicxkit.logic.services.addtrack import add_track
 from logicxkit.logic.services.binding import bound_objects, channels
 from logicxkit.logic.services.channel_alloc import (
-    COUNT_CLASS_AT,
-    COUNT_TOTAL_AT,
-    is_channel_count,
-    is_mixer_record,
-    new_audio_channel,
-    project_words,
+    COUNT_CLASS_AT, is_mixer_record, new_audio_channel, project_words,
 )
+from logicxkit.logic.services.mixer import COUNT_TOTAL_AT, is_channel_count
 from logicxkit.logic.services.inputs_create import ensure_inputs, mono_inputs
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.integrity import require_no_regression
 from logicxkit.logic.services.routing import set_input
 from logicxkit.logic.services.sends import read_sends, send_base

@@ -4,7 +4,8 @@ import unittest
 
 from _records import proj
 from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.insert import HEADER, SLOT_INDEX_AT, project_records
+from logicxkit.logic.services.slots import SLOT_INDEX_AT
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.remove_plugin import remove_plugin
 from logicxkit.logic.services.slots import archive_index
 from logicxkit.logic.services.smart_controls import mapping_slots

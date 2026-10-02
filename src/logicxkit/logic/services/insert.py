@@ -4,9 +4,6 @@ Logic renders the slot records embedded in the project. A channel's `.cst` refer
 the strip on the Setting button (a channel with a reference and no slot records shows an empty
 Audio FX column), so giving a channel a chain means adding slot records to it.
 
-Length-changing, so the file-header total at 0x10 (== filesize - 24) is rewritten. Nothing else
-needs fixing: the stream carries no offset table, record count or checksum.
-
 Donors must come from a project written by the same Logic build — the satellite class version
 differs between builds (`AuCU` v4 in Logic 11.2.2, v5 in 12.x), and the key that means "plugin
 slot" moves with the schema.
@@ -17,84 +14,15 @@ from __future__ import annotations
 import hashlib
 import re
 import struct
-from dataclasses import dataclass
 
 from .._binary import FLOAT_OFFSET as FLOAT_OFFSET_IN_CHUNK
 from .._binary import find_blocks, patch_block_floats
-from .slot_width import (MONO, PLUGIN_CFG, SLOT_BUS_AT, SLOT_CFG_AT,  # noqa: F401  (the callers import them from here)
-                         SLOT_COUNT_AT, SLOT_VARIANT_AT, STEREO, plugin_variant, set_slot_format, slot_format)
-
-
-HEADER = 36
-VER_OFF, OWNER_OFF, KEY_OFF, SIZE_OFF = 4, 14, 18, 28
-TOTAL_AT = 0x10        # file header: uint32 == filesize - 24
-BODY_START = 24
-# raw tag bytes; note Logic stores them reversed from how they read (OCuA displays as "AuCO")
-CHANNEL_TAG = b"OCuA"
-NO_KEY = 0xFFFF
-CHANNEL_FMT_AT = 123    # the channel's own width: OCuA payload +123, a literal channel count
-
-# BYPASS — payload +112: 0 = active, 1 = bypassed. Confirmed in Logic: a build written with 1 on
-# nine Enveloper slots opened with them bypassed, and after they were enabled by hand the flag read
-# 0 on exactly those channels while untouched ones still read 1.
-SLOT_BYPASS_AT = 112
-
-# Slot INDEX within the channel, written by Logic as key - 3 and unique per channel. A clone
-# inherits the donor's, so without rewriting it two slots claim the same index and Logic renders
-# only one of them.
-SLOT_INDEX_AT = 6
-SLOT_INDEX_BASE_DEFAULT = 4   # Logic 11.2 / 12; older builds start their slot keys at 3
-
-
-_PLUGIN_MARKS = (b"GAMETSPP", b"<plist")      # native chunks and XML AU states; the binary-plist
-                                              # property records (the strip reference) are not slots
-
-
-CHANNEL_BASE_AT = 28          # every channel record's own copy of the project's slot base
-
-
-MIXER_MIN = 200                     # a channel record proper is longer than its stubs and 14-byte shells
-
-
-def is_mixer_record(record: ProjRecord) -> bool:
-    """The channel record proper, not a slot or a stub."""
-    return record.tag == CHANNEL_TAG and record.key == NO_KEY and len(record.raw) - HEADER > MIXER_MIN
-
-
-def slot_index_base(data: bytes) -> int:
-    """The key that slot index 0 corresponds to: 2 with up to one send in the project, 3 with
-    two, 4 with three (Logic moves it with the sends, 2026-09-12). Every channel record
-    carries it at +28; when they all agree that is the answer, else the project's own plugin
-    slots (native chunks and AU states alike) vote."""
-    words = {struct.unpack_from("<H", r.raw, HEADER + CHANNEL_BASE_AT)[0]
-             for r in project_records(data) if r.tag == CHANNEL_TAG and len(r.raw) - HEADER > CHANNEL_BASE_AT + 2}
-    if len(words) == 1 and next(iter(words)) in (2, 3, 4):
-        return words.pop()
-    votes: dict[int, int] = {}
-    for record in project_records(data):
-        if record.tag != b"UCuA" or not any(m in record.raw for m in _PLUGIN_MARKS):
-            continue
-        payload = record.raw[HEADER:]
-        if len(payload) > SLOT_INDEX_AT and (find_blocks(payload) or b"GAMETSPP" not in payload):
-            base = record.key - payload[SLOT_INDEX_AT]
-            votes[base] = votes.get(base, 0) + 1
-    return max(votes, key=votes.get) if votes else SLOT_INDEX_BASE_DEFAULT
-
-
-def slot_bypassed(raw: bytes) -> bool:
-    payload = raw[HEADER:]
-    return len(payload) > SLOT_BYPASS_AT and payload[SLOT_BYPASS_AT] == 1
-
-
-def set_slot_bypass(raw: bytes, bypassed: bool) -> bytes:
-    buf = bytearray(raw)
-    at = HEADER + SLOT_BYPASS_AT
-    if at < len(buf):
-        buf[at] = 1 if bypassed else 0
-    return bytes(buf)
-
-# config index per width, per plugin. `variant_id - config_index` is constant per plugin, so the
-# variant id is rebased rather than incremented — a blanket +1 is wrong for Gain.
+from .keyflags import sync_key_flags
+from .mixer import CHANNEL_FMT_AT, CHANNEL_TAG, channel_formats
+from .slot_width import MONO, STEREO, set_slot_format
+from .slots import SLOT_INDEX_AT, SLOT_INDEX_BASE_DEFAULT, set_slot_bypass, slot_index_base
+from .stream import BODY_START, HEADER, KEY_OFF, NO_KEY, OWNER_OFF, TOTAL_AT, project_records
+from .validate import require_full_walk, require_valid
 
 
 def instance_offsets(payloads: list[bytes], chunk_end: int) -> list[int]:
@@ -166,20 +94,6 @@ def relabel_slot(raw: bytes, name: str) -> bytes:
     return raw[:m.start()] + encoded.ljust(field, b"\x00") + raw[end:]
 
 
-def channel_formats(data: bytes) -> dict[int, int]:
-    """owner -> 1 (mono) or 2 (stereo), from each channel's own record."""
-    out: dict[int, int] = {}
-    best: dict[int, int] = {}
-    for record in project_records(data):
-        if record.tag != CHANNEL_TAG or record.key != NO_KEY:
-            continue
-        payload = record.raw[HEADER:]
-        if len(payload) > CHANNEL_FMT_AT and len(payload) > best.get(record.owner, -1):
-            best[record.owner] = len(payload)
-            out[record.owner] = payload[CHANNEL_FMT_AT]
-    return {o: f for o, f in out.items() if f in (MONO, STEREO)}
-
-
 # WIDTH, channel side. Three bytes move together, not just the count at +123. Measured per
 # session as the bytes where every stereo aux agrees and the mono one differs; identical in every
 # session measured, across both class versions, and matched by the one session Logic itself wrote
@@ -207,7 +121,6 @@ def widen_channels(data: bytes, want: dict[int, int]) -> tuple[bytes, list[int]]
     channel widened on its own leaves them at the old one and ``validate_project`` refuses the
     result. Running before ``insert_slots`` also hands it the width to give the slots it places.
     """
-    from .validate import require_full_walk, require_valid
 
     require_full_walk(data)
     out, changed = [], []
@@ -232,44 +145,6 @@ def widen_channels(data: bytes, want: dict[int, int]) -> tuple[bytes, list[int]]
     result = bytes(head) + body
     require_valid(result)
     return result, sorted(changed)
-
-
-@dataclass(frozen=True)
-class ProjRecord:
-    tag: bytes
-    ver: int
-    owner: int
-    key: int
-    raw: bytes
-
-
-def project_records(data: bytes, start: int = BODY_START) -> list[ProjRecord]:
-    """Walk a record stream. Accepts any 4-byte tag — a project uses many.
-
-    ``start`` is the 24-byte ProjectData file header by default; a .cst begins at 0.
-    """
-    out, pos = [], start
-    while pos + HEADER <= len(data):
-        size = struct.unpack_from("<I", data, pos + SIZE_OFF)[0]
-        end = pos + HEADER + size
-        if end > len(data):
-            break
-        out.append(ProjRecord(
-            data[pos:pos + 4],
-            struct.unpack_from("<H", data, pos + VER_OFF)[0],
-            struct.unpack_from("<H", data, pos + OWNER_OFF)[0],
-            struct.unpack_from("<H", data, pos + KEY_OFF)[0],
-            data[pos:end]))
-        pos = end
-    return out
-
-
-def reassemble(data: bytes, records: list[bytes]) -> bytes:
-    """``data``'s file header over a new record stream, the total at 0x10 rewritten."""
-    body = b"".join(records)
-    head = bytearray(data[:BODY_START])
-    struct.pack_into("<I", head, TOTAL_AT, len(body))
-    return bytes(head) + body
 
 
 def _stamp(raw: bytes, owner: int, key: int, floats, limit: int, seed: str,
@@ -385,7 +260,5 @@ def insert_slots(data: bytes, plan: dict[int, list[tuple[bytes, int, object, int
     result = bytes(head) + body
 
     # Never hand back a project that violates a structural invariant.
-    from .validate import require_valid
     require_valid(result)
-    from .keyflags import sync_key_flags
     return sync_key_flags(result)

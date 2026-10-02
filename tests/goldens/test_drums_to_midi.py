@@ -19,7 +19,7 @@ from logicxkit.logic.services.audio_regions import REGION_FRAMES_AT, REGION_OFFS
 from logicxkit.logic.services.audio_write import add_audio_region
 from logicxkit.logic.services.drums_to_midi import SIXTEENTH, drums_to_midi
 from logicxkit.logic.services.events import BAR_ONE, PPQ
-from logicxkit.logic.services.insert import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.integrity import regressions
 from logicxkit.logic.services.midi import read_midi
 from logicxkit.logic.services.midi_write import track_regions

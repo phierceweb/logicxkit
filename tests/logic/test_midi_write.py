@@ -32,7 +32,7 @@ class TickTest(unittest.TestCase):
 class NameTest(unittest.TestCase):
     def test_a_region_name_outside_ascii_is_utf8_with_its_byte_length(self):
         import struct
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.midi import NAME_AT, _name
         from logicxkit.logic.services.midi_write import _template, _with_name
         raw = _with_name(_template()["qesm"], "Pad — é")

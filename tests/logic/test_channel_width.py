@@ -104,8 +104,10 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def _slot(self, owner: int, key: int, width: int) -> bytes:
         from _fixtures import chunk
-        from logicxkit.logic.services.insert import (
-            SLOT_BUS_AT, SLOT_CFG_AT, SLOT_COUNT_AT, SLOT_INDEX_AT, SLOT_VARIANT_AT)
+        from logicxkit.logic.services.slot_width import (
+            SLOT_BUS_AT, SLOT_CFG_AT, SLOT_COUNT_AT, SLOT_VARIANT_AT,
+        )
+        from logicxkit.logic.services.slots import SLOT_INDEX_AT
         p = bytearray(160)
         p[SLOT_INDEX_AT] = key - 4
         p[SLOT_CFG_AT] = width
@@ -123,8 +125,8 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def test_widening_also_widens_a_slot_already_on_the_channel(self):
         from logicxkit.logic import widen_channels
-        from logicxkit.logic.services.insert import slot_format
-        from logicxkit.logic.services.insert import project_records as walk
+        from logicxkit.logic.services.slot_width import slot_format
+        from logicxkit.logic.services.stream import project_records as walk
         data = proj(self._chan(76, 1), self._slot(76, 4, 1))
         out, changed = widen_channels(data, {76: 2})
         self.assertEqual(changed, [76])
@@ -133,8 +135,8 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def test_widening_leaves_slots_on_other_channels_alone(self):
         from logicxkit.logic import widen_channels
-        from logicxkit.logic.services.insert import slot_format
-        from logicxkit.logic.services.insert import project_records as walk
+        from logicxkit.logic.services.slot_width import slot_format
+        from logicxkit.logic.services.stream import project_records as walk
         data = proj(self._chan(76, 1), self._slot(76, 4, 1),
                     self._chan(77, 1), self._slot(77, 4, 1))
         out, _ = widen_channels(data, {76: 2})

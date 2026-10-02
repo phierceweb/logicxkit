@@ -17,10 +17,11 @@ class TextPayloadTest(unittest.TestCase):
 
 
 class NonAsciiNameTest(unittest.TestCase):
-    def test_a_name_that_would_not_read_back_is_refused(self):
+    def test_a_name_outside_ascii_is_utf8_and_a_control_character_is_refused(self):
+        self.assertEqual(w.plain_text_payload("Café")[98:], "Café".encode() + b"\0")
         for encode in (w.plain_text_payload, w._text_bytes):
-            with self.subTest(encode.__name__), self.assertRaisesRegex(ValueError, "ASCII"):
-                encode("Café")
+            with self.subTest(encode.__name__), self.assertRaisesRegex(ValueError, "control character"):
+                encode("Caf\x07")
 
 
 if __name__ == "__main__":

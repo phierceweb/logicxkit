@@ -59,7 +59,7 @@ class RegressionDetectionTest(unittest.TestCase):
     def test_a_new_link_error_is_caught(self):
         import struct
 
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.integrity import regressions
         from logicxkit.logic.services.sequence import TABLE_SLOT_AT, index_table, table_entries
         recs = project_records(self.data)

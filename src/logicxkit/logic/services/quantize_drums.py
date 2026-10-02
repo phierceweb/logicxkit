@@ -29,7 +29,7 @@ from .flexmarkers import (
 )
 from .flexmode import set_flex_mode, set_q_reference
 from .groups import create_group, read_groups, set_group
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .integrity_regions import NO_SLOT
 from .midi import REGION_BAR_ONE
 from .onsets import Detector, merge_hits, onsets, read_wav

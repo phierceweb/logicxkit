@@ -5,7 +5,7 @@ The real-file part of tests/logic/test_settings.py; skips without the owner's fi
 import unittest
 import _goldens
 from logicxkit.logic.services.events import events
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.integrity import require_no_regression
 from logicxkit.logic.services.sequence import sequences
 from logicxkit.logic.services.settings import read_settings, set_division
@@ -97,7 +97,7 @@ class SignatureChangesTest(unittest.TestCase):
     @staticmethod
     def _events(data):
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.sequence import sequences
         recs = project_records(data)
         return events(recs[sequences(recs)[0].end].raw[HEADER:])

@@ -19,7 +19,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .events import BAR_ONE, PPQ, Event, events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .sequence import sequences
 
 TIME_TYPE, KEY_TYPE = 0x30, 0x32

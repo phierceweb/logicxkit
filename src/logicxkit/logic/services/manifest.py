@@ -11,22 +11,27 @@ from pathlib import Path
 
 from logicxkit.logicx import project_data
 
-from .binding import bound_objects, channels, input_routing, output_routing
+from .binding import bound_objects, channels, input_labels, output_labels
 from .chains import channel_references
 from .environment import channel_objects
-from .insert import channel_formats
-from .levels import read_levels
+from .mixer import channel_formats
+from .levels import read_levels, shown_db
 from .project import analyze, project_metadata
 from .sends import read_sends
 from .stacks import read_stacks, read_tracks
+
+
+def _rounded(db: float | None) -> float | None:
+    """A level to the hundredth; ``None`` is -∞."""
+    return None if db is None else round(db, 2) + 0.0
 
 
 def manifest_from_bytes(data: bytes, *, track_count: int | None = None) -> dict:
     chans = channels(data)
     objs = channel_objects(data)
     objects_of = bound_objects(data)
-    routing = output_routing(data)
-    inputs = input_routing(data)
+    routing = output_labels(data)
+    inputs = input_labels(data)
     refs = channel_references(data)
     widths = channel_formats(data)
     levels = read_levels(data)
@@ -46,22 +51,24 @@ def manifest_from_bytes(data: bytes, *, track_count: int | None = None) -> dict:
         c = chans[owner]
         if not c.in_use:
             continue
-        dest = routing.get(owner)
         channel_rows.append({
             "owner": owner, "label": c.label,
             "object": objs[objects_of[owner]].name if owner in objects_of else None,
             "ref": refs.get(owner), "width": widths.get(owner),
             "fader": levels.get(owner, {}).get("fader"), "pan": levels.get(owner, {}).get("pan"),
+            "fader_db": _rounded(levels.get(owner, {}).get("fader_db")),
             "stack_index": c.stack_index,
-            "output": chans[dest].label if dest is not None else None,
-            "input": chans[inputs[owner]].label if inputs.get(owner) is not None else None,
-            "sends": [{"slot": s.slot, "bus": s.bus, "to": bus_labels.get(f"Bus {s.bus}")}
+            "output": routing.get(owner), "input": inputs.get(owner),
+            "routing_read": owner in routing and owner in inputs,
+            "sends": [{"slot": s.slot, "bus": s.bus, "to": bus_labels.get(f"Bus {s.bus}"),
+                       "level_db": _rounded(s.level_db), "level_shown": shown_db(s.level_exact),
+                       "mode": s.mode, "bypassed": s.bypassed}
                       for s in sends.get(owner, [])],
             "chain": chains.get(c.label, [])})
 
     return {
         "tracks": tracks,
-        "stacks": [{"name": s.name, "index": s.index, "owner": s.owner,
+        "stacks": [{"name": s.name, "index": s.index, "owner": s.owner, "kind": s.kind, "strip": s.strip,
                     "fader": levels.get(s.owner, {}).get("fader"),
                     "members": [n for _k, n in s.members]} for s in stacks],
         "channels": channel_rows,

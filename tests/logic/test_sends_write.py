@@ -2,12 +2,12 @@
 
 A new send lands right after its channel's `OCuA` in key order, before the slots (key 4+).
 Only the measured fields are set: owner, key, `+4`, `+20`, a fresh instance UUID at `+44`
-and the target `Bus N` channel's UUID at `+60`; the level bytes ride along from the template."""
+and the target `Bus N` channel's UUID at `+60`; a copy's level bytes ride along from its source."""
 
 import struct
 import unittest
 from _records import chan, proj, rec, send, uuid
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.sends import read_sends
 from logicxkit.logic.services.sends_write import add_send, copy_sends, remove_sends
 
@@ -97,7 +97,7 @@ class AddSendTest(unittest.TestCase):
         self.assertEqual(new[DEST], uuid(1016))
         self.assertNotEqual(new[UUID], template[UUID])
         self.assertEqual((new[HEADER + 44 + 6] >> 4, new[HEADER + 44 + 8] & 0xC0), (1, 0x80))
-        self.assertEqual(new[HEADER + 16:HEADER + 20], template[HEADER + 16:HEADER + 20])
+        self.assertEqual(new[HEADER + 16:HEADER + 20] + new[HEADER + 24:HEADER + 28], b"\x01\x00\x00\x00" + bytes(4))
         self.assertEqual(new[:14] + new[16:18], template[:14] + template[16:18])
         self.assertEqual([(s.key, s.bus) for s in read_sends(out)[3]], [(0, 16)])
 
@@ -269,7 +269,8 @@ class PackagedSendTemplateTest(unittest.TestCase):
 
 def _base_2(data: bytes) -> bytes:
     """Every channel record stamped with slot base 2, as a project made before Logic 11.2."""
-    from logicxkit.logic.services.insert import CHANNEL_BASE_AT, is_mixer_record, reassemble
+    from logicxkit.logic.services.mixer import CHANNEL_BASE_AT, is_mixer_record
+    from logicxkit.logic.services.stream import reassemble
     out = []
     for r in project_records(data):
         raw = bytearray(r.raw)
@@ -288,14 +289,14 @@ class ThirdSendAtBase2Test(unittest.TestCase):
                             slot(2, 2), bus(10), bus(15), bus(16)))
 
     def test_the_slot_moves_up_past_the_third_send(self):
-        from logicxkit.logic.services.insert import slot_index_base
+        from logicxkit.logic.services.slots import slot_index_base
         out, report = add_send(self._project(), owner=2, bus=10)
         self.assertEqual(report["key"], 2)
         self.assertEqual([k for _t, k in run(out, 2)], [0xFFFF, 0, 1, 2, 4])
         self.assertEqual(slot_index_base(out), 4)
 
     def test_two_sends_leave_the_base_alone(self):
-        from logicxkit.logic.services.insert import slot_index_base
+        from logicxkit.logic.services.slots import slot_index_base
         data = self._project()
         out = remove_sends(data, owner=2)
         out, _ = add_send(out, owner=2, bus=10)

@@ -27,7 +27,7 @@ from .audio_regions import (
 )
 from .events import BAR_ONE
 from .flexmarkers import HIT, KIND_AT, OFF, block_fields, rba_sequences
-from .insert import HEADER
+from .stream import HEADER
 from .midi import ENTRY_SLOT_AT, ENTRY_TICK_AT, MIDI_ENTRY, REGION_BAR_ONE
 from .recbuild import slot_of
 from .regions import (

@@ -73,7 +73,7 @@ class StereoPairInputTest(unittest.TestCase):
     @staticmethod
     def _audio4(data):
         from logicxkit.logic.services.binding import channels, input_routing
-        from logicxkit.logic.services.insert import channel_formats
+        from logicxkit.logic.services.mixer import channel_formats
         ch = channels(data)
         owner = next(o for o, c in ch.items() if c.label == "Audio 4")
         source = input_routing(data).get(owner)
@@ -106,7 +106,7 @@ class NamelessObjectTest(unittest.TestCase):
         from logicxkit.logic.services.addtrack import add_track
         from logicxkit.logic.services.binding import channels
         from logicxkit.logic.services.environment import NAME_AT, name_end, object_record
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         data = project_data(_goldens.path("tracks-three-audio-logic"))
         at = data.index(object_record(project_records(data), 80)) + HEADER + NAME_AT + 2
         data = data[:at] + b"\xfc" + data[at + 1:]

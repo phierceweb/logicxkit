@@ -6,7 +6,7 @@ import unittest
 
 from _records import proj, rec
 from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from test_transplant_ids import au, mono_chan, native, ref
 
 OWNER = 3
@@ -28,13 +28,14 @@ def _keyed(data: bytes, owner: int) -> list[int]:
 
 
 def _shown(data: bytes) -> dict[int, int]:
-    from logicxkit.logic.services.insert import CHANNEL_TAG
+    from logicxkit.logic.services.mixer import CHANNEL_TAG
     return {r.owner: struct.unpack_from("<H", r.raw, HEADER + 30)[0]
             for r in project_records(data) if r.tag == CHANNEL_TAG}
 
 
 def _with_shown(data: bytes, shown: int) -> bytes:
-    from logicxkit.logic.services.insert import CHANNEL_TAG, reassemble
+    from logicxkit.logic.services.mixer import CHANNEL_TAG
+    from logicxkit.logic.services.stream import reassemble
     out = []
     for r in project_records(data):
         raw = bytearray(r.raw)

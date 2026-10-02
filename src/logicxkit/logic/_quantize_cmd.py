@@ -14,8 +14,9 @@ def _members(data: bytes, args, count: int | None) -> list[str]:
     if args.track:
         return list(args.track)
     from .services.stacks import read_stacks, rows_below
+    from .services.trackname import stack_named
     stacks = read_stacks(data, count)
-    stack = next((s for s in stacks if s.name == args.stack), None)
+    stack = stack_named(stacks, args.stack)
     if stack is None:
         raise CommandError(f"no folder stack named {args.stack!r}; name the tracks with --track")
     names = [name for _key, name in rows_below(stacks, stack, headers=False)]

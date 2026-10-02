@@ -29,7 +29,7 @@ from dataclasses import dataclass
 
 from .events import events
 from .groups import FADER_IDS
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .sequence import QESM_ID_AT, QESM_OBJECT_AT, sequences
 from .stacks import read_tracks
 

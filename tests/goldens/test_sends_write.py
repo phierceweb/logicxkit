@@ -2,14 +2,14 @@
 
 A new send lands right after its channel's `OCuA` in key order, before the slots (key 4+).
 Only the measured fields are set: owner, key, `+4`, `+20`, a fresh instance UUID at `+44`
-and the target `Bus N` channel's UUID at `+60`; the level bytes ride along from the template.
+and the target `Bus N` channel's UUID at `+60`; a copy's level bytes ride along from its source.
 
 The real-file part of tests/logic/test_sends_write.py; skips without the owner's files."""
 
 import unittest
 import _goldens
 import _paths
-from logicxkit.logic.services.insert import project_records
+from logicxkit.logic.services.stream import project_records
 from logicxkit.logic.services.sends import read_sends
 from logicxkit.logic.services.sends_write import add_send, copy_sends, remove_sends
 
@@ -63,13 +63,31 @@ class MixTemplateSendTest(unittest.TestCase):
         self.assertEqual(report(out, self.count)["bad_send_flags"], [])
 
 
+@_goldens.needs("send-level-2-logic", "send-two-base-3-logic")
+class AddedSendSettingsTest(unittest.TestCase):
+    """Logic's second send, added beside one at -16.8 dB: -inf, post pan, on. Ours from the same
+    project carries the same setting bytes."""
+
+    def test_the_settings_match_logics_own_second_send(self):
+        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logicx import project_data
+        before, logic = (project_data(_goldens.path(k)) for k in ("send-level-2-logic", "send-two-base-3-logic"))
+        (owner, (first,)), = read_sends(before).items()
+        ours, report = add_send(before, owner=owner, bus=first.bus + 1)
+        mine = next(s for s in read_sends(ours)[owner] if s.key == report["key"])
+        theirs = next(s for s in read_sends(logic)[owner] if s.bus == first.bus + 1)
+        settings = lambda s: s.raw[HEADER + 16:HEADER + 20] + s.raw[HEADER + 22:HEADER + 23] + s.raw[HEADER + 24:HEADER + 28]  # noqa: E731
+        self.assertEqual(settings(mine), settings(theirs))
+        self.assertNotEqual(settings(mine), settings(first))
+
+
 @_goldens.needs("send-packaged-ours", "send-packaged-resave-logic")
 class LogicResavedPackagedSendTest(unittest.TestCase):
     """A send added to a project that had none to clone: the packaged template, re-saved."""
 
     def test_logic_kept_the_send_and_its_channel(self):
         from logicxkit.logic.services.channel_alloc import is_mixer_record
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         from logicxkit.logic.services.sends import read_sends
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("send-packaged-ours", "send-packaged-resave-logic"))

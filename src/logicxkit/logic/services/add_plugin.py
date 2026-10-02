@@ -13,18 +13,10 @@ from __future__ import annotations
 import struct
 
 from .binding import channels
-from .insert import (
-    CHANNEL_TAG,
-    HEADER,
-    SLOT_INDEX_AT,
-    VER_OFF,
-    _stamp,
-    channel_formats,
-    insert_slots,
-    project_records,
-    reassemble,
-    slot_index_base,
-)
+from .insert import _stamp, insert_slots
+from .mixer import CHANNEL_TAG, channel_formats
+from .slots import SLOT_INDEX_AT, slot_index_base
+from .stream import HEADER, VER_OFF, project_records, reassemble
 from .keyflags import sync_key_flags
 from .recbuild import with_key
 from .sidechain import SideChain, with_side_chain

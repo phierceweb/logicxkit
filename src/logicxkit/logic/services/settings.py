@@ -14,7 +14,7 @@ from __future__ import annotations
 import struct
 
 from .events import PPQ
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .registry import GNOS_TAG
 
 DIVISION_AT, DIVISION_TICKS_AT, KEY_ROOT_AT = 192, 480, 179
@@ -56,7 +56,7 @@ def edit_song(data: bytes, edit) -> bytes:
     edit(g)
     out = [r.raw for r in records]
     out[i] = records[i].raw[:HEADER] + bytes(g)
-    from .insert import reassemble
+    from .stream import reassemble
     return reassemble(data, out)
 
 

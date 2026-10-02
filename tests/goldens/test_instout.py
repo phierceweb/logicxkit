@@ -7,7 +7,7 @@ The real-file part of tests/logic/test_instout.py; skips without the owner's fil
 import unittest
 import _goldens
 import _paths
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.instout import (
     SIZE,
     bind_instrument_output,

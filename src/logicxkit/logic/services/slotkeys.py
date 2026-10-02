@@ -20,7 +20,8 @@ from __future__ import annotations
 import struct
 
 from .channel_alloc import is_mixer_record
-from .insert import HEADER, KEY_OFF, project_records, reassemble, slot_index_base
+from .slots import slot_index_base
+from .stream import HEADER, KEY_OFF, project_records, reassemble
 from .keyflags import sync_key_flags
 from .sends import is_send
 from .transplant import property_key_base

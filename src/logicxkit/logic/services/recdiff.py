@@ -16,7 +16,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from .insert import project_records
+from .stream import project_records
 
 
 @dataclass(frozen=True)

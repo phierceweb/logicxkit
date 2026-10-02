@@ -48,7 +48,9 @@ CONTENT_ROWS = (
                "names in `qSxT` records. `--add`, `--rename`, `--move` and `--delete` write those events and "
                "plain name records the way `arrangement --add` does, and Logic re-saved a copy carrying all "
                "four with both markers as written (`markers-edits-*`); Logic's own first marker also rewrote "
-               "part of the registry, which ours leaves alone. ASCII names only"),
+               "part of the registry, which ours leaves alone. A name outside ASCII is written as UTF-8, "
+               "which Logic's Marker List showed and its re-save kept; Logic's own rename to one, an RTF "
+               "record, is read (`names-text-*`, 2026-10-02)"),
     Capability(("quantize-drums",), "CONFIRMED", "yes, on a copy",
                "The drum-quantize procedure as file writes: groups off, the drum group with Editing "
                "(Selection) and Quantize-Locked (Audio), Q-Reference on the reference tracks, flex "
@@ -110,7 +112,10 @@ CONTENT_ROWS = (
                "parameter's own unit: the four natives with a map through their measured sliders (a value "
                "past a slider's end held there with a note), a third-party through its AU table (`autoset-*`); "
                "a value or bar that is not a finite number is refused. Logic's Event List named lanes at insert 4 "
-               "as the Pro-Q 4 there and lanes at insert 1 as nothing (`slots-insert*`, 2026-09-23)"),
+               "as the Pro-Q 4 there and lanes at insert 1 as nothing (`slots-insert*`, 2026-09-23). The "
+               "listing names a plug-in lane as `--set` takes it, with each point in the parameter's own "
+               "unit: every index took the name Logic's Event List gave it and every point the value the "
+               "Controls view showed, on the three `auto-*-resave-logic` saves"),
     Capability(("patch",), "CONFIRMED", "read yes; `--build` writes outside Logic's library unless `--install`",
                "Reads a Library patch bundle in both shapes Logic writes: its nodes, each channel's "
                "settings and the plug-ins on its strip; one Logic saved from the Library reads back "

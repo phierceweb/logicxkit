@@ -3,9 +3,11 @@
 A send sits right after its channel's `OCuA` in key order, before the plugin slots (key 4+);
 `sends.py` has the layout. Nothing is synthesised: a new send is a clone of one the project
 already carries, else of the one Logic made on a blank project (packaged `send-12.3.1.json`),
-so the level bytes and the undecoded `+8` word come from the template, and only the fields
-the file proves are set — owner, key, `+4`, `+20`, a fresh instance UUID at `+44` and the
-target bus channel's UUID at `+60` — plus the slot's flag on the channel's own record.
+so the undecoded `+8` word comes from the template, and only the fields the file proves are
+set — owner, key, `+4`, `+20`, a fresh instance UUID at `+44` and the target bus channel's UUID
+at `+60` — plus the slot's flag on the channel's own record. An added send takes the level, mode
+and bypass asked for (`with_settings`), else those of the send Logic adds; a copied send keeps its
+source's.
 """
 
 from __future__ import annotations
@@ -15,14 +17,24 @@ import struct
 
 from ...utils.data import data_file
 from .binding import Channel, channels
+from .levels import level_word
 from .keyflags import sync_key_flags
-from .insert import CHANNEL_TAG, HEADER, KEY_OFF, ProjRecord, project_records, reassemble
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, KEY_OFF, ProjRecord, project_records, reassemble
 from .recbuild import fresh_uuid, rec
 from .sends import (
     BUS_AT,
+    BYPASS_AT,
     CLASS_AT,
     DEST_UUID_AT,
+    INDEPENDENT_PAN,
     INSTANCE_UUID_AT,
+    LEVEL_AT,
+    LEVEL_FIXED_AT,
+    MODES,
+    OPTIONS_AT,
+    POST_PAN_AT,
+    PRE_FADER_AT,
     SEND_KEYS,
     SEND_TAG,
     SLOT_AT,
@@ -43,14 +55,29 @@ def _bus_uuid(chans: dict[int, Channel], bus: int) -> bytes:
     return chan.uuid
 
 
+def _packaged() -> bytes:
+    """The send Logic made on a blank project (packaged `send-12.3.1.json`)."""
+    t = json.loads(data_file("logic", _DATA).read_text())
+    return bytes.fromhex(t["header"]) + bytes.fromhex(t["payload"])
+
+
 def _template(records: list[ProjRecord], owner: int) -> bytes:
-    """A send to clone: the channel's own, else the project's first, else the one Logic made
-    on a blank project (packaged `send-12.3.1.json`)."""
+    """A send to clone: the channel's own, else the project's first, else the packaged one."""
     sends = [r for r in records if is_send(r)]
     if sends:
         return next((r.raw for r in sends if r.owner == owner), sends[0].raw)
-    t = json.loads(data_file("logic", _DATA).read_text())
-    return bytes.fromhex(t["header"]) + bytes.fromhex(t["payload"])
+    return _packaged()
+
+
+def _as_logic_adds(raw: bytes) -> bytes:
+    """``raw`` with the level, mode, bypass and independent pan of the send Logic adds: its
+    second send beside one at -16.8 dB came in at -inf, post pan (`send-two-base-3-logic`)."""
+    logic, buf = _packaged()[HEADER:], bytearray(raw)
+    for at in (POST_PAN_AT, LEVEL_AT, PRE_FADER_AT, BYPASS_AT):
+        buf[HEADER + at] = logic[at]
+    buf[HEADER + OPTIONS_AT] = buf[HEADER + OPTIONS_AT] & ~INDEPENDENT_PAN | logic[OPTIONS_AT] & INDEPENDENT_PAN
+    buf[HEADER + LEVEL_FIXED_AT:HEADER + LEVEL_FIXED_AT + 4] = logic[LEVEL_FIXED_AT:LEVEL_FIXED_AT + 4]
+    return bytes(buf)
 
 
 def _clone(template: bytes, *, owner: int, key: int, bus: int, bus_uuid: bytes, base: int,
@@ -66,6 +93,23 @@ def _clone(template: bytes, *, owner: int, key: int, bus: int, bus_uuid: bytes, 
     p[INSTANCE_UUID_AT:INSTANCE_UUID_AT + UUID_LEN] = fresh_uuid()
     p[DEST_UUID_AT:DEST_UUID_AT + UUID_LEN] = bus_uuid
     return rec(SEND_TAG, container or template, bytes(p), owner=owner, key=key)
+
+
+def with_settings(raw: bytes, *, level_db: float | None = None, mode: str | None = None,
+                  bypass: bool | None = None) -> bytes:
+    """The send record with its level (``float("-inf")`` silences it), mode and bypass set;
+    ``None`` leaves one as it is."""
+    buf = bytearray(raw)
+    if level_db is not None:
+        struct.pack_into("<I", buf, HEADER + LEVEL_FIXED_AT, level_word(level_db))
+        buf[HEADER + LEVEL_AT] = buf[HEADER + LEVEL_FIXED_AT + 3]
+    if mode is not None:
+        if mode not in MODES:
+            raise ValueError("a send's mode is post pan, post fader or pre fader")
+        buf[HEADER + POST_PAN_AT], buf[HEADER + PRE_FADER_AT] = MODES[mode]
+    if bypass is not None:
+        buf[HEADER + BYPASS_AT] = 1 if bypass else 0
+    return bytes(buf)
 
 
 def _place(records: list[ProjRecord], owner: int, new: bytes) -> list[ProjRecord]:
@@ -96,10 +140,14 @@ def _finish(data: bytes, records: list[ProjRecord], owner: int) -> bytes:
     return rebase(out)[0] if needs_rebase(out) else out
 
 
-def add_send(data: bytes, *, owner: int, bus: int, key: int | None = None) -> tuple[bytes, dict]:
+def add_send(data: bytes, *, owner: int, bus: int, key: int | None = None,
+             level_db: float | None = None, mode: str | None = None,
+             bypass: bool | None = None) -> tuple[bytes, dict]:
     """A send from channel ``owner`` to ``Bus bus`` -> ``(project, {owner, key, bus, replaced})``.
 
-    ``key`` defaults to the lowest free of 0-2; an explicit key that is taken is replaced.
+    ``key`` defaults to the lowest free of 0-2; an explicit key that is taken is replaced. A
+    second send to a bus the channel already sends to is refused. The level, mode and bypass
+    are the ones given, else those of the send Logic adds (`with_settings`, `_as_logic_adds`).
     """
     require_full_walk(data)
     records = project_records(data)
@@ -113,11 +161,31 @@ def add_send(data: bytes, *, owner: int, bus: int, key: int | None = None) -> tu
             raise ValueError(f"channel {owner} already carries three sends")
     elif key not in SEND_KEYS:
         raise ValueError("a send key is 0, 1 or 2")
-    new = _clone(_template(records, owner), owner=owner, key=key, bus=bus,
-                 bus_uuid=_bus_uuid(chans, bus), base=send_base(data))
+    twin = next((s for s in read_sends(data).get(owner, []) if s.bus == bus and s.key != key), None)
+    if twin is not None:
+        raise ValueError(f"channel {owner} already sends to Bus {bus} (send {twin.key}); set that one instead")
+    new = with_settings(_as_logic_adds(_clone(_template(records, owner), owner=owner, key=key, bus=bus,
+                                              bus_uuid=_bus_uuid(chans, bus), base=send_base(data))),
+                        level_db=level_db, mode=mode, bypass=bypass)
     kept = [r for r in records if not (is_send(r) and r.owner == owner and r.key == key)]
     out = _finish(data, _place(kept, owner, new), owner)
     return out, {"owner": owner, "key": key, "bus": bus, "replaced": key in used}
+
+
+def set_send(data: bytes, *, owner: int, bus: int, level_db: float | None = None,
+             mode: str | None = None, bypass: bool | None = None) -> tuple[bytes, dict]:
+    """The level, mode or bypass of ``owner``'s send to ``Bus bus`` -> ``(project, {owner, key,
+    bus})``. The record keeps its size and place; nothing else moves."""
+    require_full_walk(data)
+    mine = [s for s in read_sends(data).get(owner, []) if s.bus == bus]
+    if not mine:
+        raise ValueError(f"channel {owner} has no send to Bus {bus}")
+    new = with_settings(mine[0].raw, level_db=level_db, mode=mode, bypass=bypass)
+    key = mine[0].key
+    out = reassemble(data, [new if is_send(r) and r.owner == owner and r.key == key else r.raw
+                            for r in project_records(data)])
+    require_valid(out)
+    return out, {"owner": owner, "key": key, "bus": bus}
 
 
 def copy_sends(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int) -> tuple[bytes, dict]:

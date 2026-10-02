@@ -37,13 +37,28 @@ def _bus_number(spec: str) -> int:
 
 
 def cmd_send(args) -> int:
-    """Add, copy or remove sends on named channels."""
-    from .services.sends_write import add_send, copy_sends, remove_sends
+    """Add, set, copy or remove sends on named channels."""
+    from .services.levels import shown_db
+    from .services.sends import read_sends
+    from .services.sends_write import add_send, copy_sends, remove_sends, set_send
 
     if args.copy and not args.src:
         print("  --copy needs --from SRC_PROJECT")
         return 2
+    settings = {"level_db": args.level, "mode": args.mode and args.mode.replace("-", " "),
+                "bypass": {"on": True, "off": False}.get(args.bypass)}
+    if args.set and all(v is None for v in settings.values()):
+        print("  --set needs --level, --mode or --bypass")
+        return 2
+    if not (args.add or args.set) and any(v is not None for v in settings.values()):
+        print("  --level, --mode and --bypass go with --add or --set")
+        return 2
     src = first_project_data(Path(args.src)) if args.src else None
+
+    def told(data, channel: str, report: dict) -> str:
+        s = next(s for s in read_sends(data)[report["owner"]] if s.key == report["key"])
+        return (f"  {channel.strip():11s} -> Bus {report['bus']} (send {report['key']}): "
+                f"{shown_db(s.level_exact)} dB, {s.mode}{', bypassed' if s.bypassed else ''}")
 
     def step(data, _count, _file):
         for label in args.remove or []:
@@ -52,9 +67,16 @@ def cmd_send(args) -> int:
         for spec in args.add or []:
             channel, _, bus = spec.partition("=")
             data, report = add_send(data, owner=owner_by_label(data, channel),
-                                    bus=_bus_number(bus), key=args.key)
-            print(f"  {channel.strip():11s} -> Bus {report['bus']} (send {report['key']}"
-                  f"{', replaced' if report['replaced'] else ''})")
+                                    bus=_bus_number(bus), key=args.key, **settings)
+            print(told(data, channel, report) + (", replaced" if report["replaced"] else ""))
+        for spec in args.set or []:
+            channel, _, bus = spec.partition("=")
+            try:
+                data, report = set_send(data, owner=owner_by_label(data, channel),
+                                        bus=_bus_number(bus), **settings)
+            except ValueError as e:
+                raise CommandError(f"{channel.strip()}: {e}") from None
+            print(told(data, channel, report))
         for dst_label, src_label in pairs(args.copy or []):
             data, report = copy_sends(src, data, src_owner=owner_by_label(src, src_label),
                                       dst_owner=owner_by_label(data, dst_label))
@@ -104,6 +126,7 @@ def _targets(args, data: bytes, count: int | None) -> list[tuple[str, str]]:
     """(destination label, source label) for every ``--channel`` and every channel a ``--stack``
     member is bound to, each destination once."""
     from .services.stacks import read_stacks, read_tracks, rows_below
+    from .services.trackname import stack_named
 
     out = pairs(args.channel or [])
     if args.stack:
@@ -111,7 +134,7 @@ def _targets(args, data: bytes, count: int | None) -> list[tuple[str, str]]:
         labels = {r["key"]: r["label"] for r in read_tracks(data, count)}
         for spec in args.stack:
             name, sep, src_label = (part.strip() for part in spec.partition("="))
-            stack = next((s for s in stacks if s.name == name), None)
+            stack = stack_named(stacks, name)
             if not sep or not src_label:
                 raise CommandError(f"--stack takes NAME=SRC_LABEL, e.g. 'Drums=Audio 2'; got {spec!r}")
             if stack is None:
@@ -214,10 +237,18 @@ def register(sub) -> None:
     rt.add_argument("--output", action="append", metavar="CHANNEL=DEST", help="e.g. 'Inst 6=Output 1-2'")
     rt.add_argument("--input", action="append", metavar="CHANNEL=INPUT", help="e.g. 'Audio 27=Input 3'")
     rt.set_defaults(func=cmd_route)
-    sd = sub.add_parser("send", help="add, copy or remove sends by channel label (writes a copy)")
+    sd = sub.add_parser("send",
+                        help="add, set, copy or remove sends by channel label (writes a copy)")
     sd.add_argument("project")
     sd.add_argument("--out", required=True)
     sd.add_argument("--add", action="append", metavar="CHANNEL=BUS", help="e.g. 'Audio 5=Bus 15'")
+    sd.add_argument("--set", action="append", metavar="CHANNEL=BUS",
+                    help="an existing send to give --level, --mode or --bypass")
+    sd.add_argument("--level", type=float, metavar="DB",
+                    help="the level of every --add and --set, -inf to 6 (--level=-inf)")
+    sd.add_argument("--mode", choices=("post-pan", "post-fader", "pre-fader"),
+                    help="the mode of every --add and --set")
+    sd.add_argument("--bypass", choices=("on", "off"), help="bypass every --add and --set, or not")
     sd.add_argument("--key", type=int, choices=(0, 1, 2), help="send slot for --add (default: lowest free)")
     sd.add_argument("--remove", action="append", metavar="CHANNEL", help="drop every send on it")
     sd.add_argument("--copy", action="append", metavar="LABEL[=SRC_LABEL]",

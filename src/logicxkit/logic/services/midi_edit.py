@@ -23,7 +23,7 @@ from groovebin.timing import MeterMap
 from groovebin.transforms import merge
 
 from .events import BAR_ONE, END_TYPE, LINE, PPQ, events
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .midi import DATA1_AT, DATA2_AT, LENGTH_AT, LENGTH_LINE, MidiRegion, read_midi
 from .midi_write import _pick_region, add_region, first_event_stamped, note_lines, region_length
 from .recbuild import rec

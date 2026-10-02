@@ -23,7 +23,7 @@ from dataclasses import dataclass
 
 from .binding import channels
 from .channel_alloc import is_mixer_record
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .keyflags import sync_key_flags
 from .recbuild import fresh_uuid, rec
 from .validate import require_full_walk, require_valid

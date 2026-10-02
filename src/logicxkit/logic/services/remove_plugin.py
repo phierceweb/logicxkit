@@ -7,7 +7,8 @@ The key range is left as it is (Logic re-lays it out on save) and so is the show
 from __future__ import annotations
 
 from .add_plugin import _rekey
-from .insert import project_records, reassemble, slot_index_base
+from .slots import slot_index_base
+from .stream import project_records, reassemble
 from .insert_lanes import move_lanes
 from .keyflags import sync_key_flags
 from .slots import archive_index, is_plugin_slot, property_key_base

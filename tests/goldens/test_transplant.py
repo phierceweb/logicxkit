@@ -35,7 +35,7 @@ class LegacyBaseWordTest(unittest.TestCase):
 
     def test_legacy_song_and_logics_verdict(self):
         from logicxkit.logic.services.binding import channels
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         from logicxkit.logic.services.sends import is_send
         from logicxkit.logic.services.slotkeys import channel_bases, rebase
         from logicxkit.logicx import project_data
@@ -57,7 +57,7 @@ class LegacyBaseWordTest(unittest.TestCase):
 @_goldens.needs("transplant-ours", "transplant-resave-logic")
 class LogicResavedTransplantTest(unittest.TestCase):
     def test_logic_kept_both_slots_byte_for_byte(self):
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("transplant-ours", "transplant-resave-logic"))
         owner = owner_of(ours, _goldens.fact("transplant-ours", "channel"))

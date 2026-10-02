@@ -77,6 +77,15 @@ class DocMatchesCodeTest(unittest.TestCase):
         self.assertIn("generated from src/logicxkit/logic/_capabilities.py", DOC.read_text())
 
 
+class CommandGuideTest(unittest.TestCase):
+    def test_the_guide_names_every_command(self):
+        from logicxkit.logic._capabilities import by_command
+        guide = (DOC.parent / "commands.md").read_text()
+        missing = sorted(c for c in by_command() if not re.search(
+            rf"`[^`\n]*(?<![\w-]){re.escape(c)}(?![\w-])[^`\n]*`", guide))
+        self.assertEqual(missing, [], "docs/commands.md never names these as commands")
+
+
 def test_notice_only_for_unconfirmed_levels():
     from logicxkit.logic._capabilities import CAPABILITIES, notice
     for cap in CAPABILITIES:

@@ -5,7 +5,7 @@ import unittest
 from _records import chan, proj, rec
 from test_integrity import project, standard
 
-from logicxkit.logic.services.insert import project_records
+from logicxkit.logic.services.stream import project_records
 from logicxkit.logic.services.integrity import regressions, structural_report
 
 

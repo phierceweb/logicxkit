@@ -12,7 +12,8 @@ For one new track placed after a reference row, Logic writes:
 * the channel: an audio track binds a free `Audio N` stub, or with none free (or on request)
   gets a fresh channel after the last `Audio`, as Logic does; an instrument or aux track gets
   a new channel record; every insert shifts every later owner, and every object bound above
-  it — `channel_alloc`. A track placed after a row inside a stack joins that stack.
+  it — `channel_alloc`. A track placed after a row inside a stack joins that stack, and
+  inside a summing stack outputs to its bus (`stack_place`).
 * the `gnoS` registry entries — `registry.register_object`
 * the selection, moved onto the new track — `selection.select_track`
 
@@ -25,23 +26,12 @@ import re
 
 from .binding import bound_channels, channels
 from .channel_alloc import (
-    BARE_STUB,
-    COUNT_CLASS_AT,
-    bind_audio_stub,
-    new_audio_channel,
-    new_aux_channel,
-    bump_channel_count,
-    channel_run_end,
-    default_inst_records,
-    free_audio_stub,
-    is_channel_count,
-    is_channel_record,
-    is_mixer_record,
-    mixer_record,
-    new_inst_channel,
-    project_words,
+    BARE_STUB, COUNT_CLASS_AT, bind_audio_stub, new_audio_channel, new_aux_channel,
+    bump_channel_count, channel_run_end, default_inst_records, free_audio_stub, is_channel_record,
+    is_mixer_record, mixer_record, new_inst_channel, project_words, require_packaged_class,
     shifted_channel,
 )
+from .mixer import is_channel_count
 from .environment import (
     DEFAULT_COLOUR,
     DEFAULT_ICON,
@@ -56,7 +46,8 @@ from .environment import (
     shifted_object,
 )
 from .add_plugin import show_slots, shown_slots
-from .insert import HEADER, project_records, reassemble, slot_index_base
+from .slots import slot_index_base
+from .stream import HEADER, project_records, reassemble
 from .keyflags import sync_key_flags
 from .recbuild import fresh_uuid, rec
 from .registry import GNOS_TAG, register_object
@@ -64,6 +55,7 @@ from .regions import sync_region_tracks, sync_row_count
 from .selection import select_track
 from .sequence import QESM_FRESH, plan_sequence
 from .slots import property_key_base
+from .stack_create import packaged_aux
 from .tracklist import (
     MEMBER_AT,
     ROW_TYPE,
@@ -136,28 +128,34 @@ def _by_label(chans: dict, label: str):
 
 
 def _flat_anchor(records, flat: list[int], *, owner: int, prefix: str, owners_of: dict,
-                 chans: dict, like: int) -> int:
+                 chans: dict, like: int | None) -> int:
     """Position in the flat list after which the new row goes: the last row of the same
-    strip type with a lower owner, else the pattern's."""
-    below = []
+    strip type with a lower owner, else the pattern's; with no pattern (a session's first aux)
+    the last instrument or audio row, where Logic's own first aux went."""
+    below, sources = [], []
     for k, i in enumerate(flat):
         own = owners_of.get(row_object(records[i].raw))
         if own is not None and own < owner and chans[own].label.startswith(prefix):
             below.append(k)
-    return max(below) if below else row_position(records, flat, like)
+        if own is not None and chans[own].label.startswith(("Audio ", "Inst ")):
+            sources.append(k)
+    if below:
+        return max(below)
+    return row_position(records, flat, like) if like is not None else max(sources)
 
 
 def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_number: int = 1,
               stereo: bool = False, track_count: int | None = None,
               colour: int | None = None, member: bool | None = None,
-              new_channel: bool = False) -> tuple[bytes, dict]:
+              new_channel: bool = False, pattern_object: bytes | None = None) -> tuple[bytes, dict]:
     """A new ``kind`` track — audio, instrument or aux — named ``name``, its arrange row right
     after track object ``after`` (inside that row's stack when it has one).
 
     ``colour`` defaults to Logic's: 16 on an audio track, 5 on an aux, the pattern's on an
     instrument. ``member`` puts the row inside the stack ``after`` belongs to or heads (True),
     at the top level (False), or wherever ``after`` sits (None). ``new_channel`` makes an audio
-    track a fresh channel even while a stub is free."""
+    track a fresh channel even while a stub is free. ``pattern_object`` is cloned in place of
+    the session's own track of the kind."""
     if kind not in _PREFIX:
         raise ValueError("kind is 'audio', 'instrument' or 'aux'")
     require_full_walk(data)
@@ -166,9 +164,16 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     if after not in objs:
         raise ValueError(f"no track object {after}")
     chans = channels(data)
+    require_packaged_class(chans, kind)
     owners_of = bound_channels(data)
     prefix = _PREFIX[kind]
-    like, like_owner = _pattern(objs, chans, owners_of, prefix, by_owner=kind == "aux")
+    packaged = None
+    try:
+        like, like_owner = _pattern(objs, chans, owners_of, prefix, by_owner=kind == "aux")
+    except ValueError:
+        if kind != "aux":
+            raise
+        like, like_owner, packaged = max(objs), None, packaged_aux(records)
     like = _with_table_entry(records, objs, owners_of, chans, prefix, like)
     object_id = next_object_id(records)
     top = max(objs)
@@ -206,7 +211,7 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
                          fresh_word=AUX_FRESH_WORD if kind == "aux" else QESM_FRESH,
                          kind_byte=AUX_KIND_BYTE if kind == "aux" else None)
 
-    pattern_obj = object_record(records, like)
+    pattern_obj = pattern_object or (packaged["object"] if packaged else object_record(records, like))
     pattern_stamp = object_stamp(pattern_obj)
     named = not re.fullmatch(r"(Audio|Inst|Aux) \d+", name)
     if kind == "audio":
@@ -250,12 +255,13 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     if depth <= ref_depth:                                # beside the anchor: after everything it holds
         from .stacks import span_end
         ref_pos = span_end([records[i].raw[HEADER + MEMBER_AT] for i in run], ref_pos) - 1
-    arrange_row = new_row(records[run[like_pos]].raw, object_id=object_id, member=member,
+    arrange_row = new_row(packaged["row"] if packaged else records[run[like_pos]].raw,
+                          object_id=object_id, member=member,
                           row_type=ROW_TYPE.get(kind, ROW_TYPE["audio"]))
     flat = flat_run(records, run)
     flat_pos = _flat_anchor(records, flat, owner=owner, prefix=prefix, owners_of=owners_of,
-                            chans=chans, like=like)
-    flat_row = clone_flat_row(records[flat[flat_pos]].raw, object_id)
+                            chans=chans, like=None if packaged else like)
+    flat_row = clone_flat_row(packaged["flat_row"] if packaged else records[flat[flat_pos]].raw, object_id)
 
     # the fresh record takes `owner` and every channel from it moves up one, so it goes after
     # the highest owner below it: Logic keeps the channel records in owner order
@@ -275,7 +281,8 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
                                             object_uuid=obj_uuid, output_uuid=output_uuid,
                                             stack_index=stack_index, stereo=stereo)
         inst_records = [chan_rec] + default_inst_records(owner, slot_base=slot_index_base(data),
-                                                          property_base=property_key_base(data))
+                                                          property_base=property_key_base(data),
+                                                          stereo=stereo)
     elif kind == "aux":
         highest = max(int(c.label.split(" ", 1)[1]) for c in chans.values() if c.label.startswith(prefix))
         inst_records = [new_aux_channel(number=highest, owner=owner, object_uuid=obj_uuid,
@@ -323,7 +330,15 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     result = show_slots(result, shown_slots(result))
     result = sync_row_count(result, None if track_count is None else track_count + 1)
     result = sync_region_tracks(result, None if track_count is None else track_count + 1)
-    result = select_track(result, object_id, None if track_count is None else track_count + 1)
+    from .route_words import with_words
+    from .stack_place import to_summing_bus
+    from .stacks import read_stacks, read_tracks, summing_around
+    count = None if track_count is None else track_count + 1
+    result = with_words(select_track(result, object_id, count), [owner])
+    key = next(r["key"] for r in read_tracks(result, count) if r["object_id"] == object_id)
+    around = summing_around(read_stacks(result, count), key)
+    if around is not None:
+        result = to_summing_bus(result, {object_id: around})
     require_valid(result)
     label = chans[owner].label if kind == "audio" else f"{prefix}{number}"
     return result, {"object_id": object_id, "owner": owner, "label": label,

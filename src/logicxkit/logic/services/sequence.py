@@ -22,7 +22,7 @@ from __future__ import annotations
 import struct
 from dataclasses import dataclass, field
 
-from .insert import HEADER, ProjRecord
+from .stream import HEADER, ProjRecord
 from .recbuild import rec, slot_of, with_owner, with_slot
 from .tracklist import is_marker
 

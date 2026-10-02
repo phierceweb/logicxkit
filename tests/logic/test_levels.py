@@ -100,7 +100,7 @@ class SetLevelsTest(unittest.TestCase):
 
     def test_every_record_of_that_owner_is_rewritten(self):
         """Logic keeps mixer state in each of a channel's records; a stale copy springs back."""
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         data = proj(chan(0, 90, 64, size=257), chan(0, 90, 64, size=253))
         out, _ = set_levels(data, {0: {"fader": 99, "pan": 0}})
         seen = [(r.raw[HEADER + 85], r.raw[HEADER + 119], r.raw[HEADER + PAN_AT])

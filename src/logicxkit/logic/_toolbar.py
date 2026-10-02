@@ -40,6 +40,8 @@ def cmd_toolbar(args) -> int:
         want = {_match(n): True for n in args.show or []}
         want.update({_match(n): False for n in args.hide or []})
         src = find_project(Path(args.src)) if args.src else None
+        if src is not None and not alternative_dirs(src):
+            raise ValueError(f"{src}: no alternative carries a DisplayState.plist")
     except ValueError as e:
         print(f"  {e}")
         return 2

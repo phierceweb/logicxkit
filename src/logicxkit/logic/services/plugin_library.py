@@ -16,11 +16,13 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes, atomic_write_json
 
 from .._binary import find_blocks
-from .chain_report import native_name
+from .plugin_names import native_name
 from .donors import MANIFEST, SUFFIX, WIDTH_NAMES, retarget_version
-from .insert import HEADER, VER_OFF, plugin_variant, project_records, slot_format, slot_index_base
+from .slot_width import plugin_variant, slot_format
+from .slots import slot_index_base
+from .stream import HEADER, VER_OFF, project_records
 from .plugins import plugin_identity
-from .project import _plugin_name
+from .plugin_names import plugin_name
 from .slots import is_plugin_slot, property_key_base
 from .transplant import id_offsets, window_offsets
 
@@ -167,7 +169,7 @@ def _donor(key: str, raw: bytes, entry: dict) -> Donor | None:
     if not blocks:
         return None
     type_id = blocks[0][1]
-    name = entry.get("plugin") or _plugin_name(raw[HEADER:]) or native_name(type_id, plugin_variant(raw[HEADER:]))
+    name = entry.get("plugin") or plugin_name(raw[HEADER:]) or native_name(type_id, plugin_variant(raw[HEADER:]))
     # a native donor is re-stamped to any width unless its record differs in length by width
     width = entry.get("width") if entry.get("fixed_width") else None
     return Donor(key, raw, "native", version, name, type_id, width=width, id_offsets=tuple(entry.get("id_offsets", ())))

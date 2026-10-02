@@ -5,7 +5,7 @@ import struct
 import unittest
 
 from _records import rec
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.smart_controls import mapping_slots, shift_mapping_slots
 from logicxkit.logic.services.slots import archive_index
 

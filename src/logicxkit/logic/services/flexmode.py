@@ -8,7 +8,7 @@ Slicing, `05 00 05` Monophonic; the other modes are unmeasured.
 from __future__ import annotations
 
 from .environment import KIND_AT, name_end
-from .insert import HEADER
+from .stream import HEADER
 
 Q_OFF_BIT, OTHER_MODE_BIT = 0x10, 0x20
 FLEX_MODE_AFTER_NAME = 242

@@ -7,7 +7,8 @@ import unittest
 import _goldens
 from logicxkit.logic._edit import owner_by_label
 from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.insert import CHANNEL_TAG, HEADER, project_records
+from logicxkit.logic.services.mixer import CHANNEL_TAG
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.plugin_library import find_donor, load_library
 from logicxkit.logic.services.slots import archive_index, property_key_base
 from logicxkit.logic.services.smart_controls import mapping_slots

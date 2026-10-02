@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 import _goldens
-from _cli import count, data, run, written
+from _cli import count, data, run, wrapped, written
 
 from logicxkit.logic.services.arrangement import read_sections
 from logicxkit.logic.services.groups import read_groups
@@ -67,6 +67,34 @@ class SongCommandsTest(unittest.TestCase):
         times, keys = read_signatures(data(dest))
         self.assertEqual([(t.tick, t.numerator, t.denominator) for t in times], [(0, 4, 4), (BAR_ONE + 4 * BAR, 3, 4)])
         self.assertEqual([k.tick for k in keys], [0, BAR_ONE + 4 * BAR])
+
+    def test_arrangement_add_takes_every_section_kind(self):
+        from logicxkit.logic.services.arrangement import KINDS
+        kinds = [k for k in KINDS.values() if k != "custom"]
+        added = written(self, "arrangement", ARRANGEMENT,
+                        *(arg for n, kind in enumerate(kinds) for arg in ("--add", f"{1 + 4 * n}:4:Part {n}:{kind}")),
+                        "--add", f"{1 + 4 * len(kinds)}:4:Loose", out=self.out)
+        read = read_sections(data(added))
+        self.assertEqual([KINDS[s.kind] for s in read], [*kinds, "custom"])
+        self.assertEqual([s.name for s in read][-1], "Loose")
+        code, text = wrapped("arrangement", _goldens.path(ARRANGEMENT), "--add", "1:4:X:refrain", "--out", self.out / "bad")
+        self.assertEqual(code, 1, text)
+        self.assertIn("refrain", text)
+
+    def test_group_setting_ticks_the_named_boxes_and_clears_the_rest(self):
+        from logicxkit.logic.services.groups import settings_of
+        made = written(self, "group", THREE, "--create", "Drums", "--track", "Audio 1", "--track", "Audio 2",
+                       out=self.out / "a")
+        self.assertEqual(settings_of(read_groups(data(made))[0].flags), ["Volume", "Mute", "Automation Mode"])
+        boxes = ["Editing (Selection)", "Quantize-Locked (Audio)", "Send 3"]
+        kept = written(self, "group", made, "--group", "1", *(a for b in boxes for a in ("--setting", b)),
+                       out=self.out / "b")
+        group = read_groups(data(kept))[0]
+        self.assertEqual(sorted(settings_of(group.flags)), sorted(boxes))
+        self.assertEqual(set(group.members), set(read_groups(data(made))[0].members))
+        code, text = wrapped("group", made, "--group", "1", "--setting", "Loudness", "--out", self.out / "bad")
+        self.assertEqual(code, 1, text)
+        self.assertIn("Loudness", text)
 
     def test_group_reads_without_out(self):
         code, text = run("group", _goldens.path("group-drums-logic"))

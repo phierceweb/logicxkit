@@ -8,7 +8,8 @@ import unittest
 from _records import chan, rec
 
 from logicxkit.logic._binary import find_blocks, read_block_floats
-from logicxkit.logic.services.insert import HEADER, _stamp, apply_float_overrides
+from logicxkit.logic.services.insert import _stamp, apply_float_overrides
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.project import channel_natives
 
 COMPRESSOR = 154

@@ -7,7 +7,7 @@ A group is a sequence triple of its own — `qeSM` / zero-size `karT` / `qSvE` w
 group in slot order (`+10` = 0, 4, 8 ...; group N sits in slot 4(N-1)). The `qeSM` payload:
 
     +8        u32   id, repeated as the `qSvE`'s owner; any unused triple id
-    +16       u16   name length; the name follows, padded to an even length
+    +16       u16   name length in bytes; the name follows as UTF-8, padded to an even length
     +70+name  u32   the settings, one bit per box (FLAGS); 0x81400005 on a fresh group
 
 The `qSvE` holds one 32-byte event per member per linked fader — Volume, Mute, Solo and
@@ -31,8 +31,9 @@ from dataclasses import dataclass
 
 from .binding import bound_channels
 from .environment import ENV_TAG, object_id_of
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .levels import FIXED_ONE, PAN_CENTRE, UNITY, read_levels
+from .names import written
 from .recbuild import fresh_uuid, rec, with_owner, with_slot
 from .registry import GNOS_TAG, register_group
 from .sequence import free_seq_id, is_group, sequences
@@ -114,7 +115,11 @@ def _data() -> dict:
 
 def _name_of(payload: bytes) -> str:
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
-    return payload[NAME_AT + 2:NAME_AT + 2 + n].decode("latin-1")
+    raw = payload[NAME_AT + 2:NAME_AT + 2 + n]
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw.decode("latin-1")
 
 
 def _flags_at(payload: bytes) -> int:
@@ -123,10 +128,8 @@ def _flags_at(payload: bytes) -> int:
 
 
 def _with_name(payload: bytes, name: str) -> bytes:
-    if not name.isascii() or not name.isprintable() or len(name) > _NAME_MAX:
-        raise ValueError(f"a group name is printable ASCII, at most {_NAME_MAX} characters")
+    encoded = written(name, "a group name", limit=_NAME_MAX, empty=True)
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
-    encoded = name.encode("ascii")
     padded = encoded + (b"\x00" if len(encoded) % 2 else b"")
     return payload[:NAME_AT] + struct.pack("<H", len(encoded)) + padded + payload[NAME_AT + 2 + n + (n & 1):]
 

@@ -10,7 +10,8 @@ class SlotBaseFromChannelWordTest(unittest.TestCase):
     def test_the_unanimous_channel_word_outranks_the_vote(self):
         import struct
         from _records import chan, proj, rec
-        from logicxkit.logic.services.insert import HEADER, slot_index_base
+        from logicxkit.logic.services.slots import slot_index_base
+        from logicxkit.logic.services.stream import HEADER
         def stamped(raw, base):
             buf = bytearray(raw)
             struct.pack_into("<H", buf, HEADER + 28, base)

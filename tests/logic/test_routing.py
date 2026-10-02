@@ -31,6 +31,42 @@ class RoutingTest(unittest.TestCase):
             set_input(session(), 88, 401)
 
 
+class InputFormatTest(unittest.TestCase):
+    """An audio track takes a pair only when stereo, one input only when mono (+86)."""
+
+    def _data(self, *, stereo: bool) -> bytes:
+        return proj(chan(0, "Audio 1", uuid=uuid(88), stereo_input=stereo),
+                    chan(35, "Input 1", uuid=uuid(1), size=201),
+                    chan(36, "Input 1-2", uuid=uuid(2), size=201))
+
+    def test_a_pair_on_a_mono_track_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "Audio 1 records mono and Input 1-2 is a pair"):
+            set_input(self._data(stereo=False), 0, 36)
+
+    def test_one_input_on_a_stereo_track_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "Audio 1 records stereo and Input 1 is one input"):
+            set_input(self._data(stereo=True), 0, 35)
+
+    def test_a_matching_input_is_set(self):
+        self.assertEqual(input_routing(set_input(self._data(stereo=True), 0, 36))[0], 36)
+        self.assertEqual(input_routing(set_input(self._data(stereo=False), 0, 35))[0], 35)
+
+
+class Class6RoutingTest(unittest.TestCase):
+    def _data(self):
+        return proj(chan(35, "Input 1", uuid=uuid(1), size=205, ver=6),
+                    chan(88, "Inst 5", uuid=uuid(88), size=233, ver=6),
+                    chan(401, "Output 1-2", uuid=uuid(80), size=233, ver=6))
+
+    def test_setting_an_output_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "class-6 channel record keeps no destination uuid"):
+            set_output(self._data(), 88, 401)
+
+    def test_setting_an_input_is_refused(self):
+        with self.assertRaisesRegex(ValueError, "class-6 channel record keeps no input uuid"):
+            set_input(self._data(), 88, 35)
+
+
 class NoInputTest(unittest.TestCase):
     def test_none_zeroes_the_input_field(self):
         from _records import chan, proj, uuid
@@ -44,7 +80,7 @@ class NoInputTest(unittest.TestCase):
 
     def test_no_input_on_an_aux_writes_logics_no_input_bytes(self):
         from _records import chan, proj, uuid
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         from logicxkit.logic.services.routing import set_input
         data = proj(chan(67, "Aux 1", uuid=uuid(88), source=uuid(500)), chan(500, "Bus 1", uuid=uuid(500), size=201))
         out = set_input(data, 67, None)

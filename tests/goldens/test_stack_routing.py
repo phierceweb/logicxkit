@@ -1,0 +1,102 @@
+"""A row that enters a summing stack, at any depth, outputs to the stack's bus (Logic's manual,
+and its own drag into one); a summing stack is made only over members already on the output its
+aux will take. Skips without the public corpus."""
+
+import unittest
+
+import _goldens
+
+from logicxkit.logic.services.addtrack import add_track
+from logicxkit.logic.services.binding import bound_channels, channels, output_labels
+from logicxkit.logic.services.environment import channel_objects
+from logicxkit.logic.services.routing import set_output
+from logicxkit.logic.services.stack_create import create_stack
+from logicxkit.logic.services.stack_summing import create_summing_stack
+from logicxkit.logic.services.stacks import move_out_of_stack, move_to_stack, read_stacks
+from logicxkit.logic.services.validate import validate_project
+from logicxkit.logicx import project_data
+
+THREE = "nest-three-audio-logic"
+
+
+def obj(data: bytes, name: str) -> int:
+    return next(i for i, o in channel_objects(data).items() if o.name == name)
+
+
+def stack(data: bytes, name: str):
+    return next(s for s in read_stacks(data) if s.name == name)
+
+
+def output(data: bytes, name: str) -> str | None:
+    return output_labels(data).get(bound_channels(data)[obj(data, name)])
+
+
+def bus_of(data: bytes, name: str) -> str:
+    chans = channels(data)
+    feed = chans[stack(data, name).owner].input_uuid
+    return next(c.label for c in chans.values() if c.uuid == feed)
+
+
+@_goldens.needs(THREE)
+class EnteringASummingStackTest(unittest.TestCase):
+    def setUp(self):
+        base = project_data(_goldens.path(THREE))
+        self.s, _r = create_summing_stack(base, name="S", members=[obj(base, f"Audio {n}") for n in (1, 2, 3)])
+
+    def test_a_track_added_beside_a_summing_member_outputs_to_the_stack(self):
+        for kind in ("audio", "instrument", "aux"):
+            with self.subTest(kind):
+                out, _r = add_track(self.s, name="Extra", after=obj(self.s, "Audio 2"), kind=kind)
+                self.assertEqual(output(out, "Extra"), "Bus 1")
+                self.assertEqual(validate_project(out), [])
+
+    def test_a_track_added_at_the_top_level_keeps_the_main_output(self):
+        out, _r = add_track(self.s, name="Loose", after=obj(self.s, "S"), member=False)
+        self.assertEqual(output(out, "Loose"), "Output 1-2")
+
+    def test_a_summing_stack_inside_a_summing_stack_outputs_to_the_outer_bus(self):
+        out, _r = create_summing_stack(self.s, name="Inner", members=[obj(self.s, "Audio 1"), obj(self.s, "Audio 2")])
+        self.assertEqual(output_labels(out)[stack(out, "Inner").owner], bus_of(out, "S"))
+        self.assertEqual(output(out, "Audio 1"), bus_of(out, "Inner"))
+        self.assertEqual(output(out, "Audio 3"), bus_of(out, "S"))
+
+    def test_a_track_moved_into_a_folder_inside_a_summing_stack_outputs_to_the_stack(self):
+        inner, _r = create_stack(self.s, name="F", members=[obj(self.s, "Audio 1"), obj(self.s, "Audio 2")])
+        out, _r = add_track(inner, name="Loose", after=obj(inner, "S"), member=False)
+        out = move_to_stack(out, obj(out, "Loose"), stack(out, "F").object_id)
+        self.assertEqual(output(out, "Loose"), "Bus 1")
+        self.assertEqual(validate_project(out), [])
+
+    def test_a_stack_moved_into_a_folder_inside_a_summing_stack_is_refused(self):
+        inner, _r = create_stack(self.s, name="F", members=[obj(self.s, "Audio 1")])
+        out, _r = add_track(inner, name="Loose", after=obj(inner, "S"), member=False)
+        g, _r = create_stack(out, name="G", members=[obj(out, "Loose")])
+        with self.assertRaisesRegex(ValueError, "not written"):
+            move_to_stack(g, stack(g, "G").object_id, stack(g, "F").object_id)
+
+    def test_a_track_moving_within_its_summing_stack_keeps_its_output(self):
+        sent = set_output(self.s, bound_channels(self.s)[obj(self.s, "Audio 1")],
+                          next(o for o, c in channels(self.s).items() if c.label == "Bus 9"))
+        inner, _r = create_stack(sent, name="F", members=[obj(sent, "Audio 2")])
+        out = move_to_stack(inner, obj(inner, "Audio 1"), stack(inner, "F").object_id)
+        self.assertEqual(output(out, "Audio 1"), "Bus 9")
+
+    def test_a_track_moved_out_keeps_the_bus_as_logics_own_drag_did(self):
+        out = move_out_of_stack(self.s, obj(self.s, "Audio 1"))
+        self.assertEqual(output(out, "Audio 1"), "Bus 1")
+
+
+@_goldens.needs(THREE)
+class SummingOutputUnmeasuredTest(unittest.TestCase):
+    def test_members_sent_elsewhere_than_where_the_aux_would_go_are_refused(self):
+        base = project_data(_goldens.path(THREE))
+        bus4 = next(o for o, c in channels(base).items() if c.label == "Bus 4")
+        sent = set_output(base, bound_channels(base)[obj(base, "Audio 1")], bus4)
+        with self.assertRaisesRegex(ValueError, "Audio 1.*Bus 4.*not Output 1-2"):
+            create_summing_stack(sent, name="T", members=[obj(sent, "Audio 1"), obj(sent, "Audio 2")])
+        out, _r = create_summing_stack(sent, name="T", members=[obj(sent, "Audio 2"), obj(sent, "Audio 3")])
+        self.assertEqual(output(out, "Audio 1"), "Bus 4")
+
+
+if __name__ == "__main__":
+    unittest.main()

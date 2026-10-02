@@ -16,21 +16,11 @@ from .binding import channels
 from .chains import channel_references
 from .keyflags import sync_key_flags
 from .recbuild import rec
-from .insert import (
-    HEADER,
-    MONO,
-    STEREO,
-    ProjRecord,
-    channel_formats,
-    insert_slots,
-    instance_offsets,
-    is_mixer_record,
-    project_records,
-    reassemble,
-    set_slot_bypass,
-    slot_format,
-    slot_index_base,
-)
+from .insert import insert_slots, instance_offsets
+from .mixer import channel_formats, is_mixer_record
+from .slot_width import MONO, STEREO, slot_format
+from .slots import set_slot_bypass, slot_index_base
+from .stream import HEADER, ProjRecord, project_records, reassemble
 from .plugins import plugin_identity
 from .sidechain import carry
 from .slots import is_plugin_slot, property_key_base

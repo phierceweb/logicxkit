@@ -11,7 +11,7 @@ import unittest
 
 from _fixtures import chunk
 from _records import chan, proj, rec
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.transplant import channel_slots, transplant
 
 TAIL = 20

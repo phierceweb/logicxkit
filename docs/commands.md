@@ -13,6 +13,7 @@ This file is about shape and safety, not flags. For a command's flags run
 - [Two CLIs](#two-clis)
 - [Reading a project](#reading-a-project)
 - [Editing a project](#editing-a-project)
+  - [Tracks, stacks and the mixer](#tracks-stacks-and-the-mixer)
 - [Building strips and presets](#building-strips-and-presets)
 - [Decoding plugin state](#decoding-plugin-state)
 - [Drum patterns](#drum-patterns)
@@ -81,6 +82,11 @@ Do not assume that gate covers everything:
 project's layout, pairing tracks by Environment object id within a lineage and by an explicit
 map across lineages. It refuses across lineages without a map. A strip reference the template's
 channel lacks stays as it is — clearing one is not written — and the op says so in the plan.
+A template stack is the session stack whose header pairs with its own, else the one stack of
+its name; with two of that name and neither paired, the move is refused naming both. An output
+to a bus the template returns and the session will not (the return was refused) is refused.
+The channel ops are planned again once tracks are added and moved, so a run can do ops `--plan`
+did not list; the plan says so when it has any of those.
 
 `migrate` runs that in one pass: it drafts the pairing with `propose-map` (or takes `--map FILE`),
 applies it, and writes `CLAUDE migrated - <song>.logicx` into `--out`, never over an existing
@@ -189,6 +195,58 @@ override what was carried.
 opens is not confirmation either. The way to check a writer is Save As in Logic and diff the
 record list against the input.
 
+### Tracks, stacks and the mixer
+
+The track commands take a track by the name the arrange list shows. Where a stack header shares
+its name with a channel, add the mixer label in parentheses: `Drums (Sub 1)`. The mixer commands
+take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
+
+- `add-track --name NAME --after TRACK` adds an audio track after an existing one, inside that
+  track's stack when it has one, recording from `--input N`. `--stereo` records from the pair
+  `Input N-(N+1)`, so N is odd. `--instrument` adds a software instrument track instead, and
+  `--stereo` then makes its channel stereo.
+- `rename --track OLD=NEW` renames a track and marks the name as the user's; without that mark
+  the arrange shows the channel-strip setting's name. A track name is 1 to 127 bytes of UTF-8:
+  `rename`, `add-track --name` and `stack-create --name` write names outside ASCII as Logic
+  stores them, and a track is found by name in either Unicode form. Group, marker and section
+  names take UTF-8 too (a group's up to 63 bytes); one Logic renamed, which it stores as RTF, is
+  read as Logic shows it. A written name needs a visible character, and a marker or section name
+  cannot start `{\rtf`.
+- `colour --track NAME=INDEX` sets a track's colour by Logic's palette index.
+- `hide --track NAME` hides a track; `--show` brings it back.
+- `reorder --move TRACK:before:OTHER` (or `:after:`) moves a row among its siblings, under the
+  same parent. A stack header moves with its members.
+- `stack-create --name NAME --track NAME` makes a folder stack from tracks; `--track` repeats.
+  `--summing` makes a summing stack instead: a stereo aux fed from the lowest bus nothing uses,
+  with every member's output sent to that bus. The tracks are all at the top level, or all
+  direct members of one stack, and the new stack then sits inside that one. A stack header as a
+  member is refused, and so is a member whose output is not where the new aux will go (Output
+  1-2, or the bus of a summing stack around it): where Logic sends the aux then is not measured.
+  A track that comes to sit inside a summing stack, at any depth — `add-track`, `stack-create
+  --summing` inside one, `stacks --move` into one or into a folder inside one — outputs to that
+  stack's bus. `stacks --move-out TRACK` takes a track one level out, to just after the stack it
+  leaves; out of a summing stack it keeps the bus as its output, as it does in Logic. Where two
+  stacks share a name, `--stack` and `stacks --move` take `NAME (Sub 1)` or `NAME (Aux 9)`.
+- `route --output CHANNEL=DEST` sets where a channel outputs to, and `--input CHANNEL=INPUT`
+  what feeds it: an `Input N` for a track, a `Bus N` for an aux. The record's index words are
+  set with its UUIDs. A mono audio track takes one input and a stereo one a pair (`Input 1-2`);
+  `width` changes which.
+- `send --add CHANNEL=BUS` adds a send in the lowest free of a channel's three slots (`--key`
+  picks one), `--remove CHANNEL` drops every send on it, and `--copy LABEL=SRC_LABEL --from
+  SRC_PROJECT` replaces a channel's sends with another project's. Buses are not remapped across
+  projects: a copied send points at the bus of the same number. `--set CHANNEL=BUS` names a send
+  that is already there. `--level DB` (`--level=-inf` to 6), `--mode post-pan|post-fader|pre-fader`
+  and `--bypass on|off` apply to every `--add` and `--set` of the call, and need one; an added
+  send given none comes in as Logic adds one, at −∞ dB, post pan and on. A second send to a bus
+  the channel already sends to is refused: `--set` changes the one there.
+- `levels --fader CHANNEL=DB` sets a fader in dB and `--pan CHANNEL=N` a pan from -64 (left) to
+  63 (right). A fader is written at exactly that level; Logic's own readout shows its steps as
+  labelled and a level between two of them up to 0.1 dB low (an exact -6.0 shows -6.1). Without
+  either flag `levels` lists every fader in dB to the hundredth, as written, and `--to OTHER`
+  copies a project's faders and pans onto another.
+- `width --stereo LABEL` (or `--mono`) changes a channel's width and the build of every plug-in
+  on it. With neither flag it lists the widths and writes nothing.
+
 ## Building strips and presets
 
 `build` writes `.cst` channel strips from a JSON spec, `pst` writes single-plugin settings with
@@ -291,7 +349,7 @@ its number in the input's listing, whatever the imports and edits before it move
 playing one sequence (aliases) take a mute each and no other edit. A number means the same region (track, name
 and start) in every alternative, and is refused where an alternative lacks it — as is a marker
 number (name and bar) for `logic markers`. `logic markers` lists the marker track and edits it on a copy: `--add
-BAR[:BARS]:NAME`, `--rename N=NAME`, `--move N=BAR`, `--delete N`, ASCII names only. Logic's
+BAR[:BARS]:NAME`, `--rename N=NAME`, `--move N=BAR`, `--delete N`. Logic's
 re-save of copies carrying every region edit and every marker edit kept all of them.
 `logic chains` also takes a chain keyed by a channel name instead of a strip reference — `Stereo Out`
 for the main output — listing its plug-ins in slot order as declared donors with parameters named as
@@ -301,8 +359,10 @@ block is refused before anything is written, and every configured value is read 
 `logic plugins --validate` opens each listed third-party component with `auval -v`, since the
 registry keeps a component whose bundle has gone bad and Logic's own launch trusts that registry.
 
-`logic automation` lists each track's automation lanes and points, a plug-in lane as `insert N
-parameter M` (`--json` for the raw ticks and values; `--all` includes tracks with an empty folder). `--set "TRACK:LANE=V@BAR,..."` replaces a
+`logic automation` lists each track's automation lanes and points. A plug-in lane is listed as
+`--set` takes it, `slot N NAME`, with its plug-in, its parameter index and each point in the
+parameter's own unit; one no table names stays `insert N parameter M` (`--json` for the raw ticks
+and values; `--all` includes tracks with an empty folder). `--set "TRACK:LANE=V@BAR,..."` replaces a
 lane's points on a copy (`--out`), `--copy "TRACK:LANE->TRACK"` copies a lane onto another track and
 `--clear "TRACK:LANE"` empties one, the three applied in command-line order; lanes are Volume, Pan,
 Mute, Solo and ±Volume (the relative lane), values 0-127 with Volume 90 and Pan 64 at unity. A

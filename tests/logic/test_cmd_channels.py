@@ -1,6 +1,7 @@
 """The channel commands run in-process on public corpus bundles, and the bundle they write read
 back: send, transplant, bypass, clear-slots, strip-save, width."""
 
+import json
 import os
 import tempfile
 import unittest
@@ -11,7 +12,8 @@ import _goldens
 from _cli import data, owner, run, source, written
 
 from logicxkit.logic.services.binding import channels, output_routing
-from logicxkit.logic.services.insert import channel_formats, slot_bypassed
+from logicxkit.logic.services.mixer import channel_formats
+from logicxkit.logic.services.slots import slot_bypassed
 from logicxkit.logic.services.project import read_project, strip_chain
 from logicxkit.logic.services.sends import read_sends
 from logicxkit.logic.services.transplant import channel_slots
@@ -46,6 +48,54 @@ class ChannelCommandsTest(unittest.TestCase):
         dest = written(self, "send", LEVELS, "--add", "Audio 1=Bus 1", out=self.out)
         after = data(dest)
         self.assertEqual([s.bus for s in read_sends(after)[owner(after, "Audio 1")]], [1])
+
+    def test_send_set_level_mode_and_bypass(self):
+        dest = written(self, "send", SEND, "--set", "Audio 1=Bus 1", "--level", "-10", "--mode",
+                       "pre-fader", "--bypass", "on", out=self.out)
+        (s,) = read_sends(data(dest))[owner(data(dest), "Audio 1")]
+        self.assertEqual((round(s.level_db, 1), s.mode, s.bypassed), (-10.0, "pre fader", True))
+
+    def test_send_add_at_a_level(self):
+        dest = written(self, "send", LEVELS, "--add", "Audio 1=Bus 1", "--level", "0", out=self.out)
+        (s,) = read_sends(data(dest))[owner(data(dest), "Audio 1")]
+        self.assertEqual((round(s.level_db, 2), s.mode), (0.0, "post pan"))
+
+    def test_send_set_to_silence(self):
+        dest = written(self, "send", SEND, "--set", "Audio 1=Bus 1", "--level=-inf", out=self.out)
+        (s,) = read_sends(data(dest))[owner(data(dest), "Audio 1")]
+        self.assertIsNone(s.level_db)
+
+    def test_send_set_needs_something_to_set(self):
+        code, text = run("send", source(SEND), "--set", "Audio 1=Bus 1", "--out", self.out)
+        self.assertEqual(code, 2, text)
+        self.assertFalse(any(self.out.iterdir()))
+
+    def test_send_settings_need_an_add_or_a_set(self):
+        for extra in ((), ("--remove", "Audio 1")):
+            with self.subTest(extra):
+                code, text = run("send", source(SEND), "--level=-10", *extra, "--out", self.out)
+                self.assertEqual(code, 2, text)
+                self.assertIn("go with --add or --set", text)
+                self.assertFalse(any(self.out.iterdir()))
+
+    def test_a_level_out_of_range_says_so(self):
+        for level, said in (("1e6", "at most 6.0 dB"), ("nan", "a number of dB")):
+            with self.subTest(level):
+                code, text = run("send", source(SEND), "--set", "Audio 1=Bus 1", f"--level={level}", "--out", self.out)
+                self.assertEqual(code, 1, text)
+                self.assertIn(said, text)
+
+    def test_levels_sets_a_fader_in_db_and_a_pan(self):
+        from logicxkit.logic.services.levels import read_levels
+        dest = written(self, "levels", LEVELS, "--fader", "Audio 1=-6", "--pan", "Audio 1=-20",
+                       out=self.out)
+        lv = read_levels(data(dest))[owner(data(dest), "Audio 1")]
+        self.assertEqual((round(lv["fader_db"], 2), lv["pan_display"]), (-6.0, -20))
+
+    def test_levels_lists_faders_in_db(self):
+        code, text = run("levels", source("send-level-2-logic"), "--json")
+        self.assertEqual(code, 0, text)
+        self.assertIn('"fader_db": 0.0', text)
 
     def test_send_remove(self):
         before = data(SEND)
@@ -138,7 +188,18 @@ class ChannelCommandsTest(unittest.TestCase):
         self.assertEqual([p for p, _ in chain(dest, "Audio 2")], ["Compressor", "Noise Gate", "Compressor"])
         code, text = run("automation", dest)
         self.assertEqual(code, 0, text)
-        self.assertIn("insert 3 parameter", text)
+        self.assertIn("slot 3 Threshold (Compressor, parameter 0): 3 point(s)", text)
+        self.assertIn("= -30 dB", text)
+
+    def test_automation_lists_a_parameter_lane_by_the_name_set_takes(self):
+        code, text = run("automation", _goldens.path(LANES))
+        self.assertEqual(code, 0, text)
+        self.assertIn("slot 3 threshold (pro-c 2, parameter 1): 3 point(s)", text.lower())   # the AU table's spelling, or the map's
+        dest = written(self, "automation", LANES, "--set", "Audio 2:slot 3 Threshold=-18@1,-6@2", out=self.out)
+        code, text = run("automation", dest, "--json")
+        lane = next(ln for a in json.loads(text) for ln in a["lanes"] if ln["name"].lower() == "threshold")
+        self.assertEqual((lane["plugin"], lane["slot"], lane["param_index"]), ("Pro-C 2", 3, 1))
+        self.assertEqual([round(p["in_unit"], 2) for p in lane["points"]], [-18.0, -6.0])
 
     def test_a_channel_that_is_not_there_is_refused_and_nothing_is_written(self):
         code, text = run("bypass", _goldens.path(INSERTS), "--out", self.out, "--channel", "Audio 9")

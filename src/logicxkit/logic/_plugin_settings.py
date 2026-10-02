@@ -20,7 +20,7 @@ def dialled(donor, settings: dict[str, str], raw: bytes | None = None):
     """``--set`` applied: band specs (``band N=…``) and a third-party's items through its map into
     the donor's payload; one of Logic's own keeps its table names for `add_plugin` to dial ->
     ``(raw, values for the table, notes)``."""
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.translate import load_maps, map_for
     from .services.translate_write import apply_band_specs, split_specs, write_settings
     raw = donor.raw if raw is None else raw
@@ -78,7 +78,7 @@ def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
 def translation(data, owner: int, at: int, donor):
     """The old slot's settings carried into ``donor`` through the family vocabulary, with the
     old slot's side chain riding along; refused when either plug-in has no map."""
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.transplant import slot_at
     record = slot_at(data, owner, at)
     if record is None:
@@ -93,7 +93,7 @@ def translation_of(old: bytes, donor, family: str | None = None):
     """The plan carrying ``old``'s settings into ``donor`` — through the map of ``family`` when
     the old plug-in has several — with its side chain; LookupError when the old plug-in has no
     map, ValueError when the donor has none or the families differ."""
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.plugin_params import load_tables
     from .services.sidechain import side_chain
     from .services.translate import load_maps, map_for, maps_for, plan, read_settings
@@ -114,7 +114,7 @@ def carry_lanes(data, owner: int, at: int, carried, raw: bytes, old_raw: bytes, 
     """``lanes``, the old slot's automation taken before it was emptied, carried through the
     plan's maps onto insert ``at`` (`automation_remap`)."""
     from .services.automation_remap import carry_slot
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.insert_lanes import channel_object
     from .services.plugin_params import load_tables, table_for
     from .services.slot_width import plugin_variant
@@ -139,7 +139,8 @@ def restore_lanes(data, owner: int, at: int, lanes) -> bytes:
 
 
 def donor_table(donor):
-    from .services.insert import HEADER, plugin_variant
+    from .services.slot_width import plugin_variant
+    from .services.stream import HEADER
     from .services.plugin_params import load_tables, table_for
     table = (table_for(load_tables(), donor.type_id, plugin_variant(donor.raw[HEADER:]))
              if donor.type_id is not None else None)
@@ -156,7 +157,7 @@ def replace_slot(data, owner: int, at: int, donor, *, id_offsets, settings: dict
     carried when ``translate``, its lanes carried after them (or kept as they were, or dropped
     with a note), ``--set`` values dialled in — one gate. Returns the data and the report lines."""
     from .services.add_plugin import add_plugin
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.insert_lanes import insert_lanes
     from .services.remove_plugin import remove_plugin
     from .services.sidechain import resolve, side_chain as side_chain_of, source_name

@@ -13,7 +13,7 @@ from test_stack_create import TRACKS, session
 
 from logicxkit.logic._edit import CommandError, bump_track_count, edit_copy
 from logicxkit.logic._inspect import cmd_stacks
-from logicxkit.logic.cli import cmd_levels
+from logicxkit.logic._levels_cmd import cmd_levels
 from logicxkit.logic.services.levels import read_levels
 from logicxkit.logic.services.stacks import read_tracks
 
@@ -36,10 +36,11 @@ class LevelsToTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             src, dst = bundle(root, "Src", session()), bundle(root, "Dst", quiet_fader())
-            with mock.patch("logicxkit.logic.cli.copy_levels",
+            with mock.patch("logicxkit.logic._levels_cmd.copy_levels",
                             side_effect=lambda s, d, by: (d + b"JUNK", {"matched": 0, "changed": [], "unchanged": 0, "unmatched": []})), \
                  mock.patch("builtins.print"):
-                rc = cmd_levels(Namespace(project=str(src), to=str(dst), out=str(root / "out"), by="owner", json=False))
+                rc = cmd_levels(Namespace(project=str(src), to=str(dst), out=str(root / "out"),
+                                          by="owner", json=False, fader=None, pan=None))
             self.assertEqual(rc, 1)
             self.assertFalse((root / "out").exists() and any((root / "out").iterdir()))
 
@@ -48,7 +49,8 @@ class LevelsToTest(unittest.TestCase):
             root = Path(tmp)
             src, dst = bundle(root, "Src", session()), bundle(root, "Dst", quiet_fader())
             with mock.patch("builtins.print"):
-                rc = cmd_levels(Namespace(project=str(src), to=str(dst), out=str(root / "out"), by="owner", json=False))
+                rc = cmd_levels(Namespace(project=str(src), to=str(dst), out=str(root / "out"),
+                                          by="owner", json=False, fader=None, pan=None))
             self.assertEqual(rc, 0)
             out = (root / "out/Dst.logicx/Alternatives/000/ProjectData").read_bytes()
             self.assertEqual(read_levels(out)[0]["fader"], 90)
@@ -61,7 +63,7 @@ class StacksMoveTest(unittest.TestCase):
             src = bundle(root, "Song", session())
             with mock.patch("logicxkit.logic.services.stacks.move_to_stack",
                             side_effect=lambda d, *a, **k: d + b"JUNK"), mock.patch("builtins.print"):
-                rc = cmd_stacks(Namespace(logicx=str(src), move=["Test Bounce:Drums"], out=str(root / "out")))
+                rc = cmd_stacks(Namespace(logicx=str(src), move=["Test Bounce:Drums"], move_out=None, out=str(root / "out")))
             self.assertEqual(rc, 1)
             self.assertFalse((root / "out").exists() and any((root / "out").iterdir()))
 
@@ -70,7 +72,7 @@ class StacksMoveTest(unittest.TestCase):
             root = Path(tmp)
             src = bundle(root, "Song", session())
             with mock.patch("builtins.print"):
-                rc = cmd_stacks(Namespace(logicx=str(src), move=["Test Bounce:Drums"], out=str(root / "out")))
+                rc = cmd_stacks(Namespace(logicx=str(src), move=["Test Bounce:Drums"], move_out=None, out=str(root / "out")))
             self.assertEqual(rc, 0)
             out = (root / "out/Song.logicx/Alternatives/000/ProjectData").read_bytes()
             rows = {r["name"]: r for r in read_tracks(out, TRACKS)}
@@ -124,7 +126,9 @@ class LevelsSourceTest(unittest.TestCase):
             root = Path(tmp)
             dst = bundle(root, "Dst", session())
             with mock.patch("builtins.print") as printed:
-                rc = cmd_levels(Namespace(project=str(root / "nope.logicx"), to=str(dst), out=str(root / "out"), by="owner", json=False))
+                rc = cmd_levels(Namespace(project=str(root / "nope.logicx"), to=str(dst),
+                                          out=str(root / "out"),
+                                          by="owner", json=False, fader=None, pan=None))
             self.assertEqual(rc, 2)
             self.assertTrue(any("nope.logicx" in str(c) for c in printed.call_args_list), printed.call_args_list)
 

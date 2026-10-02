@@ -28,7 +28,7 @@ from .audio_write import REGION_TIME_AT, REGION_UUID_FROM_END, _uuid_time
 from .events import BAR_ONE, LINE, events
 from .fades import Fade, with_fade
 from .flexmarkers import FLEX_BIT, samples_per_tick
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .midi import (
     ENTRY_FLAGS_AT, ENTRY_LOOP_LENGTH_AT, ENTRY_MUTE_AT, ENTRY_SLOT_AT, ENTRY_TICK_AT, LOOP_BIT, MIDI_ENTRY, MUTE_BIT, NO_LOOP,
     SEQ_OFFSET_AFTER_NAME, SEQ_OFFSET_FLAG, SEQ_OFFSET_FLAG_AFTER_NAME, MidiRegion, read_midi, sequence_offset,

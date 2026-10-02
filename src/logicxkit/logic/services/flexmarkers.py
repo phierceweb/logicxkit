@@ -21,7 +21,7 @@ import struct
 
 from ...utils.data import data_file
 from .events import PPQ
-from .insert import HEADER
+from .stream import HEADER
 from .recbuild import with_owner, with_slot
 from .regions import ENTRY
 from .sequence import Triple, sequences

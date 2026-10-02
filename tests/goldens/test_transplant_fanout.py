@@ -8,7 +8,9 @@ from argparse import Namespace
 import _goldens
 from logicxkit.logic._apply import _targets
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.insert import HEADER, channel_formats, slot_format
+from logicxkit.logic.services.mixer import channel_formats
+from logicxkit.logic.services.slot_width import slot_format
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.plugins import plugin_identity
 from logicxkit.logic.services.transplant import channel_slots, transplant
 from logicxkit.logicx import project_data

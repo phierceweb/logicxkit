@@ -13,7 +13,7 @@ from logicxkit.logic.services.audio_regions import FILE_TAG, REGION_COUNT_AT, fi
 from logicxkit.logic.services.audio_write import add_audio_region
 from logicxkit.logic.services.events import BAR_ONE
 from logicxkit.logic.services.fades import Fade, crossfade_bytes
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.integrity import regressions
 from logicxkit.logic.services.midi import ENTRY_LOOP_LENGTH_AT
 from logicxkit.logic.services.region_edit import (
@@ -333,7 +333,7 @@ class CommandTest(unittest.TestCase):
         p[located(data, n).audio.at + 15] |= FLEX_BIT
         out = [r.raw for r in records]
         out[song.end] = rec(b"qSvE", records[song.end].raw, bytes(p))
-        from logicxkit.logic.services.insert import reassemble
+        from logicxkit.logic.services.stream import reassemble
         flexed = reassemble(data, out)
         for edit in (lambda: trim_region(flexed, n, length=BEAT, spt=22.96875), lambda: split_region(flexed, n, BAR_ONE + BEAT, spt=22.96875)):
             with self.assertRaisesRegex(ValueError, "is flexed"):

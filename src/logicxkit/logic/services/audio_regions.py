@@ -27,7 +27,7 @@ from dataclasses import dataclass
 from .events import BAR_ONE, PPQ
 from .fades import Fade, read_fade
 from .region_params import REGION_COLOUR_AT, RegionParams, read_params
-from .insert import HEADER, OWNER_OFF, project_records
+from .stream import HEADER, OWNER_OFF, project_records
 from .midi import ENTRY_TICK_AT, LOOP_BIT, MUTE_BIT, REGION_BAR_ONE, entry_flags
 from .recbuild import slot_of
 from .regions import ENTRY, TAIL, TRACK_OBJECT_AT, TRACK_ROW_AT, entry_offsets, song_container

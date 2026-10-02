@@ -14,7 +14,7 @@ from ._plugin_settings import replace_slot, set_specs, translation
 def slot_names(payload: bytes, maps) -> set[str]:
     """Every name a slot answers to, lowercased: Logic's name for one of its own, its type id,
     a third-party's `Manufacturer/Subtype` code, and the plug-in's name in its translation map."""
-    from .services.chain_report import native_name
+    from .services.plugin_names import native_name
     from .services.plugins import plugin_identity
     from .services.translate import map_for
     identity = plugin_identity(payload)
@@ -32,7 +32,8 @@ def slot_names(payload: bytes, maps) -> set[str]:
 
 def matching_slots(data: bytes, owner: int, wanted: str, maps) -> list[int]:
     """The mixer positions (from 1, empty slots counted) on ``owner`` holding ``wanted``."""
-    from .services.insert import HEADER, slot_index_base
+    from .services.slots import slot_index_base
+    from .services.stream import HEADER
     from .services.transplant import channel_slots
     base = slot_index_base(data)
     return [r.key - base + 1 for r in channel_slots(data, owner) if wanted.strip().lower() in slot_names(r.raw[HEADER:], maps)]
@@ -48,7 +49,7 @@ def _labels(args, data: bytes, count) -> list[str]:
 def _refusal(project: Path, args, donors, maps) -> str | None:
     """Why nothing would be swapped, read before any copy is made: ``--to`` names the plug-in
     ``--from`` does, or no slot of any alternative holds ``--from``."""
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.plugins import slot_payloads
     from .services.project import project_metadata
     target = _pick(donors, args.target, None, None)
@@ -79,7 +80,7 @@ def _plan_lines(data: bytes, owner: int, at: int, donor, translate: bool) -> lis
 
 def cmd_swap_plugin(args) -> int:
     from ..utils.data import data_dirs
-    from .services.insert import channel_formats
+    from .services.mixer import channel_formats
     from .services.plugin_library import load_library
     from .services.retrack import find_project
     from .services.translate import load_maps

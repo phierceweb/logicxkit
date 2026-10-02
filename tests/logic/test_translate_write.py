@@ -133,7 +133,7 @@ class DialledDonorTest(unittest.TestCase):
         from types import SimpleNamespace
 
         from logicxkit.logic._plugin_settings import dialled
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         donor = SimpleNamespace(label="Pro-C 2", type_id=None, raw=bytes(HEADER) + au_payload({1: -18.0, 2: 0.6}))
         raw, by_table, notes = dialled(donor, {"threshold": "-24", "ratio": "6"})
         self.assertEqual((by_table, notes, len(raw)), (None, [], len(donor.raw)))
@@ -146,7 +146,7 @@ class DialledDonorTest(unittest.TestCase):
         from types import SimpleNamespace
 
         from logicxkit.logic._plugin_settings import dialled
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         comp = SimpleNamespace(label="Compressor", type_id=154, raw=bytes(HEADER) + native_payload([0.0] * 52))
         self.assertEqual(dialled(comp, {"Threshold": "-24"}), (comp.raw, {"Threshold": -24.0}, []))   # held and snapped
         eq = SimpleNamespace(label="Channel EQ", type_id=236, raw=bytes(HEADER) + native_payload([0.0] * CHEQ_FLOATS, 236))

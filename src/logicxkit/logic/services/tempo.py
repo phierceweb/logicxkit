@@ -19,7 +19,7 @@ import struct
 from dataclasses import dataclass
 
 from .events import Event, events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .registry import GNOS_TAG
 from .sequence import sequences
 

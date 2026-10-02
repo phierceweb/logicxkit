@@ -21,7 +21,7 @@ from __future__ import annotations
 
 import struct
 
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .recbuild import fresh_uuid, time_fields
 
 GNOS_TAG = b"gnoS"

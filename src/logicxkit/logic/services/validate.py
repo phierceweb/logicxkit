@@ -27,21 +27,10 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 
 from .._binary import find_blocks
-from .insert import (
-    BODY_START,
-    CHANNEL_FMT_AT,
-    CHANNEL_TAG,
-    HEADER,
-    NO_KEY,
-    SLOT_INDEX_AT,
-    TOTAL_AT,
-    _PLUGIN_MARKS,
-    channel_formats,
-    is_mixer_record,
-    project_records,
-    slot_format,
-    slot_index_base,
-)
+from .mixer import CHANNEL_FMT_AT, CHANNEL_TAG, channel_formats, is_mixer_record
+from .slot_width import slot_format
+from .slots import SLOT_INDEX_AT, _PLUGIN_MARKS, slot_index_base
+from .stream import BODY_START, HEADER, NO_KEY, TOTAL_AT, project_records
 from .slot_width import one_build
 from .slots import archive_index, is_plugin_slot, property_key_base
 
@@ -118,7 +107,7 @@ def validate_project(data: bytes) -> list[str]:
 
 SIGNATURE = bytes.fromhex("2347c0ab")
 FORMAT_AT = 4
-MEASURED_FORMAT = 2513                  # Logic 12.3.1's; every writer's goldens are this format
+MEASURED_FORMAT = 2513                  # Logic 12.3.1's and 12.4's; the format of every golden
 
 
 def file_format(data: bytes) -> int | None:

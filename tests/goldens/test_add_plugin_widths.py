@@ -9,7 +9,7 @@ import _goldens
 from logicxkit.logic._binary import find_blocks
 from logicxkit.logic._edit import owner_by_label
 from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.slot_width import slot_format
 from logicxkit.logic.services.transplant import ID_TAIL, ID_WINDOW, channel_slots, slot_at
 from logicxkit.logicx import project_data

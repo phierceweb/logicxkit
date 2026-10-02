@@ -3,6 +3,67 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.8.0 — 2026-10-02
+
+### Added
+
+- Projects saved by Logic 11.2 are read: tracks are named, channels bound and routed. One
+  serves as an `apply-template` template, its chains aside; every writer still refuses one as
+  the project to change.
+- `rename`, `add-track --name` and `stack-create --name` take a track name outside ASCII (1 to 127
+  bytes of UTF-8, with a visible character), and a track is found by name whether the argument is
+  composed or decomposed.
+- Send levels in dB, with the send's mode and bypass: `send --set CHANNEL=BUS` and `send --add`
+  take `--level DB`, `--mode post-pan|post-fader|pre-fader` and `--bypass on|off` (which need one of
+  them), and `manifest` lists each send's level, mode and bypass.
+- Faders in dB: `levels --fader CHANNEL=DB` and `--pan CHANNEL=N` set them, and `levels` and
+  `manifest` list every fader in dB to the hundredth.
+- `automation` lists a plug-in parameter lane by the name `--set` takes (`slot N NAME`) with its
+  plug-in and each point in the parameter's own unit; `--json` gains `plugin`, `name`, `unit`
+  and each point's `in_unit`.
+- `stack-create --summing` makes a summing stack: an aux fed from a free bus, the members routed
+  to it. Members that output anywhere but where the aux will are refused.
+- `stack-create` makes a stack inside a stack, from tracks that are direct members of one.
+- `stacks --move` moves a track into a summing stack, its output sent to the stack's bus, and
+  `stacks --move-out TRACK` takes a track one level out of its stack. A track that enters a
+  summing stack at any depth, added, moved or stacked there, outputs to its bus; one moving
+  within it keeps its output.
+- `markers`, `arrangement` and `group` write a name outside ASCII (a group's up to 63 bytes of
+  UTF-8); a marker or section name cannot start `{\rtf`.
+
+### Changed
+
+- The write gate refuses an edit that leaves an in-use channel bound to no track.
+- `--stack NAME` and `stacks --move` refuse a name two stacks share, and take `NAME (Sub 1)` or
+  `NAME (Aux 9)`.
+- `route` and `add-track` write a channel's routing index words with its UUIDs.
+- `route --input` gives a mono audio track one input and a stereo one a pair, and refuses
+  the other way round.
+- `send --add` without `--level`, `--mode` or `--bypass` makes the send Logic adds: −∞ dB,
+  post pan, on. A second send to a bus the channel already sends to is refused.
+- `apply-template --plan` says when the run can do channel ops it did not list.
+- For code that imports the library: the record stream (`HEADER`, `project_records`,
+  `reassemble`, `ProjRecord`) is `logicxkit.logic.services.stream`, channel-record facts are
+  `services.mixer`, slot facts `services.slots` and plug-in names `services.plugin_names`;
+  `services.insert` keeps `insert_slots` and the width writers. `logicxkit.logic` exports the
+  same names as before.
+
+### Fixed
+
+- `add-track --instrument` no longer writes a copy Logic refuses to open ("The operation could
+  not be completed.").
+- `add-track --instrument --stereo` makes a channel that stays stereo in Logic.
+- A marker or section that Logic renamed to a name outside ASCII, and one whose record carries
+  bytes after its text, no longer reads as unnamed; a group's name outside ASCII reads as Logic
+  shows it.
+- `stacks` and `manifest` no longer list an aux track inside a folder stack as an empty summing
+  stack.
+- A track name of any length reads.
+- `toolbar --from` a project with no `DisplayState.plist` says so instead of failing.
+- `apply-template` moves a track into the session stack the template's stack header pairs
+  with, not the last stack of that name, and refuses when two share the name and neither pairs.
+- `apply-template` no longer routes a track to a bus whose return it could not place.
+
 ## 0.7.1 — 2026-09-30
 
 ### Changed

@@ -20,7 +20,7 @@ from _records import (
 )
 from logicxkit.logic.services.binding import channels
 from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.sequence import sequences
 from logicxkit.logic.services.stack_create import SUB_NUMBER_AT, create_stack
 from logicxkit.logic.services.stacks import read_stacks, read_tracks, stack_parents
@@ -201,9 +201,20 @@ class RefusalTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_stack(session(), name="X", members=[192], track_count=TRACKS)
 
-    def test_a_track_already_inside_a_stack(self):
-        with self.assertRaises(ValueError):
-            create_stack(session(), name="X", members=[88], track_count=TRACKS)
+    def test_members_of_two_stacks_or_two_levels(self):
+        for members in ([88, 152], [88, 504]):          # Drums' and Bass's; Drums' and a top-level track
+            with self.subTest(members), self.assertRaisesRegex(ValueError, "more than one stack or level"):
+                create_stack(session(), name="X", members=members, track_count=TRACKS)
+
+
+class InsideAStackTest(unittest.TestCase):
+    def test_a_member_of_a_stack_gets_a_stack_inside_it(self):
+        out, report = create_stack(session(), name="Kicks", members=[88], track_count=TRACKS)
+        stacks = {s.name: s for s in read_stacks(out, TRACKS + 1)}
+        self.assertEqual([n for _k, n in stacks["Drums"].members], ["Kicks", "Snare Up"])
+        self.assertEqual((stacks["Kicks"].depth, [n for _k, n in stacks["Kicks"].members]), (1, ["Kick In"]))
+        chans = channels(out)
+        self.assertEqual((chans[report["owner"]].stack_index, chans[0].stack_index), (0, 3))
 
     def test_a_corrupt_stream(self):
         with self.assertRaises(ValueError):

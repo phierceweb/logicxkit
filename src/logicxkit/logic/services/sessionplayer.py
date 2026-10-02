@@ -18,7 +18,7 @@ import struct
 from dataclasses import dataclass, field
 
 from .events import events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .sequence import sequences
 
 MEMO_TAG = b"MneG"

@@ -25,7 +25,7 @@ from .automation import (
 )
 from .events import LINE, events
 from .groups import FADER_IDS
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec
 from .sequence import sequences
 from .validate import require_valid

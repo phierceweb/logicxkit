@@ -20,7 +20,7 @@ cycle locators swapped, not a flag.
 
 from __future__ import annotations
 
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .settings import MIRROR, _song, edit_song
 
 MODES: dict[str, tuple[tuple[int, int, bool], ...]] = {   # name -> (payload offset, mask (0 = whole byte), mirrored)

@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, bump_track_count, edit_copy, first_project_data, object_by_name
-from .orchestrators.apply_template import KINDS, apply_template, lineage_problem, plan, session_only
+from .orchestrators.apply_template import KINDS, STRUCTURE, apply_template, lineage_problem, plan, session_only
 from .services.pairing import format_map, parse_map_full, propose_map
 from .services.project import project_metadata
 from .services.retrack import find_project
@@ -66,14 +66,16 @@ def _only(args, session: bytes, count: int | None) -> set[int] | None:
     if not (args.track or args.stack):
         return None
     from .services.stacks import read_stacks, read_tracks, rows_below
+    from .services.trackname import stack_named
     rows = {r["key"]: r["object_id"] for r in read_tracks(session, count)}
     only = {object_by_name(session, name, count) for name in args.track or []}
     all_stacks = read_stacks(session, count)
-    stacks = {s.name: s for s in all_stacks}
     for name in args.stack or []:
-        if name not in stacks:
-            raise CommandError(f"no stack named {name!r} (have: {', '.join(sorted(stacks))})")
-        only.update(rows[key] for key, _n in rows_below(all_stacks, stacks[name]))
+        stack = stack_named(all_stacks, name)
+        if stack is None:
+            have = ", ".join(sorted(s.name for s in all_stacks))
+            raise CommandError(f"no stack named {name!r} (have: {have})")
+        only.update(rows[key] for key, _n in rows_below(all_stacks, stack))
     return only
 
 
@@ -145,6 +147,9 @@ def cmd_apply_template(args) -> int:
         print(f"\n{sum(op.status == 'planned' for op in ops)} op(s) to run, "
               f"{sum(op.status == 'refused' for op in ops)} refused, "
               f"{sum(op.status == 'skipped' for op in ops)} skipped")
+        if any(op.kind in STRUCTURE and op.status == "planned" for op in ops):
+            print("The channel ops are planned again once these tracks are added and moved, so the "
+                  "run can differ from this list.")
         return 0
 
     outcome = {"failed": 0}

@@ -16,7 +16,8 @@ import zlib
 from dataclasses import dataclass
 from pathlib import Path
 
-from .insert import CHANNEL_TAG, HEADER, NO_KEY, project_records
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, NO_KEY, project_records
 from .library import require_plain_names
 from .plugins import _ref
 from .stripsave import _STUB

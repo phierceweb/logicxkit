@@ -9,7 +9,8 @@ import unittest
 import _goldens
 from logicxkit.logic._binary import find_blocks, read_block_floats
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.insert import HEADER, plugin_variant
+from logicxkit.logic.services.slot_width import plugin_variant
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.plugin_library import load_library
 from logicxkit.logic.services.plugin_params import decode, load_tables, table_for
 from logicxkit.logic.services.transplant import channel_slots

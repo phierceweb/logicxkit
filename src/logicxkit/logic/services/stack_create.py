@@ -1,8 +1,8 @@
-"""Create a folder stack from existing arrange rows.
+"""Create a folder stack from existing arrange rows (`stack_summing` makes a summing one).
 
-Logic's own Create Track Stack on a blank project is the packaged pattern for a session that has no stack; otherwise this composes the measured pieces — a
-track add (`addtrack.py`), a drag into a stack (`stacks.move_to_stack`) and the `Sub` strips
-the existing stacks bind to. A folder stack is a kind-0 Environment object bound to a `Sub N`
+Logic's own Create Track Stack on a blank project is the packaged pattern for a session that has
+no stack; otherwise this composes the measured pieces — a track add (`addtrack.py`), a drag into
+a stack (`stacks.move_to_stack`) and the `Sub` strips the existing stacks bind to. A folder stack is a kind-0 Environment object bound to a `Sub N`
 strip, its arrange row followed by its members' rows with `+14` set. What this writes:
 
 * the object: the highest-numbered folder stack's, cloned — new id, name, colour, Sub number,
@@ -16,7 +16,10 @@ strip, its arrange row followed by its members' rows with `+14` set. What this w
 * the flat mixer-order row after the last Sub's, the sequence triple, the index-table entry
   and the `gnoS` registry entries, as a track add writes them
 
-Members already inside a stack are refused: nesting has not been measured.
+Members that are direct members of one stack make a stack inside it: the header's row takes
+their depth and theirs go one deeper, the new strip's own stack index stays 0 and no parent is
+set on the header, as Logic's own Create Track Stack inside a folder wrote them
+(`nest-inner-folder-logic`). A header as a member — a stack around a stack — is refused.
 `NumberOfTracks` in MetaData.plist is the caller's job.
 """
 
@@ -28,16 +31,10 @@ import struct
 from ...utils.data import data_file
 from .binding import bound_channels, channels, set_stack_index
 from .channel_alloc import (
-    COUNT_CLASS_AT,
-    NUMBER_AT,
-    bump_channel_count,
-    is_channel_count,
-    is_channel_record,
-    is_mixer_record,
-    mixer_record,
-    new_sub_channel,
-    shifted_channel,
+    COUNT_CLASS_AT, NUMBER_AT, bump_channel_count, is_channel_record, is_mixer_record, mixer_record,
+    new_sub_channel, project_words, shifted_channel,
 )
+from .mixer import is_channel_count
 from .environment import (
     DEFAULT_COLOUR,
     ENV_TAG,
@@ -45,6 +42,7 @@ from .environment import (
     UUID_LEN,
     channel_objects,
     clone_object,
+    name_end,
     next_object_id,
     object_id_of,
     object_record,
@@ -52,7 +50,9 @@ from .environment import (
     set_parent,
     shifted_object,
 )
-from .insert import CHANNEL_BASE_AT, HEADER, project_records, reassemble, slot_index_base
+from .mixer import CHANNEL_BASE_AT
+from .slots import slot_index_base
+from .stream import HEADER, project_records, reassemble
 from .keyflags import sync_key_flags
 from .recbuild import fresh_uuid, rec
 from .registry import GNOS_TAG, register_object
@@ -72,14 +72,35 @@ from .tracklist import (
 from .validate import require_full_walk, require_valid
 
 SUB_NUMBER_AT = NUMBER_AT
-_DATA = "stack-folder-12.3.1.json"
+_DATA, _SUMMING_DATA = "stack-folder-12.3.1.json", "stack-summing-12.3.1.json"
+_AFTER_NAME_AT = (10, 12)           # 2 and 250 on the packaged header; Logic saved a written one with 0
 
 
-def _packaged_pattern() -> dict[str, bytes]:
-    """Logic's own first folder stack on a blank project: the `Sub 1` strip, the header object
-    and its arrange row (`stack-folder-12.3.1.json`, roles `strip`, `object`, `row`)."""
-    t = json.loads(data_file("logic", _DATA).read_text())
+def _packaged_pattern(name: str = _DATA) -> dict[str, bytes]:
+    """Logic's own first stack of a kind on a blank project: the strip, the header object, its
+    arrange row and its flat row (roles `strip`, `object`, `row`, `flat_row`)."""
+    t = json.loads(data_file("logic", name).read_text())
     return {role: bytes.fromhex(r["header"]) + bytes.fromhex(r["payload"]) for role, r in t["records"].items()}
+
+
+def _stamped_last(obj: bytes, records) -> bytes:
+    """``obj`` stamped past every existing object."""
+    out = bytearray(obj)
+    top = max(object_stamp(r.raw) for r in records if r.tag == ENV_TAG and object_id_of(r) is not None)
+    struct.pack_into("<I", out, HEADER + STAMP_AT, top)
+    return bytes(out)
+
+
+def packaged_aux(records) -> dict[str, bytes]:
+    """The pattern for a session with no aux track: the header object, arrange row and flat row
+    of Logic's own summing stack on a blank project, with the two bytes it carries past the name
+    cleared: Logic cleared them when it saved a header written with them."""
+    packaged = _packaged_pattern(_SUMMING_DATA)
+    obj = bytearray(_stamped_last(packaged["object"], records))
+    end = HEADER + name_end(obj[HEADER:])
+    for at in _AFTER_NAME_AT:
+        obj[end + at] = 0
+    return {**packaged, "object": bytes(obj)}
 
 
 def _first_stack(data: bytes, records, chans) -> tuple[int, int, int, bytes, bytes, bytes]:
@@ -99,25 +120,32 @@ def _first_stack(data: bytes, records, chans) -> tuple[int, int, int, bytes, byt
             raise ValueError("no Master strip to place Sub 1 after")
     strip = bytearray(packaged["strip"])
     strip[HEADER + CHANNEL_BASE_AT] = slot_index_base(data)
-    top_stamp = max(object_stamp(r.raw) for r in records if r.tag == ENV_TAG and object_id_of(r) is not None)
-    obj = bytearray(packaged["object"])
-    struct.pack_into("<I", obj, HEADER + STAMP_AT, top_stamp)
     table = records[index_table(records)].raw[HEADER:]
     like = max(table_entries(table), key=lambda e: e[2])[1]
-    return number, like, after, bytes(obj), bytes(strip), packaged["row"]
+    return number, like, after, _stamped_last(packaged["object"], records), bytes(strip), packaged["row"]
 
 
-def _members_in_order(rows: list[dict], members: list[int], headers: set[int]) -> list[int]:
+def _members_in_order(rows: list[dict], members: list[int], stacks: list) -> tuple[list[int], int, int | None]:
+    """The members in arrange order, the depth they share and the object of the stack that holds
+    them (None at the top level). They are refused unless they sit side by side in one place:
+    all at the top level, or all direct members of one stack; a header is never a member."""
     by_object = {r["object_id"]: r for r in rows}
+    headers = {s.object_id for s in stacks}
+    holder = {key: s.object_id for s in stacks for key, _name in s.members}
     for m in members:
         row = by_object.get(m)
         if row is None:
             raise ValueError(f"object {m} is not in the arrange list")
         if m in headers:
-            raise ValueError(f"object {m} is a stack header; nesting is not modelled")
-        if row["member"]:
-            raise ValueError(f"{row['name']!r} is already inside a stack; nesting is not modelled")
-    return sorted(set(members), key=lambda m: by_object[m]["key"])
+            raise ValueError(f"{row['name']!r} is a stack header; a stack around a stack is not written")
+    places = {(by_object[m]["depth"], holder.get(by_object[m]["key"])) for m in members}
+    if len(places) != 1:
+        raise ValueError("the members sit in more than one stack or level; a stack is made at the top "
+                         "level or from direct members of one stack")
+    (depth, inside), = places
+    if depth and inside is None:
+        raise ValueError("the members sit under a row that is not read as a stack")
+    return sorted(set(members), key=lambda m: by_object[m]["key"]), depth, inside
 
 
 def create_stack(data: bytes, *, name: str, members: list[int], track_count: int | None = None,
@@ -131,8 +159,7 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
     chans = channels(data)
     owners_of = bound_channels(data)
     stacks = read_stacks(data, track_count)
-    ordered = _members_in_order(read_tracks(data, track_count), members,
-                                {s.object_id for s in stacks})
+    ordered, depth, _inside = _members_in_order(read_tracks(data, track_count), members, stacks)
     run = arrange_run(records, track_count)
     run_rows = [records[i].raw for i in run]
     folders = [s for s in stacks if s.kind == "folder"]   # a summing stack's Aux number would outrank the Subs
@@ -156,13 +183,15 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
     new_obj = clone_object(pattern_obj, object_id=object_id, name=name, owner=owner,
                            colour=colour, icon=None, stack_number=number)
     last_env = max(i for i, r in enumerate(records) if r.tag == ENV_TAG)
-    new_chan = new_sub_channel(strip_template, number=number, owner=owner, uuid=new_obj[-UUID_LEN:])
+    # its own stack index stays 0 inside another stack too, as on Logic's own (`nest-inner-folder-logic`)
+    new_chan = set_stack_index(new_sub_channel(strip_template, number=number, owner=owner, uuid=new_obj[-UUID_LEN:],
+                                               words=project_words(data)), 0)
     last_like_record = max(i for i, r in enumerate(records)
                            if is_channel_record(r) and r.owner == like_owner)
 
     member_set = set(ordered)
-    header = new_row(row_template, object_id=object_id, member=0, expanded=True)
-    moved = [with_member(raw, 1) for raw in run_rows if row_object(raw) in member_set]
+    header = new_row(row_template, object_id=object_id, member=depth, expanded=True)
+    moved = [with_member(raw, depth + 1) for raw in run_rows if row_object(raw) in member_set]
     at = next(k for k, raw in enumerate(run_rows) if row_object(raw) == ordered[0])
     kept = [raw for raw in run_rows if row_object(raw) not in member_set]
     new_rows = kept[:at] + [header] + moved + kept[at:]

@@ -11,7 +11,7 @@ from logicxkit.logic.services.flexmarkers import (
     HIT, END_TAIL, MARKER, PPQ, anchors, block_fields, flexed_entry, marker_block, quantize_code,
     rba_triple, samples_per_tick, snap,
 )
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.regions import ENTRY
 
 SPB = 13230.0                    # samples per beat at 200 BPM, 44.1 kHz — the measured take

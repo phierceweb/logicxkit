@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import struct
 
-from .insert import HEADER, ProjRecord, project_records, reassemble
+from .stream import HEADER, ProjRecord, project_records, reassemble
 from .sequence import Triple, sequences
 from .tracklist import arrange_run, row_object
 

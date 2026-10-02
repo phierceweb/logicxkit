@@ -39,9 +39,11 @@ from .environment import (  # noqa: F401 — re-exported for callers and tests
     OBJECT_ID_AT,
     PARENT_AT,
     channel_objects,
+    object_id_of,
     set_parent,
 )
-from .insert import CHANNEL_TAG, HEADER, NO_KEY, project_records, reassemble
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, NO_KEY, project_records, reassemble
 from .recbuild import with_key
 from .regions import sync_region_tracks
 from .selection import select_track
@@ -75,12 +77,16 @@ class Stack:
     name: str
     object_id: int
     track_key: int
-    index: int = 0                 # the Sub number; +110 on every member channel
-    owner: int | None = None       # the Sub N strip — where the stack's fader lives
+    index: int = 0                 # the Sub number (+110 on every member channel); a summing stack's Aux number
+    owner: int | None = None       # the Sub N or Aux N strip — where the stack's fader lives
     kind: str = FOLDER
     members: list[tuple[int, str]] = field(default_factory=list)
     depth: int = 0                 # 0 at the top level; the row's +14 byte
     parent: int | None = None      # the enclosing stack's object id
+
+    @property
+    def strip(self) -> str:
+        return f"{'Aux' if self.kind == SUMMING else 'Sub'} {self.index}"
 
 
 def track_lists(data: bytes) -> list[list]:
@@ -135,15 +141,16 @@ def read_tracks(data: bytes, track_count: int | None = None) -> list[dict]:
 
 def _stack_kind(row: dict, following: dict | None) -> str | None:
     """folder for a grouping row bound to a Sub strip; summing for one bound to an Aux whose
-    next row is a member — the grouping flag alone is set on plain aux, instrument and output
-    tracks too (Logic's own Create Track Stack of each kind on a blank project, 2026-09-12,
-    against a template with three grouping aux tracks that are not stacks); else None."""
+    next row sits one level under it — the grouping flag alone is set on plain aux, instrument
+    and output tracks too, and an aux inside a folder stack is followed by its sibling (Logic's
+    own Create Track Stack of each kind on a blank project, 2026-09-12, against a template with
+    three grouping aux tracks that are not stacks); else None."""
     if not row["grouping"]:
         return None
     label = row["label"] or ""
     if label.startswith(_SUB):
         return FOLDER
-    if label.startswith(_AUX) and following is not None and following["member"]:
+    if label.startswith(_AUX) and following is not None and following["depth"] > row["depth"]:
         return SUMMING
     return None
 
@@ -200,6 +207,21 @@ def rows_below(stacks: list[Stack], stack: Stack, *, headers: bool = True) -> li
     return out
 
 
+def enclosing(stacks: list[Stack], key: int) -> list[Stack]:
+    """The stacks around the arrange row ``key``, nearest first."""
+    holder = {k: s for s in stacks for k, _name in s.members}
+    out: list[Stack] = []
+    s = holder.get(key)
+    while s is not None and s not in out:
+        out.append(s)
+        s = holder.get(s.track_key)
+    return out
+
+
+def summing_around(stacks: list[Stack], key: int) -> Stack | None:
+    return next((s for s in enclosing(stacks, key) if s.kind == SUMMING), None)
+
+
 def span_end(depths: list[int], start: int) -> int:
     """The index after the last row a header at ``start`` holds: every following row deeper than it."""
     end = start + 1
@@ -218,7 +240,9 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
     """Move a track into a stack the way Logic does — from the top level or from another
     stack (both measured on Logic's own drags, 2026-09-04): reposition the row as the last
     member, set its member byte, stamp the parent pointer, set the stack index on the
-    track's mixer channel, and leave the track selected. Refuses an invalid result."""
+    track's mixer channel, and leave the track selected. Into a summing stack its parent and
+    stack index stay (`stack-summing-dragged-in-logic`); a track entering one, directly or
+    through a folder inside it, outputs to its bus (`stack_place`). Refuses an invalid result."""
     require_full_walk(data)
     records = list(project_records(data))
     run = arrange_run(records, track_count)
@@ -229,8 +253,17 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
     if stack_object not in stacks:
         raise ValueError(f"object {stack_object} is not a stack")
     stack = stacks[stack_object]
-    if stack.kind == SUMMING:
-        raise ValueError("summing stacks are read, not written: a member's routing moves with it")
+    summing = stack.kind == SUMMING
+    from .stack_place import summing_bus, to_summing_bus
+    listed = list(stacks.values())
+    entering = stack if summing else summing_around(listed, stack.track_key)
+    if entering is not None and track_object in stacks:
+        raise ValueError("a stack moved into a summing stack is not written: where its members "
+                         "route then has not been measured")
+    was = summing_around(listed, order.index(track_object))
+    routed = entering is not None and (was is None or was.object_id != entering.object_id)
+    if routed and summing_bus(data, entering) is None:
+        raise ValueError(f"{entering.name!r} is fed from no bus, so a track moved into it has nowhere to go")
 
     depths = [records[i].raw[HEADER + MEMBER_AT] for i in run]
     start = order.index(stack_object)
@@ -256,17 +289,16 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
     out = []
     for index, record in enumerate(records):
         raw = replace.get(index, record.raw)
-        if record.tag == ENV_TAG and len(raw) - HEADER > PARENT_AT + 4:
-            payload = raw[HEADER:]
-            if (struct.unpack_from("<I", payload, 0)[0] & 0xFFFF == CHANNEL_OBJECT.get(record.ver)
-                    and struct.unpack_from("<I", payload, OBJECT_ID_AT)[0] == track_object):
-                raw = set_parent(raw, stack_object)
-        elif (record.tag == CHANNEL_TAG and record.key == NO_KEY
+        if object_id_of(record) == track_object and not summing:
+            raw = set_parent(raw, stack_object)
+        elif (not summing and record.tag == CHANNEL_TAG and record.key == NO_KEY
                 and record.owner == track_owner):
             raw = set_stack_index(raw, stack.index)
         out.append(raw)
 
     result = sync_region_tracks(reassemble(data, out), track_count)
+    if routed:
+        result = to_summing_bus(result, {track_object: entering})
     result = select_track(result, track_object, track_count)
     require_valid(result)
     return result
@@ -313,9 +345,10 @@ def _header_above(depths: list[int], pos: int, depth: int) -> int:
 
 def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = None) -> bytes:
     """Move a member row one level out, right after the stack it leaves, the way Logic's drag
-    does: depth byte down by one, the
-    parent pointer and the channel's stack index now the enclosing stack's (cleared at the top
-    level), the row selected. A row two levels deep takes two moves to reach the top."""
+    does: depth byte down by one, the parent pointer and the channel's stack index now the
+    enclosing stack's (cleared at the top level; a summing stack gives its members no index), the
+    row selected. Its routing stays, out of a summing stack too. A row two levels deep takes two
+    moves to reach the top."""
     require_full_walk(data)
     records = list(project_records(data))
     run = arrange_run(records, track_count)
@@ -349,14 +382,12 @@ def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = 
     out = []
     for index, record in enumerate(records):
         raw = replace.get(index, record.raw)
-        if record.tag == ENV_TAG and len(raw) - HEADER > PARENT_AT + 4:
-            payload = raw[HEADER:]
-            if (struct.unpack_from("<I", payload, 0)[0] & 0xFFFF == CHANNEL_OBJECT.get(record.ver)
-                    and struct.unpack_from("<I", payload, OBJECT_ID_AT)[0] == track_object):
-                raw = set_parent(raw, outer.object_id if outer else 0)
+        if object_id_of(record) == track_object:
+            raw = set_parent(raw, outer.object_id if outer else 0)
         elif (record.tag == CHANNEL_TAG and record.key == NO_KEY
                 and record.owner == track_owner and len(raw) - HEADER > 200):
-            raw = set_stack_index(raw, outer.index if outer else 0)
+            if outer is None or outer.kind == FOLDER:
+                raw = set_stack_index(raw, outer.index if outer else 0)
         out.append(raw)
     result = sync_region_tracks(reassemble(data, out), track_count)
     result = select_track(result, track_object, track_count)

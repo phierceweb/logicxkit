@@ -160,13 +160,23 @@ move with it (every file on hand, 2026-09-29; the classes are each record's own 
 | 2511 | Logic 11.2 | 12 | 6 | 4 | 5 | 6 | 2 |
 | 2509, 2510 | before 11.2 | 11 | 6 | 2, 3 | 5 | 5, 6 | 2 |
 
-Logic 12.4 (6707) writes 2513 too, with the same classes on the one save measured
-(`names-non-ascii-logic`, 2026-09-30; it holds no `gRuA`).
+Logic 12.4 (6707) writes 2513 too, with the same classes (`names-non-ascii-logic`, 2026-09-30;
+it holds no `gRuA`). It re-saved each of the 61 public copies the writers made (2026-10-01): each
+has the record list of Logic 12.3.1's re-save, tag for tag, and holds that re-save's goldens.
+Where the two differ outside the per-save ids and stamps, 12.4 kept what was written: an
+un-named instrument track keeps its object name (`Inst 1`) where 12.3.1 wrote the preset's
+(`Untitled`, with `Untitled.aupreset` at the instrument slot's `+14`). An audio file skipped as
+missing on load comes back with one byte of its `lFuA` record cleared; with the file in place
+the record is ours byte for byte.
 
 Every offset in this document is measured on 2513, and the writers take nothing else
-(`validate.require_measured_format`, called before a project is copied). A class-6 channel
-record is the class-7 record without its last 32 bytes, so what `route` writes as the input UUID
-lands on the channel's own.
+(`validate.require_measured_format`, called before a project is copied). A Logic 11.2 project
+(2511) reads — its object types and channel trailer are below — and no writer takes it: its
+instrument channels sit sparse at fixed owners (the count record says 256; one song holds
+`Inst 1`–`8` and `Inst 256`), and an instrument add's insert-and-shift, measured on Logic 12's
+dense block, moved `Inst 8` to `Inst 9` there. Logic 12.4's save of that copy kept the new
+track and left the moved one without a channel; its own conversion of the song keeps it
+(`logic-11-2-inst-logic`, 2026-10-01).
 
 Keys: **0-2 sends**, then the **plugin slots** from the project's slot base — 2 with up to one send anywhere in the project, 3 with two, 4 with three (Logic re-keys every channel when a send pushes it, and each channel record carries the base at +28; measured 2026-09-12) — and higher keys per-channel properties (the `.cst`
 reference sits at a key that moves with the Logic build — 9, 10, 12 and 13 all occur, so never
@@ -453,7 +463,7 @@ Microphaser (152); what tells them apart
 is the slot's variant id at `+116`, a per-plug-in base plus the config index at `+81`. The
 base is the same for the mono and stereo builds and, over 429 goldens, the same in every Logic
 version that writes it (class v2/v3 records carry none). `slot_width.plugin_variant` reads it,
-`chain_report.PLUGIN_VARIANTS` names the shared types' members, a table names its `variant`
+`plugin_names.PLUGIN_VARIANTS` names the shared types' members, a table names its `variant`
 (`plugin_params.table_for`) and a donor of a shared type files as `<type>v<variant>-v<ver>`.
 Bases seen: Chorus 94, Flanger 147 (type 146), Tape Delay 200, Echo 216, Stereo Delay 232,
 SilverVerb 249, Phaser 283, Microphaser 336, Compressor 389, Fuzz-Wah 405, Expander 421,
@@ -590,7 +600,7 @@ is not the arrange hierarchy.
 
 | offset | meaning |
 |---|---|
-| `+0` | channel-object type in the low 16 bits: **1800** at Logic 12, **1728** at Logic 11; mixed projects set flag bits `0x4040` in the high half on some tracks (ten of 69 in one mix), so mask before comparing |
+| `+0` | channel-object type in the low 16 bits, the build's: **1800** at class 12 from Logic 12, **1760** at class 12 from Logic 11.2, **1728** at class 11; mixed projects set flag bits `0x4040` in the high half on some tracks (ten of 69 in one mix), so mask before comparing |
 | `+16` | object id — what `karT+8` points at |
 | `+24` | u32 **group bitmask** (bit N−1 = group N; 0 = none; a channel in groups 1 and 4 reads 9) — see Groups below |
 | `+38` | u32 **parent**: the object id of the stack this track was dragged into (0 if never dragged). Ids reach 500, so all four bytes matter |
@@ -599,14 +609,14 @@ is not the arrange hierarchy.
 | `+82` | u32 per-object stamp: a fresh object gets its pattern's plus the pattern's `+86` (64 or 66); a channel insert moves every object above the pattern's up by 66 |
 | `+86` | u16, `0x42` on a fresh object (`0x40` on older ones) |
 | `+154` | kind; **0** marks a grouping object — folder stacks, plus Logic's own Preview/Click/Master |
-| `+158` | u16-length-prefixed name, immediately following, padded to an even length; UTF-8, the length in bytes (`names-non-ascii-logic`) |
+| `+158` | u16-length-prefixed name, immediately following, padded to an even length; UTF-8, the length in bytes (`names-non-ascii-logic`); written the same way, 1 to 127 bytes: Logic 12.4 kept names of 64, 96 and 127 bytes as written (`names-long-*`, 2026-10-02), and no longer one was tried |
 | name end | u16 = the bound channel's owner + 1, kept live when owners shift; +3 on a stack object holds its Sub number |
 | last 16 bytes | the object's instance **UUID** (v1, `94 c0 11 ef` in the middle) |
 
 ### Which channel an object is, and where it routes — `OCuA` tail
 
 The channel record's payload length varies per session (257, 265, 269 bytes at one class
-version), so these are addressed from the end:
+version), so these are addressed from the end. At class 7 (Logic 12):
 
 | offset | meaning |
 |---|---|
@@ -620,6 +630,37 @@ version), so these are addressed from the end:
 Holds on every in-use channel of the sessions measured and the template. **Folder stacks bind to
 the `Sub 1-7` strips**, which is where a stack's fader lives; the three kind-0 objects bound to
 Aux strips (Room, Drum FX, Vox Verb) are input-less auxes, not stacks. `services/binding.py`.
+
+A class-6 record as Logic 11.2 writes it is the class-7 record without its last 32 bytes: the
+bound object's UUID is the last 16, and it carries no destination or input UUID. Every in-use
+channel on two Logic 11.2 saves binds there, at payloads of 205 to 233 bytes; Logic 12's
+re-save of the same song grew every channel record by 32. Writing a route there is refused:
+`routing` and the track adds refuse such records, and the commands refuse the format before them.
+
+A class-6 channel routes by index words, which a class-7 record keeps beside its UUIDs:
+
+| offset | meaning |
+|---|---|
+| `+92` | u16 **output**: `0xFFFF` none; below half the device's input count the pair `Output 2w+1-2w+2`; from there `Bus w − half + 1` |
+| `+94` | u16 **input**: `0xFFFF` none; on an audio channel `Input w+1`, or the pair starting there when `+86` is 1; on an aux `Bus w − base + 1`, where the base is half the device's input count when `+86` is 1 and the whole count when 0; a value past the 256 buses is another kind of source and is not read |
+| `+86` | input format: 0 mono, 1 stereo |
+
+The device's input count is the count record's `+36`. On the Logic 12 saves on hand the words
+name what the UUIDs name — every output, every audio input, every aux fed by a bus — but for
+backups that each caught one aux a save after its input turned stereo: `+86` read 1 and the
+word still counted from the mono base (Bus 26 for Bus 10), and the next save rewrote it. A
+writer here sets the words with the UUIDs (`route_words`, `stack_place`). Every audio track fed
+by an input pair on those saves has `+86` at 1, and none with `+86` at 1 takes one input, so
+`set_input` refuses either mix; the width writer sets `+86`. On two Logic 11.2
+saves they name what Logic 12.4 bound by UUID when it converted each, every in-use channel
+(`logic-11-2-a-converted`, `-b-converted`, 2026-10-02). `binding.output_labels` and
+`input_labels` read either; a channel neither can read is left out, never called unrouted.
+
+| file header word (u16 at +4) | `ivnE` class | channel-object type | `OCuA` class | written by |
+|---|---|---|---|---|
+| 2513, 2512 | 12 | 1800 | 7 | Logic 12 |
+| 2511 | 12 | 1760 | 6 | Logic 11.2 |
+| 2510, 2509 | 11 | 1728 (1736 and 1752 occur, unread) | 6 | before 11.2; no channel binds by UUID |
 
 ### Instrument outputs — an aux fed by a software instrument's extra output
 
@@ -667,11 +708,27 @@ slots (key 4+). 78 sends across three Logic 12.3.1 saves:
 | `+0` | u32 class word, 72 at `UCuA` v5 (the only version on hand) |
 | `+4` | slot: `key << 16` |
 | `+8` | u16, 0 or 4 — not decoded |
+| `+16` | 1 in **Post Pan** mode (Logic's default), 0 in the other two |
 | `+17` | the send level's 0-127 position (a new send is 0; Logic's knob dragged twice on a blank project: 0 → 11 → 34, 2026-09-12) |
+| `+18` | 1 in **Pre Fader** mode; Post Fader is `+16` and `+18` both 0 |
+| `+19` | 1 when the send is **bypassed** |
+| `+22` | u16, 4 with **Independent Pan** on |
 | `+24..27` | the exact level, u32 LE in 8.24 fixed point — the same word the channel fader keeps at `+116`; its top byte is `+17` again |
 | `+20` | u16 destination as **bus number + the project's mono input count - 1** (32 inputs: 46 -> Bus 15, the B 15 the mixer shows; a 20-input song writes Bus 10 as 29) |
 | `+44` | the send's own instance UUID (v1), distinct on all 78 |
 | `+60` | the destination **`Bus N` channel's own UUID** (78/78) — the bus is named twice |
+
+**The level in dB.** `dB = 40 · log10(position / 90)`: position 0 is −∞, 90 is 0 dB and the
+top, 127, is 5.98, which Logic shows as 6.0. Logic's send knob reports the level word as its
+accessibility value and the dB beside it; walked one stop at a time it gave 265 stops, every one
+on that law within the display's rounding (2026-10-02). Logic shows a send's level rounded
+*down* to the tenth, and the knob's own stops sit about 200 units above each mark — 0 dB is
+saved as position 90 plus 256 units (`send-level-0db-logic`). A send written exactly on a mark
+read 0.1 dB low in Logic (−10.1 for −10.0); written 256 units above, Logic's knobs showed −10.0
+and 3.0 and its save kept both records byte for byte (`send-set-ours`, `-resave-logic`). The
+mode, bypass and pan bytes are one save each on one send (`send-mode-*`, `send-bypass-logic`,
+`send-independent-pan-logic`). `+8` is still not decoded: it is 4 on half the sends in the
+mixes on hand and 0 on every send of a blank-born project, whatever its mode.
 
 The channel's own `OCuA` mirrors every satellite: from `+132`, one u32 per record key (sends
 0-2 at `+132/+136/+140`, plugin slots from key 4 at `+148`, the reference and the rest after),
@@ -687,8 +744,12 @@ grows a stub in front of its tail when a key needs it.
 
 Two Logic re-saves (`02 -> 03`, `02 -> 07`) left every send byte-identical. `services/sends.py`
 reads them; `services/sends_write.py` adds, copies and removes them — a new send is a clone of
-one the project already carries (level bytes and `+8` copied, never synthesised), with a fresh
-`+44` and the target bus's UUID at `+60`; `logic send --add/--copy/--remove` drives it.
+one the project already carries (`+8` copied, never synthesised), with a fresh `+44` and the
+target bus's UUID at `+60`; `logic send --add/--copy/--remove` drives it. An added send's level,
+mode, bypass and Independent Pan (`+16..+19`, `+22` bit 2, `+24`) are the ones asked for, else
+those of the send Logic adds: its second send, beside one at -16.8 dB, came in at -∞, post pan
+and on (`send-two-base-3-logic`), the packaged blank-project send's values. A copy keeps its
+source's.
 **Confirmed in Logic 12.3.1 on 2026-09-02:** the added send showed on the strip.
 
 ### Row selection marks — `karT`, measured 2026-09-13
@@ -1055,6 +1116,23 @@ be completed.") — and opened the same file once only those two records' fresh 
 (`legacy-migrate-keyed-mine`, `-idswap-mine`, 2026-09-24). `validate_project` refuses both
 shapes: a plug-in whose +6 index disagrees with its key, a keyed archive off its key.
 
+**The default instrument slot's id and its closing word.** The 656-byte instrument-slot record
+keeps its instance id at `[len-20 : len-4]`, followed by a u32 that is 0 in every such record of
+the public corpus (131 of 131) and that Logic 12.4 writes back as 0; the keyed archive's id is
+its last 16 bytes. An id minted over the slot's last 16 bytes leaves random bytes in that word,
+and with a large value there Logic 12.4 refuses the project ("The operation could not be
+completed."): three values near 2^24 were refused, and the same file opened with 0, 1 and a
+negative value (2026-10-01). The 2026-09-24 refusal above cleared the same way — by re-minting
+those ids — so it may have been this word and not the keys.
+
+**A stereo instrument channel takes its width from the instrument slot.** Written with the
+channel bytes alone (`+78 +81 +86 +123` = 247 8 1 2) over the default mono slot, Logic 12.4
+saved the channel back as mono (243 8 0 1). `+84` and `+119` are 2 on Logic's own stereo
+instrument slot (`sessionplayer-track-logic`, another plug-in's); with those two set, Logic
+12.4 kept the channel stereo and itself wrote `+81` 2 and `+116` 255 (mono 1 and 254). Neither
+that save nor the mono one was kept. With all four written, Logic 12.4 kept the slot record
+byte for byte (`addtrack-inst-stereo-mine`, `-logic`, 2026-10-01).
+
 **The sequence triple and the index table are linked by slot.** The three records of a
 triple share a header slot (`+10`); the table entry with that slot word at `+32` names the
 object (`+16`) and its index (`+20`, 17 + mixer rank), and the `qeSM` repeats both: `+234`
@@ -1106,16 +1184,44 @@ A track cloned from one comes back as a group with no registry entry and the
 write gate refuses the copy. The add path takes a pattern only when its entry leads to a track
 triple carrying the object itself (`addtrack._sound_entry`, 2026-09-08).
 
-### Summing stacks — read, not written (Logic's own, 2026-09-12)
+### Summing stacks (Logic's own, 2026-09-12; written 2026-10-02)
 
 Logic's Create Track Stack of each kind over three audio tracks on a blank project: a folder
 stack's header row is a grouping object bound to a `Sub N` strip; a summing stack's header is
 a grouping object bound to an `Aux N` strip (named `Sum N`, stereo), and every member's output
 is re-routed to that aux's bus. The grouping flag alone is not the tell — plain aux, instrument
 and output tracks carry it too — so the reader takes an Aux-bound grouping row as a summing
-header only when the row under it is a member. `move_to_stack` refuses a summing stack: a
-member's routing moves with it, which is not modelled. Flatten Stack leaves the Sub strip
-allocated and unbound.
+header only when the row under it sits one level deeper (an aux inside a folder stack is
+followed by its sibling, at its own depth). A track dragged into a summing stack (Logic 12.4,
+`stack-summing-dragged-in-logic`) takes the bus as its output, by UUID and by word, with its row
+one level in; its parent pointer and stack index stay as they were, and dragged back out
+(`stack-summing-dragged-out-logic`) it keeps the bus. `move_to_stack` writes the same — Logic
+re-saved one with every row, route and stack kept (`stack-summing-move-resave-logic`) — and
+refuses a stack moved into a summing stack, whose members' routing is not measured. Logic's
+manual has any track added to a summing stack take its bus, and `stack_place` routes every row
+that comes to sit inside one at any depth — a track add, a summing stack made inside one, a move
+into a folder inside one; a row moving within its summing stack keeps its output, as Logic's own
+saves keep some subtracks routed elsewhere. The manual also has a track dragged out go to Stereo
+Out; Logic 12.4's own drag kept the bus, and the file wins. A member's stack index is not a
+reliable folder tell around summing stacks: Logic's Flatten then Create Summing leaves members at
+the old Sub number (`stack-summing-logic`), and top-level summing members on hand carry one more
+often than not. The project word at `+42` is 0 on Logic 12.3.1's saves and 3 on 12.4's, which
+rewrites it on every channel record. Flatten Stack leaves the Sub strip allocated and unbound.
+
+Logic's creation, against the save before it: the lowest free `Aux` stub comes into use —
+in-use flags, stereo width, output word 0 and `Output 1-2`'s UUID, the bus's index in the input
+word and its UUID as the input — with 90 at `+85` and `+119`, which a plain new aux has 0 in;
+the bus's own UUID is minted in place of the placeholder an unused bus carries
+(`ee0000000000800080…`); each member's output word and destination UUID name the bus; the
+members' rows go one level deeper with the header object as their parent, and their `+110` is
+left alone (0 on a fresh track). That header object carries 2 and 250 at 10 and 12 bytes past its
+name — bytes many track objects carry as 0, or as 2 with 250, 113 or 11, and whose meaning is not
+decoded; Logic wrote 0 in both when it saved a header written with them, so they are written 0.
+`stack-create --summing`
+(`services/stack_summing.py`) writes the same through an aux track add, so its header is a
+fresh `Aux` strip after the highest; Logic 12.4 opened two written stacks, showed the members
+under their headers, and re-saved them with no channel record and neither header object changed
+(`stack-summing-ours`, `stack-summing-resave-logic`).
 
 ### Creating a stack (`logic stack-create`) — composed, not sampled
 
@@ -1128,13 +1234,25 @@ no destination or input), every later channel owner moved up by one and the coun
 `+40` class counted up; a header row where the first member sat, expanded, the member rows
 behind it with `+14 = 1`, their objects' `+38` parent and their channels' `+110` stack index
 set as a drag sets them; and the flat row, sequence triple, index-table entry and two `gnoS`
-entries exactly as a track add writes them; the header ends up selected. Members already
-inside a stack are refused. **Confirmed in Logic 12.3.1 on 2026-09-02:** a stack made from two
+entries exactly as a track add writes them; the header ends up selected.
+**Confirmed in Logic 12.3.1 on 2026-09-02:** a stack made from two
 aux tracks on a copy of the Mix template opened as a folder holding both.
 
-**Needs a stack to clone.** The structures come from the session's highest-numbered stack, so
-a session with none is refused and a template's tracks land flat there; a donor (the
-template's stack) has not been tried (2026-09-08).
+**A stack inside a stack** (Logic 12.4's own Create Track Stack over two of a folder's three
+members, 2026-10-02, `nest-inner-folder-logic` and `nest-inner-summing-logic`): the header's row
+takes the members' depth and theirs go one deeper. A folder's new `Sub` strip keeps stack index
+0 and its members take the new Sub number; no parent pointer is set. A summing header's object
+takes the enclosing stack's object as its parent, its `Aux` strip keeps stack index 0, and the
+members keep the enclosing Sub's number and take the header as parent. `stack-create` writes
+both from direct members of one stack; Logic showed an outer folder holding a written summing
+stack and a written folder, and re-saved every row, route and stack as written
+(`nest-inner-ours`, `nest-inner-ours-resave-logic`). With the Sub header itself selected Logic
+wraps the stack in a new one (`nest-stack-in-stack-logic`), which is not written.
+
+**The pattern.** The structures come from the session's highest-numbered folder stack; a
+session with none takes Logic's own first stack, packaged (`stack-folder-12.3.1.json`,
+`stack-summing-12.3.1.json`). A new `Sub` strip carries the project's own words (`+28` to
+`+42`): Logic rewrote `+42` on two strips written with the pattern's.
 
 ### The writers — atomic pieces, and the commands over them
 
@@ -1383,9 +1501,13 @@ and the two `gnoS` registry entries all have to exist and agree.
 | `+89` | pan 0-127, 64 centre; Logic displays it as `byte - 64` |
 
 Verified against Logic's mixer, byte -> dB: 47 -> -11.3 · 60 -> -7.1 · 90 -> 0.0 · 92 -> 0.4 ·
-94 -> 0.8 · 99 -> 1.8 · 110 -> +3.4. About 0.2 dB per step near unity, steepening below. The
-taper is deliberately not modelled; copying levels never needs it. A folder stack's fader is
-its `Sub N` strip's — confirmed in Logic on 2026-09-01 (Drums at 60 read -7.1, Guitar at 110
+94 -> 0.8 · 99 -> 1.8 · 110 -> +3.4. The taper is the send knob's law,
+`dB = 40 · log10(position / 90)` on the 8.24 word at `+116`: Logic 12.4 saved fader steps showing
+−16.6, −6.4, −5.3 and 2.7 dB as exactly the law's words (`fader-step-*`, 2026-10-02). The fader
+moves in 234 steps and its readout works on them: where a step sits between marks the label is
+the mark below — the step shown as −6.0 stores −5.98 dB — and a level written between steps,
+which Logic keeps as written, reads up to 0.1 dB low (an exact −6.0 reads −6.1; −5.3, a step,
+reads −5.3). A folder stack's fader is its `Sub N` strip's — confirmed in Logic on 2026-09-01 (Drums at 60 read -7.1, Guitar at 110
 read +3.4, nothing else moved). Some channels — Auxes, Insts, Output — carry an **all-zero UUID
 sentinel** instead of a real one, so a clone must leave it alone.
 
@@ -1589,7 +1711,7 @@ on a copy under `--out`; every service validates its own result. Capability by l
 | Insert chain (plugin order) · AU preset names · track names · project metadata | ✅ |
 | Native (Channel EQ / Compressor / Gain) param values | ✅ — but finished 3rd-party mixes use almost none |
 | 3rd-party knob values (FabFilter / iZotope / Neural / Ampeg / …) | ✅ via `logicxkit au strip` (AU-host decode); here: preset *name* only. sonible/Waves partial — see `au` README |
-| Sends / output bus / fader / pan | ✅ `logic manifest` — fader/pan (`+116` u32, `+89`), output (tail UUID), sends (bus). Send level is still undecoded |
+| Sends / output bus / fader / pan | ✅ `logic manifest` — fader in dB and pan (`+116` u32, `+89`), output (tail UUID), sends with their level in dB, mode and bypass |
 
 ```bash
 bin/run logic manifest "Song.logicx" [--json]        # tracks, stacks, channels from decoded fields
@@ -1607,7 +1729,11 @@ byte 7 has the top bit set continues the event before it (0x88 is the data line;
 **Arrangement** (`services/arrangement.py`): events of type 0x12, one per section. The data
 line holds the slot of the section's `qSxT` text record at +0, the section kind at +8
 (0 custom or intro, 1 verse, 2 chorus, 3 bridge, 4 outro) and the length in ticks at +12.
-The text record's name is NUL-terminated at +98, or an RTF document whose text is the name.
+The text record's name is NUL-terminated UTF-8 at +98, or an RTF document whose text is the
+name: the form Logic's own rename writes (a marker's in the Marker List, a section's through
+Rename…), with `\'hh` for a cp1252 byte and `\uN` for a UTF-16 unit, two for a character past
+the BMP (`services/rtf.py`). Logic showed a plain UTF-8 name written here and re-saved the
+record byte for byte (`names-text-*`, 2026-10-02).
 Every section of one song, with quarter-bar lengths, reproduced Logic's display exactly.
 
 **Tempo** (`services/tempo.py`): `gnoS +110` is `bpm × 10000` — the tempo the LCD showed

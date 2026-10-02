@@ -5,7 +5,7 @@ import unittest
 import _goldens
 from logicxkit.logic.services.arrangement import marker_sequence, read_sections, section_sequence
 from logicxkit.logic.services.events import BAR_ONE, events
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.integrity import regressions
 from logicxkit.logic.services.markers import TO_NEXT, read_markers
 from logicxkit.logic.services.markers_write import add_marker, delete_marker, move_marker, rename_marker
@@ -122,8 +122,9 @@ class WriteTest(unittest.TestCase):
         self.assertEqual([(m.name, m.tick, m.length) for m in read_markers(out)][-1], ("Bridge", BAR_ONE + 8 * BAR, 2 * BAR))
         with self.assertRaisesRegex(ValueError, "the song has 1 marker"):
             rename_marker(load(25), 2, "x")
-        with self.assertRaisesRegex(ValueError, "only ASCII names"):
-            add_marker(load(25), "Chorus — é", tick=BAR_ONE)
+        with self.assertRaisesRegex(ValueError, "line separator"):
+            add_marker(load(25), "Chorus\u2028é", tick=BAR_ONE)
+        self.assertIn("Chorus — é", [m.name for m in read_markers(add_marker(load(25), "Chorus — é", tick=BAR_ONE))])
 
 
 @_goldens.needs("markers-edits-ours", "markers-edits-resave-logic")

@@ -83,6 +83,11 @@ class EveryWriterRefusesTest(unittest.TestCase):
         self.assertIn("Alternatives/000", text)
         self.assertIn("an earlier Logic (file format 2511", text)
 
+    def test_an_instrument_add_is_refused_like_the_rest(self):
+        text = self.refused("add-track", restamped(self.root, THREE, LOGIC_11_2), "--name", "Keys",
+                            "--after", "Audio 1", "--instrument")
+        self.assertIn("file format 2511", text)
+
     def test_one_saved_by_a_later_logic_is_refused(self):
         text = self.refused("rename", restamped(self.root, THREE, NEXT), "--track", "Audio 2=Snare")
         self.assertIn(f"file format {NEXT}", text)

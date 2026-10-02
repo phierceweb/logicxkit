@@ -7,7 +7,7 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.transplant import slot_at
 from logicxkit.logic.services.translate import load_maps, map_for, plan, read_settings
 from logicxkit.logic.services.translate_mb import neutral

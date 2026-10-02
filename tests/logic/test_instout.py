@@ -5,7 +5,7 @@ and the template's three Drums MIDI auxes, checked when present."""
 import struct
 import unittest
 from _records import chan, proj, rec, uuid
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.instout import (
     SIZE,
     bind_instrument_output,

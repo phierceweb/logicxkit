@@ -16,7 +16,8 @@ LATENT = {243: "Linear Phase EQ", 194: "Multipressor", 193: "Adaptive Limiter", 
 
 
 def bypass_slot(data: bytes, owner: int, at: int) -> bytes:
-    from .services.insert import project_records, set_slot_bypass
+    from .services.slots import set_slot_bypass
+    from .services.stream import project_records
     from .services.transplant import slot_at
     from .services.validate import require_valid
     record = slot_at(data, owner, at)
@@ -47,8 +48,8 @@ def live_families(payload: bytes, maps) -> list:
 
 def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, maps, natives, version, width):
     """One slot made native -> (data, lines, kind): kind is swapped / removed / bypassed / kept."""
-    from .services.chain_report import native_name
-    from .services.insert import HEADER
+    from .services.plugin_names import native_name
+    from .services.stream import HEADER
     from .services.add_plugin import add_plugin
     from .services.remove_plugin import remove_plugin
     from .services.translate_write import write_plan
@@ -101,7 +102,9 @@ def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, map
 
 def cmd_tracking_chains(args) -> int:
     from ..utils.data import data_dirs
-    from .services.insert import HEADER, channel_formats, slot_index_base
+    from .services.mixer import channel_formats
+    from .services.slots import slot_index_base
+    from .services.stream import HEADER
     from .services.plugin_library import load_library
     from .services.plugins import plugin_identity, slot_payloads
     from .services.retrack import find_project

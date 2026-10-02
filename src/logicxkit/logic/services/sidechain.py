@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 from .binding import bound_channels, channels
 from .environment import channel_objects
-from .insert import HEADER
+from .stream import HEADER
 
 SIDE_CHAIN_AT = 144
 KINDS = {0x40: "Audio", 0x41: "Input", 0x43: "Inst", 0x45: "Bus"}

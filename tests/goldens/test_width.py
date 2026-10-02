@@ -5,7 +5,10 @@ import unittest
 
 import _goldens
 from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.insert import HEADER, STEREO, MONO, channel_formats, find_blocks, project_records, slot_format
+from logicxkit.logic.services.insert import find_blocks
+from logicxkit.logic.services.mixer import channel_formats
+from logicxkit.logic.services.slot_width import STEREO, MONO, slot_format
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.recdiff import diff_records, load_project_data
 
 PAIRS = [("width-mix-mine", "width-mix-logic"), ("width-tracking-mine", "width-tracking-logic")]

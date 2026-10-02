@@ -12,20 +12,11 @@ from logicxkit.logicx import channel_blocks, channel_label, first_alternative
 from .._binary import find_blocks, identify_plugin, read_block_floats
 from .comp import decode_comp
 from .eq import decode_eq
-from .insert import HEADER, plugin_variant, project_records
+from .slot_width import plugin_variant
+from .stream import HEADER, project_records
 from .slots import is_plugin_slot
+from .plugin_names import NATIVE_INSTRUMENTS, native_name, plugin_name
 
-# Canonical plugin display names, most-specific needle first.
-_PLUGINS = [
-    ("Neutron 5 Transient Shaper", "Neutron"), ("Neutron 5", "Neutron 5"),
-    ("Pro-Q 4", "Pro-Q 4"), ("Pro-C 2", "Pro-C 2"), ("Pro-MB", "Pro-MB"), ("Pro-L", "Pro-L"),
-    ("smartGate", "smart:gate"), ("smartComp", "smart:comp"), ("InPhase", "InPhase"),
-    ("Channel EQ", "Channel EQ"), ("ChanEQ", "Channel EQ"), ("Compressor", "Compressor"),
-    ("Enveloper", "Enveloper"), ("Noise Gate", "Noise Gate"), ("Gain", "Gain"),
-    ("SVT", "SVT"), ("Nectar", "Nectar 4"), ("Ozone", "Ozone 11"), ("Soldano", "Soldano"),
-    ("Archetype", "Archetype"), ("Melodyne", "Melodyne"), ("EZbass", "EZbass"),
-    ("Addictive", "Addictive Trigger"), ("Stealth", "Stealth"),
-]
 
 # channel-object version word: 06 = pre-2026 saves, 07 = Logic saves since 2026-06
 # class version varies with the Logic build that saved the file — 5, 6 and 7 all occur.
@@ -33,29 +24,18 @@ _PLUGINS = [
 _SLOT_TAG = re.compile(rb".CuA")
 _CST_REF = re.compile(rb"[ -~]{1,50}\.cst")
 _PRESET = re.compile(rb"[ -~]{2,55}\.(?:aupreset|pst)")
-_PLUGIN_TOKEN = re.compile(rb"[A-Za-z][ -~]{2,42}")
 _TRACK_NAME = re.compile(rb"([ -~]{2,24}): \1\.(\d+)")
 _SLOT_WINDOW = 260  # bytes after a .CuA tag to scan (proven on real songs)
 _GENERIC_PRESETS = {"Untitled", "#default", "Default Setting"}
 
 
-def _plugin_name(window: bytes) -> str | None:
-    for m in _PLUGIN_TOKEN.finditer(window):
-        s = m.group().decode("latin-1")
-        for needle, disp in _PLUGINS:
-            if needle in s:
-                return disp
-    return None
-
-
 def _slot_name(payload: bytes) -> str | None:
     """The name string in the slot's window, else the native block's type id as `plugins`
     names it (a native slot need not carry a name string at all)."""
-    name = _plugin_name(payload[:_SLOT_WINDOW])
+    name = plugin_name(payload[:_SLOT_WINDOW])
     if name is not None:
         return name
     from .._binary import find_blocks
-    from .chain_report import NATIVE_INSTRUMENTS, native_name
     blocks = find_blocks(payload)
     if not blocks or blocks[0][1] in NATIVE_INSTRUMENTS:
         return None

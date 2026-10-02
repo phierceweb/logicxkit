@@ -11,7 +11,8 @@ from logicxkit.logic._edit import object_by_name
 from logicxkit.logic.services.add_plugin import SHOWN_AT, shown_slots
 from logicxkit.logic.services.addtrack import add_track
 from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.insert import CHANNEL_TAG, HEADER, project_records
+from logicxkit.logic.services.mixer import CHANNEL_TAG
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logicx import project_data
 
 KEY = "master-track-limiter-logic"

@@ -16,11 +16,12 @@ from __future__ import annotations
 import struct
 from collections.abc import Iterable
 
-from .binding import bound_channels
+from .binding import bound_channels, bound_objects, channels
 from .channel_alloc import is_mixer_record
 from .environment import channel_objects, name_end, object_record
 from .groups import group_errors
-from .insert import CHANNEL_TAG, HEADER, project_records
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, project_records
 from .integrity_regions import (
     RegionKey, dangling_files, marker_block_errors, placed, region_regressions, unregistered_slots,
 )
@@ -81,10 +82,32 @@ def _misplaced_references(records, data: bytes) -> list[int]:
     return out
 
 
+def _binding(data: bytes) -> dict:
+    """``unbound_channels``: owners of in-use channels no object is bound to; ``binds_by_uuid``:
+    whether any channel is bound at all (an older save binds none)."""
+    bound = bound_objects(data)
+    return {"unbound_channels": sorted(o for o, c in channels(data).items()
+                                       if c.in_use and o not in bound),
+            "binds_by_uuid": bool(bound)}
+
+
+def _lost_bindings(was: dict, now: dict) -> list[str]:
+    """The refusal when the result has more unbound in-use channels than the input — counted, as
+    a channel insert renumbers owners; an input that binds none by uuid is not judged."""
+    if not was["binds_by_uuid"]:
+        return []
+    was, now = was["unbound_channels"], now["unbound_channels"]
+    if len(now) <= len(was):
+        return []
+    return [f"{len(now) - len(was)} more channel(s) in use that no track object is bound to — "
+            f"the track has no strip in the mixer: {now}"]
+
+
 def _empty() -> dict:
     return {"validate": [], "link_errors": 0, "bad_object_index": [], "bad_send_flags": [],
             "bad_key_flags": [], "bad_region_tracks": [], "bad_row_count": [], "bad_slot_entries": [],
-            "bad_groups": [], "misplaced_references": [], "regions": [],
+            "bad_groups": [], "misplaced_references": [], "unbound_channels": [],
+            "binds_by_uuid": False, "regions": [],
             "dangling_files": {"entries": [], "records": [], "unfiled": [], "files": [], "doubled": [], "rba": []},
             "unregistered_slots": [], "marker_blocks": [], "unreadable": None}
 
@@ -106,6 +129,7 @@ def structural_report(data: bytes) -> dict:
             "bad_slot_entries": slot_errors(data),
             "bad_groups": group_errors(data),
             "misplaced_references": _misplaced_references(records, data),
+            **_binding(data),
             "regions": placed(records),
             "dangling_files": dangling_files(records),
             "unregistered_slots": unregistered_slots(records),
@@ -145,7 +169,7 @@ def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (
         fresh = sorted(set(now[field]) - set(was[field]))
         if fresh:
             out.append(f"{len(fresh)} {label}: {fresh}")
-    return out + region_regressions(was, now, removed)
+    return out + _lost_bindings(was, now) + region_regressions(was, now, removed)
 
 
 def require_no_regression(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = ()) -> None:

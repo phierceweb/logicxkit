@@ -58,10 +58,12 @@ the same table.** Read it before you point a writer at a session you care about.
   corpus tracked in the repo, so the synthetic layer and every public golden run there; the owner's goldens
   (real sessions) and `tests/rig` (a physical console's scene) skip.
 - **Logic Pro 12.3.1 or 12.4** — the tool reads and writes their file format, and confirming any
-  change means opening the result in Logic; every confirmation so far was made in 12.3.1. The
-  writers take a project in the format both save (2513) and refuse any other, naming the format
-  they found: open an older project in Logic and save it first. The readers run on older saves,
-  where tracks may read unnamed.
+  change means opening the result in Logic; the confirmations were made in 12.3.1 and, from
+  2026-10-01, in 12.4, which re-saved each of the 61 public copies this tool wrote with its
+  goldens holding. The writers take a project in the format both save (2513) and refuse any
+  other, naming the format they found: open an older project in Logic and save it first. The
+  readers run on older saves: a Logic 11.2 project reads with its tracks named and routed, and
+  serves as an `apply-template` template; before 11.2, tracks may read unnamed.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
   `PYTHON=python3.13` (or any 3.12+) to use another interpreter.
 - **A Swift toolchain** (`swift`) — the headless AU host and the Apple Vision OCR are Swift
@@ -127,35 +129,38 @@ bin/run logic capabilities -v                            # what each writer is t
 
 ## The packages
 
-- **`logicxkit.logic`** — Logic Pro channel-strip (`.cst`) build and decode; a read-only
-  `.logicx` project analyzer (typed strip labels, per-channel `.cst` wiring refs); **`logic
-  diff`** (project↔project and project↔strip-library drift detection); **`logic image`**
-  (extract the auto-saved WindowImage) and **`logic ocr`** (Apple-Vision OCR of it — reads the
-  mixer as Logic drew it); **`logic levels`** (fader + pan, read and copy between projects);
-  **`logic stacks`** (folder stacks and the arrange track list, and `--move` to put a track into
-  a stack); **`logic midi`** (MIDI regions, their export as a `.mid`, edits and Logic's Transform window — a selection with operations, or a preset — by region number); **`logic plugins`**
-  (every referenced plug-in, and which this Mac lacks — a check that runs Apple's `auval -a`
-  scan and can take 25 seconds or more); **`logic patch`** (a Library patch
-  bundle's channels, strips and plug-ins, and `--build` to make one); **`logic regions`** (MIDI and audio regions with their files, mutes, loops and fades; `--audio` imports a WAV and `--move`, `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in`, `--fade-out` edit one by its number); **`logic markers`** (the marker track, with add, rename, move and delete); **`logic sessionplayer`**
-  (a Session Player region's settings and generated notes); **`logic beats`** (patterns from a
-  [groovebin][groovebin] library placed, composed or generated as regions); **`logic
-  drums-to-midi`** (drum hits in audio tracks as MIDI notes); **Neural DSP state decode** (`logic
-  neural`); and the project editors — MIDI regions, notes and edits by region number, drum-map
-  remaps, track
-  header, control bar, toolbar, transport modes, metronome, channel width, mixer groups,
-  arrangement sections, tempo, time signature and key, track add/rename/colour/hide/reorder,
-  sends, routing, `apply-template` to move a session onto another project's layout, and
-  `migrate` to do that in one run with an optional Logic re-save check. The plug-in editors
-  change one slot without touching the rest of the chain: **`logic add-plugin`**,
+- **`logicxkit.logic`** — Logic Pro channel-strip (`.cst`) build and decode; a read-only `.logicx`
+  project analyzer (typed strip labels, per-channel `.cst` wiring refs); **`logic diff`**
+  (project↔project and project↔strip-library drift detection); **`logic image`** (extract the
+  auto-saved WindowImage) and **`logic ocr`** (Apple-Vision OCR of it — reads the mixer as Logic
+  drew it); **`logic levels`** (fader + pan, read, set in dB and copied between projects); **`logic
+  stacks`** (folder and summing stacks and the arrange track list, and `--move` / `--move-out` to
+  put a track into a stack or take it out); **`logic midi`** (MIDI regions, their export as a
+  `.mid`, edits and Logic's Transform window — a selection with operations, or a preset — by region
+  number); **`logic plugins`** (every referenced plug-in, and which this Mac lacks — a check that
+  runs Apple's `auval -a` scan and can take 25 seconds or more); **`logic patch`** (a Library patch
+  bundle's channels, strips and plug-ins, and `--build` to make one); **`logic regions`** (MIDI and
+  audio regions with their files, mutes, loops and fades; `--audio` imports a WAV and `--move`,
+  `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in`, `--fade-out` edit one by its
+  number); **`logic markers`** (the marker track, with add, rename, move and delete); **`logic
+  sessionplayer`** (a Session Player region's settings and generated notes); **`logic beats`**
+  (patterns from a [groovebin][groovebin] library placed, composed or generated as regions);
+  **`logic drums-to-midi`** (drum hits in audio tracks as MIDI notes); **Neural DSP state decode**
+  (`logic neural`); and the project editors — MIDI regions, notes and edits by region number,
+  drum-map remaps, track header, control bar, toolbar, transport modes, metronome, channel width,
+  mixer groups, arrangement sections, tempo, time signature and key, track
+  add/rename/colour/hide/reorder, sends, routing, `apply-template` to move a session onto another
+  project's layout, and `migrate` to do that in one run with an optional Logic re-save check. The
+  plug-in editors change one slot without touching the rest of the chain: **`logic add-plugin`**,
   **`remove-plugin`** and **`replace-plugin`** insert, take out or swap a plug-in from the donor
   library, and `--side-chain` points a slot at a track, bus or aux by name. **`logic settings`**
   reads a compressor's, gate's, EQ's or multiband's settings in one vocabulary whichever plug-in
-  holds them, so `replace-plugin --translate` can move a Pro-C 2's settings into Logic's
-  Compressor, or a Channel EQ's bands into Pro-Q 4, along with the slot's automation lanes.
-  **`logic swap-plugin`** makes that swap on every slot holding one plug-in across a project.
-  **`logic tracking-chains`** makes a copy for recording, where plug-in latency gets in the way:
-  each third-party plug-in with a translation map becomes Logic's own of its family with its
-  settings carried, and the natives that carry lookahead are bypassed. See
+  holds them, so `replace-plugin --translate` can move a Pro-C 2's settings into Logic's Compressor,
+  or a Channel EQ's bands into Pro-Q 4, along with the slot's automation lanes. **`logic
+  swap-plugin`** makes that swap on every slot holding one plug-in across a project. **`logic
+  tracking-chains`** makes a copy for recording, where plug-in latency gets in the way: each
+  third-party plug-in with a translation map becomes Logic's own of its family with its settings
+  carried, and the natives that carry lookahead are bypassed. See
   [`src/logicxkit/logic/README.md`][logic-fmt].
 - **`logicxkit.au`** — Audio Unit preset/state decoder: FabFilter `.ffp` +
   `.aupreset` parsing, Waves XPst, **TR5 chain XML** (module chain + per-module params from the

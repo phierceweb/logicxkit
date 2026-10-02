@@ -20,7 +20,7 @@ from __future__ import annotations
 import struct
 
 from .events import BAR_ONE, PPQ, events
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec
 from .settings import set_key_root
 from .signature import (

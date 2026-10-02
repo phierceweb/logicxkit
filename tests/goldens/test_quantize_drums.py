@@ -18,7 +18,7 @@ from logicxkit.logic.services.events import BAR_ONE, PPQ
 from logicxkit.logic.services.flexmarkers import END, HIT, MARKER, START, RBA_CODE_AT, RBA_OBJECT_AT, RBA_ROW_AT
 from logicxkit.logic.services.flexmode import flex_mode, q_reference
 from logicxkit.logic.services.groups import group_errors, read_groups
-from logicxkit.logic.services.insert import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.integrity import regressions, structural_report
 from logicxkit.logic.services.midi import read_midi
 from logicxkit.logic.services.quantize_drums import quantize_drums
@@ -418,7 +418,7 @@ class LogicResavedBarsTest(unittest.TestCase):
         import struct
         from logicxkit.logic.services.audio_regions import read_audio_regions
         from logicxkit.logic.services.flexmarkers import block_fields
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.project import project_metadata
         from logicxkit.logic.services.regions import ENTRY, entry_blocks, song_container
         from logicxkit.logic.services.tracklist import arrange_run

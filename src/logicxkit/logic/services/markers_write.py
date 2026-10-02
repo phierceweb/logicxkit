@@ -11,7 +11,7 @@ import struct
 from .arrangement import SECTION_TYPE, TEXT_SLOT_AT, TEXT_TAG, marker_sequence
 from .arrangement_write import _data_line, _rewrite_events, free_text_slot, new_section_event, new_text_record, plain_text_payload
 from .events import LINE
-from .insert import project_records, reassemble
+from .stream import project_records, reassemble
 from .markers import TO_NEXT, Marker, read_markers
 from .recbuild import rec, slot_of
 

@@ -18,7 +18,7 @@ def cmd_settings(args) -> int:
     tables = load_tables()
     if args.set:
         return _write(args, maps, tables)
-    from .services.insert import slot_index_base
+    from .services.slots import slot_index_base
     data = first_project_data(find_project(Path(args.project)))
     wanted = {c.strip() for c in args.channel or []}
     base = slot_index_base(data)
@@ -64,7 +64,7 @@ def _line(e: dict) -> str:
 def _write(args, maps, tables) -> int:
     """``--set NAME=VALUE`` into one slot (`--channel LABEL --at N`) of every alternative, on a
     copy: vocabulary items, or ``band N=<shape> <frequency> …`` for an EQ, through the slot's map."""
-    from .services.insert import HEADER, project_records
+    from .services.stream import HEADER, project_records
     from .services.transplant import channel_slots, slot_at, slot_position
     from .services.translate_write import apply_band_specs, split_specs, write_settings
     from .services.validate import require_full_walk, require_valid

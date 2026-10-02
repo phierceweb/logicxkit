@@ -7,7 +7,7 @@ from logicxkit.logic.services.automation import FOLDER_NAME, RELATIVE, named, re
 from logicxkit.logic.services.automation_write import clear_lane, copy_lane, set_lane
 from logicxkit.logic.services.events import BAR_ONE, events
 from logicxkit.logic.services.groups import FADER_IDS
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.sequence import sequences
 from logicxkit.logic.services.stacks import read_tracks
 from logicxkit.logicx import project_data

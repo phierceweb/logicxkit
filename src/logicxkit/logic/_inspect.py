@@ -161,7 +161,7 @@ def cmd_stacks(args) -> int:
     from .services.retrack import find_project
 
     project = find_project(Path(args.logicx))
-    if args.move:
+    if args.move or args.move_out:
         return _move_into_stack(args, project)
     data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
     count = project_metadata(project).get("tracks")
@@ -189,7 +189,7 @@ def cmd_stacks(args) -> int:
     for stack in stacks:
         fader = levels.get(stack.owner, {}).get("fader")
         pad = "    " * stack.depth
-        print(f"  {pad}{stack.name}  [{stack.kind}]  Sub {stack.index} · fader {fader} · "
+        print(f"  {pad}{stack.name}  [{stack.kind}]  {stack.strip} · fader {fader} · "
               f"track {stack.track_key}{'  (in ' + next(s.name for s in stacks if s.object_id == stack.parent) + ')' if stack.parent else ''}")
         for key, name in stack.members:
             oid = next((r["object_id"] for r in rows if r["key"] == key), None)
@@ -200,24 +200,33 @@ def cmd_stacks(args) -> int:
 
 
 def _move_into_stack(args, project: Path) -> int:
-    """`--move "Track:Stack"` — writes a copy, never the input; each alternative read with its
-    own track count."""
+    """`--move "Track:Stack"` and `--move-out Track` — writes a copy, never the input; each
+    alternative read with its own track count. Moves in come first."""
     from ._edit import CommandError, edit_copy, object_by_name
-    from .services.stacks import move_to_stack, read_stacks
+    from .services.stacks import move_out_of_stack, move_to_stack, read_stacks
+    from .services.trackname import stack_named
 
     if not args.out:
-        print("logic stacks: --move needs --out")
+        print("logic stacks: --move and --move-out need --out")
         return 2
 
     def step(data, count, data_file):
-        stacks = {s.name: s.object_id for s in read_stacks(data, count)}
-        for pair in args.move:
+        for pair in args.move or []:
+            stacks = read_stacks(data, count)
             track, _, stack = pair.partition(":")
             track_object = object_by_name(data, track, count)
-            if stack not in stacks:
-                raise CommandError(f"no stack named {stack!r} (have: {', '.join(sorted(stacks))})")
-            data = move_to_stack(data, track_object, stacks[stack], track_count=count)
+            found = stack_named(stacks, stack)
+            if found is None:
+                have = ", ".join(sorted(s.name for s in stacks))
+                raise CommandError(f"no stack named {stack!r} (have: {have})")
+            data = move_to_stack(data, track_object, found.object_id, track_count=count)
             print(f"  {data_file.parent.name}: {track} -> {stack}")
+        for track in args.move_out or []:
+            moved = move_out_of_stack(data, object_by_name(data, track, count), track_count=count)
+            if moved == data:
+                raise CommandError(f"{track!r} is already at the top level")
+            data = moved
+            print(f"  {data_file.parent.name}: {track} one level out")
         return data
 
     print(f"in  : {project}")

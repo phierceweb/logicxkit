@@ -46,6 +46,7 @@ def cmd_recdiff(args) -> int:
 
 def cmd_manifest(args) -> int:
     """Tracks, stacks and channels of a project from decoded fields only."""
+    from .services.levels import db_text
     from .services.manifest import read_manifest
     from .services.retrack import find_project
 
@@ -62,14 +63,17 @@ def cmd_manifest(args) -> int:
         print(f"  {t['key']:3d} {t['name'] or '?':16s} {t['label'] or '-':11s}{where}{mark}")
     print("\nstacks")
     for s in m["stacks"]:
-        print(f"  {s['name']:12s} Sub {s['index']}  fader {s['fader']}  "
+        print(f"  {s['name']:12s} {s['strip']}  fader {s['fader']}  "
               f"{len(s['members'])} member(s)")
     print("\nchannels")
     for c in m["channels"]:
-        sends = " ".join(f"->{s['to'] or s['bus']}" for s in c["sends"])
+        sends = " ".join(
+            f"->{s['to'] or s['bus']} {s['level_shown']}dB"
+            + {"post pan": "", "post fader": " post-fader", "pre fader": " pre"}[s["mode"]]
+            + (" off" if s["bypassed"] else "") for s in c["sends"])
         chain = " → ".join(p for p, _pre in c["chain"])
         print(f"  {c['label']:11s} {c['object'] or '':14s} out {c['output'] or '-':11s} "
-              f"f{c['fader']} p{c['pan']} w{c['width']}  {sends:22s} {chain}")
+              f"{db_text(c['fader_db'])}dB p{c['pan']} w{c['width']}  {sends:22s} {chain}")
     return 0
 
 

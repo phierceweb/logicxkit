@@ -30,7 +30,7 @@ class SlotBaseFollowsSendsTest(unittest.TestCase):
     slot-shaped records."""
 
     def test_the_slot_base_is_the_channels_word(self):
-        from logicxkit.logic.services.insert import slot_index_base
+        from logicxkit.logic.services.slots import slot_index_base
         for key in BASE_KEYS:
             data = project_data(_goldens.path(key))
             with self.subTest(key=key):

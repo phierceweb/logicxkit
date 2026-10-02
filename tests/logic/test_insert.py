@@ -53,7 +53,7 @@ class ProjectRecordsTest(unittest.TestCase):
     def test_tag_bytes_are_the_raw_on_disk_form(self):
         """Logic's tags read reversed: the channel record's bytes are OCuA, not AuCO. Matching
         the display form silently finds nothing in a real project."""
-        from logicxkit.logic.services.insert import CHANNEL_TAG
+        from logicxkit.logic.services.mixer import CHANNEL_TAG
         self.assertEqual(CHANNEL_TAG, b"OCuA")
 
     def test_accepts_the_many_tag_types_a_project_uses(self):
@@ -199,7 +199,8 @@ class VerifiedInstanceIdTest(unittest.TestCase):
 
     def test_stamp_without_offsets_touches_only_the_slot_index(self):
         """The slot index is structural and always written; the per-instance id is not."""
-        from logicxkit.logic.services.insert import SLOT_INDEX_AT, _stamp
+        from logicxkit.logic.services.insert import _stamp
+        from logicxkit.logic.services.slots import SLOT_INDEX_AT
         donor = rec(b"UCuA", 9, 4, bytes(range(60)))
         out = _stamp(donor, owner=1, key=4, floats=None, limit=0, seed="x",
                      label=None, fmt=None, id_offsets=())
@@ -207,7 +208,8 @@ class VerifiedInstanceIdTest(unittest.TestCase):
         self.assertEqual(changed, {SLOT_INDEX_AT})
 
     def test_stamp_writes_only_the_given_offsets(self):
-        from logicxkit.logic.services.insert import SLOT_INDEX_AT, _stamp
+        from logicxkit.logic.services.insert import _stamp
+        from logicxkit.logic.services.slots import SLOT_INDEX_AT
         donor = rec(b"UCuA", 9, 4, bytes(60))
         out = _stamp(donor, owner=1, key=4, floats=None, limit=0, seed="x",
                      label=None, fmt=None, id_offsets=(50, 51))

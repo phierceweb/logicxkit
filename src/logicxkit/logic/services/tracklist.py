@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import struct
 
-from .insert import HEADER, ProjRecord
+from .stream import HEADER, ProjRecord
 from .recbuild import fresh_uuid, with_key
 
 TRACK_TAG = b"karT"

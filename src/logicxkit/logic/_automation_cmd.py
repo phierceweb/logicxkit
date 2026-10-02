@@ -4,14 +4,13 @@ write a lane onto a copy, applied in command-line order."""
 from __future__ import annotations
 
 import argparse
-import json
 import math
 import re
 from pathlib import Path
 
 from ..au.services.tables import load_table
-from ._edit import CommandError, edit_copy, first_project_data, object_by_name
-from .services.automation import FRACTION_UNIT, read_automation
+from ._automation_list import list_lanes
+from ._edit import CommandError, edit_copy, object_by_name
 from .services.automation_write import clear_lane, copy_lane, set_lane, set_param_lane
 from .services.groups import FADER_IDS
 from .services.retrack import find_project
@@ -71,7 +70,7 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
     convert(value) -> (point, note)). The slot is the mixer's, empty slots counted — the insert
     number the lane carries."""
     from .services.binding import bound_channels
-    from .services.insert import HEADER
+    from .services.stream import HEADER
     from .services.plugin_params import load_tables, table_for
     from .services.plugins import plugin_identity
     from .services.slot_width import plugin_variant
@@ -219,27 +218,7 @@ def cmd_automation(args) -> int:
             print("  --out is needed to write")
             return 2
         return _write(args, project)
-    data = first_project_data(project)
-    folders = [a for a in read_automation(data) if a.lanes or args.all]
-    if args.json:
-        print(json.dumps([{"sequence": a.sequence, "track": a.track, "track_object": a.track_object,
-                           "lanes": [{"parameter": ln.parameter, "fader": ln.fader, "param_index": ln.param_index,
-                                      "slot": ln.slot, "region": ln.region,
-                                      "points": [{"tick": p.tick, "fraction": p.fraction, "value": p.value, "flagged": p.flagged}
-                                                 for p in ln.points]}
-                                     for ln in a.lanes]} for a in folders], indent=1))
-        return 0
-    bars = meter(data)
-    print(f"{project.name}: {sum(len(a.lanes) for a in folders)} lane(s) on {len(folders)} track(s)")
-    for a in folders:
-        print(f"  {a.track or f'(no track, sequence {a.sequence})'}")
-        for ln in a.lanes:
-            where = " (region)" if ln.region else ""
-            print(f"    {ln.parameter}{where}: {len(ln.points)} point(s)")
-            for p in ln.points:
-                value = f"{p.value:.4f}" if ln.param_index is not None else f"{p.value:.0f}"
-                print(f"      bar {bars.bar(p.tick + p.fraction / FRACTION_UNIT):9.5f}  {value}{'  ?' if p.flagged else ''}")
-    return 0
+    return list_lanes(args, project)
 
 
 def register(sub) -> None:

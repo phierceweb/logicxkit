@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 from .arrangement import LENGTH_AT, SECTION_TYPE, TEXT_SLOT_AT, marker_sequence, text_records
 from .events import Event, events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .signature import Meter
 
 TO_NEXT = 1                    # the length Logic writes: to the next marker

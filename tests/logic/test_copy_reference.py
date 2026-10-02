@@ -3,7 +3,7 @@
 import unittest
 
 from _records import chan, proj, rec
-from logicxkit.logic.services.insert import project_records
+from logicxkit.logic.services.stream import project_records
 from logicxkit.logic.services.transplant import copy_reference
 
 

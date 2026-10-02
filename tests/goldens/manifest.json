@@ -1976,30 +1976,6 @@
    ]
   }
  },
- "audio-write-ours": {
-  "path": "audio-c05-write-ours.logicx",
-  "note": "logic regions --audio 'Audio 2:1:v030-tone.wav' on the MIDI-write re-save (the bundle's Media folder is not staged)",
-  "facts": {
-   "regions": 1,
-   "track": "Audio 2",
-   "name": "v030-tone",
-   "start": 38400,
-   "frames": 44100,
-   "file": "v030-tone.wav"
-  }
- },
- "audio-write-resave-logic": {
-  "path": "audio-c05-write-resave.logicx",
-  "note": "staged as Logic's re-save of audio-write-ours, but its records are Logic's own import (audio-one-region-logic) saved again: the region record and its UUID match that save, not ours; only the folder path and one qeSM differ",
-  "facts": {
-   "regions": 1,
-   "track": "Audio 2",
-   "name": "v030-tone",
-   "start": 38400,
-   "frames": 44100,
-   "file": "v030-tone.wav"
-  }
- },
  "sessionplayer-track-logic": {
   "path": "sessionplayer-c06-track.logicx",
   "note": "Track > New Session Player SI Track\u2026 with the defaults (Create): a drummer track with one generated region",
@@ -21536,6 +21512,609 @@
    ],
    "logic": "12.4 (6707)",
    "format": 2513
+  }
+ },
+ "addtrack-inst-stereo-mine": {
+  "path": "addtrack-f05-inst-stereo-mine.logicx",
+  "note": "add-track --name Keys --after 'Audio 1' --instrument --stereo on tracks-three-audio-logic: the channel and its instrument slot stereo, the slot's id before its closing word (2026-10-01)",
+  "facts": {
+   "track": "Keys",
+   "label": "Inst 2",
+   "tracks": 4,
+   "channel_width": [
+    247,
+    8,
+    1,
+    2
+   ],
+   "slot_width": [
+    2,
+    2
+   ]
+  }
+ },
+ "addtrack-inst-stereo-logic": {
+  "path": "addtrack-f06-inst-stereo-logic.logicx",
+  "note": "Logic 12.4 opened addtrack-inst-stereo-mine and saved it: the channel still stereo, the instrument slot record byte for byte (2026-10-01)",
+  "facts": {
+   "track": "Keys",
+   "label": "Inst 2",
+   "tracks": 4,
+   "channel_width": [
+    247,
+    8,
+    1,
+    2
+   ],
+   "slot_width": [
+    2,
+    2
+   ]
+  }
+ },
+ "names-write-ours": {
+  "path": "names-02-written-ours.logicx",
+  "note": "logic rename --track 'Audio 1=Gitarre \u00fc' --track 'Audio 2=\ud83c\udfb8 Lead', then add-track --name Bl\u00e4ser --after 'Audio 3' --instrument, on tracks-three-audio-logic",
+  "facts": {
+   "names": [
+    "Gitarre \u00fc",
+    "\ud83c\udfb8 Lead",
+    "Audio 3",
+    "Bl\u00e4ser"
+   ]
+  }
+ },
+ "names-write-resave-logic": {
+  "path": "names-03-written-resave.logicx",
+  "note": "Logic 12.4 opened names-write-ours and saved it: every name as written, every row on its channel (2026-10-01)",
+  "facts": {
+   "names": [
+    "Gitarre \u00fc",
+    "\ud83c\udfb8 Lead",
+    "Audio 3",
+    "Bl\u00e4ser"
+   ]
+  }
+ },
+ "names-long-ours": {
+  "path": "names-04-long-ours.logicx",
+  "note": "logic rename of the three tracks of tracks-three-audio-logic to names of 64, 96 and 127 bytes",
+  "facts": {
+   "lengths": [
+    64,
+    96,
+    127
+   ]
+  }
+ },
+ "names-long-resave-logic": {
+  "path": "names-05-long-resave.logicx",
+  "note": "Logic 12.4 opened names-long-ours and saved it: each name as written, every row on its channel (2026-10-02)",
+  "facts": {
+   "lengths": [
+    64,
+    96,
+    127
+   ]
+  }
+ },
+ "send-mode-pre-fader-logic": {
+  "path": "send-m1-pre-fader.logicx",
+  "note": "send-level-2-logic with the send's mode set to Pre Fader in its slot menu (Logic 12.4, 2026-10-02)",
+  "facts": {
+   "mode": "pre fader",
+   "bypassed": false,
+   "independent_pan": false,
+   "shown": "-16.1"
+  }
+ },
+ "send-mode-post-fader-logic": {
+  "path": "send-m2-post-fader.logicx",
+  "note": "the same send set to Post Fader",
+  "facts": {
+   "mode": "post fader",
+   "bypassed": false,
+   "independent_pan": false,
+   "shown": "-16.1"
+  }
+ },
+ "send-independent-pan-logic": {
+  "path": "send-m4-independent-pan.logicx",
+  "note": "the same send back at Post Pan, then Independent Pan ticked",
+  "facts": {
+   "mode": "post pan",
+   "bypassed": false,
+   "independent_pan": true,
+   "shown": "-16.1"
+  }
+ },
+ "send-bypass-logic": {
+  "path": "send-m5-bypass.logicx",
+  "note": "Independent Pan unticked and the send's bypass box pressed",
+  "facts": {
+   "mode": "post pan",
+   "bypassed": true,
+   "independent_pan": false,
+   "shown": "-16.1"
+  }
+ },
+ "send-level-0db-logic": {
+  "path": "send-m6-level-0db.logicx",
+  "note": "the bypass released and the send knob stepped to the stop Logic shows as 0.0",
+  "facts": {
+   "mode": "post pan",
+   "bypassed": false,
+   "independent_pan": false,
+   "shown": "0.0",
+   "word": 1509949696
+  }
+ },
+ "fader-step-120-logic": {
+  "path": "fader-f1-step-120.logicx",
+  "note": "Audio 1's fader set to its step 120, which Logic shows as -5.3 dB",
+  "facts": {
+   "shown": "-5.3",
+   "word": 1112916049
+  }
+ },
+ "fader-step-200-logic": {
+  "path": "fader-f2-step-200.logicx",
+  "note": "the fader at step 200, shown as 2.7 dB",
+  "facts": {
+   "shown": "2.7",
+   "word": 1763853070
+  }
+ },
+ "fader-step-113-logic": {
+  "path": "fader-f3-step-113.logicx",
+  "note": "the fader at step 113, which Logic shows as -6.0 dB and stores as -5.98",
+  "facts": {
+   "shown": "-6.0",
+   "word": 1070042940
+  }
+ },
+ "send-set-ours": {
+  "path": "send-s1-set-ours.logicx",
+  "note": "logic send --set 'Audio 1=Bus 1' --level -10 --mode pre-fader, levels --fader 'Audio 1=-5.3' --pan 'Audio 1=-20', send --add 'Audio 1=Bus 2' --level 3 --mode post-fader --bypass on, on send-bus-1-logic",
+  "facts": {
+   "sends": [
+    [
+     1,
+     "-10.0",
+     "pre fader",
+     false
+    ],
+    [
+     2,
+     "3.0",
+     "post fader",
+     true
+    ]
+   ],
+   "fader": "-5.3",
+   "pan": -20
+  }
+ },
+ "send-set-resave-logic": {
+  "path": "send-s2-set-resave.logicx",
+  "note": "Logic 12.4 opened send-set-ours, its knobs showing -10.0 and 3.0 and its fader -5.3 dB, and saved it (2026-10-02)",
+  "facts": {
+   "sends": [
+    [
+     1,
+     "-10.0",
+     "pre fader",
+     false
+    ],
+    [
+     2,
+     "3.0",
+     "post fader",
+     true
+    ]
+   ],
+   "fader": "-5.3",
+   "pan": -20
+  }
+ },
+ "names-text-ours": {
+  "path": "names-06-text-ours.logicx",
+  "note": "markers-edits-resave-logic with marker 1, section 1 and a new group named outside ASCII, each written as UTF-8: logic markers --rename, logic arrangement --rename, logic group --create --track 'Audio 1' (2026-10-02)",
+  "facts": {
+   "marker": "Br\u00fccke \ud83c\udfb8",
+   "section": "Refr\u00e3o \u00e9",
+   "group": "Bl\u00e4ser \u00fc",
+   "member": "Audio 1"
+  }
+ },
+ "names-text-resave-logic": {
+  "path": "names-07-text-resave.logicx",
+  "note": "Logic 12.4 opened names-text-ours and saved it: the arrangement track showed the section's name and the Marker track the marker's (window capture), the Marker List's name cell and the Groups inspector's name field read the marker's and the group's through accessibility (2026-10-02)",
+  "facts": {
+   "marker": "Br\u00fccke \ud83c\udfb8",
+   "section": "Refr\u00e3o \u00e9",
+   "group": "Bl\u00e4ser \u00fc",
+   "member": "Audio 1",
+   "shown": {
+    "marker_list_cell": "Br\u00fccke \ud83c\udfb8",
+    "groups_name_field": "Bl\u00e4ser \u00fc",
+    "arrangement_track": "Refr\u00e3o \u00e9"
+   }
+  }
+ },
+ "names-text-renamed-logic": {
+  "path": "names-08-text-renamed-logic.logicx",
+  "note": "names-text-resave-logic with each name changed in Logic 12.4 by pasting it: the marker in the Marker List's text area (Edit), the section through its Rename\u2026 menu item, the group in the Groups inspector's name field; Logic wrote the marker's and the section's records as RTF and the group's name as UTF-8 (2026-10-02)",
+  "facts": {
+   "marker": "\u00dcbergang \u266d \ud83c\udfb9",
+   "section": "Cora\u00e7\u00e3o \u00f1 \ud83c\udfba",
+   "group": "Gr\u00f6\u00dfe \u266f \ud83e\udd41",
+   "member": "Audio 1",
+   "shown": {
+    "marker_list_cell": "\u00dcbergang \u266d \ud83c\udfb9",
+    "groups_name_field": "Gr\u00f6\u00dfe \u266f \ud83e\udd41",
+    "arrangement_track": "Cora\u00e7\u00e3o \u00f1 \ud83c\udfba"
+   }
+  }
+ },
+ "stack-summing-ours": {
+  "path": "stack-10-summing-ours.logicx",
+  "note": "markers-edits-resave-logic with two summing stacks: logic stack-create --summing --name Gitarren --track 'Audio 1' --track 'Audio 3', then --name Rest --track 'Audio 2' --track Untitled on that copy (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Gitarren",
+     "Aux 3",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "Aux 4",
+     "Bus 2",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "rows": [
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ]
+  }
+ },
+ "stack-summing-resave-logic": {
+  "path": "stack-11-summing-resave.logicx",
+  "note": "Logic 12.4 opened stack-summing-ours and saved it: the tracks area showed both headers with a disclosure triangle on Aux 3 and Aux 4, their members indented under them and every region on its own track (window capture); no channel record and neither header object changed (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Gitarren",
+     "Aux 3",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "Aux 4",
+     "Bus 2",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "rows": [
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ]
+  }
+ },
+ "nest-inner-folder-logic": {
+  "path": "nest-c07-inner-folder.logicx",
+  "note": "Logic 12.4 on stack-folder-logic: Audio 2 and Audio 3 selected inside Sub 1, Track > Create Track Stack\u2026 (Folder): Sub 2 sits inside Sub 1 holding them; its strip's stack index stays 0, the members take 2, no parent pointer is set (2026-10-02)",
+  "facts": {
+   "rows": [
+    [
+     "Sub 1",
+     "Sub 1",
+     0,
+     0
+    ],
+    [
+     "Audio 1",
+     "Audio 1",
+     1,
+     1
+    ],
+    [
+     "Sub 2",
+     "Sub 2",
+     1,
+     0
+    ],
+    [
+     "Audio 2",
+     "Audio 2",
+     2,
+     2
+    ],
+    [
+     "Audio 3",
+     "Audio 3",
+     2,
+     2
+    ],
+    [
+     "Stereo Out",
+     "Output 1-2",
+     0,
+     0
+    ]
+   ]
+  }
+ },
+ "nest-inner-summing-logic": {
+  "path": "nest-c08-inner-summing.logicx",
+  "note": "Logic 12.4 on stack-folder-logic: Audio 2 and Audio 3 selected inside Sub 1, Track > Create Track Stack\u2026 (Summing): Sum 1 on Aux 1 sits inside Sub 1 fed from Bus 1, its object's parent Sub 1's; the members go to Bus 1, keep stack index 1 and take the header as parent (2026-10-02)",
+  "facts": {
+   "rows": [
+    [
+     "Sub 1",
+     "Sub 1",
+     0,
+     0
+    ],
+    [
+     "Audio 1",
+     "Audio 1",
+     1,
+     1
+    ],
+    [
+     "Sum 1",
+     "Aux 1",
+     1,
+     0
+    ],
+    [
+     "Audio 2",
+     "Audio 2",
+     2,
+     1
+    ],
+    [
+     "Audio 3",
+     "Audio 3",
+     2,
+     1
+    ],
+    [
+     "Stereo Out",
+     "Output 1-2",
+     0,
+     0
+    ]
+   ],
+   "bus": "Bus 1"
+  }
+ },
+ "nest-inner-ours": {
+  "path": "nest-c09-inner-ours.logicx",
+  "note": "markers-edits-resave-logic with three stacks written in turn: logic stack-create --name Band over the four tracks, --summing --name Gitarren over Audio 1 and Audio 3 inside it, --name Rest over Untitled and Audio 2 inside it (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Band",
+     "folder",
+     "Sub 2",
+     [
+      "Gitarren",
+      "Rest"
+     ]
+    ],
+    [
+     "Gitarren",
+     "summing",
+     "Aux 3",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "folder",
+     "Sub 3",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "steps": [
+    [
+     "Band",
+     false,
+     [
+      "Audio 1",
+      "Untitled",
+      "Audio 2",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Gitarren",
+     true,
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     false,
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ]
+  }
+ },
+ "nest-inner-ours-resave-logic": {
+  "path": "nest-c10-inner-ours-resave.logicx",
+  "note": "Logic 12.4 opened nest-inner-ours and saved it: the tracks area showed Band holding Gitarren (Audio 1, Audio 3) and Rest (Untitled, Audio 2), every region on its track (window capture); every row, route and stack as written, and of the channel records only the two new Sub strips changed, their +42 word taking the project's 3 (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Band",
+     "folder",
+     "Sub 2",
+     [
+      "Gitarren",
+      "Rest"
+     ]
+    ],
+    [
+     "Gitarren",
+     "summing",
+     "Aux 3",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "folder",
+     "Sub 3",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ]
+  }
+ },
+ "stack-summing-two-ours": {
+  "path": "stack-12-summing-two-ours.logicx",
+  "note": "tracks-three-audio-logic with logic stack-create --summing --name 'Sum A' --track 'Audio 1' --track 'Audio 2': Audio 3 stays at the top level (2026-10-02)",
+  "facts": {
+   "stack": [
+    "Sum A",
+    "Aux 3",
+    "Bus 1",
+    [
+     "Audio 1",
+     "Audio 2"
+    ]
+   ]
+  }
+ },
+ "stack-summing-dragged-in-logic": {
+  "path": "stack-13-summing-dragged-in.logicx",
+  "note": "Logic 12.4 on stack-summing-two-ours: Audio 3's header dragged between Audio 1 and Audio 2, into the summing stack: its row one level in, its output Bus 1 by UUID and by word; its parent pointer and stack index as they were (2026-10-02)",
+  "facts": {
+   "track": "Audio 3",
+   "depth": 1,
+   "output": "Bus 1",
+   "word": 1,
+   "parent": 0,
+   "stack_index": 0,
+   "members": [
+    "Audio 1",
+    "Audio 3",
+    "Audio 2"
+   ]
+  }
+ },
+ "stack-summing-dragged-out-logic": {
+  "path": "stack-14-summing-dragged-out.logicx",
+  "note": "Logic 12.4 on stack-summing-dragged-in-logic: Audio 3's header dragged below the stack, back to the top level: its row at depth 0, its output still Bus 1 (2026-10-02)",
+  "facts": {
+   "track": "Audio 3",
+   "depth": 0,
+   "output": "Bus 1",
+   "word": 1,
+   "members": [
+    "Audio 1",
+    "Audio 2"
+   ]
+  }
+ },
+ "stack-summing-move-ours": {
+  "path": "stack-15-summing-move-ours.logicx",
+  "note": "logic stacks --move 'Audio 3:Sum A' on stack-summing-two-ours: the track the last member, its output Bus 1 (2026-10-02)",
+  "facts": {
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ],
+   "output": "Bus 1"
+  }
+ },
+ "stack-summing-move-resave-logic": {
+  "path": "stack-16-summing-move-resave.logicx",
+  "note": "Logic 12.4 opened stack-summing-move-ours and saved it: every row, route and stack as written; the +42 word it rewrote on every channel record is its own, 3 where Logic 12.3.1 wrote 0 (2026-10-02)",
+  "facts": {
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ],
+   "output": "Bus 1"
+  }
+ },
+ "stack-converted-to-summing-logic": {
+  "path": "stack-17-converted-to-summing.logicx",
+  "note": "Logic 12.4 on stack-folder-logic: the Sub 1 header selected, Track > Convert Folder Stack to Summing Stack: the header object is replaced by a new one, Sum 1 on Aux 1 fed from Bus 1; the Sub 1 strip is left out of use; the members go to Bus 1, take the new header as parent and lose their stack index (2026-10-02)",
+  "facts": {
+   "header": [
+    "Sum 1",
+    "Aux 1",
+    "Bus 1"
+   ],
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ],
+   "member_stack_index": 0,
+   "sub_1_in_use": false
+  }
+ },
+ "stack-folder-dragged-out-logic": {
+  "path": "stack-18-folder-dragged-out.logicx",
+  "note": "Logic 12.4 on stack-folder-logic: Audio 3's header dragged above the Sub 1 header, out to the top level: its row at depth 0, its stack index 0, its routing as it was (2026-10-02)",
+  "facts": {
+   "track": "Audio 3",
+   "depth": 0,
+   "stack_index": 0,
+   "parent": 0,
+   "output": "Output 1-2",
+   "members": [
+    "Audio 1",
+    "Audio 2"
+   ]
   }
  }
 }

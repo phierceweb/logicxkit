@@ -16,13 +16,13 @@ so the section sequence is the first 0x12 sequence that is not the marker track.
 
 from __future__ import annotations
 
-import re
 import struct
 from dataclasses import dataclass
 
 from .events import BAR_ONE, PPQ, Event, events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .recbuild import slot_of
+from .rtf import rtf_text
 from .sequence import Triple, sequences
 
 TEXT_TAG = b"qSxT"
@@ -31,7 +31,6 @@ SECTION_TYPE = 0x12
 TRACK_TYPE = 0x11
 TEXT_SLOT_AT, KIND_AT, LENGTH_AT = 0, 8, 12
 KINDS = {0: "custom", 1: "verse", 2: "chorus", 3: "bridge", 4: "outro"}
-_RTF_TEXT = re.compile(rb"\\cf\d+ ([^}\\]*)}\s*$")
 
 
 @dataclass(frozen=True)
@@ -49,11 +48,14 @@ class Section:
 
 
 def _text(payload: bytes) -> str:
+    """A text record's name: the RTF Logic's own rename writes, else UTF-8."""
     raw = payload[TEXT_NAME_AT:].split(b"\0")[0]
     if raw.startswith(b"{\\rtf"):
-        m = _RTF_TEXT.search(raw)
-        return m.group(1).decode("latin-1").strip() if m else ""
-    return raw.decode("latin-1")
+        return rtf_text(raw)
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw.decode("latin-1")
 
 
 def text_records(records) -> dict[int, str]:

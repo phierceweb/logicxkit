@@ -7,7 +7,7 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.sidechain import SideChain, carry, resolve, side_chain, source_name, with_side_chain
 from logicxkit.logic.services.transplant import channel_slots, slot_at
 from logicxkit.logicx import project_data

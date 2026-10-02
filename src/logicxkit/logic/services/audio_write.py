@@ -46,7 +46,7 @@ from .audio_regions import (
     magic_at,
     read_audio_files,
 )
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .midi import ENTRY_TICK_AT
 from .midi_write import _place_entry, _track, entry_tick
 from .recbuild import fresh_uuid, rec, slot_of, time_fields, with_slot

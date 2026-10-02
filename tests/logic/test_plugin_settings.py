@@ -5,7 +5,7 @@ no map measures goes as given."""
 import unittest
 
 from logicxkit.logic._plugin_settings import gridded
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.plugin_library import find_donor, load_library
 from logicxkit.utils.data import PACKAGED
 

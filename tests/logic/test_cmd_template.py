@@ -47,6 +47,17 @@ class TemplateCommandsTest(unittest.TestCase):
         self.assertEqual(code, 0, text)
         self.assertFalse(read_controls(alt(self.out / source(SESSION).name))["Pause"])
 
+    def test_a_plan_says_when_the_run_can_differ_from_it(self):
+        replanned = "The channel ops are planned again"
+        code, text = run("apply-template", source(TEMPLATE), source(SESSION), "--plan")
+        self.assertEqual(code, 0, text)
+        self.assertNotIn(replanned, text)
+        if _goldens.path("stack-folder-logic") and _goldens.path("nest-three-audio-logic"):
+            code, text = run("apply-template", source("stack-folder-logic"), source("nest-three-audio-logic"), "--plan")
+            self.assertEqual(code, 0, text)
+            self.assertIn("make a stack", text)
+            self.assertIn(replanned, text)
+
     def test_migrate_writes_its_named_copy(self):
         code, text = run("migrate", source(SESSION), "--template", source(TEMPLATE), "--out", self.out)
         self.assertEqual(code, 0, text)

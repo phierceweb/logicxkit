@@ -47,6 +47,16 @@ class DisplayCommandsTest(unittest.TestCase):
         shown = written(self, "toolbar", hidden, "--show", "Crop", out=self.out / "shown")
         self.assertEqual(sorted(read_toolbar(alt(shown))), sorted(read_toolbar(alt(TOOLBAR))))
 
+    def test_a_source_with_no_display_state_is_refused_by_each_from(self):
+        bare = self.out / "bare.logicx" / "Alternatives" / "000"
+        bare.mkdir(parents=True)
+        (bare / "ProjectData").write_bytes(data(BASE))
+        for command in ("toolbar", "controlbar", "header"):
+            with self.subTest(command):
+                code, text = run(command, source(BASE), "--from", str(bare.parents[1]), "--out", str(self.out / command))
+                self.assertEqual(code, 2, text)
+                self.assertIn("no alternative carries a DisplayState.plist", text)
+
     def test_header_reads_the_components_without_out(self):
         code, text = run("header", source(HEADER))
         self.assertEqual(code, 0, text)

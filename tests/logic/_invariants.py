@@ -7,7 +7,7 @@ from logicxkit.logic.services.binding import bound_channels
 from logicxkit.logic.services.channel_alloc import is_mixer_record
 from logicxkit.logic.services.environment import channel_objects, name_end, object_record
 from logicxkit.logic.services.groups import group_errors
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.regions import region_errors, row_count_errors
 from logicxkit.logic.services.registry import slot_errors
 from logicxkit.logic.services.sends import SEND_FLAG_AT

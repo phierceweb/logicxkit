@@ -20,7 +20,7 @@ from dataclasses import dataclass
 
 from ...utils.data import data_file
 from .events import BAR_ONE, LINE, events
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .midi import (
     ENTRY_SLOT_AT, ENTRY_TICK_AT, LENGTH_AFTER_NAME, MIDI_ENTRY, NAME_AT, REGION_BAR_ONE, _is_midi, _name, region_length,
     sequence_offset,

@@ -1,6 +1,6 @@
 """A slot record's width: the seven fields that say mono or stereo, the per-plug-in config
 index each width takes (`PLUGIN_CFG`), and the variant base that identifies the plug-in
-(`plugin_variant`). `insert` re-exports these for its callers.
+(`plugin_variant`).
 """
 
 from __future__ import annotations
@@ -27,6 +27,8 @@ SLOT_VARIANT_AT = 116
 SLOT_BUS_AT = (156, 157)
 MONO, STEREO = 1, 2
 
+# config index per width, per plugin. `variant_id - config_index` is constant per plugin, so the
+# variant id is rebased rather than incremented — a blanket +1 is wrong for Gain.
 PLUGIN_CFG = {
     236: {MONO: 1, STEREO: 2},   # Channel EQ
     154: {MONO: 1, STEREO: 2},   # Compressor

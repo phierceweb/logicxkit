@@ -5,7 +5,7 @@ import unittest
 
 import _paths  # noqa: F401
 from _records import chan, env_obj, gnos, marker, proj, track, uuid
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.selection import select_track
 from logicxkit.logic.services.tracklist import ROW_TYPE
 

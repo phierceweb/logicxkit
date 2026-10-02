@@ -12,7 +12,7 @@ import random
 import struct
 import uuid as _uuid
 
-from .insert import HEADER, KEY_OFF, OWNER_OFF, SIZE_OFF
+from .stream import HEADER, KEY_OFF, OWNER_OFF, SIZE_OFF
 
 SLOT_OFF = 10
 

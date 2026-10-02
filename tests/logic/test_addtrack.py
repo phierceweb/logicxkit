@@ -49,3 +49,18 @@ class TableEntryFallbackTest(unittest.TestCase):
                 mock.patch.object(addtrack, "_sound_entry", lambda r, t, s, oid: oid in sound):
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Audio ", 104), 100)
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Inst ", 104), 108)
+
+
+class Logic112AddTest(unittest.TestCase):
+    """A track add is measured on Logic 12's channel records: an audio or aux track needs their
+    input field, and an instrument add on a Logic 11.2 project cost another track its strip."""
+
+    def test_every_kind_is_refused_with_the_reason(self):
+        from _records import chan, env_obj, proj, uuid
+        from logicxkit.logic.services.addtrack import add_track
+        data = proj(env_obj(88, "Piano", type_value=1760),
+                    chan(5, "Inst 1", uuid=uuid(88), size=233, ver=6))
+        for kind in ("audio", "instrument", "aux"):
+            with self.subTest(kind):
+                with self.assertRaisesRegex(ValueError, "this project's are class 6"):
+                    add_track(data, name="Probe", after=88, kind=kind)

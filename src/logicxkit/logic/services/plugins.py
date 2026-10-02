@@ -19,9 +19,10 @@ from ...au.services.aupreset import parse_au_state
 from ...au.services.embed import find_au_plists
 from .._binary import find_blocks
 from .binding import channels
-from .chain_report import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name
-from .insert import HEADER, plugin_variant, project_records
-from .project import _plugin_name
+from .plugin_names import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name
+from .slot_width import plugin_variant
+from .stream import HEADER, project_records
+from .plugin_names import plugin_name
 from .sends import is_send
 from .sidechain import side_chain, source_name
 
@@ -53,7 +54,7 @@ def _ref(label: str, key: int, payload: bytes) -> PluginRef | None:
     blocks = find_blocks(payload)
     if blocks:
         type_id = blocks[0][1]
-        return PluginRef(label, key, _plugin_name(payload) or native_name(type_id, plugin_variant(payload)) or f"type {type_id}", True, None)
+        return PluginRef(label, key, plugin_name(payload) or native_name(type_id, plugin_variant(payload)) or f"type {type_id}", True, None)
     for _off, plist in find_au_plists(payload):
         if "manufacturer" not in plist:
             continue

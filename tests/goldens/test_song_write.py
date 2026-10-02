@@ -96,7 +96,7 @@ class AddSectionTest(unittest.TestCase):
     def test_matches_logics_own_add(self):
         from logicxkit.logic.services.arrangement import TEXT_TAG, section_sequence
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.recbuild import slot_of
         base = project_data(ADD_BASE)
         f = ADDED["facts"]
@@ -116,7 +116,7 @@ class AddSectionTest(unittest.TestCase):
         self.assertEqual(eo.head[:15] + eo.lines[0] + eo.lines[1], el.head[:15] + el.lines[0] + el.lines[1])
 
     def test_slot_is_the_lowest_free_multiple_of_four(self):
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         self.assertEqual(w.free_text_slot(project_records(project_data(ADD_BASE))), ADDED["facts"]["new_slot"])
 
 
@@ -129,7 +129,7 @@ class AddTempoTest(unittest.TestCase):
 
     def test_matches_logics_own_add(self):
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import tempo_sequence
         from logicxkit.logic.services.tempo_write import add_tempo
         base = project_data(TEMPO_BASE)
@@ -162,7 +162,7 @@ class TempoListPointTest(unittest.TestCase):
     def test_our_add_is_logics_point_byte_for_byte(self):
         import struct
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import TIME_AT, tempo_sequence
         from logicxkit.logic.services.tempo_write import add_tempo
         base = project_data(_goldens.path("signature-key-a-minor-logic"))
@@ -188,7 +188,7 @@ class ReSavedAddsTest(unittest.TestCase):
     def test_section_record_and_event_came_back_as_written(self):
         from logicxkit.logic.services.arrangement import TEXT_TAG, section_sequence
         from logicxkit.logic.services.events import BAR_ONE, events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.recbuild import slot_of
         f = OURS["facts"]
         ours = w.add_section(project_data(ADD_BASE), f["section_name"], start=BAR_ONE + (f["section_bar"] - 1) * 3840, length=f["section_bars"] * 3840, kind=f["section_kind"])
@@ -202,7 +202,7 @@ class ReSavedAddsTest(unittest.TestCase):
 
     def test_tempo_step_came_back_with_only_its_stamp_rewritten(self):
         from logicxkit.logic.services.events import BAR_ONE, events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import tempo_sequence
         from logicxkit.logic.services.tempo_write import add_tempo
         ours = add_tempo(project_data(ADD_BASE), BAR_ONE + (OURS["facts"]["tempo_bar"] - 1) * 3840, OURS["facts"]["bpm"])
@@ -241,7 +241,7 @@ class TempoListWordTest(unittest.TestCase):
         resaved = read_tempo_events(project_data(_goldens.path("tempo-bit-cleared-resave-logic")))
         self.assertEqual([e.flags for e in edited] if hasattr(edited[0], "flags") else None, None)
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import tempo_sequence
         def head15(key):
             records = project_records(project_data(_goldens.path(key)))
@@ -269,7 +269,7 @@ class ReSavedMoveDeleteTest(unittest.TestCase):
     def test_events_came_back_as_written(self):
         from logicxkit.logic.services.arrangement import section_sequence
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         ours, logic = project_data(EDITS_MINE), project_data(EDITS_LOGIC)
         self.assertEqual(read_sections(ours), read_sections(logic))
         self.assertEqual(len(read_sections(ours)), _goldens.fact("section-edits-mine", "sections"))
@@ -308,7 +308,7 @@ class RampTest(unittest.TestCase):
 
     def test_ours_matches_logics_bytes_but_the_selection_and_stamps(self):
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import tempo_sequence
         ro, rl = project_records(self._ours()), project_records(project_data(RAMP_LOGIC))
         eo, el = (events(r[tempo_sequence(r)].raw[HEADER:]) for r in (ro, rl))
@@ -333,7 +333,7 @@ class ReSavedRampTest(unittest.TestCase):
 
     def test_events_came_back_as_written(self):
         from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.tempo import tempo_sequence
         ours, logic = project_data(OUR_RAMP_MINE), project_data(OUR_RAMP_LOGIC)
         self.assertEqual([(e.position, e.bpm) for e in read_tempo_events(ours)], [(e.position, e.bpm) for e in read_tempo_events(logic)])
@@ -374,7 +374,7 @@ class ArrangementTrackTest(unittest.TestCase):
     @classmethod
     def _shape(cls, data: bytes):
         from collections import Counter
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         return Counter((r.tag, None if r.tag in cls.UNSIZED else len(r.raw)) for r in project_records(data))
 
     def test_the_section_and_its_track_read_like_logics(self):

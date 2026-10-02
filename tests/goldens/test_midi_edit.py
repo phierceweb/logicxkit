@@ -11,7 +11,7 @@ from pathlib import Path
 import _goldens
 from logicxkit.cli import main
 from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.insert import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.integrity import regressions
 from logicxkit.logic.services.midi import ENTRY_TICK_AT, read_midi
 from groovebin import transforms as gt

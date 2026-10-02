@@ -20,7 +20,7 @@ from logicxkit.logic.services.groups import (
     set_group,
     settings_of,
 )
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.registry import group_entries, register_group
 from _data import needs
 
@@ -178,7 +178,7 @@ class CreateTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_group(session(), members=[999])
         with self.assertRaises(ValueError):
-            create_group(session(), name="Ré")
+            create_group(session(), name="R\x07")
         with self.assertRaises(ValueError):
             create_group(session(), settings=["Loudness"])
 

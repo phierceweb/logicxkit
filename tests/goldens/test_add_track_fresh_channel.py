@@ -11,7 +11,9 @@ import _goldens
 from logicxkit.logic._edit import object_by_name
 from logicxkit.logic.services.addtrack import add_track
 from logicxkit.logic.services.channel_alloc import AUX_FRESH, PROJECT_WORDS, is_mixer_record
-from logicxkit.logic.services.insert import CHANNEL_BASE_AT, HEADER, project_records, slot_index_base
+from logicxkit.logic.services.mixer import CHANNEL_BASE_AT
+from logicxkit.logic.services.slots import slot_index_base
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.slots import archive_index, is_plugin_slot, property_key_base
 from logicxkit.logic.services.stacks import read_tracks
 from logicxkit.logic.services.validate import validate_project

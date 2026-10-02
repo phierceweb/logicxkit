@@ -8,7 +8,60 @@ record in it, and aux strips a 68-byte one, both with +6 = 0.
 
 from __future__ import annotations
 
-from .insert import HEADER, SLOT_INDEX_AT, ProjRecord, project_records
+import struct
+
+from .._binary import find_blocks
+from .mixer import CHANNEL_BASE_AT, CHANNEL_TAG
+from .stream import HEADER, ProjRecord, project_records
+
+
+# BYPASS — payload +112: 0 = active, 1 = bypassed. Confirmed in Logic: a build written with 1 on
+# nine Enveloper slots opened with them bypassed, and after they were enabled by hand the flag read
+# 0 on exactly those channels while untouched ones still read 1.
+SLOT_BYPASS_AT = 112
+
+# Slot INDEX within the channel, written by Logic as key - 3 and unique per channel. A clone
+# inherits the donor's, so without rewriting it two slots claim the same index and Logic renders
+# only one of them.
+SLOT_INDEX_AT = 6
+
+SLOT_INDEX_BASE_DEFAULT = 4   # Logic 11.2 / 12; older builds start their slot keys at 3
+
+_PLUGIN_MARKS = (b"GAMETSPP", b"<plist")      # native chunks and XML AU states; the binary-plist
+                                              # property records (the strip reference) are not slots
+
+
+def slot_index_base(data: bytes) -> int:
+    """The key that slot index 0 corresponds to: 2 with up to one send in the project, 3 with
+    two, 4 with three (Logic moves it with the sends, 2026-09-12). Every channel record
+    carries it at +28; when they all agree that is the answer, else the project's own plugin
+    slots (native chunks and AU states alike) vote."""
+    words = {struct.unpack_from("<H", r.raw, HEADER + CHANNEL_BASE_AT)[0]
+             for r in project_records(data) if r.tag == CHANNEL_TAG and len(r.raw) - HEADER > CHANNEL_BASE_AT + 2}
+    if len(words) == 1 and next(iter(words)) in (2, 3, 4):
+        return words.pop()
+    votes: dict[int, int] = {}
+    for record in project_records(data):
+        if record.tag != b"UCuA" or not any(m in record.raw for m in _PLUGIN_MARKS):
+            continue
+        payload = record.raw[HEADER:]
+        if len(payload) > SLOT_INDEX_AT and (find_blocks(payload) or b"GAMETSPP" not in payload):
+            base = record.key - payload[SLOT_INDEX_AT]
+            votes[base] = votes.get(base, 0) + 1
+    return max(votes, key=votes.get) if votes else SLOT_INDEX_BASE_DEFAULT
+
+
+def slot_bypassed(raw: bytes) -> bool:
+    payload = raw[HEADER:]
+    return len(payload) > SLOT_BYPASS_AT and payload[SLOT_BYPASS_AT] == 1
+
+
+def set_slot_bypass(raw: bytes, bypassed: bool) -> bytes:
+    buf = bytearray(raw)
+    at = HEADER + SLOT_BYPASS_AT
+    if at < len(buf):
+        buf[at] = 1 if bypassed else 0
+    return bytes(buf)
 
 _DEFAULT_PROPERTY_KEY = 10
 

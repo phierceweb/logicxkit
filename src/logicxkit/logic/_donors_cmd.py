@@ -14,7 +14,7 @@ from .services.retrack import find_project
 
 def cmd_donors(args) -> int:
     from ..utils.data import PACKAGED, writable_root
-    from .services.chain_report import native_names
+    from .services.plugin_names import native_names
     from .services.plugin_library import WIDTH_NAMES, harvest_au, load_library
     lib = Path(args.library) if args.library else writable_root() / "donors"
     skip = set() if args.library else {p.stem for p in (PACKAGED / "donors").glob("*.slot")}

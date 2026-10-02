@@ -32,9 +32,11 @@ Channel payload fields written here:
     +128            the number again on Inst strips, 0 elsewhere
     +78/+86/+123    width: mono 211/0/1, stereo 215/1/2; a fresh instrument 243/0/1, stereo
                     247/1/2 with +81 = 8
-    len-48..-32     own UUID = the bound object's
-    len-32..-16     output destination channel's UUID
-    len-16..        input channel's UUID
+    the uuids at the end are `binding.TRAILER`'s, by the record's class
+
+The default instrument slot record (`inst-track-12.3.1.json`) keeps its id at len-20..len-4,
+before a u32 Logic writes as 0; its stereo form is +81 2, +84 2, +116 255, +119 2 (mono 1, 1,
+254, 1), and Logic takes the channel's width from it.
 """
 
 from __future__ import annotations
@@ -42,18 +44,18 @@ from __future__ import annotations
 import json
 import struct
 
-from .binding import Channel, channel_label
-from .insert import CHANNEL_BASE_AT, CHANNEL_TAG, HEADER, MIXER_MIN, SLOT_INDEX_AT, ProjRecord, is_mixer_record
+from .binding import Channel, channel_label, record_class, stamp_uuids, uuids_of
+from .mixer import (
+    CHANNEL_BASE_AT, CHANNEL_TAG, COUNT_TAG, COUNT_TOTAL_AT, is_mixer_record, MIXER_MIN,
+)
+from .slots import archive_index, SLOT_INDEX_AT
+from .stream import HEADER, ProjRecord
 from .recbuild import fresh_uuid, rec, with_key, with_owner
 from .sends import SEND_TAG
-from .slots import archive_index
 
-COUNT_TAG = b"nCuA"
-COUNT_TOTAL_AT = 26
 COUNT_CLASS_AT = {"Audio": 28, "Aux": 32, "Inst": 34, "Bus": 38, "Sub": 40}
 COUNT_INPUT_AT = (30,)            # mono inputs; +36 is the device's input count and stays (Logic reset it, 2026-09-06)
 STACK_INDEX_AT = 110
-COUNT_HEAD = 132
 IN_USE_AT = 24
 LABEL_AT = 60
 LABEL_LEN = 16
@@ -62,6 +64,10 @@ LABEL_BASE = {"Sub ": 0}          # the label's number is +6 plus this; the 0-ba
 WIDTH = {78: {1: 211, 2: 215}, 86: {1: 0, 2: 1}, 123: {1: 1, 2: 2}}
 INST_FRESH = {78: 243, 81: 0, 86: 0, 92: 0, 123: 1, 188: 0}
 INST_FRESH_STEREO = {**INST_FRESH, 78: 247, 81: 8, 86: 1, 123: 2}   # Logic's own: `sessionplayer-track-logic`
+INST_SLOT_WIDTH_AT = (84, 119)    # the slot's output counts; Logic takes the channel's width here
+# +84/+119 as on Logic's own stereo slot; +81/+116 as Logic 12.4 set them when it saved ours
+INST_SLOT_STEREO = {81: 2, 84: 2, 116: 255, 119: 2}
+INST_SLOT_CLOSE = 4               # after the slot's id: a u32 Logic writes 0 in and refuses large
 UUID_LEN = 16
 PROJECT_WORDS = (CHANNEL_BASE_AT, 30, 34, 36, 38, 42)
 AUX_FRESH = {85: 0, 94: 0, 119: 0}
@@ -78,7 +84,7 @@ def project_words(data: bytes) -> dict[int, int]:
     """The ``PROJECT_WORDS`` the project's channel records carry, each the value most of them hold."""
     from collections import Counter
 
-    from .insert import project_records
+    from .stream import project_records
     held = {at: Counter() for at in PROJECT_WORDS}
     for r in project_records(data):
         if is_mixer_record(r) and len(r.raw) - HEADER >= max(PROJECT_WORDS) + 2:
@@ -99,6 +105,18 @@ def mixer_record(records: list[ProjRecord], owner: int) -> bytes:
         if is_mixer_record(r) and r.owner == owner:
             return r.raw
     raise ValueError(f"no mixer channel record for owner {owner}")
+
+
+def require_packaged_class(chans: dict[int, Channel], kind: str) -> None:
+    """A track add is measured on the packaged record's class: refuse a project whose channel
+    records are of another (an instrument add renumbers the channels behind it)."""
+    spec = _spec(_AUX_DATA if kind == "aux" else _AUDIO_DATA)
+    packaged = record_class(bytes.fromhex(spec["header"]))
+    found = sorted({c.ver for c in chans.values()})
+    if found != [packaged]:
+        raise ValueError(f"an {kind} track needs class-{packaged} channel records (Logic 12) and "
+                         f"this project's are class {', '.join(map(str, found))} — open and save "
+                         "it in Logic 12 first")
 
 
 SHAPED_STUB_MIN = 240             # a stub Logic pre-shaped for use (245 B here); the 201-byte
@@ -130,12 +148,10 @@ def bind_audio_stub(raw: bytes, *, object_uuid: bytes, input_uuid: bytes,
     width = 2 if stereo else 1
     for off, by_width in WIDTH.items():
         p[off] = by_width[width]
-    n = len(p)
-    p[n - 48:n - 32] = object_uuid
-    if p[n - 32:n - 16] == bytes(UUID_LEN) and output_uuid is not None:
-        p[n - 32:n - 16] = output_uuid
-    p[n - 16:] = input_uuid
-    return raw[:HEADER] + bytes(p)
+    out = raw[:HEADER] + bytes(p)
+    routed = uuids_of(out)[1] != bytes(UUID_LEN)
+    return stamp_uuids(out, own=object_uuid, source=input_uuid,
+                       destination=None if routed else output_uuid)
 
 
 def new_inst_channel(template: bytes, *, owner: int, object_uuid: bytes,
@@ -150,22 +166,20 @@ def new_inst_channel(template: bytes, *, owner: int, object_uuid: bytes,
     p[STACK_INDEX_AT] = stack_index
     number = struct.unpack_from("<H", p, NUMBER_AT)[0] + 1
     p[LABEL_AT:LABEL_AT + LABEL_LEN] = f" Inst {number}".encode().ljust(LABEL_LEN, b"\x00")
-    n = len(p)
-    p[n - 48:n - 32] = object_uuid
-    if output_uuid is not None:
-        p[n - 32:n - 16] = output_uuid
-    p[n - 16:] = bytes(UUID_LEN)
-    return rec(CHANNEL_TAG, template, bytes(p), owner=owner), number
+    raw = rec(CHANNEL_TAG, template, bytes(p), owner=owner)
+    return stamp_uuids(raw, own=object_uuid, destination=output_uuid, source=bytes(UUID_LEN),
+                       clone=True), number
 
 
-def new_sub_channel(template: bytes, *, number: int, owner: int, uuid: bytes) -> bytes:
-    """A `Sub number` strip cloned from another Sub's record, bound to object ``uuid``."""
+def new_sub_channel(template: bytes, *, number: int, owner: int, uuid: bytes,
+                    words: dict[int, int] | None = None) -> bytes:
+    """A `Sub number` strip cloned from another Sub's record, bound to object ``uuid``, carrying
+    the project's ``words`` (`project_words`)."""
     p = bytearray(template[HEADER:])
+    _stamp(p, words or {})
     struct.pack_into("<H", p, NUMBER_AT, number)
     p[LABEL_AT:LABEL_AT + LABEL_LEN] = f" Sub {number}".encode().ljust(LABEL_LEN, b"\x00")
-    n = len(p)
-    p[n - 48:n - 32] = uuid
-    return rec(CHANNEL_TAG, template, bytes(p), owner=owner)
+    return stamp_uuids(rec(CHANNEL_TAG, template, bytes(p), owner=owner), own=uuid)
 
 
 def new_aux_channel(*, number: int, owner: int, object_uuid: bytes, output_uuid: bytes | None,
@@ -180,11 +194,10 @@ def new_aux_channel(*, number: int, owner: int, object_uuid: bytes, output_uuid:
     struct.pack_into("<H", p, NUMBER_AT, number)
     p[LABEL_AT:LABEL_AT + LABEL_LEN] = f" Aux {number + 1}".encode().ljust(LABEL_LEN, b"\x00")
     p[STACK_INDEX_AT] = stack_index
-    n = len(p)
-    p[n - 48:n - 32] = object_uuid
-    p[n - 32:n - 16] = output_uuid if output_uuid is not None else bytes(UUID_LEN)
-    p[n - 16:] = input_uuid if input_uuid is not None else bytes(UUID_LEN)
-    return rec(CHANNEL_TAG, bytes.fromhex(spec["header"]) + bytes(p), bytes(p), owner=owner)
+    zero = bytes(UUID_LEN)
+    raw = rec(CHANNEL_TAG, bytes.fromhex(spec["header"]) + bytes(p), bytes(p), owner=owner)
+    return stamp_uuids(raw, own=object_uuid, destination=output_uuid or zero,
+                       source=input_uuid or zero)
 
 
 def new_audio_channel(*, number: int, owner: int, object_uuid: bytes, output_uuid: bytes | None,
@@ -202,11 +215,10 @@ def new_audio_channel(*, number: int, owner: int, object_uuid: bytes, output_uui
     width = 2 if stereo else 1
     for off, by_width in WIDTH.items():
         p[off] = by_width[width]
-    n = len(p)
-    p[n - 48:n - 32] = object_uuid
-    p[n - 32:n - 16] = output_uuid if output_uuid is not None else bytes(UUID_LEN)
-    p[n - 16:] = input_uuid if input_uuid is not None else bytes(UUID_LEN)
-    return rec(CHANNEL_TAG, bytes.fromhex(spec["header"]) + bytes(p), bytes(p), owner=owner)
+    zero = bytes(UUID_LEN)
+    raw = rec(CHANNEL_TAG, bytes.fromhex(spec["header"]) + bytes(p), bytes(p), owner=owner)
+    return stamp_uuids(raw, own=object_uuid, destination=output_uuid or zero,
+                       source=input_uuid or zero)
 
 
 def new_input_channel(template: bytes, *, number: int, owner: int) -> bytes:
@@ -215,22 +227,27 @@ def new_input_channel(template: bytes, *, number: int, owner: int) -> bytes:
     struct.pack_into("<H", p, NUMBER_AT, number - 1)
     p[LABEL_AT:LABEL_AT + LABEL_LEN] = f" Input {number}".encode().ljust(LABEL_LEN, b"\x00")
     p[IN_USE_AT] = p[IN_USE_AT + 1] = 0
-    n = len(p)
-    p[n - 48:n - 32] = fresh_uuid()
-    p[n - 32:] = bytes(2 * UUID_LEN)
-    return rec(CHANNEL_TAG, template, bytes(p), owner=owner)
+    zero = bytes(UUID_LEN)
+    return stamp_uuids(rec(CHANNEL_TAG, template, bytes(p), owner=owner), own=fresh_uuid(),
+                       destination=zero, source=zero, clone=True)
 
 
-def default_inst_records(owner: int, *, slot_base: int, property_base: int) -> list[bytes]:
+def default_inst_records(owner: int, *, slot_base: int, property_base: int,
+                         stereo: bool = False) -> list[bytes]:
     """Logic's default instrument-slot records for a new instrument channel, keyed to the
-    project: the instrument at slot index 0, the keyed archive at the property base + 3. Left at
-    the keys they were measured with, a project of another base can fail to open."""
+    project: the instrument at slot index 0, the keyed archive at the property base + 3 (at
+    another project's keys the copy can fail to open). ``stereo`` writes the slot stereo."""
     spec = _spec(_DATA)
     out = []
     for raw in (bytes.fromhex(h) for h in spec["records"].values()):
-        key = property_base + 3 if archive_index(raw) == 2 else slot_base + raw[HEADER + SLOT_INDEX_AT]
+        archive = archive_index(raw) == 2
+        key = property_base + 3 if archive else slot_base + raw[HEADER + SLOT_INDEX_AT]
         buf = bytearray(with_key(with_owner(raw, owner), key))
-        buf[-UUID_LEN:] = fresh_uuid()
+        if stereo and not archive:
+            for at, value in INST_SLOT_STEREO.items():
+                buf[HEADER + at] = value
+        end = len(buf) - (0 if archive else INST_SLOT_CLOSE)
+        buf[end - UUID_LEN:end] = fresh_uuid()
         out.append(bytes(buf))
     return out
 
@@ -265,15 +282,6 @@ def shifted_channel(raw: bytes, record: ProjRecord, relabel_prefix: str = "Inst 
     shown = number + LABEL_BASE.get(relabel_prefix, 1)
     p[LABEL_AT:LABEL_AT + LABEL_LEN] = f" {relabel_prefix.strip()} {shown}".encode().ljust(LABEL_LEN, b"\x00")
     return raw[:HEADER] + bytes(p)
-
-
-def is_channel_count(record: ProjRecord) -> bool:
-    """The count record proper: its length is the head plus one word per counted channel."""
-    p = record.raw[HEADER:]
-    if record.tag != COUNT_TAG or len(p) < COUNT_HEAD:
-        return False
-    total = struct.unpack_from("<H", p, COUNT_TOTAL_AT)[0]
-    return total > 0 and len(p) == COUNT_HEAD + 4 * total
 
 
 def bump_channel_count(raw: bytes, *, class_at: int | tuple[int, ...]) -> bytes:

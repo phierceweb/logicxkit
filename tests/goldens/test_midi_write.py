@@ -14,7 +14,7 @@ UNSIZED = (b"gnoS", b"qeSM")
 
 
 def shape(data: bytes) -> Counter:
-    from logicxkit.logic.services.insert import project_records
+    from logicxkit.logic.services.stream import project_records
     return Counter((r.tag, None if r.tag in UNSIZED else len(r.raw)) for r in project_records(data))
 
 
@@ -71,7 +71,7 @@ class LogicResavedNamesTest(unittest.TestCase):
 
     def payloads(self, data: bytes, names) -> dict[str, bytes]:
         import struct
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.midi import NAME_AT
         out = {}
         for r in project_records(data):
@@ -137,7 +137,7 @@ class NameLengthTest(unittest.TestCase):
 
     def test_length_and_track_follow_the_name(self):
         import struct
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.midi import NAME_AT
         from logicxkit.logic.services.sequence import sequences, triple_by_slot
         base = project_data(_goldens.path("midi-empty-region-logic"))

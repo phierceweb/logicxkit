@@ -23,7 +23,7 @@ from .automation import (
 from .automation_write import _order
 from .binding import bound_objects
 from .events import LINE, events
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec
 from .sequence import sequences
 

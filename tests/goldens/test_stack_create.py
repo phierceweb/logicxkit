@@ -9,9 +9,9 @@ import unittest
 from collections import Counter
 import _goldens
 import _paths
-from logicxkit.logic.services.binding import channels
+from logicxkit.logic.services.binding import channels, output_labels
 from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.stack_create import SUB_NUMBER_AT, create_stack
 from logicxkit.logic.services.stacks import read_stacks, read_tracks, stack_parents
 from logicxkit.logic.services.validate import validate_project
@@ -76,10 +76,32 @@ class MixTemplateStackTest(unittest.TestCase):
         self.assertEqual(sorted(s.index for s in read_stacks(out, self.count + 2))[-2:],
                          [int(r1["label"][4:]), int(r2["label"][4:])])
 
-    def test_refuses_a_track_inside_a_stack(self):
-        member = next(r for r in read_tracks(self.data, self.count) if r["member"] and r["name"])
-        with self.assertRaises(ValueError):
-            create_stack(self.data, name="Nested", members=[member["object_id"]], track_count=self.count)
+    def test_a_track_inside_a_stack_gets_a_stack_inside_it(self):
+        """Both kinds, on the first member of the template's first stack that is a plain track."""
+        from _invariants import assert_consistent
+        from logicxkit.logic.services.stack_summing import create_summing_stack
+        headers = {s.object_id for s in read_stacks(self.data, self.count)}
+        member = next(r for r in read_tracks(self.data, self.count)
+                      if r["depth"] == 1 and r["name"] and r["object_id"] not in headers
+                      and (r["label"] or "").startswith("Audio "))
+        holder = next(s for s in read_stacks(self.data, self.count) if any(k == member["key"] for k, _n in s.members))
+        if output_labels(self.data).get(member["owner"]) != "Output 1-2":   # a summing aux's output is measured only there
+            with self.assertRaisesRegex(ValueError, "not measured"):
+                create_summing_stack(self.data, name="Nested", members=[member["object_id"]], track_count=self.count)
+        for make in (create_stack, create_summing_stack):
+            if make is create_summing_stack and output_labels(self.data).get(member["owner"]) != "Output 1-2":
+                continue
+            with self.subTest(make.__name__):
+                out, report = make(self.data, name="Nested", members=[member["object_id"]], track_count=self.count)
+                assert_consistent(self, out, self.count + 1, selected=report["object_id"],
+                                  link_errors_before=self.errors)
+                stacks = {s.object_id: s for s in read_stacks(out, self.count + 1)}
+                new, outer = stacks[report["object_id"]], stacks[holder.object_id]
+                self.assertEqual((new.depth, new.parent, [n for _k, n in new.members]),
+                                 (1, holder.object_id, [member["name"]]))
+                self.assertEqual([n for _k, n in outer.members],
+                                 ["Nested" if n == member["name"] else n for _k, n in holder.members])
+                self.assertEqual(len(stacks), len(self.before) + 1)
 
 
 @_goldens.needs("tracks-three-audio-logic", "stack-folder-logic")

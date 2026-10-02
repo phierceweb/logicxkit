@@ -3,7 +3,7 @@
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.trackname import one_object, rows_named
+from logicxkit.logic.services.trackname import one_object, rows_named, stack_named
 
 ROWS = [
     {"object_id": 192, "name": "Drums MIDI", "label": "Sub 7"},
@@ -14,6 +14,28 @@ ROWS = [
 
 
 class TrackNameTest(unittest.TestCase):
+    def test_a_decomposed_argument_finds_a_composed_name(self):
+        rows = [{"object_id": 88, "name": "Gitarre \u00fc", "label": "Audio 1"},
+                {"object_id": 92, "name": None, "label": "Audio 2"}]
+        self.assertEqual(one_object(rows, "Gitarre u\u0308"), 88)
+        self.assertEqual(one_object(rows, "Gitarre u\u0308 (Audio 1)"), 88)
+        self.assertEqual(rows_named(rows, "None"), [])
+
+    def test_a_stack_is_found_in_either_unicode_form(self):
+        from types import SimpleNamespace
+        stacks = [SimpleNamespace(name="Drums"), SimpleNamespace(name="Bl\u00e4ser")]
+        self.assertIs(stack_named(stacks, " Bla\u0308ser "), stacks[1])
+        self.assertIsNone(stack_named(stacks, "Brass"))
+
+    def test_two_stacks_of_one_name_need_the_strip(self):
+        from types import SimpleNamespace
+        stacks = [SimpleNamespace(name="Drums", strip="Sub 1"), SimpleNamespace(name="Drums", strip="Aux 9")]
+        with self.assertRaisesRegex(ValueError, r"2 stacks named 'Drums'; say which: Drums \(Sub 1\), Drums \(Aux 9\)"):
+            stack_named(stacks, "Drums")
+        self.assertIs(stack_named(stacks, "Drums (Aux 9)"), stacks[1])
+        self.assertIs(stack_named(stacks, "Drums (Sub 1)"), stacks[0])
+        self.assertIsNone(stack_named(stacks, "Drums (Aux 2)"))
+
     def test_a_unique_name_needs_no_label(self):
         self.assertEqual(one_object(ROWS, "Kick In"), 88)
 

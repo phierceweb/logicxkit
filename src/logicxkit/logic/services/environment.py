@@ -1,7 +1,8 @@
 """Environment objects — the `ivnE` records that name tracks and stack folders.
 
-    +0     u32   channel-object type in the low half: 1800 at class v12 (Logic 12), 1728 at
-                 v11; mixed projects set flag bits 0x4040 in the high half on some tracks
+    +0     u32   channel-object type in the low half, the build's: 1800 at class v12 from
+                 Logic 12, 1760 at class v12 from Logic 11.2, 1728 at v11; mixed projects set
+                 flag bits 0x4040 in the high half on some tracks
     +16    u32   object id — what a `karT` row's +8 points at
     +38    u32   parent: the object id of the stack this track was dragged into (0 = never)
     +80    u8    1 on the selected object only (`selection.py`)
@@ -23,12 +24,14 @@ from __future__ import annotations
 import struct
 from dataclasses import dataclass
 
-from .insert import HEADER, project_records, reassemble
+from .names import readable, written
+from .stream import HEADER, project_records, reassemble
 from .validate import require_full_walk
 from .recbuild import fresh_uuid, rec
 
 ENV_TAG = b"ivnE"
 CHANNEL_OBJECT = {11: 1728, 12: 1800}
+CHANNEL_OBJECT_TYPES = {11: {1728}, 12: {1760, 1800}}
 OBJECT_ID_AT = 16
 PARENT_AT = 38
 KIND_AT = 154
@@ -48,7 +51,7 @@ NAMED_BIT = 1                     # +45 bit 0: the name is the user's; clear, th
                                   # the channel-strip setting's name instead (every named
                                   # track on hand sets it; Logic's own fresh adds do not)
 STACK_NUMBER_AFTER_NAME = 3
-_NAME_MAX = 63
+_NAME_MAX = 127                   # bytes; the longest written name Logic kept (`names-long-*`)
 
 
 @dataclass(frozen=True)
@@ -63,34 +66,26 @@ class EnvObject:
     icon: int = 0
 
 
-def _constant(records) -> int | None:
+def _constant(records) -> set[int] | None:
     version = next((r.ver for r in records if r.tag == ENV_TAG), None)
-    return CHANNEL_OBJECT.get(version)
+    return CHANNEL_OBJECT_TYPES.get(version)
 
 
 TYPE_MASK = 0xFFFF                 # +0: the type in the low half; mixes set flags above it
 
 
-def _is_channel_object(payload: bytes, constant: int | None) -> bool:
+def _is_channel_object(payload: bytes, constant: set[int] | None) -> bool:
     return (constant is not None and len(payload) > NAME_AT + 2 + UUID_LEN
-            and struct.unpack_from("<I", payload, 0)[0] & TYPE_MASK == constant)
+            and struct.unpack_from("<I", payload, 0)[0] & TYPE_MASK in constant)
 
 
 def _name_bytes(payload: bytes) -> bytes | None:
-    """The name's bytes, or None when the length field is not one."""
+    """The name's bytes, or None when the length field is not one. Any length that fits the
+    record is read: `_NAME_MAX` is the longest Logic was shown to keep, a limit for the writer."""
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
-    if not (0 < n <= _NAME_MAX) or NAME_AT + 2 + n > len(payload):
+    if not n or NAME_AT + 2 + n > len(payload):
         return None
     return payload[NAME_AT + 2:NAME_AT + 2 + n]
-
-
-def _name(raw: bytes) -> str | None:
-    """UTF-8, as Logic writes it; None for other bytes or a control character."""
-    try:
-        text = raw.decode("utf-8")
-    except UnicodeDecodeError:
-        return None
-    return None if any(ord(ch) < 32 or 127 <= ord(ch) < 160 for ch in text) else text
 
 
 def channel_objects(data: bytes) -> dict[int, EnvObject]:
@@ -112,7 +107,7 @@ def channel_objects(data: bytes) -> dict[int, EnvObject]:
             continue
         object_id = struct.unpack_from("<I", payload, OBJECT_ID_AT)[0]
         out[object_id] = EnvObject(
-            object_id=object_id, name=_name(raw_name), kind=payload[KIND_AT],
+            object_id=object_id, name=readable(raw_name), kind=payload[KIND_AT],
             parent=struct.unpack_from("<I", payload, PARENT_AT)[0],
             uuid=payload[-UUID_LEN:], size=len(payload), colour=payload[COLOUR_AT],
             icon=struct.unpack_from("<H", payload, ICON_AT)[0])
@@ -200,7 +195,8 @@ def next_object_id(records) -> int:
 def object_id_of(record) -> int | None:
     """The object id of a channel-object `ivnE` record, else None."""
     payload = record.raw[HEADER:]
-    if record.tag != ENV_TAG or not _is_channel_object(payload, CHANNEL_OBJECT.get(record.ver)):
+    types = CHANNEL_OBJECT_TYPES.get(record.ver)
+    if record.tag != ENV_TAG or not _is_channel_object(payload, types):
         return None
     return struct.unpack_from("<I", payload, OBJECT_ID_AT)[0]
 
@@ -216,14 +212,10 @@ def object_stamp(raw: bytes) -> int:
 
 
 def _with_name(payload: bytes, name: str) -> bytearray:
-    """The payload with the name field rewritten; everything after it keeps its place."""
+    """The payload with the name field rewritten as Logic writes one — UTF-8, the length in
+    bytes, padded to even; everything after it keeps its place."""
     n = struct.unpack_from("<H", payload, NAME_AT)[0]
-    if not name.isascii() or not name.isprintable():
-        raise ValueError("a track name is written as printable ASCII only — Logic stores others "
-                         "as UTF-8, and no Logic re-save confirms one written here")
-    encoded = name.encode("ascii")
-    if not 0 < len(encoded) <= _NAME_MAX:
-        raise ValueError(f"a track name is 1-{_NAME_MAX} characters")
+    encoded = written(name, "a track name", limit=_NAME_MAX)
     old_field = n + (n % 2)
     new_field = encoded + (b"\x00" if len(encoded) % 2 else b"")
     return (bytearray(payload[:NAME_AT]) + struct.pack("<H", len(encoded)) + new_field

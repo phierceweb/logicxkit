@@ -12,7 +12,7 @@ from __future__ import annotations
 import plistlib
 import struct
 
-from .insert import HEADER
+from .stream import HEADER
 
 SIZE_AT, PLIST_AT = 16, 20
 MAPPING = "MAPlugInParameterMapping"

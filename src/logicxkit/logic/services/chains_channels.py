@@ -7,7 +7,8 @@ from __future__ import annotations
 
 from .._binary import find_blocks, read_block_floats
 from .binding import channels
-from .insert import HEADER, project_records, slot_index_base
+from .slots import slot_index_base
+from .stream import HEADER, project_records
 from .output_params import NAMES, PARAMS, set_params
 
 # The inspector's name for a channel the mixer labels otherwise.

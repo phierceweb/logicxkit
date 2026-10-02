@@ -18,16 +18,34 @@ CAPABILITIES = (
                "disabled by hand, 2026-09-16); `--validate` opens each listed component with auval -v "
                "and reports it broken"),
     *CONTENT_ROWS,
-    Capability(("stacks",), "CONFIRMED", "read-only until `--move`, which needs `--out`",
+    Capability(("stacks",), "CONFIRMED", "read-only until `--move` or `--move-out`, which need `--out`",
                "Reads folder stacks and the arrange list, nested stacks included (the member byte is "
                "the depth). `--move TRACK:STACK --out DIR` writes a copy whose rows match Logic's own drag "
                "saves (2026-09-04; into and out of a nested stack 2026-09-16, the `nest-*` goldens, and "
                "Logic re-saved a nested move as written, `nest-ours-resave-logic`), through the same "
-               "integrity gate as every other writer"),
-    Capability(("levels",), "CONFIRMED", "read-only until `--to`, which needs `--out`",
-               "Reads fader and pan. `--to OTHER --out DIR` copies them onto another project "
-               "through the integrity gate; a copy written onto a blank project came back from "
-               "Logic's re-save with every fader and pan as written (2026-09-12)"),
+               "integrity gate as every other writer. Into a summing stack the track's output goes to "
+               "the stack's bus, the row, word and UUID as Logic's own drag left them "
+               "(`stack-summing-dragged-in-logic`, 2026-10-02), and Logic re-saved a written move "
+               "with every row, route and stack kept (`stack-summing-move-*`). A track moved into a "
+               "folder inside a summing stack goes to that stack's bus too, as Logic's manual has a "
+               "track added to a summing stack do; a stack is not moved into one at any depth. "
+               "`--move-out TRACK` takes a row one level out as "
+               "Logic's drags did (the `nest-*` goldens; `stack-folder-dragged-out-logic` to the top "
+               "level), keeping its bus out of a summing stack (`stack-summing-dragged-out-logic`)"),
+    Capability(("levels",), "CONFIRMED",
+               "read-only until `--fader`, `--pan` or `--to`, which need `--out`",
+               "Reads fader and pan, the fader in dB to the hundredth. `--to OTHER --out DIR` copies "
+               "them onto another "
+               "project through the integrity gate; a copy written onto a blank project "
+               "came back from "
+               "Logic's re-save with every fader and pan as written (2026-09-12). "
+               "`--fader CHANNEL=DB` "
+               "and `--pan CHANNEL=N` set them: a fader written at -5.3 dB and a pan at "
+               "-20 read so in "
+               "Logic 12.4 and came back from its save as written (`send-set-*`, "
+               "2026-10-02). Logic's "
+               "fader readout shows its own steps as labelled, but a level between two up to "
+               "0.1 dB low (an exact -6.0 shows -6.1), so the listing gives the level as written"),
     Capability(("build", "verify", "pst", "donors", "image", "ocr"), "—",
                "never touches a project; `build`/`pst` reach Logic's own library only with "
                "`--install`",
@@ -56,11 +74,34 @@ CAPABILITIES = (
                "with no send to clone gets Logic's own from a blank project (packaged), and Logic "
                "re-saved one such add byte for byte (2026-09-13). A third send in a project whose slots "
                "start at key 2 moves the project to base 4 first, as Logic's own re-save does; left at 2 it "
-               "shares slot 1's key and Logic drops the plug-in there (`legacy-migrate-fixed-*`, 2026-09-24)"),
-    Capability(("stack-create",), "CONFIRMED", "on a folder stack only",
-               "Summing stacks unimplemented. A session with no stack patterns on Logic's own first "
+               "shares slot 1's key and Logic drops the plug-in there "
+               "(`legacy-migrate-fixed-*`, 2026-09-24). "
+               "`--level`, `--mode` and `--bypass` write the send's level in dB, its "
+               "mode and its bypass "
+               "box: Logic 12.4's knobs showed -10.0 and 3.0 dB on two written sends "
+               "and its save kept "
+               "both records byte for byte (`send-set-*`, 2026-10-02). The level is "
+               "40 * log10(position / 90), walked on Logic's knob over 265 stops; "
+               "Independent Pan is "
+               "read and not written. An add given none of the three comes in as Logic's own "
+               "second send beside one at -16.8 dB did, at -inf, post pan and on "
+               "(`send-two-base-3-logic`); a second send to a bus the channel sends to is refused"),
+    Capability(("stack-create",), "CONFIRMED", "yes; not around a stack",
+               "A session with no stack patterns on Logic's own first "
                "stack (packaged); Logic re-saved two such stacks with the header, strip and members "
-               "as written (2026-09-13)"),
+               "as written (2026-09-13). `--summing` makes the header an aux track fed from a free "
+               "bus and routes each member to it, by UUID and by index word as Logic's own Create "
+               "Track Stack (Summing) wrote both; Logic 12.4 showed two written stacks, one with an "
+               "instrument member, and re-saved them with every row, route and channel record as "
+               "written (`stack-summing-*`, 2026-10-02). Logic's own binds the lowest free `Aux` "
+               "stub where this adds a fresh strip. Direct members of one stack make a stack inside "
+               "it, of either kind, as Logic's own inner Create Track Stack inside a folder wrote them "
+               "(`nest-inner-*-logic`); Logic showed an outer folder holding a written summing stack "
+               "and a written folder and re-saved every row, route and stack (`nest-inner-ours*`). "
+               "Inside a summing stack the new aux outputs to that stack's bus. `--summing` refuses "
+               "members that output anywhere but where the new aux will (Output 1-2, or the bus of a "
+               "summing stack around them): Logic's own was measured over tracks already there. A "
+               "header as a member is refused"),
     Capability(("add-track",), "CONFIRMED", "yes",
                "Audio, instrument and aux adds; every add in one migration survived Logic's own re-save "
                "row for row (2026-09-04). With no audio stub free a fresh channel is made where "
@@ -68,30 +109,46 @@ CAPABILITIES = (
                "Keeps the song container's row count, the region placements and the registry's "
                "slot entries in step. `--stereo` binds the pair channel `Input N-(N+1)`, as Logic's own "
                "New Tracks did with an interface attached (2026-09-17); inside a nested stack the row "
-               "takes the depth of its place. A fresh channel record goes after the highest owner below "
+               "takes the depth of its place, and inside a summing stack outputs to its bus, as Logic's "
+               "manual has a track added to one do. A fresh channel record goes after the highest owner below "
                "it and carries the project's slot base and shown-slot count; an instrument channel's "
                "default records are keyed to the project's slot and property bases. Logic re-saved ten "
                "chained adds with every plug-in and track (`addtrack-fresh-*`, 2026-09-23); a record out "
                "of owner order lost every plug-in (`addtrack-order-*`), and one instrument channel keyed "
                "for another base made a migration Logic would not open (`legacy-migrate-keyed-mine`). "
                "`--instrument --stereo` writes the width bytes Logic's own stereo instrument channel "
-               "carries (`sessionplayer-track-logic`); a track added that way is not yet opened in Logic"),
+               "carries (`sessionplayer-track-logic`) and a stereo instrument slot; "
+               "Logic 12.4 saved one "
+               "with the channel still stereo and the slot byte for byte "
+               "(`addtrack-inst-stereo-*`, "
+               "2026-10-01). A Logic 11.2 project is refused, as by every writer: an "
+               "instrument add "
+               "written to one came back from Logic 12.4 with another instrument "
+               "track left without its "
+               "strip (2026-10-01)"),
     Capability(("reorder",), "CONFIRMED", "yes",
                "Moves a row among its siblings; a stack header moves with its members, and that "
                "move reproduces Logic's own drag of a header byte for byte (2026-09-12). A plain-row "
                "move came back from Logic's re-save in the written order, every row byte held but "
                "the moved row's selection mark, which Logic clears on load (2026-09-13)"),
     Capability(("route",), "CONFIRMED", "yes",
-               "Sets a channel's input or output by label; an output rerouted to a bus came back "
-               "from Logic's re-save with the routing intact and the channel record byte for byte "
-               "(2026-09-13)"),
+               "Sets a channel's input or output by label, by UUID and by index word; an output "
+               "rerouted to a bus came back from Logic's re-save with the routing intact, and the "
+               "channel record written is the one Logic saved but for the word its version sets "
+               "(`route-*`, 2026-09-13). An audio track takes an input pair only when stereo and "
+               "one input only when mono, as every audio track on the Logic saves measured does; "
+               "`width` changes which. A Logic 11.2 project is refused by its format; its "
+               "class-6 channel records "
+               "carry no routing uuid"),
     Capability(("arrangement",), "CONFIRMED", "yes, on a copy",
                "Reads matched Logic's display on every project tested; a rename plus a resize "
                "survived Logic's re-save byte for byte (2026-09-06), `--add` reproduces Logic's own "
                "add record for record and survived its re-save, and a move plus a delete came back "
                "from Logic's re-save event for event. On a song with no arrangement track `--add` "
                "makes the track as Logic's first section does, and Logic re-saved one with the "
-               "section intact (2026-09-13)"),
+               "section intact (2026-09-13). A name outside ASCII is written as UTF-8, which "
+               "Logic's arrangement track showed and its re-save kept; Logic's own rename to one, "
+               "an RTF record, is read (`names-text-*`, 2026-10-02)"),
     Capability(("signature",), "CONFIRMED", "yes, on a copy",
                "Reads the signature track and the LCD's division on every project tested. `--time` at "
                "bar 1, `--key` (major and minor) and `--division` reproduce Logic's own edits byte for "
@@ -125,7 +182,14 @@ CAPABILITIES = (
                "its re-save event for event. Hand-drawn curves (the 0xb4 line) are read only"),
     Capability(("rename", "colour", "hide"), "CONFIRMED", "yes",
                "Applied across three legacy migrations Logic re-saved unchanged (2026-09-04); a "
-               "rename marks the name as the user's, else the arrange shows the strip setting's name"),
+               "rename marks the name as the user's, else the arrange shows the strip "
+               "setting's name; "
+               "a name outside ASCII is written as UTF-8 with its byte length, the "
+               "object Logic's own "
+               "rename wrote (`names-non-ascii-logic`), and Logic 12.4 saved a copy "
+               "carrying three with "
+               "each as written (`names-write-*`, 2026-10-01) and one with names of 64, 96 and 127 "
+               "bytes (`names-long-*`)"),
     Capability(("settings",), "CONFIRMED", "yes; `--set` writes a copy",
                "A slot's settings in its family's vocabulary through the plug-in's map "
                "(`data/translate`): a third-party's from its AU state's id/value pairs (Pro-C 2, "
@@ -278,7 +342,9 @@ CAPABILITIES = (
                "Every box and the member events measured on twenty-eight single-change saves "
                "(2026-09-05); the writer reproduces six of Logic's saves byte for byte, and a "
                "migrated song with two groups opened in Logic showing them and re-saved with the "
-               "identical group records and row list. Leaving a group: Logic's own No Group on a member (2026-09-12) matches the composed leave outside the selection bytes"),
+               "identical group records and row list. Leaving a group: Logic's own No Group on a member (2026-09-12) matches the composed leave outside the selection bytes. "
+               "A name outside ASCII is UTF-8 by its byte length, as Logic's own rename wrote one; "
+               "Logic's Groups inspector showed one written here (`names-text-*`, 2026-10-02)"),
     Capability(("apply-template",), "CONFIRMED", "yes, with a map across lineages",
                "Same lineage pairs by object id; across lineages `--map FILE` says how tracks pair "
                "(`--propose-map` drafts it, `(none)` leaves a track alone). Legacy songs "
@@ -292,7 +358,13 @@ CAPABILITIES = (
                "header components and the control bar; not the project's own tempo, meter or key, "
                "which stay the song's. The current tracking template applied onto a tracked song "
                "(2026-09-16) re-saved in Logic with the identical row list and strip references, "
-               "two of them repointed per channel"),
+               "two of them repointed per channel. "
+               "A template stack is the session stack its header pairs with, else the one stack "
+               "of its name; two of the name with neither paired refuse the move. An output to a "
+               "bus the template returns and the session will not is refused. "
+               "A Logic 11.2 save serves as the template: its routing is read from the channel "
+               "records' index words (every routed channel as Logic 12.4 converted it, "
+               "2026-10-02); its chains are refused, its slot records being another class"),
     Capability(("migrate",), "CONFIRMED", "yes, on a renamed copy; across lineages only with `--map` or `--force`",
                "Composes `propose-map` (or `--map FILE`) with `apply-template`'s step into "
                "`CLAUDE migrated - <song>.logicx`: the ops are apply-template's CONFIRMED writers, "

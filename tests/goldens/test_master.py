@@ -5,8 +5,8 @@ import unittest
 import _goldens
 from logicxkit.logic._binary import find_blocks, read_block_floats
 from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.chain_report import PLUGIN_NAMES
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.plugin_names import PLUGIN_NAMES
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.output_params import NAMES, PARAMS
 from logicxkit.logicx import project_data
 
@@ -52,7 +52,7 @@ class DonorSavesTest(unittest.TestCase):
 
     def test_the_slot_config_byte_is_the_tables_mono_and_stereo_value(self):
         """Audio 1 is mono and the Stereo Out stereo: each plug-in's config byte reads as PLUGIN_CFG says."""
-        from logicxkit.logic.services.insert import MONO, PLUGIN_CFG, SLOT_CFG_AT, STEREO
+        from logicxkit.logic.services.slot_width import MONO, PLUGIN_CFG, SLOT_CFG_AT, STEREO
         data = project_data(_goldens.path("master-track-limiter-logic"))
         owners = {c.label: o for o, c in channels(data).items()}
         for label, width in ((OUT_LABEL, STEREO), ("Audio 1", MONO)):

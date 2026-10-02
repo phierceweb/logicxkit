@@ -25,7 +25,9 @@ from .services.chains import (
 from ._edit import _discard
 from .services.chain_report import chain_changes
 from .services.donors import load_donor_library
-from .services.insert import MONO, STEREO, insert_slots, project_records, widen_channels
+from .services.insert import insert_slots, widen_channels
+from .services.slot_width import MONO, STEREO
+from .services.stream import project_records
 from .services.integrity import regressions
 from .services.retrack import copy_project, find_project
 

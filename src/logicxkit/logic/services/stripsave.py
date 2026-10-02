@@ -12,7 +12,8 @@ from __future__ import annotations
 
 import struct
 
-from .insert import CHANNEL_TAG, HEADER, NO_KEY, OWNER_OFF, project_records
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, NO_KEY, OWNER_OFF, project_records
 
 STRIP_MARKER_AT = 8
 STRIP_MARKER = 0x1235

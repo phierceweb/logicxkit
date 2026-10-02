@@ -99,7 +99,7 @@ class ChainChangesTest(unittest.TestCase):
     def _changes(self, data=None):
         from logicxkit.logic.services.chain_report import chain_changes
         from logicxkit.logic.services.chains import base_donors, chain_plan, load_extra_donors
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         data = self.data if data is None else data
         ver = next((r.ver for r in project_records(data) if r.tag == b"UCuA"), None)
         from logicxkit.utils.data import data_dir

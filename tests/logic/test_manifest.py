@@ -20,15 +20,19 @@ class ManifestTest(unittest.TestCase):
         m = manifest_from_bytes(_session(), track_count=1)
         self.assertEqual([t["name"] for t in m["tracks"]], ["Drums", "Kick In"])
         self.assertEqual(m["tracks"][1]["stack"], "Drums")
-        self.assertEqual(m["stacks"], [{"name": "Drums", "index": 1, "owner": 378,
-                                        "fader": 88, "members": ["Kick In"]}])
+        self.assertEqual(m["stacks"], [{"name": "Drums", "index": 1, "owner": 378, "kind": "folder",
+                                        "strip": "Sub 1", "fader": 88, "members": ["Kick In"]}])
 
     def test_channel_row(self):
         m = manifest_from_bytes(_session(), track_count=1)
         row = next(c for c in m["channels"] if c["label"] == "Audio 1")
         self.assertEqual(row["object"], "Kick In")
         self.assertEqual(row["output"], "Bus 1")
-        self.assertEqual(row["sends"], [{"slot": 0, "bus": 15, "to": "Bus 15"}])
+        self.assertEqual(row["sends"], [{"slot": 0, "bus": 15, "to": "Bus 15", "level_db": None,
+                                         "level_shown": "-∞", "mode": "post fader",
+                                         "bypassed": False}])
+        self.assertEqual(row["fader_db"], 1.66)
+        self.assertNotIn("fader_shown", row)
         self.assertEqual((row["fader"], row["pan"], row["width"], row["stack_index"]),
                          (99, 0, 2, 1))
 

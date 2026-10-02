@@ -11,7 +11,7 @@ is cleared each time. Every writer that adds or moves a row ends by selecting it
 from __future__ import annotations
 
 from .environment import object_id_of, set_selected_object
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec
 from .registry import GNOS_TAG, set_selection
 from .tracklist import arrange_run, row_position, select_rows

@@ -23,7 +23,8 @@ from .sidechain import with_side_chain
 from .chains_channels import CHANNEL_NAMES, channel_name, plan_channels, resolve_params  # noqa: F401
 from .comp import build_comp
 from .eq import build_eq
-from .insert import project_records, slot_index_base
+from .slots import slot_index_base
+from .stream import project_records
 
 REF_MAX = 400  # a channel's reference record is small; plugin slots are far bigger
 _REF = re.compile(rb"[\x20-\x7e]{2,60}\.cst")
@@ -153,7 +154,8 @@ def _id_offsets_for(data: bytes, type_id: int, extra: bytes | None = None) -> tu
     result is empty and the clone is copied verbatim rather than being written at a guess.
     """
     from .._binary import find_blocks
-    from .insert import instance_offsets, project_records
+    from .insert import instance_offsets
+    from .stream import project_records
 
     payloads = []
     for record in project_records(data):
@@ -234,7 +236,7 @@ def verify_strip_values(data: bytes, config: dict) -> list[str]:
     This reads the result back instead.
     """
     from .._binary import find_blocks, read_block_floats
-    from .insert import project_records
+    from .stream import project_records
 
     chains = config["chains"]
     refs = channel_references(data)
@@ -272,7 +274,7 @@ def width_plan(data: bytes, config: dict) -> dict[int, int]:
     A send return built mono gives every plugin on it a mono instance, since a slot's width
     follows its channel's. Declaring it here fixes the channel, and the slots follow.
     """
-    from .insert import MONO, STEREO
+    from .slot_width import MONO, STEREO
 
     from .chains_channels import owners_by_label
 
@@ -299,7 +301,7 @@ def duplicate_chain_slots(data: bytes, plan: dict) -> list[tuple[int, int, int]]
     up and the run reports success, so only a read-back catches it.
     """
     from .._binary import find_blocks
-    from .insert import project_records
+    from .stream import project_records
 
     placed: dict[int, tuple[set[int], set[int]]] = {}
     for owner, entries in plan.items():

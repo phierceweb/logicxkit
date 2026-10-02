@@ -30,7 +30,8 @@ from .arrangement import (
 )
 from ...utils.data import data_file
 from .events import DATA_LINE, LINE, events
-from .insert import HEADER, project_records, reassemble
+from .names import written
+from .stream import HEADER, project_records, reassemble
 from .recbuild import rec, slot_of, with_owner, with_slot
 from .sequence import QESM_ID_AT, free_seq_id, sequences
 
@@ -131,10 +132,11 @@ def delete_section(data: bytes, number: int) -> bytes:
 
 
 def _text_bytes(name: str) -> bytes:
-    if not name.isascii():
-        raise ValueError(f"section name {name!r}: only ASCII names are written — how Logic stores "
-                         "other characters has not been measured")
-    text = name.encode("ascii") + b"\0"
+    """The name as a plain record keeps it: UTF-8 with its NUL, padded even. One starting
+    `{\\rtf` would read back as RTF, as Logic's own renames are."""
+    if name.lstrip().startswith("{\\rtf"):
+        raise ValueError(f"a section or marker name cannot start {{\\rtf: {name!r}")
+    text = written(name, "a section or marker name", empty=True) + b"\0"
     return text + b"\0" * (len(text) % 2)
 
 

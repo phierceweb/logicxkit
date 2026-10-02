@@ -5,7 +5,7 @@ import unittest
 
 import _paths  # noqa: F401
 from _records import gnos
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.recbuild import time_fields
 from _records import rec
 from logicxkit.logic.services.registry import entry_at, register_object, run_entries, set_selection

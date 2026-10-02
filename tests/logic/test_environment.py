@@ -42,11 +42,27 @@ class ChannelObjectsTest(unittest.TestCase):
         self.assertEqual(channel_objects(data)[88].name, "Kick In")
         self.assertEqual(CHANNEL_OBJECT[11], 1728)
 
+    def test_logic_11_2_types_its_class_12_objects_1760(self):
+        data = proj(env_obj(88, "Piano", type_value=1760))
+        self.assertEqual(channel_objects(data)[88].name, "Piano")
+
+    def test_the_flag_bits_above_a_1760_type_are_masked(self):
+        raw = bytearray(env_obj(88, "Piano", type_value=1760))
+        struct.pack_into("<I", raw, 36, 0x40400000 | 1760)
+        self.assertEqual(list(channel_objects(proj(bytes(raw)))), [88])
+
+    def test_a_type_no_build_writes_is_no_channel_object(self):
+        self.assertEqual(channel_objects(proj(env_obj(88, "Piano", type_value=1761))), {})
+
     def test_an_object_whose_name_does_not_decode_is_kept_without_a_name(self):
         for raw in (b"Gitarre \xfc", b"Kick\x07In"):      # not UTF-8; a control character
             obj = channel_objects(proj(env_obj(500, raw)))[500]
             self.assertIsNone(obj.name, raw)
             self.assertEqual(obj.uuid, uuid(500))
+
+    def test_a_name_longer_than_the_writer_takes_still_reads(self):
+        name = "x" * 200
+        self.assertEqual(channel_objects(proj(env_obj(500, name)))[500].name, name)
 
     def test_a_name_is_utf8(self):
         family = "\U0001F468\u200d\U0001F469\u200d\U0001F467 Trio"
@@ -84,13 +100,23 @@ class ColourTest(unittest.TestCase):
             set_colour(proj(env_obj(88, "Kick In")), 99, 1)
 
 
+class Logic112ObjectTest(unittest.TestCase):
+    """The writers that find an object by its id reach one typed 1760."""
+
+    def test_recolour_and_rename(self):
+        from logicxkit.logic.services.environment import rename_track
+        data = proj(env_obj(88, "Piano", type_value=1760))
+        obj = channel_objects(rename_track(set_colour(data, 88, 64), 88, "Rhodes"))[88]
+        self.assertEqual((obj.name, obj.colour), ("Rhodes", 64))
+
+
 class RenameTest(unittest.TestCase):
     def test_the_name_field_changes_and_the_tail_keeps_its_place(self):
         import struct
 
         from _records import env_obj, proj
         from logicxkit.logic.services.environment import name_end, rename_track
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         raw = bytearray(env_obj(500, "Gtr 2 Amp"))
         struct.pack_into("<H", raw, HEADER + name_end(raw[HEADER:]), 26)      # channel index
         data = proj(bytes(raw))
@@ -111,16 +137,41 @@ class RenameTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             set_colour(data, 500, 3)
 
-    def test_a_non_ascii_name_is_refused(self):
-        from _records import env_obj, proj
+    def test_a_name_outside_ascii_is_written_as_utf8_with_its_byte_length(self):
+        from logicxkit.logic.services.environment import NAME_AT, rename_track
+        from logicxkit.logic.services.stream import HEADER, project_records
+        for name, size in (("Caf\u00e9", 5), ("\U0001F3B8 Lead", 9), ("\u00fc" * 63 + "x", 127)):
+            out = rename_track(proj(env_obj(500, "Gtr 2 Amp")), 500, name)
+            payload = next(r.raw for r in project_records(out) if r.tag == b"ivnE")[HEADER:]
+            self.assertEqual(struct.unpack_from("<H", payload, NAME_AT)[0], size, name)
+            self.assertEqual(channel_objects(out)[500].name, name)
+
+    def test_a_name_nobody_could_see_or_that_turns_the_line_is_refused(self):
         from logicxkit.logic.services.environment import rename_track
-        with self.assertRaises(ValueError):
-            rename_track(proj(env_obj(500, "Gtr 2 Amp")), 500, "Caf\u00e9")
+        data = proj(env_obj(500, "Gtr 2 Amp"))
+        for name in ("a\u2028b", "a\u2029b", "\u202eevil", "\u2067x", "\u200b", " ", "\u00a0"):
+            with self.subTest(name=name.encode()), \
+                    self.assertRaisesRegex(ValueError, "visible character"):
+                rename_track(data, 500, name)
+
+    def test_an_emoji_sequence_keeps_its_joiners(self):
+        from logicxkit.logic.services.environment import rename_track
+        family = "\U0001F468\u200d\U0001F469\u200d\U0001F467 Trio \u2764\ufe0f"
+        out = rename_track(proj(env_obj(500, "Gtr 2 Amp")), 500, family)
+        self.assertEqual(channel_objects(out)[500].name, family)
+
+    def test_a_name_logic_could_not_show_is_refused(self):
+        from logicxkit.logic.services.environment import rename_track
+        data = proj(env_obj(500, "Gtr 2 Amp"))
+        for name in ("", "Kick\x07In", "\u00fc" * 64, "x" * 128, "\ud800"):
+            shown = name.encode("utf-8", "surrogatepass")
+            with self.subTest(name=shown), self.assertRaisesRegex(ValueError, "bytes of UTF-8"):
+                rename_track(data, 500, name)
 
     def test_a_rename_marks_the_name_as_the_users(self):
         from _records import env_obj, proj
         from logicxkit.logic.services.environment import NAMED_BIT, STATE_AT, rename_track
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         raw = bytearray(env_obj(500, "Audio 5"))
         raw[HEADER + STATE_AT] = 2
         out = rename_track(proj(bytes(raw)), 500, "Gtr 2 Amp")
@@ -129,7 +180,7 @@ class RenameTest(unittest.TestCase):
     def test_a_clone_is_user_named_unless_told_otherwise(self):
         from _records import env_obj
         from logicxkit.logic.services.environment import NAMED_BIT, STATE_AT, clone_object
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         raw = bytearray(env_obj(500, "Gtr 2 Amp"))
         raw[HEADER + STATE_AT] = 3
         named = clone_object(bytes(raw), object_id=504, name="Kick In", owner=0, colour=16)

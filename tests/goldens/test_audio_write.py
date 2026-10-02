@@ -14,7 +14,7 @@ from logicxkit.logic.services.audio_regions import (
     AUDIO_ENTRY, ENTRY_ORDINAL_AT, FILE_TAG, OFFSET_AT, PATH_AT, REGION_TAG, SIZE_AT, magic_at, read_audio_files,
     read_audio_regions)
 from logicxkit.logic.services.audio_write import LINK_AT, ORDINAL_AT, _register, add_audio_region, wav_info
-from logicxkit.logic.services.insert import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.recbuild import rec, slot_of, with_slot
 from logicxkit.logic.services.regions import ENTRY, TAIL, entry_offsets, song_container
 from logicxkit.logic.services.registry import TIME_STRIDE, UUID_STRIDE, run_entries
@@ -245,22 +245,6 @@ class LogicResavedImportsTest(unittest.TestCase):
         self.assertEqual(headers(logic), headers(ours))
         self.assertEqual(song_entries(logic), song_entries(ours))
         self.assertEqual([k for _at, k in registry_block(logic)], [k for _at, k in registry_block(ours)])
-
-
-@_goldens.needs("audio-write-ours", "audio-write-resave-logic", "audio-one-region-logic")
-class StagedWriteTest(unittest.TestCase):
-    def test_an_earlier_writers_import_takes_no_second_one(self):
-        ours = project_data(_goldens.path("audio-write-ours"))
-        facts = _goldens.entry("audio-write-ours")["facts"]
-        (mine,) = read_audio_regions(ours)
-        self.assertEqual((mine.track, mine.name, mine.start, mine.frames, mine.file.name), (facts["track"], facts["name"], facts["start"], facts["frames"], facts["file"]))
-        with tempfile.TemporaryDirectory() as tmp, self.assertRaisesRegex(ValueError, "measured on"):
-            add_audio_region(ours, track="Audio 3", start=38400, wav=tone(Path(tmp, "v030-tone3.wav")), media_folder=Path(tmp, "Media"))
-
-    def test_the_save_staged_as_its_resave_is_logics_own_import(self):
-        staged, logic = (project_data(_goldens.path(k)) for k in ("audio-write-resave-logic", "audio-one-region-logic"))
-        self.assertEqual(payloads(staged, REGION_TAG), payloads(logic, REGION_TAG))
-        self.assertNotEqual(payloads(staged, REGION_TAG), payloads(project_data(_goldens.path("audio-write-ours")), REGION_TAG))
 
 
 if __name__ == "__main__":

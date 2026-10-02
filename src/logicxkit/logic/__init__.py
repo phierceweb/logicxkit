@@ -46,21 +46,13 @@ from logicxkit.logic.services.donors import (  # noqa: F401
     load_donor_library,
 )
 from logicxkit.logic.services.insert import (  # noqa: F401
-    ProjRecord,
-    apply_float_overrides,
-    channel_formats,
-    insert_slots,
-    instance_offsets,
-    project_records,
-    set_channel_format,
-    set_slot_bypass,
-    set_slot_format,
-    slot_bypassed,
-    slot_format,
-    slot_index_base,
-    widen_channels,
+    apply_float_overrides, insert_slots, instance_offsets, set_channel_format, widen_channels,
     relabel_slot,
 )
+from logicxkit.logic.services.mixer import channel_formats  # noqa: F401
+from logicxkit.logic.services.slot_width import set_slot_format, slot_format  # noqa: F401
+from logicxkit.logic.services.slots import set_slot_bypass, slot_bypassed, slot_index_base  # noqa: F401
+from logicxkit.logic.services.stream import ProjRecord, project_records  # noqa: F401
 from logicxkit.logic.services.validate import validate_project  # noqa: F401
 from logicxkit.logic.services.retrack import (  # noqa: F401
     copy_project,

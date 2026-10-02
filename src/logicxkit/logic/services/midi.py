@@ -28,7 +28,7 @@ import struct
 from dataclasses import dataclass, field
 
 from .events import BAR_ONE, PPQ, Event, events
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .regions import ENTRY, placements, song_container
 from .sequence import sequences, triple_by_slot
 from .stacks import read_tracks

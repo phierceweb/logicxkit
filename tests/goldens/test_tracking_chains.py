@@ -13,7 +13,8 @@ from pathlib import Path
 import _goldens
 from logicxkit.logic._edit import owner_by_label
 from logicxkit.logic._tracking_chains_cmd import cmd_tracking_chains
-from logicxkit.logic.services.insert import HEADER, slot_bypassed
+from logicxkit.logic.services.slots import slot_bypassed
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.plugins import slot_payloads
 from logicxkit.logic.services.translate import load_maps, map_for, read_settings
 from logicxkit.logic.services.transplant import channel_slots

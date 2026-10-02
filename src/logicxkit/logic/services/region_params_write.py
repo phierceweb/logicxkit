@@ -10,7 +10,7 @@ from dataclasses import replace
 
 from .audio_regions import REGION_TAG, read_audio_regions
 from .fades import CROSS_IN, CROSS_OUT, OUT_TYPES, with_fade
-from .insert import HEADER, project_records
+from .stream import HEADER, project_records
 from .midi import COLOUR_AFTER_NAME, name_end
 from .recbuild import rec
 from .region_edit import _container, _entry, _finish, _require_sole, _rewrite, located

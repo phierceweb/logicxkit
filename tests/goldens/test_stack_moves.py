@@ -7,7 +7,7 @@ import unittest
 import _goldens
 from logicxkit.logic.services.binding import bound_channels, channels
 from logicxkit.logic.services.environment import channel_objects, object_record
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.stacks import move_out_of_stack, move_to_stack, read_stacks, read_tracks
 from _data import needs
 

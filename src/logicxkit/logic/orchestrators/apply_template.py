@@ -14,19 +14,21 @@ from __future__ import annotations
 
 import re
 
-from ..services.binding import channels, input_routing, output_routing
+from ..services.binding import channels, input_labels, output_labels
 from ..services.chains import channel_references
 from ..services.groups import read_groups
 from ..services.instout import read_instrument_outputs
-from ..services.insert import HEADER, channel_formats
+from ..services.mixer import channel_formats
+from ..services.stream import HEADER
 from ..services.levels import FIXED_ONE, read_levels
 from ..services.pairing import extra_rows, forced_by_object, match_quality, pair_rows, pair_tracks
 from ..services.retrack import cst_references
 from ..services.sends import read_sends
-from ..services.stacks import read_stacks, read_tracks
-from ..services.transplant import channel_slots
+from ..services.stacks import Stack, read_stacks, read_tracks
+from ..services.transplant import channel_slots, slot_class_version
 from .apply_ops import apply
 from .ops import KINDS, STRUCTURE, Op  # noqa: F401  (the names callers import from here)
+from .template_stacks import same_stack, stack_of, stack_targets
 
 # Below this share of rows paired by Environment object id, the two files are not the same
 # lineage and the label rule will pair anything with a matching `Audio N`. A session cut from
@@ -49,13 +51,15 @@ def _kind_of(row: dict) -> str | None:
     return None
 
 
-def _stack_of(rows: list[dict], stacks) -> dict[int, tuple[str, int]]:
-    """row key -> (stack name, stack object id)."""
-    out = {}
-    for s in stacks:
-        for key, _name in s.members:
-            out[key] = (s.name, s.object_id)
-    return out
+def _id(stack: Stack | None) -> int | None:
+    return None if stack is None else stack.object_id
+
+
+def _name(stack: Stack | None, other: Stack | str | None = None) -> str:
+    """A stack's name, with its strip when ``other`` shares the name."""
+    if stack is None:
+        return "?"
+    return f"{stack.name} ({stack.strip})" if isinstance(other, Stack) and other.name == stack.name else stack.name
 
 
 def _by_label(chans) -> dict[str, int]:
@@ -91,13 +95,8 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
     t_rows, s_rows = read_tracks(template, template_count), read_tracks(session, session_count)
     pairs = pair_rows(t_rows, s_rows, forced=forced, known=known, excluded=excluded)
     t_stacks, s_stacks = read_stacks(template, template_count), read_stacks(session, session_count)
-    t_in, s_in = _stack_of(t_rows, t_stacks), _stack_of(s_rows, s_stacks)
-    s_stack_names = {s.name: s for s in s_stacks}
-    # a session stack counts as the template stack its header pairs with, whatever it is called
-    stack_alias = {p.session["name"]: p.template["name"] for p in pairs
-                   if p.session is not None and p.template["grouping"] and p.session["grouping"]}
-    s_in = {key: (stack_alias.get(name, name), oid) for key, (name, oid) in s_in.items()}
-    s_stack_names.update({stack_alias[name]: st for name, st in list(s_stack_names.items()) if name in stack_alias})
+    t_in, s_in = stack_of(t_stacks), stack_of(s_stacks)
+    target_of = stack_targets(pairs, t_stacks, s_stacks)
     ops: list[Op] = []
 
     # --- structure
@@ -109,10 +108,10 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             kind = _kind_of(t)
             if t["grouping"] and (t["label"] or "").startswith("Sub "):
                 wanted = [q.session for q in pairs if q.session is not None
-                          and t_in.get(q.template["key"], (None,))[0] == t["name"]]
+                          and _id(t_in.get(q.template["key"])) == t["object_id"]]
                 for m in wanted:
                     for _level in range(m["depth"]):      # inside another stack: out first, one move per level
-                        ops.append(Op("member", _row_name(m), f"leave stack {s_in.get(m['key'], ('?',))[0]}",
+                        ops.append(Op("member", _row_name(m), f"leave stack {_name(s_in.get(m['key']))}",
                                       p.rule, args={"track": m["object_id"], "leave": True}, row=m["object_id"]))
                 op = Op("stack", _row_name(t), f"make a stack of {len(wanted)} track(s)", p.rule,
                         args={"members": [m["object_id"] for m in wanted], "name": t["name"],
@@ -126,43 +125,41 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
                 op = Op("add", _row_name(t), f"add {kind} track", p.rule, status="refused",
                         note="no paired row above it to place it after")
             else:
-                inside = t_in.get(t["key"], (None,))[0]
+                inside = t_in.get(t["key"])
                 anchor = last_add.args["name"] if last_add else previous["name"]
                 op = Op("add", _row_name(t), f"add {kind} track after {anchor}", p.rule,
                         args={"kind": kind, "name": t["name"], "after": previous["object_id"],
                               "after_op": last_add, "colour": t["colour"], "template_row": t["key"],
-                              "member": inside is not None and inside in s_stack_names})
+                              "member": inside is not None and isinstance(target_of[inside.object_id], Stack)})
                 last_add = op
             ops.append(op)
             continue
         s = p.session
         want, have = t_in.get(t["key"]), s_in.get(s["key"])
-        if want is not None and have is None:
-            target = s_stack_names.get(want[0])
-            op = Op("member", _row_name(s), f"move into stack {want[0]}", p.rule,
-                    args={"track": s["object_id"], "stack": target.object_id if target else None,
-                          "stack_name": want[0]}, row=s["object_id"])
-            if target is None:
-                op.status, op.note = "refused", "the stack does not exist yet"
-            ops.append(op)
-        elif want is None and have is not None:
-            ops.append(Op("member", _row_name(s), f"leave stack {have[0]}", p.rule,
+        target = target_of[want.object_id] if want is not None else None
+        if want is None and have is not None:
+            ops.append(Op("member", _row_name(s), f"leave stack {have.name}", p.rule,
                           args={"track": s["object_id"], "leave": True}, row=s["object_id"]))
-        elif want is not None and have is not None and want[0] != have[0]:
-            target = s_stack_names.get(want[0])
-            op = Op("member", _row_name(s), f"move from {have[0]} to {want[0]}", p.rule,
-                    args={"track": s["object_id"], "stack": target.object_id if target else None,
-                          "stack_name": want[0]}, row=s["object_id"])
-            if target is None:
-                op.status, op.note = "refused", "the stack does not exist yet"
+        elif want is not None and not same_stack(have, target):
+            found = isinstance(target, Stack)
+            to = _name(target, have) if found else want.name
+            desc = f"move into stack {to}" if have is None else f"move from {_name(have, target)} to {to}"
+            op = Op("member", _row_name(s), desc, p.rule,
+                    args={"track": s["object_id"], "stack": target.object_id if found else None,
+                          "stack_name": want.name}, row=s["object_id"])
+            if not found:
+                op.status, op.note = "refused", target
             ops.append(op)
         previous, last_add = s, None
 
     # --- arrange order, per parent, among paired rows that already sit under that parent
-    for parent in [None] + [s.name for s in t_stacks]:
+    for parent in [None, *t_stacks]:
+        s_parent = None if parent is None else target_of[parent.object_id]
+        if parent is not None and not isinstance(s_parent, Stack):
+            continue
         wanted = [p for p in pairs if p.session is not None
-                  and t_in.get(p.template["key"], (None,))[0] == parent
-                  and s_in.get(p.session["key"], (None,))[0] == parent
+                  and _id(t_in.get(p.template["key"])) == _id(parent)
+                  and _id(s_in.get(p.session["key"])) == _id(s_parent)
                   and not p.template["grouping"]]
         session_order = sorted(wanted, key=lambda p: p.session["key"])
         if [p.session["key"] for p in wanted] != [p.session["key"] for p in session_order]:
@@ -198,13 +195,17 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
     t_fmt, s_fmt = channel_formats(template), channel_formats(session)
     t_ref, s_ref = channel_references(template), channel_references(session)
     t_cat = {r.name: r.category for r in cst_references(template)}
-    t_out, s_out = output_routing(template), output_routing(session)
-    t_inp, s_inp = input_routing(template), input_routing(session)
+    t_out, s_out = output_labels(template), output_labels(session)
+    t_inp, s_inp = input_labels(template), input_labels(session)
+    slot_class = slot_class_version(session)
     t_sends, s_sends = read_sends(template), read_sends(session)
     t_lv, s_lv = read_levels(template), read_levels(session)
     t_inst, s_inst = read_instrument_outputs(template), read_instrument_outputs(session)
     inst_rows = {p.template["owner"]: p.session["owner"] for p in pairs          # template Inst owner -> session owner
                  if p.session is not None and p.template["owner"] is not None and p.session["owner"] is not None}
+    # buses something takes as input: the template's, and the session's once this pass's input ops run
+    t_heard = {label for label in t_inp.values() if label}
+    s_heard = {label for label in s_inp.values() if label} | {t_inp[to] for to in inst_rows if t_inp.get(to)}
     for p in pairs:
         if p.session is None or p.template["owner"] is None or p.session["owner"] is None:
             continue
@@ -215,12 +216,21 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             ops.append(Op("width", name, f"{'mono' if s_fmt[so] == 1 else 'stereo'} -> "
                           f"{'mono' if t_fmt[to] == 1 else 'stereo'}", p.rule,
                           args={"owner": so, "fmt": t_fmt[to]}))
-        t_slots = [r.raw[HEADER:] for r in channel_slots(template, to)]
+        t_records = channel_slots(template, to)
+        t_slots = [r.raw[HEADER:] for r in t_records]
         s_slots = [r.raw[HEADER:] for r in channel_slots(session, so)]
         if t_slots != s_slots:
             if t_slots:
-                ops.append(Op("chains", name, f"{len(s_slots)} slot(s) -> {len(t_slots)} from the template",
-                              p.rule, args={"src_owner": to, "dst_owner": so}))
+                op = Op("chains", name,
+                        f"{len(s_slots)} slot(s) -> {len(t_slots)} from the template",
+                        p.rule, args={"src_owner": to, "dst_owner": so})
+                classes = sorted({r.ver for r in t_records})
+                if slot_class is not None and classes != [slot_class]:
+                    op.status = "refused"
+                    op.note = (f"the template's slots are class {'/'.join(map(str, classes))} "
+                               f"and this project writes class {slot_class}: save the template "
+                               "in the current Logic")
+                ops.append(op)
             else:
                 ops.append(Op("chains", name, f"remove {len(s_slots)} slot(s); the template has none",
                               p.rule, args={"dst_owner": so, "remove": True}))
@@ -236,17 +246,20 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
                 ops.append(Op("refs", name, f"{s_ref[so]} -> {t_ref[to]}", p.rule,
                               args={"owner": so, "old": s_ref[so], "new": t_ref[to], "category": t_cat.get(t_ref[to])}))
         for kind, t_map, s_map in (("output", t_out, s_out), ("input", t_inp, s_inp)):
-            t_dest, s_dest = t_map.get(to), s_map.get(so)
-            if t_dest is None:
-                if kind == "input" and s_dest is not None:          # fed by nothing, as the template's
+            if to not in t_map:                                     # not read is not unrouted
+                continue
+            dest_label, s_label = t_map[to], s_map.get(so)
+            if dest_label is None:
+                if kind == "input" and s_label is not None:     # fed by nothing, as the template's
                     ops.append(Op(kind, name, "-> no input", p.rule, args={"owner": so, "dest": None}))
                 continue
-            if s_dest is not None and s_ch[s_dest].label == t_ch[t_dest].label:
+            if s_label == dest_label:
                 continue
-            dest_label = t_ch[t_dest].label
             op = Op(kind, name, f"-> {dest_label}", p.rule, args={"owner": so, "dest": s_labels.get(dest_label)})
             if dest_label not in s_labels:
                 op.status, op.note = "refused", f"the session has no {dest_label}"
+            elif kind == "output" and dest_label in t_heard and dest_label not in s_heard:
+                op.status, op.note = "refused", f"nothing in the session takes {dest_label} as input"
             ops.append(op)
         tb = t_inst.get(to)
         if tb is not None:
@@ -303,7 +316,7 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             continue
         to = p.template["owner"]
         if to in t_ch and t_ch[to].label.startswith("Aux ") and t_inp.get(to) is not None:
-            returned.setdefault(t_ch[t_inp[to]].label, _row_name(p.session))
+            returned.setdefault(t_inp[to], _row_name(p.session))
     taken: dict[tuple[int, str], str] = {}          # (session Inst number, output name) -> the row taking it
     for p in pairs:
         if p.session is None or p.template["owner"] is None or p.session["owner"] is None:
@@ -329,7 +342,7 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             continue
         if s_inp.get(so) is None:
             continue
-        bus = s_ch[s_inp[so]].label
+        bus = s_inp[so]
         if bus not in returned:
             continue
         ops.append(Op("return", c.label, f"returns {bus} like {returned[bus]}: no input{gone}",
@@ -344,8 +357,8 @@ def with_template_inputs(template: bytes, session: bytes) -> tuple[bytes, list[O
     from ..services.inputs_create import ensure_inputs, mono_inputs
     t_ch = channels(template)
     wanted = [int(m.group(1)) for c in t_ch.values() if (m := re.fullmatch(r"Input (\d+)", c.label))]
-    fed = [int(m.group(1)) for src in input_routing(template).values()
-           if src in t_ch and (m := re.fullmatch(r"Input (\d+)", t_ch[src].label))]
+    fed = [int(m.group(1)) for label in input_labels(template).values()
+           if label and (m := re.fullmatch(r"Input (\d+)", label))]
     need = max(fed, default=0)
     have = mono_inputs(session)
     top = have[-1][0] if have else 0

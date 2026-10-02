@@ -10,7 +10,7 @@ from test_regions import flat, song
 
 from logicxkit.logic.services.integrity import regressions, require_no_regression, structural_report
 from logicxkit.logic.services.integrity_regions import NO_SLOT, region_keys
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.regions import ENTRY, MARKER_BYTE, MARKER_BYTES_AT, MARKER_KIND, MARKER_KIND_AT
 from logicxkit.logic.services.reorder import move_track
 

@@ -62,7 +62,7 @@ class SonibleTest(unittest.TestCase):
         on a grid and settles the knobs' own positions for attack, hold and release."""
         from logicxkit.logic._binary import find_blocks, read_block_floats
         from logicxkit.logic._edit import owner_by_label
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.transplant import channel_slots
         rows = {}
         for key in ("translate-sonible-ours", "translate-sonible-resave-logic"):

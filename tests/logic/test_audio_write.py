@@ -7,7 +7,7 @@ import uuid
 import _paths  # noqa: F401
 from logicxkit.logic.services.audio_regions import FORMAT_AT, NAME_AT, PATH_AT, REGION_NAME_AT, file_name, magic_at, region_name
 from logicxkit.logic.services.audio_write import WavInfo, file_record, import_templates, region_record, superseded
-from logicxkit.logic.services.insert import HEADER
+from logicxkit.logic.services.stream import HEADER
 from logicxkit.logic.services.recbuild import slot_of
 
 INFO = WavInfo(88244, "WAVE", 44, 44100, 44100, 1, 16)

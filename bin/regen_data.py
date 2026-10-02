@@ -29,7 +29,7 @@ from logicxkit.logic.services.groups import (  # noqa: E402
     TAIL,
     read_groups,
 )
-from logicxkit.logic.services.insert import HEADER, project_records  # noqa: E402
+from logicxkit.logic.services.stream import HEADER, project_records  # noqa: E402
 from logicxkit.logic.services.recbuild import slot_of  # noqa: E402
 from logicxkit.logic.services.recdiff import load_project_data  # noqa: E402
 from logicxkit.logic.services.sends import is_send  # noqa: E402
@@ -114,7 +114,7 @@ def group(pair: tuple[str, str], name: str) -> dict:
 
 
 def stack_folder(pair: tuple[str, str], name: str) -> dict:
-    """The folder stack ``name``: its Sub strip, header object, arrange row and flat row."""
+    """The stack ``name``, folder or summing: its strip, header object, arrange row and flat row."""
     data = _load(pair[1])
     records = project_records(data)
     stack = next((s for s in read_stacks(data, None) if s.name == name), None)
@@ -126,7 +126,7 @@ def stack_folder(pair: tuple[str, str], name: str) -> dict:
     flat = next(records[i].raw for i in flat_run(records, run)
                 if row_object(records[i].raw) == stack.object_id)
     roles = {"strip": mixer_record(records, stack.owner), "object": obj, "row": row, "flat_row": flat}
-    return {"source": _source(pair, f"the folder stack {name!r} Logic created over three tracks"),
+    return {"source": _source(pair, f"the {stack.kind} stack {name!r} Logic created over three tracks"),
             "records": {role: _split(raw) for role, raw in roles.items()}}
 
 
@@ -227,6 +227,8 @@ TEMPLATES = {
                          lambda: send(("levels-resave-logic", "send-bus-1-logic"))),
     "stack-folder-12.3.1.json": (("stack-folder-logic",),
                                  lambda: stack_folder(("tracks-three-audio-logic", "stack-folder-logic"), "Sub 1")),
+    "stack-summing-12.3.1.json": (("stack-summing-logic",),
+                                  lambda: stack_folder(("stack-folder-flattened-logic", "stack-summing-logic"), "Sum 1")),
     "inst-track-12.3.1.json": (("tracks-instrument-logic",),
                                lambda: inst_track(("arrangement-section-1-selected-logic", "tracks-instrument-logic"), "Inst 1")),
     "section-text-12.3.1.json": (("arrangement-track-logic", "arrangement-first-section-logic"),
@@ -261,7 +263,7 @@ DONOR_KEYS = (("inserts-native-all-logic", None), ("master-track-limiter-logic",
 
 def donors(lib: Path = OUT / "donors") -> list[str]:
     import shutil
-    from logicxkit.logic.services.chain_report import native_names
+    from logicxkit.logic.services.plugin_names import native_names
     from logicxkit.logic.services.donors import harvest_donors
     shutil.rmtree(lib, ignore_errors=True)
     from logicxkit.logic._edit import owner_by_label
@@ -280,7 +282,7 @@ def id_offsets(lib: Path) -> None:
     copy's own id there."""
     from logicxkit.logic._binary import find_blocks
     from logicxkit.logic.services.donors import MANIFEST
-    from logicxkit.logic.services.insert import slot_index_base
+    from logicxkit.logic.services.slots import slot_index_base
     from logicxkit.logic.services.plugins import plugin_identity
     from logicxkit.logic.services.slots import is_plugin_slot, property_key_base
     from logicxkit.logic.services.transplant import window_offsets

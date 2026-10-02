@@ -5,7 +5,7 @@ import struct
 import unittest
 
 from _records import chan, proj, rec, uuid
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.keyflags import (
     BASE_SIZE, KEY_COUNT_AT, flag_errors, flag_words, key_flags, sync_key_flags, with_key_flags,
 )
@@ -20,7 +20,7 @@ def slot(owner: int, key: int) -> bytes:
 class VersionTest(unittest.TestCase):
     def test_a_version_6_record_is_sized_from_169_and_older_versions_are_left_alone(self):
         from logicxkit.logic.services.keyflags import _is_channel
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         v6 = bytearray(chan(9, "Audio 10", size=169 + 4 * 5))
         struct.pack_into("<H", v6, 4, 6)
         struct.pack_into("<H", v6, HEADER + KEY_COUNT_AT, 5)

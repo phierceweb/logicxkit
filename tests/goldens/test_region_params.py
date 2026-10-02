@@ -121,7 +121,7 @@ class LikeLogicTest(unittest.TestCase):
         out = set_colour(data, n, 36)
         self.assertEqual((audio(out, "v030-tone").colour, regressions(data, out)), (36, []))
         record = lambda d: next(r for r in read_audio_regions(d) if r.name == "v030-tone").record  # noqa: E731
-        from logicxkit.logic.services.insert import project_records
+        from logicxkit.logic.services.stream import project_records
         self.assertEqual(project_records(out)[record(out)].raw[36:76], project_records(load(31))[record(load(31))].raw[36:76])
         midi = number(load(31), "Inst 1")
         out = set_colour(load(31), midi, 64)

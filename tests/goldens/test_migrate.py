@@ -3,7 +3,8 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.insert import project_records, slot_index_base
+from logicxkit.logic.services.slots import slot_index_base
+from logicxkit.logic.services.stream import project_records
 from logicxkit.logic.services.project import project_metadata
 from logicxkit.logic.services.slots import is_plugin_slot, property_key_base
 from logicxkit.logic.services.stacks import read_tracks

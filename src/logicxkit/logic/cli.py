@@ -29,6 +29,7 @@ from ._width import register as register_width
 from ._groups import register as register_groups
 from ._song import register as register_song
 from ._header import register as register_header
+from ._levels_cmd import register as register_levels
 from ._prefs import register as register_prefs
 from ._chains_cmd import register as register_chains
 from ._midi_cmd import register as register_midi
@@ -55,10 +56,9 @@ from ._inspect import (
 from .services.comp import decode_comp
 from .services.library import strip_library, under_live_library
 from .services.eq import BAND_ORDER, decode_eq
-from .services.levels import PAN_CENTRE, UNITY, copy_levels, read_levels
 from .services.pst import output_root as pst_output_root
 from .services.pst import write_psts
-from .services.retrack import find_project, missing_strips, retrack_bundle
+from .services.retrack import missing_strips, retrack_bundle
 from .services.spec import assemble, load_spec
 
 def _byte_loader():
@@ -247,62 +247,6 @@ def _retrack_channels(args) -> int:
     return 0
 
 
-def _project_data_paths(project: Path) -> list[Path]:
-    return sorted(project.glob("Alternatives/*/ProjectData"))
-
-
-def cmd_levels(args) -> int:
-    """Dump a project's fader/pan, or carry them onto another project's copy."""
-    from .services.chains import channel_references
-
-    src_project = find_project(Path(args.project))
-    sources = _project_data_paths(src_project)
-    if not sources:
-        print(f"logic levels: {args.project} is not a project (no Alternatives/*/ProjectData)")
-        return 2
-    src = sources[0].read_bytes()
-
-    if not args.to:
-        refs = channel_references(src)
-        rows = read_levels(src)
-        if args.json:
-            print(json.dumps({str(o): dict(v, ref=refs.get(o))
-                              for o, v in sorted(rows.items())}, indent=2))
-            return 0
-        print(f"{'owner':>5}  {'ref':24s} {'fader':>5} {'pan':>5}")
-        for owner, v in sorted(rows.items()):
-            if v["fader"] == UNITY and v["pan"] == PAN_CENTRE and not refs.get(owner):
-                continue
-            print(f"{owner:5d}  {str(refs.get(owner, '')):24s} "
-                  f"{v['fader']:5d} {v['pan_display']:+5d}")
-        return 0
-
-    if not args.out:
-        print("logic levels: --to needs --out")
-        return 2
-    from ._edit import CommandError, edit_copy
-    total = 0
-
-    def step(data, _count, data_file):
-        nonlocal total
-        out, report = copy_levels(src, data, by=args.by)
-        total += len(report["changed"])
-        print(f"  {data_file.parent.name}: {report['matched']} matched, "
-              f"{len(report['changed'])} changed, {report['unchanged']} already equal")
-        if report["unmatched"]:
-            print(f"    no counterpart in the source: {len(report['unmatched'])} channel(s)")
-        return out
-
-    print(f"levels from : {src_project}")
-    try:
-        edit_copy(Path(args.to), Path(args.out), step)
-    except CommandError as e:
-        print(f"  {e}")
-        return 1
-    print(f"\nSet levels on {total} channel(s).")
-    return 0
-
-
 def cmd_decode(args) -> int:
     path = Path(args.file)
     data = path.read_bytes()
@@ -411,21 +355,16 @@ def main(argv: list[str] | None = None) -> int:
     register_groups(sub)
     register_song(sub)
     register_prefs(sub)
-    lv = sub.add_parser("levels", help="dump channel fader/pan, or copy them onto a project")
-    lv.add_argument("project", help="the project to read levels FROM")
-    lv.add_argument("--to", help="project to write them onto (a copy is made)")
-    lv.add_argument("--out", help="output directory, required with --to")
-    lv.add_argument("--by", choices=("reference", "owner", "label"), default="reference",
-                    help="how to pair channels (default: channel-strip reference)")
-    lv.add_argument("--json", action="store_true")
-    lv.set_defaults(func=cmd_levels)
+    register_levels(sub)
     st = sub.add_parser("stacks", help="track stacks and the arrange track list")
     st.add_argument("logicx", help="a .logicx, or a folder containing one")
     st.add_argument("--tracks", action="store_true", help="list every track in display order")
     st.add_argument("--json", action="store_true")
     st.add_argument("--move", action="append", metavar="TRACK:STACK",
                     help="move a track into a stack (repeatable); writes a copy")
-    st.add_argument("--out", help="output directory, required with --move")
+    st.add_argument("--move-out", action="append", metavar="TRACK",
+                    help="move a track one level out of its stack (repeatable); writes a copy")
+    st.add_argument("--out", help="output directory, required with --move and --move-out")
     st.set_defaults(func=cmd_stacks)
     d = sub.add_parser("decode", help="dump EQ/Comp params from a .cst or .pst")
     d.add_argument("file")

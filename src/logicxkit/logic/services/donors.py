@@ -22,7 +22,8 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes, atomic_write_json
 
 from .._binary import find_blocks
-from .insert import HEADER, VER_OFF, plugin_variant, project_records, slot_format
+from .slot_width import plugin_variant, slot_format
+from .stream import HEADER, VER_OFF, project_records
 
 SUFFIX = ".slot"
 MANIFEST = "manifest.json"

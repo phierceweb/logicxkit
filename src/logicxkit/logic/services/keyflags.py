@@ -13,7 +13,8 @@ from __future__ import annotations
 
 import struct
 
-from .insert import CHANNEL_TAG, HEADER, NO_KEY, project_records, reassemble
+from .mixer import CHANNEL_TAG
+from .stream import HEADER, NO_KEY, project_records, reassemble
 
 FLAGS_AT = 132
 KEY_COUNT_AT = 26                 # u16: flag words, never lowered here

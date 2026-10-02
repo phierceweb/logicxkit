@@ -13,7 +13,7 @@ from ._plugin_settings import dialled, donor_table, replace_slot, set_specs
 def cmd_add_plugin(args) -> int:
     from ..utils.data import data_dirs
     from .services.add_plugin import add_plugin
-    from .services.insert import channel_formats
+    from .services.mixer import channel_formats
     from .services.plugin_library import load_library
     from .services.transplant import slot_class_version
 
@@ -105,7 +105,7 @@ def cmd_remove_plugin(args) -> int:
 def cmd_replace_plugin(args) -> int:
     """A removal and an insert at the same slot, one gate."""
     from ..utils.data import data_dirs
-    from .services.insert import channel_formats
+    from .services.mixer import channel_formats
     from .services.plugin_library import load_library
     from .services.transplant import slot_class_version
 
@@ -176,13 +176,14 @@ def _offsets(data: bytes, donor, libraries=None) -> tuple[int, ...]:
 def _channels(args, data: bytes, count: int | None) -> list[str]:
     """Every ``--channel`` label and the channel of every ``--stack`` member, each once."""
     from .services.stacks import read_stacks, read_tracks, rows_below
+    from .services.trackname import stack_named
 
     labels = [c.strip() for c in args.channel or []]
     if args.stack:
         stacks = read_stacks(data, count)
         bound = {r["key"]: r["label"] for r in read_tracks(data, count)}
         for name in args.stack:
-            stack = next((s for s in stacks if s.name == name.strip()), None)
+            stack = stack_named(stacks, name)
             if stack is None:
                 raise CommandError(f"no stack named {name!r} (have: {', '.join(sorted(s.name for s in stacks))})")
             labels += [bound[key] for key, _n in rows_below(stacks, stack, headers=False) if bound.get(key)]

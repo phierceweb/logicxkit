@@ -19,7 +19,7 @@ from logicxkit.logic.services.groups import (
     set_group,
     settings_of,
 )
-from logicxkit.logic.services.insert import HEADER, project_records
+from logicxkit.logic.services.stream import HEADER, project_records
 from logicxkit.logic.services.registry import group_entries
 from _data import needs
 

@@ -135,7 +135,7 @@ class LookupTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             lib = Path(td)
             from _records import rec
-            from logicxkit.logic.services.insert import HEADER
+            from logicxkit.logic.services.stream import HEADER
             mono = proj(mono_chan(1, "Audio 1"), native(1, 4, 1), ref(1, 10))
             payload = native(2, 4, 2, fmt=STEREO)[HEADER:]
             longer = rec(b"UCuA", 2, 4, payload[:-20] + bytes(64) + payload[-20:], 5)

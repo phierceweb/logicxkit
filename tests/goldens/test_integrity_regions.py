@@ -14,7 +14,7 @@ REGION_SAVES = ("audio-one-region-logic", "audio-three-regions-logic", "audio-wr
 
 
 def _song(data: bytes):
-    from logicxkit.logic.services.insert import project_records
+    from logicxkit.logic.services.stream import project_records
     from logicxkit.logic.services.regions import song_container
     from logicxkit.logic.services.tracklist import arrange_run
     records = project_records(data)
@@ -22,7 +22,7 @@ def _song(data: bytes):
 
 
 def _replaced(data: bytes, index: int, raw: bytes | None) -> bytes:
-    from logicxkit.logic.services.insert import project_records, reassemble
+    from logicxkit.logic.services.stream import project_records, reassemble
     kept = [raw if i == index else r.raw for i, r in enumerate(project_records(data))]
     return reassemble(data, [k for k in kept if k is not None])
 
@@ -75,7 +75,7 @@ class RegionRefusalTest(unittest.TestCase):
 
     def test_a_dropped_region_record_and_a_dropped_entry_are_refused_by_name(self):
         from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, REGION_TAG
-        from logicxkit.logic.services.insert import HEADER, project_records
+        from logicxkit.logic.services.stream import HEADER, project_records
         from logicxkit.logic.services.integrity import regressions
         from logicxkit.logic.services.recbuild import rec
         from logicxkit.logic.services.regions import ENTRY, TAIL, entry_offsets
@@ -99,7 +99,7 @@ class RegionRefusalTest(unittest.TestCase):
         import struct
 
         from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, ENTRY_ORDINAL_AT, FILE_TAG
-        from logicxkit.logic.services.insert import HEADER, project_records, reassemble
+        from logicxkit.logic.services.stream import HEADER, project_records, reassemble
         from logicxkit.logic.services.integrity import regressions
         from logicxkit.logic.services.recbuild import rec
         from logicxkit.logic.services.regions import TRACK_OBJECT_AT, entry_offsets
@@ -136,7 +136,7 @@ class RegionRefusalTest(unittest.TestCase):
         import struct
 
         from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, read_audio_regions
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.integrity import regressions
         from logicxkit.logic.services.integrity_regions import entry_key
         from logicxkit.logic.services.recbuild import rec
@@ -169,7 +169,7 @@ class RegionRefusalTest(unittest.TestCase):
     def test_a_region_slot_taken_out_of_the_registry_is_refused_by_name(self):
         import struct
 
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.integrity import regressions
         from logicxkit.logic.services.midi import ENTRY_SLOT_AT, MIDI_ENTRY
         from logicxkit.logic.services.recbuild import rec
@@ -195,7 +195,7 @@ class FlexedSessionTest(unittest.TestCase):
     """A session Logic flexed and quantized: its marker blocks framed as the check reads them."""
 
     def setUp(self):
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.regions import MARKER_KIND, MARKER_KIND_AT
         for project in sorted(p for d in ("legacy", "mixes") for p in (_paths.RESOURCES / d).rglob("*.logicx")):
             data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
@@ -208,7 +208,7 @@ class FlexedSessionTest(unittest.TestCase):
         self.skipTest("no flexed session under resources/legacy or resources/mixes")
 
     def test_a_block_that_lost_its_mark_is_refused_by_name(self):
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.integrity import regressions, structural_report
         from logicxkit.logic.services.recbuild import rec
         from logicxkit.logic.services.regions import MARKER_KIND_AT
@@ -219,7 +219,7 @@ class FlexedSessionTest(unittest.TestCase):
         self.assertTrue(any(f.startswith("marker_blocks: 1 ") and "0x88 bytes without the 0xAA mark" in f for f in found), found)
 
     def _with_segments(self, arrange) -> bytes:
-        from logicxkit.logic.services.insert import HEADER
+        from logicxkit.logic.services.stream import HEADER
         from logicxkit.logic.services.recbuild import rec
         from logicxkit.logic.services.regions import ENTRY, TAIL, entry_blocks
         payload = self.records[self.end].raw[HEADER:]

@@ -5,22 +5,18 @@ song came back from Logic's re-save byte for byte, routing and all (2026-09-06).
 Each new mono input goes right after the last one as a copy of it with its own UUID, every
 later channel owner and bound object moves up one, and the count record gains one input.
 Send words stay: their base is the device input count the project was made with
-(`sends.device_inputs`), which Logic keeps as it was.
+(`mixer.device_inputs`), which Logic keeps as it was.
 """
 
 from __future__ import annotations
 
 from .binding import bound_channels, channels
 from .channel_alloc import (
-    COUNT_INPUT_AT,
-    bump_channel_count,
-    is_channel_count,
-    is_channel_record,
-    mixer_record,
-    new_input_channel,
+    COUNT_INPUT_AT, bump_channel_count, is_channel_record, mixer_record, new_input_channel,
 )
+from .mixer import is_channel_count
 from .environment import object_id_of, shifted_object
-from .insert import project_records, reassemble
+from .stream import project_records, reassemble
 from .recbuild import with_owner
 
 MAX_INPUTS = 64

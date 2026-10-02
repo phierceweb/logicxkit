@@ -27,7 +27,7 @@ from __future__ import annotations
 
 import struct
 
-from .insert import HEADER, project_records, reassemble
+from .stream import HEADER, project_records, reassemble
 from .settings import MIRROR, edit_song
 
 FLAGS_AT, TAKES_AT, RECORDING_AT, PREROLL_AT, PREROLL_TIME_AT = 224, 223, 227, 284, 122
