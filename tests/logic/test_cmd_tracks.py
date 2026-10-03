@@ -8,7 +8,7 @@ from pathlib import Path
 import _goldens
 from _cli import count, data, run, wrapped, written
 
-from logicxkit.logic.services.stacks import read_stacks, read_tracks
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
 
 THREE = "tracks-three-audio-logic"          # Audio 1, Audio 2, Audio 3, then the Stereo Out row
 
@@ -50,26 +50,26 @@ class TrackCommandsTest(unittest.TestCase):
         self.assertEqual(names(after).index("Keys"), names(after).index(guitar) + 1)
 
     def test_stack_create_summing_routes_the_members_through_a_free_bus(self):
-        from logicxkit.logic.services.binding import input_labels, output_labels
+        from logicxkit.logic.services.mixer.binding import input_labels, output_labels
         dest = written(self, "stack-create", THREE, "--name", "Guitars", "--summing", "--track", "Audio 1",
                        "--track", "Audio 3", out=self.out)
         (stack,) = read_stacks(data(dest), count(dest))
         self.assertEqual((stack.kind, stack.strip, [n for _k, n in stack.members]),
-                         ("summing", "Aux 3", ["Audio 1", "Audio 3"]))
+                         ("summing", "Aux 1", ["Audio 1", "Audio 3"]))
         self.assertEqual(names(dest), ["Guitars", "Audio 1", "Audio 3", "Audio 2", "Stereo Out"])
         outs, ins = output_labels(data(dest)), input_labels(data(dest))
         rows = {r["name"]: r["owner"] for r in read_tracks(data(dest), count(dest))}
         self.assertEqual((ins[rows["Guitars"]], outs[rows["Guitars"]]), ("Bus 1", "Output 1-2"))
         self.assertEqual([outs[rows[n]] for n in ("Audio 1", "Audio 3", "Audio 2")], ["Bus 1", "Bus 1", "Output 1-2"])
         code, text = run("stacks", dest)
-        self.assertIn("Guitars  [summing]  Aux 3", text)
+        self.assertIn("Guitars  [summing]  Aux 1", text)
         moved = written(self, "stacks", dest, "--move", "Audio 2:Guitars", out=self.out / "moved")
         (stack,) = read_stacks(data(moved), count(moved))
         self.assertEqual([n for _k, n in stack.members], ["Audio 1", "Audio 3", "Audio 2"])
         self.assertEqual(output_labels(data(moved))[rows["Audio 2"]], "Bus 1")
 
     def test_stacks_move_out_takes_a_member_one_level_out_as_logics_drag_did(self):
-        from logicxkit.logic.services.binding import channels, output_labels
+        from logicxkit.logic.services.mixer.binding import channels, output_labels
         key = "stack-folder-dragged-out-logic"
         dest = written(self, "stacks", "stack-folder-logic", "--move-out", "Audio 3", out=self.out)
         for bundle in (dest, _goldens.path(key)):
@@ -82,8 +82,35 @@ class TrackCommandsTest(unittest.TestCase):
         code, text = run("stacks", _goldens.path("stack-folder-logic"), "--move-out", "Audio 3")
         self.assertEqual(code, 2, text)
 
+    def test_flatten_takes_a_stack_apart_as_logic_does(self):
+        for key, name, flat in (("stack-folder-logic", "Sub 1", "stack-folder-flattened-logic"),
+                                ("stack-summing-logic", "Sum 1", "stack-summing-flattened-logic")):
+            with self.subTest(key):
+                dest = written(self, "stacks", key, "--flatten", name, out=self.out / key)
+                self.assertEqual((read_stacks(data(dest), count(dest)), count(dest)), ([], count(_goldens.path(flat))))
+                self.assertEqual(names(dest), ["Audio 1", "Audio 2", "Audio 3", "Stereo Out"])
+        code, text = run("stacks", _goldens.path("stack-folder-logic"), "--flatten", "Sub 1")
+        self.assertEqual(code, 2, text)
+        code, text = run("stacks", _goldens.path("stack-folder-logic"), "--flatten", "Audio 1", "--out", self.out / "no")
+        self.assertEqual(code, 1, text)
+        self.assertIn("no stack named 'Audio 1'", text)
+
+    def test_convert_makes_a_folder_stack_a_summing_one_as_logic_does(self):
+        from logicxkit.logic.services.mixer.binding import input_labels, output_labels
+        dest = written(self, "stacks", "stack-folder-logic", "--convert", "Sub 1", out=self.out)
+        (stack,) = read_stacks(data(dest), count(dest))
+        self.assertEqual((stack.name, stack.kind, stack.strip, [n for _k, n in stack.members]),
+                         ("Sum 1", "summing", "Aux 1", ["Audio 1", "Audio 2", "Audio 3"]))
+        self.assertEqual(count(dest), count(_goldens.path("stack-converted-to-summing-logic")))
+        outs, ins = output_labels(data(dest)), input_labels(data(dest))
+        self.assertEqual((ins[stack.owner], [outs[r["owner"]] for r in rows(dest) if r["name"].startswith("Audio")]),
+                         ("Bus 1", ["Bus 1"] * 3))
+        code, text = run("stacks", dest, "--convert", "Sum 1", "--out", self.out / "again")
+        self.assertEqual(code, 1, text)
+        self.assertIn("already a summing stack", text)
+
     def test_a_track_leaving_a_summing_stack_keeps_its_bus(self):
-        from logicxkit.logic.services.binding import output_labels
+        from logicxkit.logic.services.mixer.binding import output_labels
         dest = written(self, "stacks", "stack-summing-dragged-in-logic", "--move-out", "Audio 3", out=self.out)
         row = next(r for r in read_tracks(data(dest), count(dest)) if r["name"] == "Audio 3")
         self.assertEqual((row["depth"], output_labels(data(dest))[row["owner"]]), (0, "Bus 1"))
@@ -134,7 +161,7 @@ class TrackCommandsTest(unittest.TestCase):
         self.assertTrue(row(dest, "Keys")["label"].startswith("Inst "))
 
     def test_add_stereo_instrument_track(self):
-        from logicxkit.logic.services.mixer import channel_formats
+        from logicxkit.logic.services.mixer.mixer import channel_formats
         mono = written(self, "add-track", THREE, "--name", "Keys", "--after", "Audio 1", "--instrument",
                        out=self.out / "mono")
         stereo = written(self, "add-track", THREE, "--name", "Keys", "--after", "Audio 1", "--instrument",
@@ -145,9 +172,9 @@ class TrackCommandsTest(unittest.TestCase):
     def test_a_stereo_instrument_tracks_instrument_slot_is_stereo_too(self):
         """Logic takes an instrument channel's width from its instrument slot: over a mono slot
         it re-saved the channel as mono."""
-        from logicxkit.logic.services.channel_alloc import INST_SLOT_WIDTH_AT
-        from logicxkit.logic.services.slots import slot_index_base
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.mixer.channel_alloc import INST_SLOT_WIDTH_AT
+        from logicxkit.logic.services.mixer.slots import slot_index_base
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         for flags, width in (((), 1), (("--stereo",), 2)):
             with self.subTest(width):
                 dest = written(self, "add-track", THREE, "--name", "Keys", "--after", "Audio 1",

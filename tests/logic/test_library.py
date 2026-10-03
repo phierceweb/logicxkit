@@ -7,7 +7,7 @@ from pathlib import Path
 from unittest import mock
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.library import (
+from logicxkit.logic.services.mixer.library import (
     DEFAULT,
     ENV,
     USER_DATA_ENV,
@@ -58,7 +58,7 @@ class SpecResolutionTest(unittest.TestCase):
     def test_output_dir_and_template_resolve_against_the_specs_root(self):
         import json
         import tempfile
-        from logicxkit.logic.services.spec import load_spec, template_path_for
+        from logicxkit.logic.services.mixer.spec import load_spec, template_path_for
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "s.json"
             p.write_text(json.dumps({"strip_root": "/root", "output_dir": "Track/Out",
@@ -72,7 +72,7 @@ class SpecResolutionTest(unittest.TestCase):
     def test_planned_pst_paths_hang_off_logics_user_folder_not_the_strip_library(self):
         """`Plug-In Settings` is a SIBLING of `Channel Strip Settings`, so a .pst spec cannot
         resolve against the strip root."""
-        from logicxkit.logic.services.pst import plan_psts
+        from logicxkit.logic.services.translate.pst import plan_psts
         spec = {"output_dir": "Plug-In Settings", "presets": {"P": {"eq": {"hpf": {"freq": 30}}}}}
         with mock.patch.dict(os.environ, {USER_DATA_ENV: "/amapps", ENV: "/amapps/Channel Strip Settings"}):
             dests = [dest for _n, dest, _v in plan_psts(spec)]
@@ -82,13 +82,13 @@ class SpecResolutionTest(unittest.TestCase):
             self.assertNotIn("Channel Strip Settings", str(d))
 
     def test_an_absolute_pst_output_dir_still_wins(self):
-        from logicxkit.logic.services.pst import plan_psts
+        from logicxkit.logic.services.translate.pst import plan_psts
         spec = {"output_dir": "/abs/out", "presets": {"P": {"eq": {"hpf": {"freq": 30}}}}}
         for _n, dest, _v in plan_psts(spec):
             self.assertTrue(str(dest).startswith("/abs/out/"), dest)
 
     def test_a_graft_resolves_both_donors_against_the_root(self):
-        from logicxkit.logic.services.spec import resolve_base
+        from logicxkit.logic.services.mixer.spec import resolve_base
         asked = []
         def load(path):
             asked.append(path)
@@ -123,14 +123,14 @@ class ChainConfigRootTest(unittest.TestCase):
 
 class PrefsPlistTest(unittest.TestCase):
     def test_the_default_is_the_domains_own_file(self):
-        from logicxkit.logic.services.prefs import DOMAIN, ENV_PLIST, PREFS_DIR, prefs_plist
+        from logicxkit.logic.services.song.prefs import DOMAIN, ENV_PLIST, PREFS_DIR, prefs_plist
         with mock.patch.dict(os.environ, {}, clear=False):
             os.environ.pop(ENV_PLIST, None)
             self.assertEqual(prefs_plist(), PREFS_DIR / f"{DOMAIN}.plist")
             self.assertEqual(prefs_plist("com.x.scratch"), PREFS_DIR / "com.x.scratch.plist")
 
     def test_the_override_replaces_logics_file_but_not_a_scratch_domains(self):
-        from logicxkit.logic.services.prefs import ENV_PLIST, PREFS_DIR, prefs_plist
+        from logicxkit.logic.services.song.prefs import ENV_PLIST, PREFS_DIR, prefs_plist
         with mock.patch.dict(os.environ, {ENV_PLIST: "/nowhere/copy.plist"}):
             self.assertEqual(prefs_plist(), Path("/nowhere/copy.plist"))
             self.assertEqual(prefs_plist("com.x.scratch"), PREFS_DIR / "com.x.scratch.plist")
@@ -146,7 +146,7 @@ class PresetNameTest(unittest.TestCase):
     def test_a_strip_spec_refuses_a_name_that_is_not_a_plain_file_name(self):
         import json
         import tempfile
-        from logicxkit.logic.services.spec import load_spec
+        from logicxkit.logic.services.mixer.spec import load_spec
         for name in self.BAD:
             with self.subTest(name=name), tempfile.TemporaryDirectory() as tmp:
                 spec = Path(tmp) / "spec.json"
@@ -155,13 +155,13 @@ class PresetNameTest(unittest.TestCase):
                     load_spec(spec)
 
     def test_a_settings_spec_refuses_one_too(self):
-        from logicxkit.logic.services.pst import plan_psts
+        from logicxkit.logic.services.translate.pst import plan_psts
         for name in self.BAD:
             with self.subTest(name=name), self.assertRaisesRegex(ValueError, "plain file name"):
                 plan_psts(self._spec(Path("/nowhere/logicxkit-never-written"), name))
 
     def test_an_ordinary_name_still_plans(self):
-        from logicxkit.logic.services.pst import plan_psts
+        from logicxkit.logic.services.translate.pst import plan_psts
         ((name, dest, _values),) = plan_psts(self._spec(Path("/nowhere/x"), "Kick - Tight 2"))
         self.assertEqual(dest.name, "Kick - Tight 2.pst")
 

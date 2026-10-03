@@ -4,8 +4,8 @@ automation. Skips without the public corpus."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.automation import read_automation
-from logicxkit.logic.services.events import BAR_ONE
+from logicxkit.logic.services.regions.automation import read_automation
+from logicxkit.logic.services.song.events import BAR_ONE
 from logicxkit.logicx import project_data
 
 KEYS = ("automation-volume-point-logic", "automation-volume-three-points-logic", "automation-eq-inserted-logic",

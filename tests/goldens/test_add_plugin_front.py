@@ -9,10 +9,10 @@ from argparse import Namespace
 import _goldens
 from logicxkit.logic._add_plugin_cmd import _channels
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.plugin_library import find_donor, load_library
-from logicxkit.logic.services.transplant import channel_slots, id_offsets, slot_class_version
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
+from logicxkit.logic.services.mixer.transplant import channel_slots, id_offsets, slot_class_version
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import data_dirs
 
@@ -69,7 +69,7 @@ class FrontTest(unittest.TestCase):
         """Logic's own plug-ins come back byte for byte. A kept third-party slot keeps its key,
         index, size, identity and id; its state is the plug-in's to rewrite — smart:gate
         re-serialised a quarter of its 463 KB on load."""
-        from logicxkit.logic.services.plugins import plugin_identity
+        from logicxkit.logic.services.mixer.plugins import plugin_identity
         for label in self.labels:
             with self.subTest(label):
                 mine = [r.raw for r in channel_slots(self.mine, owner_by_label(self.mine, label))]

@@ -11,7 +11,7 @@ from pathlib import Path
 from pf_core.exceptions import PreconditionError
 from pf_core.utils.io import atomic_write_bytes
 
-from .services.chains import (
+from .services.mixer.chains import (
     base_donors,
     chain_plan,
     describe_duplicates,
@@ -22,14 +22,15 @@ from .services.chains import (
     verify_strip_values,
     width_plan,
 )
-from ._edit import _discard
-from .services.chain_report import chain_changes
-from .services.donors import load_donor_library
-from .services.insert import insert_slots, widen_channels
-from .services.slot_width import MONO, STEREO
-from .services.stream import project_records
-from .services.integrity import regressions
-from .services.retrack import copy_project, find_project
+from ._edit import _discard, plan_alternatives
+from .services.mixer.chain_report import chain_changes
+from .services.mixer.donors import load_donor_library
+from .services.mixer.channel_width import widen_channels
+from .services.mixer.insert import insert_slots
+from .services.mixer.slot_width import MONO, STEREO
+from .services.stream.stream import project_records
+from .services.stream.integrity import regressions
+from .services.arrange.retrack import copy_project, find_project, left_line
 
 _REPORT_LABELS = (("unmatched", "no chain configured"),
                   ("missing_from_project", "configured but absent here"),
@@ -103,12 +104,14 @@ def _print_changes(changes: list) -> int:
     return len(losing)
 
 
-def _apply_chains(dest: Path, cfg, library: Path, *, strict: bool) -> int:
+def _apply_chains(dest: Path, cfg, library: Path, *, strict: bool, left: dict[str, int]) -> int:
     """Patch every alternative in the copy. Raises before or after any write — a refusal or any
     ValueError from planning — and the caller discards the whole copy, so no half-patched bundle
     is left."""
     total = 0
     for data_file in sorted(dest.glob("Alternatives/*/ProjectData")):
+        if data_file.parent.name in left:
+            continue
         p = _prepare(data_file.read_bytes(), cfg, library)
         _print_context(p, library)
         _print_changes(p["changes"])
@@ -147,7 +150,7 @@ def cmd_chains(args) -> int:
         project = find_project(Path(args.project))
         print(f"in  : {project}\n")
         losing = 0
-        for data_file in sorted(project.glob("Alternatives/*/ProjectData")):
+        for data_file in plan_alternatives(project):
             p = _prepare(data_file.read_bytes(), cfg, library)
             _print_context(p, library)
             losing += _print_changes(p["changes"])
@@ -161,9 +164,11 @@ def cmd_chains(args) -> int:
     copied = copy_project(Path(args.project), Path(args.out))
     dest = copied["dest"]
     print(f"in  : {copied['source']}\nout : {dest}\n")
+    for name, word in copied["left"].items():
+        print(f"  {left_line(name, word)}")
 
     try:
-        total = _apply_chains(dest, cfg, library, strict=args.strict)
+        total = _apply_chains(dest, cfg, library, strict=args.strict, left=copied["left"])
     except (PreconditionError, ValueError):
         # An earlier alternative may already be patched; a half-written bundle is worse than none.
         _discard(copied["dest_root"])

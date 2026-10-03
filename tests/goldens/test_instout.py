@@ -7,8 +7,8 @@ The real-file part of tests/logic/test_instout.py; skips without the owner's fil
 import unittest
 import _goldens
 import _paths
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.instout import (
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.instout import (
     SIZE,
     bind_instrument_output,
     read_instrument_outputs,
@@ -56,7 +56,7 @@ class GoldenBindingTest(unittest.TestCase):
             kept.append(raw)
         stripped = data[:24] + b"".join(kept)
         stripped = stripped[:16] + (len(stripped) - 24).to_bytes(4, "little") + stripped[20:]
-        from logicxkit.logic.services.keyflags import sync_key_flags
+        from logicxkit.logic.services.stream.keyflags import sync_key_flags
         stripped = sync_key_flags(stripped)
         out = bind_instrument_output(stripped, hi.aux_owner, pattern=hi.raw, instrument=9)
         mine = read_instrument_outputs(out)[hi.aux_owner]

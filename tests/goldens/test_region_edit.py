@@ -9,19 +9,19 @@ import unittest
 from pathlib import Path
 
 import _goldens
-from logicxkit.logic.services.audio_regions import FILE_TAG, REGION_COUNT_AT, file_name, magic_at, read_audio_files, region_key
-from logicxkit.logic.services.audio_write import add_audio_region
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.fades import Fade, crossfade_bytes
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import ENTRY_LOOP_LENGTH_AT
-from logicxkit.logic.services.region_edit import (
+from logicxkit.logic.services.regions.audio_regions import FILE_TAG, REGION_COUNT_AT, file_name, magic_at, read_audio_files, region_key
+from logicxkit.logic.services.regions.audio_write import add_audio_region
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.regions.fades import Fade, crossfade_bytes
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import ENTRY_LOOP_LENGTH_AT
+from logicxkit.logic.services.regions.region_edit import (
     listed, located, move_region, rename_region, samples_per_tick_of, set_fade, set_loop, set_mute, split_region, trim_region,
 )
-from logicxkit.logic.services.regions import ENTRY, entry_offsets, song_container
-from logicxkit.logic.services.tracklist import arrange_run
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.regions.regions import ENTRY, entry_offsets, song_container
+from logicxkit.logic.services.arrange.tracklist import arrange_run
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 _spec = importlib.util.spec_from_file_location("goldens_audio_write", Path(__file__).with_name("test_audio_write.py"))
@@ -233,7 +233,7 @@ def alternatives(out: Path) -> dict[str, bytes]:
 @_goldens.needs(A[0])
 class AlternativesTest(unittest.TestCase):
     def test_a_number_names_the_same_region_in_every_alternative(self):
-        from logicxkit.logic.services.midi_write import add_region
+        from logicxkit.logic.services.midi.midi_write import add_region
         with tempfile.TemporaryDirectory() as tmp:
             bundle = two_alternatives(A[0], Path(tmp), lambda d: add_region(d, track="Untitled", start=BAR_ONE, length=BAR)[0])
             rc, text = run(bundle, "--out", Path(tmp, "out"), "--mute", "2")
@@ -246,7 +246,7 @@ class AlternativesTest(unittest.TestCase):
                 self.assertEqual(muted, [("audio", "v030-tone")])
 
     def test_two_regions_alike_in_the_listed_alternative_are_told_apart_by_number(self):
-        from logicxkit.logic.services.midi_write import add_region
+        from logicxkit.logic.services.midi.midi_write import add_region
         import shutil
         with tempfile.TemporaryDirectory() as tmp:
             bundle = Path(tmp) / "one.logicx"
@@ -288,7 +288,7 @@ class CommandTest(unittest.TestCase):
         self.assertEqual((got[("audio", "v030-tone2")], got[("audio", "v040-take")]), (BAR_ONE + 4 * BAR, BAR_ONE + 2 * BAR))
 
     def test_aliases_take_a_mute_each_and_no_other_edit(self):
-        from logicxkit.logic.services.midi import read_midi
+        from logicxkit.logic.services.midi.midi import read_midi
         base = load(0)
         source = read_midi(base)[0]
         data = aliased(base, source, 4)
@@ -323,8 +323,8 @@ class CommandTest(unittest.TestCase):
             self.assertIn("the tempo changes", text)
 
     def test_a_flexed_region_is_not_trimmed_or_split(self):
-        from logicxkit.logic.services.flexmarkers import FLEX_BIT
-        from logicxkit.logic.services.recbuild import rec
+        from logicxkit.logic.services.regions.flexmarkers import FLEX_BIT
+        from logicxkit.logic.services.stream.recbuild import rec
         data = load(0)
         n = number(data, "v030-tone")
         records = project_records(data)
@@ -333,7 +333,7 @@ class CommandTest(unittest.TestCase):
         p[located(data, n).audio.at + 15] |= FLEX_BIT
         out = [r.raw for r in records]
         out[song.end] = rec(b"qSvE", records[song.end].raw, bytes(p))
-        from logicxkit.logic.services.stream import reassemble
+        from logicxkit.logic.services.stream.stream import reassemble
         flexed = reassemble(data, out)
         for edit in (lambda: trim_region(flexed, n, length=BEAT, spt=22.96875), lambda: split_region(flexed, n, BAR_ONE + BEAT, spt=22.96875)):
             with self.assertRaisesRegex(ValueError, "is flexed"):

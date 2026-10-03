@@ -22,7 +22,7 @@ def rec(tag: bytes, owner: int, key: int, payload: bytes, ver: int = 5) -> bytes
 def proj(*records: bytes, ordered: bool = True) -> bytes:
     """The records as a project; ``ordered`` puts the mixer records in owner order in the places
     they take, as every Logic save has them."""
-    from logicxkit.logic.services.validate import FORMAT_AT, MEASURED_FORMAT, SIGNATURE
+    from logicxkit.logic.services.stream.validate import FORMAT_AT, MEASURED_FORMAT, SIGNATURE
     body = b"".join(records)
     head = bytearray(24)
     head[:len(SIGNATURE)] = SIGNATURE
@@ -33,8 +33,8 @@ def proj(*records: bytes, ordered: bool = True) -> bytes:
 
 
 def _owner_ordered(data: bytes) -> bytes:
-    from logicxkit.logic.services.mixer import is_mixer_record
-    from logicxkit.logic.services.stream import project_records
+    from logicxkit.logic.services.mixer.mixer import is_mixer_record
+    from logicxkit.logic.services.stream.stream import project_records
     records = project_records(data)
     if b"".join(r.raw for r in records) != data[24:]:
         return data
@@ -49,7 +49,7 @@ def uuid(n: int) -> bytes:
 
 def env_obj(object_id: int, name: str | bytes, *, grouping: bool = False, uuid: bytes | None = None,
             parent: int = 0, ver: int = 12, group: int = 0, type_value: int | None = None) -> bytes:
-    from logicxkit.logic.services.environment import (
+    from logicxkit.logic.services.arrange.environment import (
         CHANNEL_OBJECT, GROUPING, KIND_AT, NAME_AT, PARENT_AT)
     encoded = name if isinstance(name, bytes) else name.encode()
     p = bytearray(463 + len(encoded) + len(encoded) % 2)   # names are padded to even length
@@ -69,7 +69,7 @@ def chan(owner: int, label: str, *, uuid: bytes = b"", dest: bytes = b"", source
          in_use: bool = True, ver: int = 7, words: tuple[int, int] | None = None,
          stereo_input: bool = False) -> bytes:
     """``words`` are the output and input index words (+92, +94), ``stereo_input`` +86."""
-    from logicxkit.logic.services.binding import trailer
+    from logicxkit.logic.services.mixer.binding import trailer
     p = bytearray(size)
     struct.pack_into("<H", p, 26, max(0, (size - 201) // 4))  # flag words size a v7 record
     p[24] = p[25] = 1 if in_use else 0

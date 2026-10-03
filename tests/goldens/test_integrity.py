@@ -29,7 +29,7 @@ class ProblemsOnRealFilesTest(unittest.TestCase):
             self.skipTest("no owner's session on this machine")
 
     def test_a_logic_written_session_regresses_against_itself_zero_times(self):
-        from logicxkit.logic.services.integrity import regressions
+        from logicxkit.logic.services.stream.integrity import regressions
         for project in self.files:
             with self.subTest(project.stem):
                 data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
@@ -37,7 +37,7 @@ class ProblemsOnRealFilesTest(unittest.TestCase):
 
     def test_the_baseline_is_reported_not_demanded(self):
         """Pre-existing problems are counted, never treated as a failure."""
-        from logicxkit.logic.services.integrity import structural_report
+        from logicxkit.logic.services.stream.integrity import structural_report
         for project in self.files:
             with self.subTest(project.stem):
                 data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
@@ -53,15 +53,15 @@ class RegressionDetectionTest(unittest.TestCase):
             self.skipTest("no owner's session on this machine")
         self.project = self.files[0]
         self.data = sorted(self.project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         self.count = project_metadata(self.project).get("tracks")
 
     def test_a_new_link_error_is_caught(self):
         import struct
 
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.sequence import TABLE_SLOT_AT, index_table, table_entries
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.stream.sequence import TABLE_SLOT_AT, index_table, table_entries
         recs = project_records(self.data)
         table_at = index_table(recs)
         start = 24 + sum(len(r.raw) for r in recs[:table_at]) + HEADER
@@ -73,11 +73,11 @@ class RegressionDetectionTest(unittest.TestCase):
         self.assertTrue(found, "a corrupted index table must not pass the gate")
 
     def test_a_truncated_write_is_caught(self):
-        from logicxkit.logic.services.integrity import regressions
+        from logicxkit.logic.services.stream.integrity import regressions
         self.assertTrue(regressions(self.data, self.data[:-200]))
 
     def test_an_untouched_copy_is_clean(self):
-        from logicxkit.logic.services.integrity import regressions
+        from logicxkit.logic.services.stream.integrity import regressions
         self.assertEqual(regressions(self.data, self.data), [])
 
 

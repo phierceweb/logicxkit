@@ -3,13 +3,13 @@
 import unittest
 
 from _records import proj
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.slots import SLOT_INDEX_AT
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.remove_plugin import remove_plugin
-from logicxkit.logic.services.slots import archive_index
-from logicxkit.logic.services.smart_controls import mapping_slots
-from logicxkit.logic.services.transplant import channel_slots
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.mixer.slots import SLOT_INDEX_AT
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.remove_plugin import remove_plugin
+from logicxkit.logic.services.mixer.slots import archive_index
+from logicxkit.logic.services.mixer.smart_controls import mapping_slots
+from logicxkit.logic.services.mixer.transplant import channel_slots
 from test_add_plugin import _marker
 from test_smart_controls import archive
 from test_transplant_ids import au, mono_chan, native, ref

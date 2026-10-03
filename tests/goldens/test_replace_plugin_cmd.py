@@ -10,7 +10,7 @@ from pathlib import Path
 
 import _goldens
 from logicxkit.logic._add_plugin_cmd import cmd_replace_plugin
-from logicxkit.logic.services.plugins import slot_payloads
+from logicxkit.logic.services.mixer.plugins import slot_payloads
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 

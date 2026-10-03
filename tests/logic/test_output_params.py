@@ -2,7 +2,7 @@
 
 import unittest
 
-from logicxkit.logic.services.output_params import (
+from logicxkit.logic.services.mixer.output_params import (
     ADAPTIVE_LIMITER,
     FLOATS,
     LIMITER,

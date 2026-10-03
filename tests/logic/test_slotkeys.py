@@ -22,9 +22,9 @@ class RebaseOnlyOnCollisionTest(unittest.TestCase):
         return proj(*parts)
 
     def test_a_base_two_project_without_a_key_two_send_is_left_alone(self):
-        from logicxkit.logic.services.slotkeys import needs_rebase
+        from logicxkit.logic.services.mixer.slotkeys import needs_rebase
         self.assertFalse(needs_rebase(self.base2(False)))
 
     def test_a_key_two_send_beside_key_two_slots_needs_the_rebase(self):
-        from logicxkit.logic.services.slotkeys import needs_rebase
+        from logicxkit.logic.services.mixer.slotkeys import needs_rebase
         self.assertTrue(needs_rebase(self.base2(True)))

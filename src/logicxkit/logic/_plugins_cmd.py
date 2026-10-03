@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 
 from ._edit import first_project_data
-from .services.plugins import installed_components, project_plugins, validate_components, verdict
-from .services.retrack import find_project
+from .services.mixer.plugins import installed_components, project_plugins, validate_components, verdict
+from .services.arrange.retrack import find_project
 
 
 def _projects(path: Path) -> list[Path]:

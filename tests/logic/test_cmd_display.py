@@ -8,11 +8,11 @@ from pathlib import Path
 import _goldens
 from _cli import data, run, source, written
 
-from logicxkit.logic.services.controlbar import alternative_dirs, read_controls
-from logicxkit.logic.services.header import read_components
-from logicxkit.logic.services.metronome import read_metronome
-from logicxkit.logic.services.modes import TRANSIENT, read_modes
-from logicxkit.logic.services.toolbar import BUTTONS, read_toolbar
+from logicxkit.logic.services.song.controlbar import alternative_dirs, read_controls
+from logicxkit.logic.services.stream.header import read_components
+from logicxkit.logic.services.song.metronome import read_metronome
+from logicxkit.logic.services.song.modes import TRANSIENT, read_modes
+from logicxkit.logic.services.song.toolbar import BUTTONS, read_toolbar
 
 BASE, PAUSE = "controlbar-base", "controlbar-pause-on"
 TOOLBAR, HEADER = "toolbar-all-logic", "header-00"

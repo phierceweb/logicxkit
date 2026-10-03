@@ -5,9 +5,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ._edit import edit_display
-from .services.retrack import find_project
-from .services.toolbar import (BUTTONS, alternative_dirs, buttons_of, copy_toolbar, read_toolbar, set_buttons,
+from ._edit import display_source, edit_display
+from .services.arrange.retrack import find_project
+from .services.song.toolbar import (BUTTONS, alternative_dirs, buttons_of, copy_toolbar, read_toolbar, set_buttons,
                                show_toolbar, toolbar_shown)
 
 
@@ -40,7 +40,8 @@ def cmd_toolbar(args) -> int:
         want = {_match(n): True for n in args.show or []}
         want.update({_match(n): False for n in args.hide or []})
         src = find_project(Path(args.src)) if args.src else None
-        if src is not None and not alternative_dirs(src):
+        source = display_source(src) if src is not None else None
+        if src is not None and source is None:
             raise ValueError(f"{src}: no alternative carries a DisplayState.plist")
     except ValueError as e:
         print(f"  {e}")
@@ -48,7 +49,7 @@ def cmd_toolbar(args) -> int:
 
     def step(alt: Path) -> None:
         if src is not None:
-            copy_toolbar(alternative_dirs(src)[0], alt)
+            copy_toolbar(source, alt)
         if args.row:
             show_toolbar(alt, args.row == "show")
         state = set_buttons(alt, want) if want else buttons_of(read_toolbar(alt))

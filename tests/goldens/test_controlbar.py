@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 import _goldens
-from logicxkit.logic.services.controlbar import (
+from logicxkit.logic.services.song.controlbar import (
     LAYOUT_KEY, TRANSPORT_KEY, copy_layout, read_controls, read_layout,
     with_controls,
 )

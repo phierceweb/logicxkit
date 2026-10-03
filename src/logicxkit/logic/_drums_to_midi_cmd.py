@@ -51,7 +51,7 @@ def parse_velocity(spec: str | None) -> tuple[int, int, float]:
 
 def detector_of(args):
     """The onset detector, its floor under the track's loudest hit moved by ``--threshold``."""
-    from .services.onsets import Detector
+    from .services.regions.onsets import Detector
 
     if args.threshold is None:
         return Detector()
@@ -63,8 +63,8 @@ def detector_of(args):
 def cmd_drums_to_midi(args) -> int:
     from groovebin.transforms import grid_ticks
 
-    from .services.drums_to_midi import drums_to_midi, note_for
-    from .services.events import PPQ
+    from .services.midi.drums_to_midi import drums_to_midi, note_for
+    from .services.song.events import PPQ
 
     if not args.out:
         print("  --out is needed to write")
@@ -102,7 +102,7 @@ def cmd_drums_to_midi(args) -> int:
 def register(sub) -> None:
     from groovebin.maps import NAMES
 
-    from .services.onsets import Detector
+    from .services.regions.onsets import Detector
 
     dp = sub.add_parser("drums-to-midi", help="drum hits in audio tracks to notes in a new MIDI region on a software "
                         "instrument track, on a copy, without Logic")

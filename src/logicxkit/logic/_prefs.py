@@ -6,7 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .services.prefs import (
+from .services.song.prefs import (
     BY_NAME, SETTINGS, backup, controlbar_default, parse_value, read_settings, write_controlbar_default,
     write_settings,
 )
@@ -65,13 +65,14 @@ def cmd_prefs(args) -> int:
         if want:
             write_settings(want)
         if args.controlbar_from:
-            from .services.controlbar import alternative_dirs, read_layout
-            from .services.retrack import find_project
+            from ._edit import display_source
+            from .services.song.controlbar import read_layout
+            from .services.arrange.retrack import find_project
             src = find_project(Path(args.controlbar_from))
-            alts = alternative_dirs(src)
-            if not alts:
+            source = display_source(src)
+            if source is None:
                 raise ValueError(f"{src}: no alternative carries a DisplayState.plist")
-            write_controlbar_default(read_layout(alts[0])[0])
+            write_controlbar_default(read_layout(source)[0])
             print(f"control bar default taken from {src}")
     except (ValueError, RuntimeError, OSError) as e:
         print(f"  {e}")

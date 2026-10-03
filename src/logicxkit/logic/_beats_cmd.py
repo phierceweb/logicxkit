@@ -17,11 +17,11 @@ from groovebin.library.pattern import Pattern, pattern
 from groovebin.library.search import find_group, get
 from groovebin.maps import NAMES
 
-from ._edit import CommandError, edit_copy
-from .services.beats_compose import compose, plan
-from .services.beats_place import place, place_phrase
-from .services.project import project_metadata
-from .services.retrack import find_project
+from ._edit import CommandError, edit_copy, written_alternatives
+from .services.midi.beats_compose import compose, plan
+from .services.midi.beats_place import place, place_phrase
+from .services.project.project import project_metadata
+from .services.arrange.retrack import find_project
 
 FAILURES = (OSError, ValueError, OverflowError, struct.error, sqlite3.Error, CommandError)
 
@@ -40,7 +40,7 @@ def _listed(args) -> tuple[Path, bytes, int | None]:
     """The project, its first alternative's data and track count: every write is tried there
     before anything is copied."""
     project = find_project(Path(args.project))
-    found = sorted(project.glob("Alternatives/*/ProjectData"))
+    found = written_alternatives(project)
     if not found:
         raise CommandError(f"no project at {project}")
     return project, found[0].read_bytes(), project_metadata(project, found[0].parent.name).get("tracks")

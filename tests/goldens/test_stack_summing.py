@@ -7,15 +7,15 @@ import unittest
 
 import _goldens
 
-from logicxkit.logic.services.binding import INPUT_WORD_AT, OUTPUT_WORD_AT, bound_channels, channels, input_labels, output_labels
-from logicxkit.logic.services.environment import PARENT_AT, channel_objects, object_record
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.mixer import channel_formats
-from logicxkit.logic.services.stack_create import create_stack
-from logicxkit.logic.services.stack_summing import create_summing_stack, free_bus
-from logicxkit.logic.services.stacks import SUMMING, read_stacks, read_tracks
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import INPUT_WORD_AT, OUTPUT_WORD_AT, bound_channels, channels, input_labels, output_labels
+from logicxkit.logic.services.arrange.environment import PARENT_AT, channel_objects, object_record
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.mixer.mixer import channel_formats
+from logicxkit.logic.services.arrange.stack_create import create_stack
+from logicxkit.logic.services.arrange.stack_summing import create_summing_stack, free_bus
+from logicxkit.logic.services.arrange.stacks import SUMMING, read_stacks, read_tracks
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 BASE, LOGICS, FOLDER = "stack-folder-flattened-logic", "stack-summing-logic", "stack-folder-logic"
@@ -47,7 +47,7 @@ def chans_bytes(records, owner: int, at: int) -> int:
 
 
 def flat_labels(data: bytes) -> list[str]:
-    from logicxkit.logic.services.tracklist import arrange_run, flat_run, row_object
+    from logicxkit.logic.services.arrange.tracklist import arrange_run, flat_run, row_object
     records, chans, owners = project_records(data), channels(data), bound_channels(data)
     return [chans[owners[row_object(records[i].raw)]].label.split()[0]
             for i in flat_run(records, arrange_run(records)) if row_object(records[i].raw) in owners]
@@ -67,6 +67,18 @@ class SummingStackTest(unittest.TestCase):
         self.assertEqual(flat_labels(self.ours), flat_labels(logics))
         self.assertEqual(validate_project(self.ours), [])
         self.assertEqual(regressions(self.base, self.ours), [])
+
+    def test_the_header_binds_the_lowest_free_aux_stub_as_logics_does(self):
+        """Logic brought `Aux 1`, the lowest free stub, into use; no channel record was made and
+        none moved."""
+        logics = project_data(_goldens.path(LOGICS))
+        stack = next(s for s in read_stacks(self.ours) if s.kind == SUMMING)
+        self.assertEqual(channels(self.ours)[stack.owner].label, "Aux 1")
+        self.assertEqual(self.report["label"], "Aux 1")
+        def strips(data):
+            return [(o, c.label, c.size) for o, c in sorted(channels(data).items())]
+        self.assertEqual(strips(self.ours), strips(self.base))
+        self.assertEqual(strips(self.ours), strips(logics))
 
     def test_the_bus_is_the_lowest_nothing_uses(self):
         self.assertEqual(self.report["bus"], "Bus 1")
@@ -91,7 +103,7 @@ class SummingStackTest(unittest.TestCase):
             create_summing_stack(self.base, name="Sum", members=[])
 
 
-OURS, RESAVE, SOURCE = "stack-summing-ours", "stack-summing-resave-logic", "markers-edits-resave-logic"
+OURS, RESAVE, SOURCE = "stack-summing-stub-ours", "stack-summing-stub-resave-logic", "markers-edits-resave-logic"
 
 
 def whole(data: bytes) -> dict:
@@ -124,7 +136,7 @@ class LogicResavedTest(unittest.TestCase):
 
     def test_the_header_is_logics_own_whatever_aux_the_session_patterns_on(self):
         """A session's aux tracks carry kind 128 as often as 0; the header is a grouping object."""
-        from logicxkit.logic.services.environment import KIND_AT, object_id_of
+        from logicxkit.logic.services.arrange.environment import KIND_AT, object_id_of
         data = project_data(_goldens.path(SOURCE))
         objs = {o.name: i for i, o in channel_objects(data).items()}
         data, first = create_summing_stack(data, name="First", members=[objs["Audio 1"]])
@@ -141,6 +153,8 @@ class LogicResavedTest(unittest.TestCase):
         self.assertEqual(channel_objects(out)[second["object_id"]].kind, 0)
 
     def test_the_writer_still_makes_what_logic_opened(self):
+        """The same steps on the source: every row, route and stack as the staged bundle holds
+        them, the headers on the lowest free `Aux` stubs in turn."""
         data = project_data(_goldens.path(SOURCE))
         for name, strip, _bus, members in _goldens.fact(OURS, "stacks"):
             objs = {o.name: i for i, o in channel_objects(data).items()}
@@ -164,7 +178,7 @@ def track(data: bytes, name: str) -> dict:
 @_goldens.needs(TWO, DRAGGED_IN, DRAGGED_OUT, "stack-summing-move-ours", "stack-summing-move-resave-logic")
 class MoveIntoSummingTest(unittest.TestCase):
     def setUp(self):
-        from logicxkit.logic.services.stacks import move_to_stack
+        from logicxkit.logic.services.arrange.stack_moves import move_to_stack
         self.base = project_data(_goldens.path(TWO))
         objs = {o.name: i for i, o in channel_objects(self.base).items()}
         self.objs = objs
@@ -214,7 +228,7 @@ class MoveIntoSummingTest(unittest.TestCase):
         self.assertEqual(sub.in_use, _goldens.fact(key, "sub_1_in_use"))
 
     def test_a_stack_is_not_moved_into_a_summing_stack(self):
-        from logicxkit.logic.services.stacks import move_to_stack
+        from logicxkit.logic.services.arrange.stack_moves import move_to_stack
         data, report = create_stack(self.base, name="Folder", members=[self.objs["Audio 3"]])
         with self.assertRaisesRegex(ValueError, "a stack moved into a summing stack"):
             move_to_stack(data, report["object_id"], self.objs["Sum A"])

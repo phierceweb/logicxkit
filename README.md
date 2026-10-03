@@ -7,15 +7,26 @@ the mixer, plug-in settings and MIDI, in one project or across a batch.
 
 ## Why logicxkit
 
-While working in Logic sessions, sound engineers continually make improvements, innovations, workflow tweaks, etc. Maybe 7 songs into mixing an album, you discover that bussing the vocal reverbs to their own bus, then applying an EQ with a side chain that knocks out some of the overlapping frequencies on the reverbs from the main vocals increases clarity. But now that has to be applied to every previous song. Through the Logic Pro interface, this is tedious work, especially if the bus numbers differ or inputs are different.
+While working in Logic sessions, sound engineers continually make improvements, innovations,
+workflow tweaks, etc. Maybe 7 songs into mixing an album, you discover that bussing the vocal
+reverbs to their own bus, then applying an EQ with a side chain that knocks out some of the
+overlapping frequencies on the reverbs from the main vocals increases clarity. But now that has to
+be applied to every previous song. Through the Logic Pro interface, this is tedious work, especially
+if the bus numbers differ or inputs are different.
 
-Or maybe between projects, you've really enhanced your workflow. Your track colors, transport preferences and preferred track headers have changed, and maybe you've added aux channels to send different portions of a MIDI instrument to.
+Or maybe between projects, you've really enhanced your workflow. Your track colors, transport
+preferences and preferred track headers have changed, and maybe you've added aux channels to send
+different portions of a MIDI instrument to.
 
 Or maybe the hi hat is too loud when open but too quiet when closed.
 
-I built this project to assist me with all of that. Reading my high-latency mix templates and applying plugins and parameters to create low-latency stock logic versions for tracking. Then taking a whole batch of projects and converting them back to the mix template in seconds, driven by an AI coding agent.
+I built this project to assist me with all of that. Reading my high-latency mix templates and
+applying plugins and parameters to create low-latency stock logic versions for tracking. Then taking
+a whole batch of projects and converting them back to the mix template in seconds, driven by an AI
+coding agent.
 
-Along the way I started [groovebin][groovebin] to assist with MIDI drums (and later MIDI instruments).
+Along the way I started [groovebin][groovebin] to assist with MIDI drums (and later MIDI
+instruments).
 
 New capability requests are welcome as [issues](https://github.com/phierceweb/logicxkit/issues).
 
@@ -36,27 +47,27 @@ another, add and rename and reorder tracks, repoint strip references after a lib
 migrate an old session onto a newer template, and build native Channel EQ / Compressor strips
 from a JSON spec.
 
-If what you want is to drive a *running* Logic — press a button, arm a track, move the
-playhead — that is a different job, and [logic-pro-mcp](https://github.com/MongLong0214/logic-pro-mcp)
-does it through Accessibility, AppleScript and control-surface protocols. logicxkit never talks
-to Logic. It works on closed project files, in batch, and the two are complements: one changes
-what Logic is doing, the other changes what a session *is* before Logic opens it.
+If what you want is to drive a *running* Logic — press a button, arm a track, move the playhead —
+that is a different job, and [logic-pro-mcp](https://github.com/MongLong0214/logic-pro-mcp) does it
+through Accessibility, AppleScript and control-surface protocols. logicxkit never talks to Logic. It
+works on closed project files, in batch, and the two are complements: one changes what Logic is
+doing, the other changes what a session *is* before Logic opens it.
 
-None of these formats are documented, so everything here came out of measurement: one
-deliberate change per Logic save, then a byte diff against the save before it. The control bar
-is the tidiest example — every button id was pinned on fifty single-toggle saves (2026-09-04),
-and a control bar written by this tool and copied whole onto another project came up in Logic
-with that exact set. That standard is not uniform across the tool. Some commands have been
-opened in Logic and confirmed, some are reasoned from diffs and never opened, and a defect
-reproduced on a real project is recorded until a regression test closes it. **[`docs/CAPABILITIES.md`][caps]
-carries the level and the evidence for every command, and `bin/run logic capabilities` prints
-the same table.** Read it before you point a writer at a session you care about.
+None of these formats are documented, so everything here came out of measurement: one deliberate
+change per Logic save, then a byte diff against the save before it. The control bar is the tidiest
+example — every button id was pinned on fifty single-toggle saves (2026-09-04), and a control bar
+written by this tool and copied whole onto another project came up in Logic with that exact set.
+That standard is not uniform across the tool. Some commands have been opened in Logic and confirmed,
+some are reasoned from diffs and never opened, and a defect reproduced on a real project is recorded
+until a regression test closes it. **[`docs/CAPABILITIES.md`][caps] carries the level and the
+evidence for every command, and `bin/run logic capabilities` prints the same table.** Read it before
+you point a writer at a session you care about.
 
 ## Requirements
 
 - **macOS.** There is no Linux or Windows path. CI runs on a macOS runner with the public golden
-  corpus tracked in the repo, so the synthetic layer and every public golden run there; the owner's goldens
-  (real sessions) and `tests/rig` (a physical console's scene) skip.
+  corpus tracked in the repo, so the synthetic layer and every public golden run there; the owner's
+  goldens (real sessions) and `tests/rig` (a physical console's scene) skip.
 - **Logic Pro 12.3.1 or 12.4** — the tool reads and writes their file format, and confirming any
   change means opening the result in Logic; the confirmations were made in 12.3.1 and, from
   2026-10-01, in 12.4, which re-saved each of the 61 public copies this tool wrote with its
@@ -82,10 +93,10 @@ pip install logicxkit
 logicxkit logic project ~/Music/Logic/Song.logicx    # read-only, to see it working
 ```
 
-That gets you the `logicxkit` command, and with it the record templates and native plug-in
-donors the writers need — Logic's own, taken from its saves of a blank project. To work on it instead, clone it and let `bin/run` build
-the venv — every command below is written that way, and `bin/run logic …` and
-`logicxkit logic …` are the same thing:
+That gets you the `logicxkit` command, and with it the record templates and native plug-in donors
+the writers need — Logic's own, taken from its saves of a blank project. To work on it instead,
+clone it and let `bin/run` build the venv — every command below is written that way, and `bin/run
+logic …` and `logicxkit logic …` are the same thing:
 
 ```bash
 git clone https://github.com/phierceweb/logicxkit.git
@@ -184,7 +195,7 @@ Every command that changes a project takes `--out`, copies the project there, an
 copy. **The input project is never modified.**
 
 Most of those writers go through `_edit.edit_copy`, which holds the result against its input
-with `services/integrity.py` and refuses on any structural regression — new record-level
+with `services/stream/integrity.py` and refuses on any structural regression — new record-level
 problems, more sequence link errors, objects whose mixer index stopped matching their channel,
 channels whose send flags stopped matching their sends — then reads the file back to confirm the
 bytes that landed are the bytes that passed. A refused run discards the whole copy rather than
@@ -200,15 +211,15 @@ confirms a write.
 
 Three more things write outside `--out`, and one warning:
 
-- **`logic build`, `logic pst` and `logic strip-save` can write your channel-strip and plug-in settings library,
-  but only if you ask.** A relative `output_dir` in a spec resolves under
-  `~/Music/Audio Music Apps` — Logic's own live library, not a scratch directory — so a write
-  that lands there is **refused unless you pass `--install`**, and a spec cannot reach your
-  library by leaving a key out. `--overwrite` is still separately required to replace an
-  existing file. To write elsewhere, set `output_root` (which moves only the output;
-  `strip_root` / `LOGICXKIT_STRIP_ROOT` moves where sources are read from too), or give an
-  absolute `output_dir`. The shipped `config/example-*.json` set `output_root` to `out/`, so
-  running an example as-is reads your library but never writes to it.
+- **`logic build`, `logic pst` and `logic strip-save` can write your channel-strip and plug-in
+  settings library, but only if you ask.** A relative `output_dir` in a spec resolves under
+  `~/Music/Audio Music Apps` — Logic's own live library, not a scratch directory — so a write that
+  lands there is **refused unless you pass `--install`**, and a spec cannot reach your library by
+  leaving a key out. `--overwrite` is still separately required to replace an existing file. To
+  write elsewhere, set `output_root` (which moves only the output; `strip_root` /
+  `LOGICXKIT_STRIP_ROOT` moves where sources are read from too), or give an absolute `output_dir`.
+  The shipped `config/example-*.json` set `output_root` to `out/`, so running an example as-is reads
+  your library but never writes to it.
 - **`logic prefs` writes Logic's own settings** through `defaults`. It refuses while Logic is
   running and takes a backup first.
 - **`logic donors` writes into the data root** (`LOGICXKIT_DATA`) unless you pass `--library`.
@@ -233,7 +244,9 @@ logicxkit/
     logic/
       _binary.py           the GAMETSPP float-block model
       cli.py               and the _*.py command groups beside it
-      services/            strip build/decode, project analysis, the editors, integrity
+      services/            eight subpackages: stream (the record stream and the write gate),
+                           mixer (channels, slots, routing, chains), translate, arrange
+                           (the track list, stacks, adds), song, regions, midi, project
       orchestrators/       multi-step workflows (apply-template)
     au/
       cli.py _views.py
@@ -264,9 +277,9 @@ native plug-in donors the writers need ship inside the package (`src/logicxkit/d
 own from the public corpus); a data root (`LOGICXKIT_DATA`) adds third-party donors and AU
 parameter tables, which are not ours to publish.
 
-The consequence for a fresh clone: **`bin/run pytest` runs every public golden**, and the keys
-only the owner's corpus has skip. The run prints `goldens: N of M keys found` on its last line so you can see how much actually ran;
-`LOGICXKIT_REQUIRE_GOLDENS=1` turns a missing golden into a failure, and
+The consequence for a fresh clone: **`bin/run pytest` runs every public golden**, and the keys only
+the owner's corpus has skip. The run prints `goldens: N of M keys found` on its last line so you can
+see how much actually ran; `LOGICXKIT_REQUIRE_GOLDENS=1` turns a missing golden into a failure, and
 `LOGICXKIT_GOLDENS=owner` prefers the owner's files where both corpora have a key.
 
 [`resources/README.md`][corpus] describes the shape of the owner's corpus and how the
@@ -301,10 +314,10 @@ files. [`CONTRIBUTING.md`][contributing] has the full loop; the house rules are:
 - The library imports the standard library and [groovebin][groovebin]; [pf-core][pf-core] is
   used for foundation helpers (atomic writes) and adopted for logging and exceptions at the CLI
   boundary only.
-- **Decoding claims need evidence from a real file.** `None` beats a guess, and a command
-  appearing in `--help` is not evidence of anything. If you add or change a writer, declare its
-  level in `src/logicxkit/logic/_capabilities_table.py`; `tests/logic/test_capabilities.py` fails when
-  a subcommand is undeclared or the doc drifts from the code.
+- **Decoding claims need evidence from a real file.** `None` beats a guess, and a command appearing
+  in `--help` is not evidence of anything. If you add or change a writer, declare its level in
+  `src/logicxkit/logic/_capabilities_table.py`; `tests/logic/test_capabilities.py` fails when a
+  subcommand is undeclared or the doc drifts from the code.
 
 ## License
 

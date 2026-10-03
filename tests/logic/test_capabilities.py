@@ -130,9 +130,9 @@ def test_shipped_examples_do_not_target_the_live_library(monkeypatch):
     import json
     from pathlib import Path
 
-    from logicxkit.logic.services.library import under_live_library
-    from logicxkit.logic.services.pst import output_root
-    from logicxkit.logic.services.spec import load_spec
+    from logicxkit.logic.services.mixer.library import under_live_library
+    from logicxkit.logic.services.translate.pst import output_root
+    from logicxkit.logic.services.mixer.spec import load_spec
 
     root = Path(__file__).resolve().parents[2] / "config"
     monkeypatch.delenv("LOGICXKIT_STRIP_ROOT", raising=False)
@@ -148,7 +148,7 @@ def test_live_library_write_is_refused_without_install(tmp_path, monkeypatch, ca
     import json
 
     from logicxkit.logic.cli import main
-    from logicxkit.logic.services.library import USER_DATA_DEFAULT
+    from logicxkit.logic.services.mixer.library import USER_DATA_DEFAULT
 
     monkeypatch.delenv("LOGICXKIT_AUDIO_MUSIC_APPS", raising=False)
     target = USER_DATA_DEFAULT / "Plug-In Settings"
@@ -164,7 +164,7 @@ def test_live_library_write_is_refused_without_install(tmp_path, monkeypatch, ca
 
 
 def test_an_override_does_not_unguard_the_real_library(tmp_path, monkeypatch):
-    from logicxkit.logic.services import library
+    from logicxkit.logic.services.mixer import library
 
     live, override = tmp_path / "live", tmp_path / "override"
     monkeypatch.setattr(library, "USER_DATA_DEFAULT", live)
@@ -178,7 +178,7 @@ def test_pst_into_the_real_library_is_refused_with_an_override_set(tmp_path, mon
     import json
 
     from logicxkit.logic.cli import main
-    from logicxkit.logic.services import library
+    from logicxkit.logic.services.mixer import library
 
     live = tmp_path / "live"
     monkeypatch.setattr(library, "USER_DATA_DEFAULT", live)

@@ -6,10 +6,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from ._edit import CommandError, edit_copy, owner_by_label
-from .services.levels import (
+from ._edit import CommandError, edit_copy, owner_by_label, written_alternatives
+from .services.mixer.levels import (
     PAN_CENTRE, UNITY, copy_levels, db_text, fader_word, read_levels, set_levels)
-from .services.retrack import find_project
+from .services.arrange.retrack import find_project
 
 
 def _wanted(args, data: bytes) -> dict[int, dict[str, int]]:
@@ -45,7 +45,7 @@ def _set(args) -> int:
 
 def cmd_levels(args) -> int:
     """Dump a project's fader/pan, set them, or carry them onto another project's copy."""
-    from .services.chains import channel_references
+    from .services.mixer.chains import channel_references
 
     if args.fader or args.pan:
         if args.to or not args.out:
@@ -53,7 +53,7 @@ def cmd_levels(args) -> int:
             return 2
         return _set(args)
     src_project = find_project(Path(args.project))
-    sources = sorted(src_project.glob("Alternatives/*/ProjectData"))
+    sources = written_alternatives(src_project)
     if not sources:
         print(f"logic levels: {args.project} is not a project (no Alternatives/*/ProjectData)")
         return 2

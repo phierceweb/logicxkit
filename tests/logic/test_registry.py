@@ -5,10 +5,10 @@ import unittest
 
 import _paths  # noqa: F401
 from _records import gnos
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.recbuild import time_fields
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.stream.recbuild import time_fields
 from _records import rec
-from logicxkit.logic.services.registry import entry_at, register_object, run_entries, set_selection
+from logicxkit.logic.services.stream.registry import entry_at, register_object, run_entries, set_selection
 
 
 def entries(payload: bytes, kind: int, stride: int) -> dict[int, bytes]:
@@ -82,7 +82,7 @@ class RegisterTest(unittest.TestCase):
 
     def test_slot_errors_name_the_track_triples_past_the_runs(self):
         from _records import env_obj, proj, seq_triple
-        from logicxkit.logic.services.registry import slot_errors
+        from logicxkit.logic.services.stream.registry import slot_errors
         g = rec(b"gnoS", 0xFFFF, 0xFFFF, self.base, 5)
         data = proj(env_obj(88, "Kick"), seq_triple(300, slot=28, object_id=88), seq_triple(301, slot=44, object_id=92),
                     seq_triple(302, slot=48, object_id=0), g)

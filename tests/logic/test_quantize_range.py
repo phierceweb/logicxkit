@@ -9,16 +9,16 @@ from dataclasses import replace
 import _paths  # noqa: F401
 from _data import needs
 from logicxkit.logic._quantize_cmd import bar_range, register
-from logicxkit.logic.services.audio_regions import AudioFile, AudioRegion
-from logicxkit.logic.services.events import BAR_ONE, PPQ
-from logicxkit.logic.services.flexmarkers import (
+from logicxkit.logic.services.regions.audio_regions import AudioFile, AudioRegion
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
+from logicxkit.logic.services.regions.flexmarkers import (
     END, END_TAIL, GRIDS, HIT, OFF, START, block_fields, grid_of, marker_block, quantize_code, samples_per_tick,
 )
-from logicxkit.logic.services.quantize_drums import quantize_drums
-from logicxkit.logic.services.quantize_range import (
+from logicxkit.logic.services.regions.quantize_drums import quantize_drums
+from logicxkit.logic.services.regions.quantize_range import (
     bar_span, chunks, has_hits, overlaps, region_range, requantize, unmoved,
 )
-from logicxkit.logic.services.signature import Meter, TimeSignature
+from logicxkit.logic.services.song.signature import Meter, TimeSignature
 
 SPB = 22050
 SPT = samples_per_tick(SPB)

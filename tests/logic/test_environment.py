@@ -7,7 +7,7 @@ and the instance UUID in the last 16 bytes. Payload length is 463 or 464 plus th
 import struct
 import unittest
 from _records import env_obj, proj, rec, uuid
-from logicxkit.logic.services.environment import (
+from logicxkit.logic.services.arrange.environment import (
     CHANNEL_OBJECT,
     COLOUR_AT,
     PARENT_AT,
@@ -104,7 +104,7 @@ class Logic112ObjectTest(unittest.TestCase):
     """The writers that find an object by its id reach one typed 1760."""
 
     def test_recolour_and_rename(self):
-        from logicxkit.logic.services.environment import rename_track
+        from logicxkit.logic.services.arrange.environment import rename_track
         data = proj(env_obj(88, "Piano", type_value=1760))
         obj = channel_objects(rename_track(set_colour(data, 88, 64), 88, "Rhodes"))[88]
         self.assertEqual((obj.name, obj.colour), ("Rhodes", 64))
@@ -115,8 +115,8 @@ class RenameTest(unittest.TestCase):
         import struct
 
         from _records import env_obj, proj
-        from logicxkit.logic.services.environment import name_end, rename_track
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.arrange.environment import name_end, rename_track
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         raw = bytearray(env_obj(500, "Gtr 2 Amp"))
         struct.pack_into("<H", raw, HEADER + name_end(raw[HEADER:]), 26)      # channel index
         data = proj(bytes(raw))
@@ -130,7 +130,7 @@ class RenameTest(unittest.TestCase):
 
     def test_a_stream_the_walk_cannot_finish_is_refused_by_rename_and_colour(self):
         from _records import env_obj, proj
-        from logicxkit.logic.services.environment import rename_track, set_colour
+        from logicxkit.logic.services.arrange.environment import rename_track, set_colour
         data = proj(env_obj(500, "Gtr 2 Amp")) + bytes(10)
         with self.assertRaises(ValueError):
             rename_track(data, 500, "Gtr")
@@ -138,8 +138,8 @@ class RenameTest(unittest.TestCase):
             set_colour(data, 500, 3)
 
     def test_a_name_outside_ascii_is_written_as_utf8_with_its_byte_length(self):
-        from logicxkit.logic.services.environment import NAME_AT, rename_track
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.arrange.environment import NAME_AT, rename_track
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         for name, size in (("Caf\u00e9", 5), ("\U0001F3B8 Lead", 9), ("\u00fc" * 63 + "x", 127)):
             out = rename_track(proj(env_obj(500, "Gtr 2 Amp")), 500, name)
             payload = next(r.raw for r in project_records(out) if r.tag == b"ivnE")[HEADER:]
@@ -147,7 +147,7 @@ class RenameTest(unittest.TestCase):
             self.assertEqual(channel_objects(out)[500].name, name)
 
     def test_a_name_nobody_could_see_or_that_turns_the_line_is_refused(self):
-        from logicxkit.logic.services.environment import rename_track
+        from logicxkit.logic.services.arrange.environment import rename_track
         data = proj(env_obj(500, "Gtr 2 Amp"))
         for name in ("a\u2028b", "a\u2029b", "\u202eevil", "\u2067x", "\u200b", " ", "\u00a0"):
             with self.subTest(name=name.encode()), \
@@ -155,13 +155,13 @@ class RenameTest(unittest.TestCase):
                 rename_track(data, 500, name)
 
     def test_an_emoji_sequence_keeps_its_joiners(self):
-        from logicxkit.logic.services.environment import rename_track
+        from logicxkit.logic.services.arrange.environment import rename_track
         family = "\U0001F468\u200d\U0001F469\u200d\U0001F467 Trio \u2764\ufe0f"
         out = rename_track(proj(env_obj(500, "Gtr 2 Amp")), 500, family)
         self.assertEqual(channel_objects(out)[500].name, family)
 
     def test_a_name_logic_could_not_show_is_refused(self):
-        from logicxkit.logic.services.environment import rename_track
+        from logicxkit.logic.services.arrange.environment import rename_track
         data = proj(env_obj(500, "Gtr 2 Amp"))
         for name in ("", "Kick\x07In", "\u00fc" * 64, "x" * 128, "\ud800"):
             shown = name.encode("utf-8", "surrogatepass")
@@ -170,8 +170,8 @@ class RenameTest(unittest.TestCase):
 
     def test_a_rename_marks_the_name_as_the_users(self):
         from _records import env_obj, proj
-        from logicxkit.logic.services.environment import NAMED_BIT, STATE_AT, rename_track
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.arrange.environment import NAMED_BIT, STATE_AT, rename_track
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         raw = bytearray(env_obj(500, "Audio 5"))
         raw[HEADER + STATE_AT] = 2
         out = rename_track(proj(bytes(raw)), 500, "Gtr 2 Amp")
@@ -179,8 +179,8 @@ class RenameTest(unittest.TestCase):
 
     def test_a_clone_is_user_named_unless_told_otherwise(self):
         from _records import env_obj
-        from logicxkit.logic.services.environment import NAMED_BIT, STATE_AT, clone_object
-        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logic.services.arrange.environment import NAMED_BIT, STATE_AT, clone_object
+        from logicxkit.logic.services.stream.stream import HEADER
         raw = bytearray(env_obj(500, "Gtr 2 Amp"))
         raw[HEADER + STATE_AT] = 3
         named = clone_object(bytes(raw), object_id=504, name="Kick In", owner=0, colour=16)
@@ -189,7 +189,7 @@ class RenameTest(unittest.TestCase):
 
     def test_refuses_an_unknown_object_and_an_empty_name(self):
         from _records import env_obj, proj
-        from logicxkit.logic.services.environment import rename_track
+        from logicxkit.logic.services.arrange.environment import rename_track
         data = proj(env_obj(500, "Gtr 2 Amp"))
         with self.assertRaises(ValueError):
             rename_track(data, 999, "X")

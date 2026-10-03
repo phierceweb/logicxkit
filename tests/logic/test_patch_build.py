@@ -17,7 +17,7 @@ from test_patch import cst
 
 from logicxkit import cli
 from logicxkit.logic import _patch_cmd
-from logicxkit.logic.services.patch import ReplacedBundleLeft, build_patch, read_patch
+from logicxkit.logic.services.mixer.patch import ReplacedBundleLeft, build_patch, read_patch
 
 _real_rmtree = shutil.rmtree
 
@@ -115,7 +115,7 @@ class BuildPatchTest(unittest.TestCase):
         self.assertEqual([p.name for p in self.out.iterdir()], ["P.patch"])
 
     def test_a_failed_write_leaves_no_bundle_and_no_temporary_directory(self):
-        with mock.patch("logicxkit.logic.services.patch.plistlib.dumps", side_effect=OSError("disk full")), \
+        with mock.patch("logicxkit.logic.services.mixer.patch.plistlib.dumps", side_effect=OSError("disk full")), \
              self.assertRaisesRegex(OSError, "disk full"):
             build_patch(self.strip, name="P", out_dir=self.out)
         self.assertEqual(snapshot(self.out), {})
@@ -138,7 +138,7 @@ class BuildPatchTest(unittest.TestCase):
     def test_a_replaced_bundle_that_cannot_be_removed_is_reported(self):
         build_patch(self.strip, name="P", out_dir=self.out)
         self.strip.write_bytes(cst("Snare"))
-        with mock.patch("logicxkit.logic.services.patch.shutil.rmtree", side_effect=refuse_old), \
+        with mock.patch("logicxkit.logic.services.mixer.patch.shutil.rmtree", side_effect=refuse_old), \
                 self.assertRaises(ReplacedBundleLeft) as caught:
             build_patch(self.strip, name="P", out_dir=self.out, overwrite=True)
         (left,) = [p for p in self.out.iterdir() if p.name.endswith(".patch-old")]
@@ -174,7 +174,7 @@ class BuildCliTest(unittest.TestCase):
             good, out = Path(tmp, "good.cst"), Path(tmp, "out")
             good.write_bytes(cst("Kick"))
             self.assertEqual(self.run_cli("--build", str(good), "--name", "P", "--out", str(out))[0], 0)
-            with mock.patch("logicxkit.logic.services.patch.shutil.rmtree", side_effect=refuse_old):
+            with mock.patch("logicxkit.logic.services.mixer.patch.shutil.rmtree", side_effect=refuse_old):
                 rc, text = self.run_cli("--build", str(good), "--name", "P", "--out", str(out), "--overwrite")
             (left,) = [p for p in out.iterdir() if p.name.endswith(".patch-old")]
             self.assertEqual((rc, str(left) in text, "is built" in text), (1, True, True))

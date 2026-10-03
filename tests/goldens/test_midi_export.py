@@ -11,11 +11,11 @@ from unittest import mock
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_write import add_note, add_region
-from logicxkit.logic.services.smf import meter_map, tempo_map, write_smf
-from logicxkit.logic.services.tempo import project_tempo
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_write import add_note, add_region
+from logicxkit.logic.services.midi.smf import meter_map, tempo_map, write_smf
+from logicxkit.logic.services.song.tempo import project_tempo
 from logicxkit.logicx import project_data
 
 TEMPO, METER, EMPTY = "tempo-point-140-logic", "signature-meter-created-logic", "midi-empty-region-logic"
@@ -73,7 +73,7 @@ class TempoMapTest(_Tmp):
         data = project_data(_goldens.path(TEMPO))
         lcd, bar_one = project_tempo(data)
         self.assertNotEqual(lcd, bar_one)
-        with mock.patch("logicxkit.logic.services.smf.read_tempo_events", return_value=[]):
+        with mock.patch("logicxkit.logic.services.midi.smf.read_tempo_events", return_value=[]):
             self.assertEqual(tempo_map(data), [(BAR_ONE, bar_one)])
 
     def test_the_cli_writes_the_tempo_map(self):

@@ -3,8 +3,8 @@ touched nothing else, so a same-parent move is a splice plus renumber."""
 
 import unittest
 from _records import chan, env_obj, proj, track, uuid
-from logicxkit.logic.services.reorder import move_track
-from logicxkit.logic.services.stacks import read_stacks, read_tracks
+from logicxkit.logic.services.arrange.reorder import move_track
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
 
 
 def session():
@@ -65,7 +65,7 @@ class MoveTest(unittest.TestCase):
 
     def test_only_row_bytes_change(self):
         """The two rows swap places; no other record is touched."""
-        from logicxkit.logic.services.recdiff import diff_records
+        from logicxkit.logic.services.stream.recdiff import diff_records
         data = session()
         out = move_track(data, 140, before=136, track_count=5)
         self.assertEqual(len(out), len(data))

@@ -9,7 +9,7 @@ from pathlib import Path
 import _goldens
 from _cli import count, data, run, wrapped
 
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.stacks import read_tracks
 
 KEY = "logic-11-2-a"
 IN_LOGIC_12 = "logic-11-2-inst-logic"
@@ -66,7 +66,7 @@ class AsATemplateTest(unittest.TestCase):
     routing is the same, so none is planned, and the chains are refused by their class."""
 
     def test_the_sessions_routing_is_kept_and_the_run_succeeds(self):
-        from logicxkit.logic.services.binding import channels, input_labels, output_labels
+        from logicxkit.logic.services.mixer.binding import channels, input_labels, output_labels
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             session = _goldens.path(CONVERTED)

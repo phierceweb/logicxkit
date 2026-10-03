@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .services.recdiff import diff_records, load_project_data, noise_mask, summary
+from .services.stream.recdiff import diff_records, load_project_data, noise_mask, summary
 
 
 def cmd_recdiff(args) -> int:
@@ -46,9 +46,9 @@ def cmd_recdiff(args) -> int:
 
 def cmd_manifest(args) -> int:
     """Tracks, stacks and channels of a project from decoded fields only."""
-    from .services.levels import db_text
-    from .services.manifest import read_manifest
-    from .services.retrack import find_project
+    from .services.mixer.levels import db_text
+    from .services.project.manifest import read_manifest
+    from .services.arrange.retrack import find_project
 
     m = read_manifest(find_project(Path(args.project)))
     if args.json:

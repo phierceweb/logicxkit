@@ -6,7 +6,7 @@ from 4 up to the project's `.cst`-reference key, which differs per session (9/10
 import struct
 import unittest
 from _records import chan, proj, rec
-from logicxkit.logic.services.transplant import (
+from logicxkit.logic.services.mixer.transplant import (
     channel_slots,
     remove_slots,
     owner_of,
@@ -79,7 +79,7 @@ class RemoveSlotsTest(unittest.TestCase):
         self.assertEqual(len(out), len(data) - len(slot(0, 4, b"EQ")) - len(slot(0, 5, b"COMP")))
 
     def test_a_channel_without_slots_is_unchanged(self):
-        from logicxkit.logic.services.keyflags import sync_key_flags
+        from logicxkit.logic.services.stream.keyflags import sync_key_flags
         data = sync_key_flags(proj(chan(0, "Audio 1"), ref(0, 10)))
         out, keys = remove_slots(data, 0)
         self.assertEqual((out, keys), (data, []))
@@ -110,7 +110,7 @@ class TransplantTest(unittest.TestCase):
     def test_other_channels_and_the_reference_survive(self):
         out, _ = transplant(src_project(), dst_project(), src_owner=0, dst_owner=3)
         self.assertEqual([r.key for r in channel_slots(out, 5)], [4, 5])
-        refs = [r for r in __import__("logicxkit.logic.services.insert", fromlist=["x"])
+        refs = [r for r in __import__("logicxkit.logic.services.mixer.insert", fromlist=["x"])
                 .project_records(out) if r.owner == 3 and b".cst" in r.raw]
         self.assertEqual(len(refs), 1)
 
@@ -139,8 +139,8 @@ class KeyFlagTest(unittest.TestCase):
     or adds a record must keep them in step."""
 
     def test_remove_clears_the_flags_of_the_dropped_keys(self):
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.keyflags import flag_errors, key_flags, sync_key_flags
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.stream.keyflags import flag_errors, key_flags, sync_key_flags
         data = sync_key_flags(proj(chan(0, "Audio 1"), slot(0, 4, b"EQ"), slot(0, 5, b"COMP"), ref(0, 10)))
         self.assertEqual(flag_errors(data), [])
         payload = next(r.raw[HDR:] for r in project_records(data) if r.tag == b"OCuA" and r.owner == 0)
@@ -151,8 +151,8 @@ class KeyFlagTest(unittest.TestCase):
         self.assertEqual(flag_errors(out), [])
 
     def test_transplant_sets_the_flags_of_the_new_keys(self):
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.keyflags import flag_errors, key_flags
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.stream.keyflags import flag_errors, key_flags
         src = proj(chan(0, "Audio 1"), slot(0, 4, b"A"), slot(0, 5, b"B"), slot(0, 6, b"C"), ref(0, 10))
         dst = proj(chan(3, "Audio 1"), ref(3, 10))
         out, _ = transplant(src, dst, src_owner=0, dst_owner=3)
@@ -184,7 +184,7 @@ class OldSlotBaseTest(unittest.TestCase):
                     chan(4, "Audio 21"), self._old_slot(4, 2, b"KEEP", True), ref(4, 13))
 
     def test_the_old_slots_are_seen(self):
-        from logicxkit.logic.services.slots import slot_index_base
+        from logicxkit.logic.services.mixer.slots import slot_index_base
         old = self._old()
         self.assertEqual(slot_index_base(old), 2)
         self.assertEqual([r.key for r in channel_slots(old, 3)], [2, 3])
@@ -209,9 +209,9 @@ class OldSlotBaseTest(unittest.TestCase):
 class RebaseTest(unittest.TestCase):
     def test_every_key_from_the_slot_base_moves_by_two_and_sends_stay(self):
         from _records import send
-        from logicxkit.logic.services.slots import slot_index_base
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.slotkeys import needs_rebase, rebase
+        from logicxkit.logic.services.mixer.slots import slot_index_base
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.mixer.slotkeys import needs_rebase, rebase
         old = OldSlotBaseTest()
         # the 2020 song: three sends on a channel whose slots start at key 2, so key 2 is both
         data = proj(chan(3, "Audio 20"), send(3, 0, 5), send(3, 1, 6), send(3, 2, 7),
@@ -233,8 +233,8 @@ class ChannelBaseWordTest(unittest.TestCase):
 
     def test_rebase_stamps_four_into_every_channel(self):
         import struct
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.slotkeys import CHANNEL_BASE_AT, channel_bases, rebase
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.mixer.slotkeys import CHANNEL_BASE_AT, channel_bases, rebase
         old = OldSlotBaseTest()
         def stamped(raw):
             buf = bytearray(raw)

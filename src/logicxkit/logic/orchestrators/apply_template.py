@@ -14,18 +14,18 @@ from __future__ import annotations
 
 import re
 
-from ..services.binding import channels, input_labels, output_labels
-from ..services.chains import channel_references
-from ..services.groups import read_groups
-from ..services.instout import read_instrument_outputs
-from ..services.mixer import channel_formats
-from ..services.stream import HEADER
-from ..services.levels import FIXED_ONE, read_levels
-from ..services.pairing import extra_rows, forced_by_object, match_quality, pair_rows, pair_tracks
-from ..services.retrack import cst_references
-from ..services.sends import read_sends
-from ..services.stacks import Stack, read_stacks, read_tracks
-from ..services.transplant import channel_slots, slot_class_version
+from ..services.mixer.binding import channels, input_labels, output_labels
+from ..services.mixer.chains import channel_references
+from ..services.arrange.groups import read_groups
+from ..services.mixer.instout import read_instrument_outputs
+from ..services.mixer.mixer import channel_formats
+from ..services.stream.stream import HEADER
+from ..services.mixer.levels import FIXED_ONE, read_levels
+from ..services.mixer.pairing import extra_rows, forced_by_object, match_quality, pair_rows, pair_tracks
+from ..services.arrange.retrack import cst_references
+from ..services.mixer.sends import read_sends
+from ..services.arrange.stacks import Stack, read_stacks, read_tracks
+from ..services.mixer.transplant import channel_slots, slot_class_version
 from .apply_ops import apply
 from .ops import KINDS, STRUCTURE, Op  # noqa: F401  (the names callers import from here)
 from .template_stacks import same_stack, stack_of, stack_targets
@@ -115,9 +115,7 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
                                       p.rule, args={"track": m["object_id"], "leave": True}, row=m["object_id"]))
                 op = Op("stack", _row_name(t), f"make a stack of {len(wanted)} track(s)", p.rule,
                         args={"members": [m["object_id"] for m in wanted], "name": t["name"],
-                              "colour": t["colour"], "template_row": t["key"]})
-                if not wanted:
-                    op.status, op.note = "refused", "none of its members is in the session"
+                              "colour": t["colour"], "template_row": t["key"], "stack_id": t["object_id"]})
             elif kind is None:
                 op = Op("add", _row_name(t), "add", p.rule, status="refused",
                         note="only audio, instrument and aux tracks can be added")
@@ -146,11 +144,25 @@ def _plan(template: bytes, session: bytes, *, template_count: int | None,
             desc = f"move into stack {to}" if have is None else f"move from {_name(have, target)} to {to}"
             op = Op("member", _row_name(s), desc, p.rule,
                     args={"track": s["object_id"], "stack": target.object_id if found else None,
-                          "stack_name": want.name}, row=s["object_id"])
+                          "stack_name": want.name, "stack_id": want.object_id}, row=s["object_id"])
             if not found:
                 op.status, op.note = "refused", target
             ops.append(op)
         previous, last_add = s, None
+
+    for op in ops:                       # a stack of tracks added above it is made once they exist
+        if op.kind == "stack":
+            pending = [a for a in ops if a.kind == "add" and a.status == "planned"
+                       and _id(t_in.get(a.args["template_row"])) == op.args["stack_id"]]
+            op.detail = f"make a stack of {len(op.args['members']) + len(pending)} track(s)"
+            if pending:
+                op.args["pending"], op.note = pending, f"{len(pending)} of them added above"
+            elif not op.args["members"]:
+                op.status, op.note = "refused", "none of its members is in the session"
+    made = {(op.args["stack_id"], m) for op in ops if op.kind == "stack" and op.status == "planned"
+            for m in op.args["members"]}
+    ops = [op for op in ops if not (op.kind == "member" and op.args.get("stack") is None
+                                    and (op.args.get("stack_id"), op.args["track"]) in made)]
 
     # --- arrange order, per parent, among paired rows that already sit under that parent
     for parent in [None, *t_stacks]:
@@ -354,7 +366,7 @@ def with_template_inputs(template: bytes, session: bytes) -> tuple[bytes, list[O
     """The session with every mono `Input N` the template routes from, made before anything
     is planned — an insert moves every later channel owner, so it cannot run among ops that
     already name owners."""
-    from ..services.inputs_create import ensure_inputs, mono_inputs
+    from ..services.arrange.inputs_create import ensure_inputs, mono_inputs
     t_ch = channels(template)
     wanted = [int(m.group(1)) for c in t_ch.values() if (m := re.fullmatch(r"Input (\d+)", c.label))]
     fed = [int(m.group(1)) for label in input_labels(template).values()
@@ -385,7 +397,8 @@ def apply_template(template: bytes, session: bytes, *, template_count: int | Non
     for _round in range(4):                     # adds first, then the stacks they belong to, then moves
         ops = plan(template, data, template_count=template_count, session_count=count, skip=skip,
                    only=only, forced=forced, known=known, excluded=excluded)
-        structural = [op for op in ops if op.kind in STRUCTURE and op.status == "planned"]
+        structural = [op for op in ops if op.kind in STRUCTURE and op.status == "planned"
+                      and not op.args.get("pending")]            # a stack waits for its adds
         if not structural:
             break
         data, new_rows = apply(template, data, structural, session_count=count)
@@ -408,7 +421,7 @@ def session_only(template: bytes, session: bytes, *, template_count: int | None,
                  excluded: set[str] | None = None) -> list[dict]:
     """Session rows no template row claims. The plan leaves them as they are; naming them is
     what keeps a stray track from being invisible in it."""
-    from ..services.stacks import read_tracks
+    from ..services.arrange.stacks import read_tracks
     pairs = pair_tracks(template, session, template_count=template_count,
                         session_count=session_count, forced=forced, excluded=excluded)
     return extra_rows(pairs, read_tracks(session, session_count))

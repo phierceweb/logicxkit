@@ -13,8 +13,8 @@ from logicxkit.logic._edit import CommandError
 from logicxkit.logic._midi_cmd import _describe
 from logicxkit.logic._midi_edit_cmd import Edit, _apply, parse
 from logicxkit.logic.cli import main
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.midi_write import note_lines
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.midi.midi_write import note_lines
 
 
 def note(pitch: int):

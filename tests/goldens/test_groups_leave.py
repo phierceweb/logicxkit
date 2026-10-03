@@ -4,9 +4,9 @@ import unittest
 
 import _goldens
 from _data import needs
-from logicxkit.logic.services.groups import assign, group_of, read_groups
-from logicxkit.logic.services.recdiff import diff_records
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.groups import assign, group_of, read_groups
+from logicxkit.logic.services.stream.recdiff import diff_records
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logicx import project_data
 
 

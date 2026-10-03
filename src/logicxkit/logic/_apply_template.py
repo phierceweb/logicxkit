@@ -7,15 +7,15 @@ from pathlib import Path
 
 from ._edit import CommandError, bump_track_count, edit_copy, first_project_data, object_by_name
 from .orchestrators.apply_template import KINDS, STRUCTURE, apply_template, lineage_problem, plan, session_only
-from .services.pairing import format_map, parse_map_full, propose_map
-from .services.project import project_metadata
-from .services.retrack import find_project
+from .services.mixer.pairing import format_map, parse_map_full, propose_map
+from .services.project.project import project_metadata
+from .services.arrange.retrack import find_project
 
 
 def _rebased(data: bytes) -> bytes:
     """A project made before Logic 11.2 first gets Logic 12's slot-key layout, so nothing the
     template brings can land on a key the old numbering used for something else."""
-    from .services.slotkeys import needs_rebase, rebase
+    from .services.mixer.slotkeys import needs_rebase, rebase
     if not needs_rebase(data):
         return data
     data, report = rebase(data)
@@ -33,10 +33,11 @@ def _left_alone(e: ValueError, forced, data_file: Path) -> bool:
 def _copy_display(template_project: Path, alternative: Path) -> list[str]:
     """The template's track header components and control bar onto one alternative of the
     output — DisplayState, not ProjectData, so it sits beside the record ops."""
-    from .services.controlbar import alternative_dirs, copy_layout
-    from .services.header import read_components, write_components
-    from .services.toolbar import copy_toolbar
-    src = next(iter(alternative_dirs(template_project)), None)
+    from ._edit import display_source
+    from .services.song.controlbar import copy_layout
+    from .services.stream.header import read_components, write_components
+    from .services.song.toolbar import copy_toolbar
+    src = display_source(template_project)
     if src is None or not (alternative / "DisplayState.plist").exists():
         return ["display  (no DisplayState.plist to copy from or to)"]
     lines = []
@@ -65,8 +66,8 @@ def _only(args, session: bytes, count: int | None) -> set[int] | None:
     """The session rows named by ``--track`` and ``--stack`` (a stack's members), or None."""
     if not (args.track or args.stack):
         return None
-    from .services.stacks import read_stacks, read_tracks, rows_below
-    from .services.trackname import stack_named
+    from .services.arrange.stacks import read_stacks, read_tracks, rows_below
+    from .services.arrange.trackname import stack_named
     rows = {r["key"]: r["object_id"] for r in read_tracks(session, count)}
     only = {object_by_name(session, name, count) for name in args.track or []}
     all_stacks = read_stacks(session, count)
@@ -95,7 +96,7 @@ def cmd_apply_template(args) -> int:
 
     session_project = find_project(Path(args.project))
     if args.propose_map:
-        from .services.stacks import read_tracks
+        from .services.arrange.stacks import read_tracks
         session = first_project_data(session_project)
         entries = propose_map(read_tracks(template, template_count),
                               read_tracks(session, project_metadata(session_project).get("tracks")))
@@ -174,12 +175,12 @@ def cmd_apply_template(args) -> int:
             for line in _copy_display(template_project, data_file.parent):
                 print("  " + line)
         if not only and "modes" not in skip:
-            from .services.modes import copy_modes
+            from .services.song.modes import copy_modes
             out, modes = copy_modes(template, out)
             lit = [name for name, on in modes.items() if on is True]
             print(f"  modes    {', '.join(lit) if lit else 'none'} lit, count-in {modes['Count-in']}, as the template")
         if not only and "metronome" not in skip:
-            from .services.metronome import copy_metronome
+            from .services.song.metronome import copy_metronome
             out, met = copy_metronome(template, out)
             on = [name for name, v in met.items() if v is True]
             print(f"  metronome {len(on)} boxes on, {sum(r['on'] for r in met['MIDI click'].values())} MIDI click rows, as the template")

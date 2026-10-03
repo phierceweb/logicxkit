@@ -6,10 +6,10 @@ import re
 import unittest
 
 import _goldens
-from logicxkit.logic.services.automation import read_automation
-from logicxkit.logic.services.automation_names import lane_target
-from logicxkit.logic.services.binding import bound_channels
-from logicxkit.logic.services.events import BAR_ONE, PPQ
+from logicxkit.logic.services.regions.automation import read_automation
+from logicxkit.logic.services.regions.automation_names import lane_target
+from logicxkit.logic.services.mixer.binding import bound_channels
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
 from logicxkit.logicx import project_data
 
 RESAVES = ("auto-lanes-resave-logic", "auto-eqlanes-resave-logic", "auto-mblanes-resave-logic")

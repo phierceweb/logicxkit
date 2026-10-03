@@ -8,11 +8,11 @@ from pathlib import Path
 import _goldens
 from _cli import data, run, source
 
-from logicxkit.logic.services.controlbar import alternative_dirs, read_controls
-from logicxkit.logic.services.header import read_components
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.modes import TRANSIENT, read_modes
-from logicxkit.logic.services.toolbar import read_toolbar
+from logicxkit.logic.services.song.controlbar import alternative_dirs, read_controls
+from logicxkit.logic.services.stream.header import read_components
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.song.modes import TRANSIENT, read_modes
+from logicxkit.logic.services.song.toolbar import read_toolbar
 
 TEMPLATE, SESSION = "controlbar-pause-on", "controlbar-base"
 

@@ -15,10 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tests"))
 import _goldens  # noqa: E402
-from logicxkit.logic.services.binding import channels  # noqa: E402
-from logicxkit.logic.services.channel_alloc import mixer_record  # noqa: E402
-from logicxkit.logic.services.environment import ENV_TAG, object_id_of  # noqa: E402
-from logicxkit.logic.services.groups import (  # noqa: E402
+from logicxkit.logic.services.mixer.binding import channels  # noqa: E402
+from logicxkit.logic.services.mixer.channel_alloc import mixer_record  # noqa: E402
+from logicxkit.logic.services.arrange.environment import ENV_TAG, object_id_of  # noqa: E402
+from logicxkit.logic.services.arrange.groups import (  # noqa: E402
     EVENT,
     EVENT_FADER_AT,
     EVENT_OBJECT_AT,
@@ -29,12 +29,12 @@ from logicxkit.logic.services.groups import (  # noqa: E402
     TAIL,
     read_groups,
 )
-from logicxkit.logic.services.stream import HEADER, project_records  # noqa: E402
-from logicxkit.logic.services.recbuild import slot_of  # noqa: E402
-from logicxkit.logic.services.recdiff import load_project_data  # noqa: E402
-from logicxkit.logic.services.sends import is_send  # noqa: E402
-from logicxkit.logic.services.stacks import read_stacks  # noqa: E402
-from logicxkit.logic.services.tracklist import arrange_run, flat_run, row_object  # noqa: E402
+from logicxkit.logic.services.stream.stream import HEADER, project_records  # noqa: E402
+from logicxkit.logic.services.stream.recbuild import slot_of  # noqa: E402
+from logicxkit.logic.services.stream.recdiff import load_project_data  # noqa: E402
+from logicxkit.logic.services.mixer.sends import is_send  # noqa: E402
+from logicxkit.logic.services.arrange.stacks import read_stacks  # noqa: E402
+from logicxkit.logic.services.arrange.tracklist import arrange_run, flat_run, row_object  # noqa: E402
 
 TEXT_HEAD = 98                      # a qSxT's fixed head; the section name follows
 SLOT_KEYS = range(2, 20)            # a channel's plug-in and property records
@@ -175,15 +175,15 @@ def arrangement_track(pair: tuple[str, str]) -> dict:
 def midi_region(pair: tuple[str, str], track_label: str) -> dict:
     """The region Logic made on the strip labelled ``track_label``: its sequence triple and the
     song container's 80-byte entry for it."""
-    from logicxkit.logic.services.regions import ENTRY, placements, song_container
-    from logicxkit.logic.services.sequence import sequences, triple_by_slot
+    from logicxkit.logic.services.regions.regions import ENTRY, placements, song_container
+    from logicxkit.logic.services.stream.sequence import sequences, triple_by_slot
     data = _load(pair[1])
     records = project_records(data)
     run = arrange_run(records)
     song = song_container(records, run)
     payload = records[song.end].raw[HEADER:]
     labels = {}
-    from logicxkit.logic.services.stacks import read_tracks
+    from logicxkit.logic.services.arrange.stacks import read_tracks
     names = {r["object_id"]: r["name"] for r in read_tracks(data, None)}
     entries = [(off, oid) for off, oid, _row in placements(records) if names.get(oid) == track_label]
     if len(entries) != 1:
@@ -199,7 +199,7 @@ def midi_region(pair: tuple[str, str], track_label: str) -> dict:
 def audio_region(pair: tuple[str, str]) -> dict:
     """The audio file record, region record and song-container entry Logic added for one
     imported WAV."""
-    from logicxkit.logic.services.regions import ENTRY, TAIL, song_container
+    from logicxkit.logic.services.regions.regions import ENTRY, TAIL, song_container
     new = _new(pair)
     lfua = [r for r in new if r.tag == b"lFuA"]
     grua = [r for r in new if r.tag == b"gRuA"]
@@ -263,8 +263,8 @@ DONOR_KEYS = (("inserts-native-all-logic", None), ("master-track-limiter-logic",
 
 def donors(lib: Path = OUT / "donors") -> list[str]:
     import shutil
-    from logicxkit.logic.services.plugin_names import native_names
-    from logicxkit.logic.services.donors import harvest_donors
+    from logicxkit.logic.services.mixer.plugin_names import native_names
+    from logicxkit.logic.services.mixer.donors import harvest_donors
     shutil.rmtree(lib, ignore_errors=True)
     from logicxkit.logic._edit import owner_by_label
     written = []
@@ -281,11 +281,11 @@ def id_offsets(lib: Path) -> None:
     plug-in (same record length) in the donor saves, into the manifest; `add-plugin` stamps a
     copy's own id there."""
     from logicxkit.logic._binary import find_blocks
-    from logicxkit.logic.services.donors import MANIFEST
-    from logicxkit.logic.services.slots import slot_index_base
-    from logicxkit.logic.services.plugins import plugin_identity
-    from logicxkit.logic.services.slots import is_plugin_slot, property_key_base
-    from logicxkit.logic.services.transplant import window_offsets
+    from logicxkit.logic.services.mixer.donors import MANIFEST
+    from logicxkit.logic.services.mixer.slots import slot_index_base
+    from logicxkit.logic.services.mixer.plugins import plugin_identity
+    from logicxkit.logic.services.mixer.slots import is_plugin_slot, property_key_base
+    from logicxkit.logic.services.mixer.transplant import window_offsets
     pool: dict = {}
     for key, _label in DONOR_KEYS:
         data = _load(key)

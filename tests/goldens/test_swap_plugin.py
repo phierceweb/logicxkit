@@ -12,8 +12,8 @@ from pathlib import Path
 import _goldens
 from logicxkit.logic._swap_plugin_cmd import cmd_swap_plugin, matching_slots
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.plugins import slot_payloads
-from logicxkit.logic.services.translate import load_maps, map_for, read_settings
+from logicxkit.logic.services.mixer.plugins import slot_payloads
+from logicxkit.logic.services.translate.translate import load_maps, map_for, read_settings
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 

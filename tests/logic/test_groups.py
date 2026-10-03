@@ -6,7 +6,7 @@ import struct
 import unittest
 import _paths  # noqa: F401
 from _records import chan, env_obj, gnos, group_triple, marker, proj, rec, track, uuid
-from logicxkit.logic.services.groups import (
+from logicxkit.logic.services.arrange.groups import (
     DEFAULT_FLAGS,
     FLAGS,
     GROUP_ON,
@@ -20,8 +20,8 @@ from logicxkit.logic.services.groups import (
     set_group,
     settings_of,
 )
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.registry import group_entries, register_group
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.registry import group_entries, register_group
 from _data import needs
 
 KICK, SNARE, OH_L, OH_R = 88, 92, 96, 100
@@ -308,8 +308,8 @@ class ListingTest(unittest.TestCase):
         from contextlib import redirect_stdout
 
         from logicxkit.logic._groups import _print
-        from logicxkit.logic.services.environment import channel_objects
-        from logicxkit.logic.services.groups import Group
+        from logicxkit.logic.services.arrange.environment import channel_objects
+        from logicxkit.logic.services.arrange.groups import Group
         objs = channel_objects(proj(env_obj(500, b"Gitarre \xfc")))
         out = io.StringIO()
         with redirect_stdout(out):

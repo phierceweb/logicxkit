@@ -5,8 +5,8 @@ import unittest
 
 import _paths  # noqa: F401
 from _records import chan, proj, rec, send
-from logicxkit.logic.services.records import read_records
-from logicxkit.logic.services.stripsave import STRIP_MARKER, export_strip
+from logicxkit.logic.services.stream.records import read_records
+from logicxkit.logic.services.mixer.stripsave import STRIP_MARKER, export_strip
 
 HDR = 36
 

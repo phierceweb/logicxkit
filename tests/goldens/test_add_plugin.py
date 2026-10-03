@@ -6,12 +6,12 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.mixer import CHANNEL_TAG
-from logicxkit.logic.services.stream import project_records
-from logicxkit.logic.services.keyflags import flag_errors
-from logicxkit.logic.services.plugin_library import find_donor, load_library
-from logicxkit.logic.services.transplant import channel_slots, slot_class_version
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
+from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.stream.keyflags import flag_errors
+from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
+from logicxkit.logic.services.mixer.transplant import channel_slots, slot_class_version
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 

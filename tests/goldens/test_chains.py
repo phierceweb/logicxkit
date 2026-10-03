@@ -88,7 +88,7 @@ class ChainChangesTest(unittest.TestCase):
         self.SONG = _goldens.path("tracked-song")
         if not self.SONG:
             self.skipTest("the tracked-song golden is not present")
-        from logicxkit.logic.services.chains import load_chain_config
+        from logicxkit.logic.services.mixer.chains import load_chain_config
         from logicxkit.logicx import project_data
         cfg_path = _paths.RIG_CONFIG / "logic" / "tracking-chains.json"
         if not cfg_path.exists():
@@ -97,9 +97,9 @@ class ChainChangesTest(unittest.TestCase):
         self.data = project_data(self.SONG)
 
     def _changes(self, data=None):
-        from logicxkit.logic.services.chain_report import chain_changes
-        from logicxkit.logic.services.chains import base_donors, chain_plan, load_extra_donors
-        from logicxkit.logic.services.stream import project_records
+        from logicxkit.logic.services.mixer.chain_report import chain_changes
+        from logicxkit.logic.services.mixer.chains import base_donors, chain_plan, load_extra_donors
+        from logicxkit.logic.services.stream.stream import project_records
         data = self.data if data is None else data
         ver = next((r.ver for r in project_records(data) if r.tag == b"UCuA"), None)
         from logicxkit.utils.data import data_dir
@@ -130,7 +130,7 @@ class ChainChangesTest(unittest.TestCase):
     def test_an_untouched_channel_reports_no_replacement(self):
         """A channel the config covers but that carries no chain yet: made here by stripping
         one dialled channel, since every channel of the tracked song is dialled."""
-        from logicxkit.logic.services.transplant import remove_slots
+        from logicxkit.logic.services.mixer.transplant import remove_slots
         dialled = next(c for c in self._changes() if c.before)
         stripped, removed = remove_slots(self.data, dialled.owner)
         self.assertTrue(removed)
@@ -145,7 +145,7 @@ class LogicResavedChainsTest(unittest.TestCase):
     back as written (2026-09-12)."""
 
     def test_logic_kept_every_chain(self):
-        from logicxkit.logic.services.project import analyze
+        from logicxkit.logic.services.project.project import analyze
         from logicxkit.logicx import project_data
         ours = {c["label"]: c["chain"] for c in analyze(project_data(_goldens.path("chains-mine")))["channels"]}
         logic = {c["label"]: c["chain"] for c in analyze(project_data(_goldens.path("chains-logic")))["channels"]}

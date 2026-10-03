@@ -7,10 +7,10 @@ import json
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data, owner_by_label
-from .services.plugin_params import load_tables
-from .services.plugins import slot_payloads
-from .services.retrack import find_project
-from .services.translate import VOCABULARY, _show, load_maps, map_for, maps_for, read_settings
+from .services.mixer.plugin_params import load_tables
+from .services.mixer.plugins import slot_payloads
+from .services.arrange.retrack import find_project
+from .services.translate.translate import VOCABULARY, _show, load_maps, map_for, maps_for, read_settings
 
 
 def cmd_settings(args) -> int:
@@ -18,7 +18,7 @@ def cmd_settings(args) -> int:
     tables = load_tables()
     if args.set:
         return _write(args, maps, tables)
-    from .services.slots import slot_index_base
+    from .services.mixer.slots import slot_index_base
     data = first_project_data(find_project(Path(args.project)))
     wanted = {c.strip() for c in args.channel or []}
     base = slot_index_base(data)
@@ -64,10 +64,10 @@ def _line(e: dict) -> str:
 def _write(args, maps, tables) -> int:
     """``--set NAME=VALUE`` into one slot (`--channel LABEL --at N`) of every alternative, on a
     copy: vocabulary items, or ``band N=<shape> <frequency> …`` for an EQ, through the slot's map."""
-    from .services.stream import HEADER, project_records
-    from .services.transplant import channel_slots, slot_at, slot_position
-    from .services.translate_write import apply_band_specs, split_specs, write_settings
-    from .services.validate import require_full_walk, require_valid
+    from .services.stream.stream import HEADER, project_records
+    from .services.mixer.transplant import channel_slots, slot_at, slot_position
+    from .services.translate.translate_write import apply_band_specs, split_specs, write_settings
+    from .services.stream.validate import require_full_walk, require_valid
 
     if not args.out or len(args.channel or []) != 1 or args.at is None:
         print("  --set writes a copy: name it with --out, the slot with one --channel and --at")

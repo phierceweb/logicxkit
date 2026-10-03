@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, object_by_name
-from .services.groups import FLAGS
+from .services.arrange.groups import FLAGS
 
 
 def _print(groups, objs) -> None:
@@ -19,9 +19,9 @@ def _print(groups, objs) -> None:
 
 
 def cmd_group(args) -> int:
-    from .services.environment import channel_objects
-    from .services.groups import assign, create_group, read_groups, set_group
-    from .services.retrack import find_project
+    from .services.arrange.environment import channel_objects
+    from .services.arrange.groups import assign, create_group, read_groups, set_group
+    from .services.arrange.retrack import find_project
     from logicxkit.logicx import project_data
 
     on = True if args.on else (False if args.off else None)

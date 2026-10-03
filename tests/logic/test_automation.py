@@ -5,10 +5,10 @@ bit, and the writer's bounds and order are Logic's."""
 import struct
 import unittest
 
-from logicxkit.logic.services.automation import PARAM_FLAG, PARAM_POINT, VALUE_UNIT, Point, _lanes
-from logicxkit.logic.services.automation_write import MAX_TICK, _order, fader_event, param_event
-from logicxkit.logic.services.events import END_TYPE, LINE
-from logicxkit.logic.services.groups import FADER_IDS
+from logicxkit.logic.services.regions.automation import PARAM_FLAG, PARAM_POINT, VALUE_UNIT, Point, _lanes
+from logicxkit.logic.services.regions.automation_write import MAX_TICK, _order, fader_event, param_event
+from logicxkit.logic.services.song.events import END_TYPE, LINE
+from logicxkit.logic.services.arrange.groups import FADER_IDS
 
 VOLUME, PAN = FADER_IDS["Volume"], FADER_IDS["Pan"]
 END = struct.pack("<HHI", END_TYPE, 0, 0x3FFFFFFF).ljust(LINE, b"\0")

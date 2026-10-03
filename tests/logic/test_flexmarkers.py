@@ -7,12 +7,12 @@ import unittest
 
 import _paths  # noqa: F401
 from _data import needs
-from logicxkit.logic.services.flexmarkers import (
+from logicxkit.logic.services.regions.flexmarkers import (
     HIT, END_TAIL, MARKER, PPQ, anchors, block_fields, flexed_entry, marker_block, quantize_code,
     rba_triple, samples_per_tick, snap,
 )
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.regions import ENTRY
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.regions.regions import ENTRY
 
 SPB = 13230.0                    # samples per beat at 200 BPM, 44.1 kHz — the measured take
 
@@ -50,7 +50,7 @@ class BlockTest(unittest.TestCase):
         self.assertEqual(snap(0, spt, 16), 0)
 
     def test_hits_sharing_a_target_keep_the_nearest_one(self):
-        from logicxkit.logic.services.flexmarkers import hit_blocks
+        from logicxkit.logic.services.regions.flexmarkers import hit_blocks
         spt = samples_per_tick(SPB)
         blocks = hit_blocks([1837344, 1839769, 1853446], spt=spt, grid=16)   # the first two both snap to 133440
         self.assertEqual([(struct.unpack_from("<i", b, 0)[0], struct.unpack_from("<i", b, 12)[0]) for b in blocks],

@@ -11,25 +11,25 @@ from pathlib import Path
 from unittest import mock
 
 import _goldens
-from logicxkit.logic.services.audio_regions import read_audio_regions
-from logicxkit.logic.services.audio_write import add_audio_region
-from logicxkit.logic.services.environment import object_id_of
-from logicxkit.logic.services.events import BAR_ONE, PPQ
-from logicxkit.logic.services.flexmarkers import END, HIT, MARKER, START, RBA_CODE_AT, RBA_OBJECT_AT, RBA_ROW_AT
-from logicxkit.logic.services.flexmode import flex_mode, q_reference
-from logicxkit.logic.services.groups import group_errors, read_groups
-from logicxkit.logic.services.stream import HEADER, project_records, reassemble
-from logicxkit.logic.services.integrity import regressions, structural_report
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.quantize_drums import quantize_drums
-from logicxkit.logic.services.recbuild import rec
-from logicxkit.logic.services.regions import ENTRY, TAIL, entry_blocks, entry_offsets, region_errors, song_container
-from logicxkit.logic.services.registry import GNOS_TAG, SLOT_TYPE, TIME_STRIDE, UUID_STRIDE, run_entries
-from logicxkit.logic.services.signature_write import set_time_signature
-from logicxkit.logic.services.tempo import project_tempo
-from logicxkit.logic.services.tempo_write import add_ramp, add_tempo
-from logicxkit.logic.services.tracklist import arrange_run
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.regions.audio_regions import read_audio_regions
+from logicxkit.logic.services.regions.audio_write import add_audio_region
+from logicxkit.logic.services.arrange.environment import object_id_of
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
+from logicxkit.logic.services.regions.flexmarkers import END, HIT, MARKER, START, RBA_CODE_AT, RBA_OBJECT_AT, RBA_ROW_AT
+from logicxkit.logic.services.regions.flexmode import flex_mode, q_reference
+from logicxkit.logic.services.arrange.groups import group_errors, read_groups
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream.integrity import regressions, structural_report
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.regions.quantize_drums import quantize_drums
+from logicxkit.logic.services.stream.recbuild import rec
+from logicxkit.logic.services.regions.regions import ENTRY, TAIL, entry_blocks, entry_offsets, region_errors, song_container
+from logicxkit.logic.services.stream.registry import GNOS_TAG, SLOT_TYPE, TIME_STRIDE, UUID_STRIDE, run_entries
+from logicxkit.logic.services.song.signature_write import set_time_signature
+from logicxkit.logic.services.song.tempo import project_tempo
+from logicxkit.logic.services.song.tempo_write import add_ramp, add_tempo
+from logicxkit.logic.services.arrange.tracklist import arrange_run
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 RATE = 44100
@@ -181,7 +181,7 @@ class QuantizeTest(unittest.TestCase):
 
     def test_a_region_without_its_arrange_entry_is_a_value_error(self):
         moved = [replace(r, start=r.start + 1) for r in read_audio_regions(self.base)]
-        with mock.patch("logicxkit.logic.services.quantize_drums.read_audio_regions", return_value=moved), \
+        with mock.patch("logicxkit.logic.services.regions.quantize_drums.read_audio_regions", return_value=moved), \
                 self.assertRaisesRegex(ValueError, "entry"):
             quantize_drums(self.base, members=[KICK, SNARE], references=[KICK], wav_of=self.wav_of)
 
@@ -335,7 +335,7 @@ class BarsTest(unittest.TestCase):
         self.assertEqual(self.run_on(cleared, grid=16)[0], self.full)
 
     def test_the_gate_names_the_triples_a_second_triple_would_orphan(self):
-        with mock.patch("logicxkit.logic.services.quantize_drums.rba_sequences", return_value={}):
+        with mock.patch("logicxkit.logic.services.regions.quantize_drums.rba_sequences", return_value={}):
             doubled, _ = self.run_on(self.full, grid=16)
         self.assertEqual(len(rba_headers(doubled)), 4)
         self.assertIn(f"dangling_files: RBA Sequence triples no entry names 0 -> 2: {sorted(entry_slots(self.full))}",
@@ -416,12 +416,12 @@ class LogicResavedBarsTest(unittest.TestCase):
     @staticmethod
     def marker_lists(key: str) -> list[tuple]:
         import struct
-        from logicxkit.logic.services.audio_regions import read_audio_regions
-        from logicxkit.logic.services.flexmarkers import block_fields
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.project import project_metadata
-        from logicxkit.logic.services.regions import ENTRY, entry_blocks, song_container
-        from logicxkit.logic.services.tracklist import arrange_run
+        from logicxkit.logic.services.regions.audio_regions import read_audio_regions
+        from logicxkit.logic.services.regions.flexmarkers import block_fields
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.project.project import project_metadata
+        from logicxkit.logic.services.regions.regions import ENTRY, entry_blocks, song_container
+        from logicxkit.logic.services.arrange.tracklist import arrange_run
         path = _goldens.path(key)
         data, count = project_data(path), project_metadata(path).get("tracks")
         records = project_records(data)

@@ -22,7 +22,7 @@ class TrackingTemplateTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         from logicxkit.logicx import project_data
         cls.template = project_data(TEMPLATE)
         cls.template_count = project_metadata(TEMPLATE)["tracks"]
@@ -79,14 +79,14 @@ class CurrentTemplateResaveTest(unittest.TestCase):
     inputs and held to Logic's re-save of it (row list and strip references)."""
 
     def _facts(self, data, count):
-        from logicxkit.logic.services.chains import channel_references
-        from logicxkit.logic.services.stacks import read_tracks
-        from logicxkit.logic.services.validate import validate_project
+        from logicxkit.logic.services.mixer.chains import channel_references
+        from logicxkit.logic.services.arrange.stacks import read_tracks
+        from logicxkit.logic.services.stream.validate import validate_project
         self.assertEqual(validate_project(data), [])
         return [[t["name"], t.get("label")] for t in read_tracks(data, count)], channel_references(data)
 
     def _golden(self, key):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         from logicxkit.logicx import project_data
         path = _goldens.path(key)
         return project_data(path), project_metadata(path).get("tracks")

@@ -7,8 +7,8 @@ import json
 import sys
 from pathlib import Path
 
-from .services.library import under_live_library
-from .services.patch import build_patch, read_patch
+from .services.mixer.library import under_live_library
+from .services.mixer.patch import build_patch, read_patch
 
 
 def _patches(path: Path) -> list[Path]:

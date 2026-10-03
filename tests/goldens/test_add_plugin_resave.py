@@ -6,13 +6,13 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.mixer import CHANNEL_TAG
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.plugin_library import find_donor, load_library
-from logicxkit.logic.services.slots import archive_index, property_key_base
-from logicxkit.logic.services.smart_controls import mapping_slots
-from logicxkit.logic.services.transplant import channel_slots, slot_class_version
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
+from logicxkit.logic.services.mixer.slots import archive_index, property_key_base
+from logicxkit.logic.services.mixer.smart_controls import mapping_slots
+from logicxkit.logic.services.mixer.transplant import channel_slots, slot_class_version
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 
@@ -92,7 +92,7 @@ class RemoveReplaceTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        from logicxkit.logic.services.remove_plugin import remove_plugin
+        from logicxkit.logic.services.mixer.remove_plugin import remove_plugin
         cls.source = project_data(_goldens.path("addplugin-mid-mine"))
         owner = owner_by_label(cls.source, LABEL)
         cls.removed, _ = remove_plugin(cls.source, owner, 6)            # slot 6: the Channel EQ the mid write put there

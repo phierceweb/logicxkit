@@ -3,8 +3,8 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.modes import MODES, copy_modes, read_modes, set_modes
-from logicxkit.logic.services.recdiff import diff_records, load_project_data
+from logicxkit.logic.services.song.modes import MODES, copy_modes, read_modes, set_modes
+from logicxkit.logic.services.stream.recdiff import diff_records, load_project_data
 
 KEYS = ["modes-base-logic", "modes-cycle-logic", "modes-count-in-logic", "modes-replace-logic", "modes-solo-logic",
         "modes-base-b-logic", "modes-autopunch-logic", "modes-metronome-logic", "modes-count-in-2-bars-logic",

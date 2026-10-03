@@ -3,8 +3,8 @@ import plistlib
 import sys
 from pathlib import Path
 
-from logicxkit.logic.services.recdiff import diff_records, load_project_data
-from logicxkit.logic.services.stream import project_records
+from logicxkit.logic.services.stream.recdiff import diff_records, load_project_data
+from logicxkit.logic.services.stream.stream import project_records
 
 
 def alt(p: Path) -> Path:

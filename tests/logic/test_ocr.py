@@ -2,7 +2,7 @@
 import json
 import unittest
 
-from logicxkit.logic.services.ocr import OcrClient, OcrError, fader_row
+from logicxkit.logic.services.project.ocr import OcrClient, OcrError, fader_row
 
 CANNED = json.dumps({
     "image": "/nowhere/x.jpg", "width": 2056, "height": 1263, "count": 5,

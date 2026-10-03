@@ -9,11 +9,11 @@ from pathlib import Path
 import _goldens
 from _cli import written
 
-from logicxkit.logic.services.arrangement import TEXT_TAG, read_sections
-from logicxkit.logic.services.groups import read_groups
-from logicxkit.logic.services.markers import read_markers
-from logicxkit.logic.services.stacks import read_tracks
-from logicxkit.logic.services.stream import project_records
+from logicxkit.logic.services.song.arrangement import TEXT_TAG, read_sections
+from logicxkit.logic.services.arrange.groups import read_groups
+from logicxkit.logic.services.song.markers import read_markers
+from logicxkit.logic.services.arrange.stacks import read_tracks
+from logicxkit.logic.services.stream.stream import project_records
 from logicxkit.logicx import project_data
 
 BASE, OURS, RESAVE, RENAMED = ("markers-edits-resave-logic", "names-text-ours", "names-text-resave-logic",

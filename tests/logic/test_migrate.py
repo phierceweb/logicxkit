@@ -17,8 +17,8 @@ from test_stack_create import MIXER, TRACKS, sub
 from logicxkit.logic._migrate_cmd import _report, cmd_migrate
 from logicxkit.logic.orchestrators import migrate
 from logicxkit.logic.orchestrators.ops import Op
-from logicxkit.logic.services.pairing import parse_map_full
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.mixer.pairing import parse_map_full
+from logicxkit.logic.services.arrange.stacks import read_tracks
 
 SYNTHETIC_SKIP = "modes,metronome"          # the synthetic records carry no song record to copy them from
 
@@ -219,8 +219,8 @@ class MapEdgeTest(Run):
         from _records import uuid as uid
         from test_stack_create import session as stacked
 
-        from logicxkit.logic.services.pairing import row_key
-        from logicxkit.logic.services.stack_create import create_stack
+        from logicxkit.logic.services.mixer.pairing import row_key
+        from logicxkit.logic.services.arrange.stack_create import create_stack
         made, _ = create_stack(stacked(), name="Bounce", members=[504], track_count=TRACKS)
         self.tmpl = bundle(self.tmp / "t2", "Tmpl", made, TRACKS + 1)
         swapped = (other_lineage().replace(sub(379, 1, uuid=uid(1192)), sub(379, 2, uuid=uid(1192)))

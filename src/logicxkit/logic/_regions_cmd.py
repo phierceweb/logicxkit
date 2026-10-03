@@ -12,18 +12,18 @@ from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data
 from ._midi_cmd import events_count
-from .services.audio_regions import read_audio_files
-from .services.audio_write import add_audio_region
-from .services.project import first_alternative, project_metadata
-from .services.fades import OUT_CODES
-from .services.region_edit import (
+from .services.regions.audio_regions import read_audio_files
+from .services.regions.audio_write import add_audio_region
+from .services.project.project import first_alternative, project_metadata
+from .services.regions.fades import OUT_CODES
+from .services.regions.region_edit import (
     listed, located, move_region, rename_region, renumbered, samples_per_tick_of, set_fade, set_loop, set_mute, split_region,
     trim_region,
 )
-from .services.region_params_write import set_colour, set_crossfade, set_params
-from .services.retrack import find_project
-from .services.signature import meter
-from .services.stacks import read_tracks
+from .services.regions.region_params_write import set_colour, set_crossfade, set_params
+from .services.arrange.retrack import find_project
+from .services.song.signature import meter
+from .services.arrange.stacks import read_tracks
 
 PARAMS = {"gain": ("gain", "N=DB"), "delay": ("delay", "N=TICKS"), "transpose": ("transpose", "N=SEMITONES"),
           "fine-tune": ("fine_tune", "N=CENTS")}

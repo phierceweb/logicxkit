@@ -12,7 +12,7 @@ import unittest
 from logicxkit.utils.data import data_dir
 
 from logicxkit.logic._binary import find_blocks
-from logicxkit.logic.services.donors import (
+from logicxkit.logic.services.mixer.donors import (
     SCHEMA_CONST,
     VARIANT_AT,
     donor_key,

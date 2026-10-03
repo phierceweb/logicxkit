@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 import _goldens
-from logicxkit.logic.services.patch import ROOT_STRIP, build_patch, read_patch
+from logicxkit.logic.services.mixer.patch import ROOT_STRIP, build_patch, read_patch
 
 
 @_goldens.needs("patch-audio-1-logic")
@@ -38,7 +38,7 @@ class BuiltPatchLoadedTest(unittest.TestCase):
     """A patch `logic patch --build` wrote, chosen from Logic's Library: the channel got the strip."""
 
     def test_logic_loaded_every_insert_of_the_built_patch(self):
-        from logicxkit.logic.services.plugins import project_plugins
+        from logicxkit.logic.services.mixer.plugins import project_plugins
         from logicxkit.logicx import project_data
         facts = _goldens.entry("patch-built-loaded-logic")["facts"]
         names = [r.name for r in project_plugins(project_data(_goldens.path("patch-built-loaded-logic"))) if r.channel == facts["channel"]]

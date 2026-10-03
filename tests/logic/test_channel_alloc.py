@@ -43,19 +43,19 @@ def label_of(raw: bytes) -> str:
 
 class InstNumberIsSixteenBitTest(unittest.TestCase):
     def test_a_small_number_still_increments(self):
-        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_inst_channel
         out, number = new_inst_channel(inst_channel(3), owner=9, object_uuid=bytes(16),
                                        output_uuid=None)
         self.assertEqual((number_of(out), number), (4, 5))
 
     def test_it_crosses_the_byte_boundary(self):
-        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_inst_channel
         out, number = new_inst_channel(inst_channel(255), owner=9, object_uuid=bytes(16),
                                        output_uuid=None)
         self.assertEqual((number_of(out), number), (256, 257))
 
     def test_the_second_copy_of_the_number_crosses_it_too(self):
-        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_inst_channel
         src = bytearray(inst_channel(10))
         struct.pack_into("<H", src, HDR + INST_NUMBER2_AT, 255)
         out, _ = new_inst_channel(bytes(src), owner=9, object_uuid=bytes(16), output_uuid=None)
@@ -67,7 +67,7 @@ class InstWidthTest(unittest.TestCase):
     channel (`sessionplayer-track-logic`), mono as before without it."""
 
     def _width(self, **kw) -> tuple[int, ...]:
-        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_inst_channel
         out, _ = new_inst_channel(inst_channel(3), owner=9, object_uuid=bytes(16), output_uuid=None, **kw)
         return tuple(out[HDR + at] for at in (78, 81, 86, 123))
 
@@ -88,7 +88,7 @@ class InstChannelFollowsItsClassTest(unittest.TestCase):
     MARK, OUT = bytes(range(1, 17)), bytes(range(17, 33))
 
     def _new(self, template: bytes) -> bytes:
-        from logicxkit.logic.services.channel_alloc import new_inst_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_inst_channel
         out, _ = new_inst_channel(template, owner=9, object_uuid=self.MARK, output_uuid=self.OUT)
         return out[HDR:]
 
@@ -116,13 +116,13 @@ class OtherMakersFollowTheClassTest(unittest.TestCase):
     MARK = bytes(range(1, 17))
 
     def test_a_sub_strip_binds_in_the_last_16_bytes_at_class_6(self):
-        from logicxkit.logic.services.channel_alloc import new_sub_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_sub_channel
         out = new_sub_channel(with_class(sub_channel(4, size=233), 6), number=5, owner=382,
                               uuid=self.MARK)
         self.assertEqual((out[-16:], out[-48:-32]), (self.MARK, bytes(16)))
 
     def test_an_input_gets_its_own_uuid_there_too(self):
-        from logicxkit.logic.services.channel_alloc import new_input_channel
+        from logicxkit.logic.services.mixer.channel_alloc import new_input_channel
         template = bytearray(chan(35, "Input 1", uuid=self.MARK, size=205, ver=6))
         template[-32:-16] = b"\xaa" * 16
         out = new_input_channel(bytes(template), number=2, owner=36)
@@ -130,14 +130,14 @@ class OtherMakersFollowTheClassTest(unittest.TestCase):
         self.assertNotIn(out[-16:], (self.MARK, bytes(16)))
 
     def test_binding_an_audio_stub_is_refused_at_class_6(self):
-        from logicxkit.logic.services.channel_alloc import bind_audio_stub
+        from logicxkit.logic.services.mixer.channel_alloc import bind_audio_stub
         stub = chan(9, "Audio 10", in_use=False, size=233, ver=6)
         with self.assertRaisesRegex(ValueError, "class-6 channel record keeps no input uuid"):
             bind_audio_stub(stub, object_uuid=self.MARK, input_uuid=bytes(range(17, 33)),
                             output_uuid=None)
 
     def test_a_stub_that_is_routed_keeps_its_output(self):
-        from logicxkit.logic.services.channel_alloc import bind_audio_stub
+        from logicxkit.logic.services.mixer.channel_alloc import bind_audio_stub
         routed = bytes(range(33, 49))
         stub = chan(9, "Audio 10", dest=routed, in_use=False, size=265)
         out = bind_audio_stub(stub, object_uuid=self.MARK, input_uuid=bytes(range(17, 33)),
@@ -151,8 +151,8 @@ class DefaultInstrumentRecordsTest(unittest.TestCase):
     in; the keyed archive's id is its last 16 bytes."""
 
     def _records(self) -> tuple[bytes, bytes]:
-        from logicxkit.logic.services.channel_alloc import default_inst_records
-        from logicxkit.logic.services.slots import archive_index
+        from logicxkit.logic.services.mixer.channel_alloc import default_inst_records
+        from logicxkit.logic.services.mixer.slots import archive_index
         records = default_inst_records(9, slot_base=2, property_base=10)
         (slot,) = (r for r in records if archive_index(r) != 2)
         (archive,) = (r for r in records if archive_index(r) == 2)
@@ -173,8 +173,8 @@ class DefaultInstrumentRecordsTest(unittest.TestCase):
 
 class ShiftedChannelIsSixteenBitTest(unittest.TestCase):
     def _shift(self, number: int) -> bytes:
-        from logicxkit.logic.services.channel_alloc import shifted_channel
-        from logicxkit.logic.services.stream import project_records
+        from logicxkit.logic.services.mixer.channel_alloc import shifted_channel
+        from logicxkit.logic.services.stream.stream import project_records
         from _records import proj
         raw = inst_channel(number)
         record = project_records(proj(raw))[0]
@@ -191,8 +191,8 @@ class ShiftedChannelIsSixteenBitTest(unittest.TestCase):
 
 class ShiftedSubKeepsItsBaseTest(unittest.TestCase):
     def test_a_sub_strip_moves_up_one_in_both_fields(self):
-        from logicxkit.logic.services.channel_alloc import shifted_channel
-        from logicxkit.logic.services.stream import project_records
+        from logicxkit.logic.services.mixer.channel_alloc import shifted_channel
+        from logicxkit.logic.services.stream.stream import project_records
         from _records import proj
         record = project_records(proj(sub_channel(4)))[0]
         out = shifted_channel(record.raw, record, relabel_prefix="Sub ")

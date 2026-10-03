@@ -5,7 +5,7 @@ import struct
 import unittest
 from _records import chan, count_record, env_obj, marker, proj, track, uuid
 from logicxkit.logic.orchestrators.apply_template import KINDS, apply_template, plan
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from _data import needs
 
 
@@ -164,9 +164,9 @@ class MapAcrossStacksTest(unittest.TestCase):
     def test_a_mapped_sub_row_survives_a_stack_made_below_it(self):
         from _records import uuid as uid
         from test_stack_create import TRACKS, session as stacked, sub
-        from logicxkit.logic.services.pairing import row_key
-        from logicxkit.logic.services.stack_create import create_stack
-        from logicxkit.logic.services.stacks import read_stacks
+        from logicxkit.logic.services.mixer.pairing import row_key
+        from logicxkit.logic.services.arrange.stack_create import create_stack
+        from logicxkit.logic.services.arrange.stacks import read_stacks
         template, _ = create_stack(stacked(), name="Bounce", members=[504], track_count=TRACKS)
         target = (stacked().replace(sub(379, 1, uuid=uid(192)), sub(379, 2, uuid=uid(192)))
                   .replace(sub(380, 2, uuid=uid(196)), sub(380, 1, uuid=uid(196))))
@@ -179,6 +179,37 @@ class MapAcrossStacksTest(unittest.TestCase):
         self.assertNotIn("Bass (Sub 1)", [row_key(r) for r in read_tracks(out, TRACKS + 1)])
         stacks = {s.name: [n for _k, n in s.members] for s in read_stacks(out, TRACKS + 1)}
         self.assertEqual((stacks["Bounce"], stacks["Bass"]), (["Test Bounce"], ["Bass DI"]))
+
+
+class StackOfAddedTracksTest(unittest.TestCase):
+    """A template stack whose members the session lacks: the adds are planned, so the plan says
+    the stack is made of them. The run adds first and stacks in the next round."""
+
+    def _pair(self):
+        from test_stack_create import TRACKS, session as stacked
+        from logicxkit.logic.services.arrange.addtrack import add_track
+        from logicxkit.logic.services.arrange.stack_create import create_stack
+        base = stacked()
+        template, r = add_track(base, name="Room", after=504, kind="aux", track_count=TRACKS)
+        template, _ = create_stack(template, name="Rooms", members=[r["object_id"]], track_count=TRACKS + 1)
+        return template, base, TRACKS
+
+    def test_the_plan_makes_the_stack_of_the_tracks_it_adds(self):
+        template, base, n = self._pair()
+        ops = [op for op in plan(template, base, template_count=n + 2, session_count=n)
+               if op.kind in ("add", "stack")]
+        self.assertEqual([(op.kind, op.status) for op in ops], [("stack", "planned"), ("add", "planned")])
+        self.assertEqual((ops[0].detail, ops[0].note), ("make a stack of 1 track(s)", "1 of them added above"))
+        self.assertTrue(ops[1].detail.startswith("add aux track after Test Bounce"), ops[1].detail)
+
+    def test_the_run_adds_then_stacks(self):
+        from logicxkit.logic.services.arrange.stacks import read_stacks
+        template, base, n = self._pair()
+        out, ops, added = apply_template(template, base, template_count=n + 2, session_count=n)
+        self.assertEqual([(op.kind, op.status) for op in ops if op.kind in ("add", "stack")],
+                         [("add", "done"), ("stack", "done")])
+        stacks = {s.name: [name for _k, name in s.members] for s in read_stacks(out, n + added)}
+        self.assertEqual(stacks["Rooms"], ["Room"])
 
 
 class AlternativesCliTest(unittest.TestCase):
@@ -259,8 +290,8 @@ class ReturnsTest(unittest.TestCase):
         return proj(*parts)
 
     def test_the_old_return_is_silenced(self):
-        from logicxkit.logic.services.binding import input_routing
-        from logicxkit.logic.services.transplant import channel_slots
+        from logicxkit.logic.services.mixer.binding import input_routing
+        from logicxkit.logic.services.mixer.transplant import channel_slots
         template, target = self._session(orphan_slot=False), self._session()
         ops = plan(template, target, template_count=3, session_count=3)
         returns = [op for op in ops if op.kind == "return"]
@@ -270,13 +301,13 @@ class ReturnsTest(unittest.TestCase):
         self.assertEqual({op.kind: op.status for op in done}, {"return": "done"})
         self.assertIsNone(input_routing(out).get(280))
         self.assertEqual(channel_slots(out, 280), [])
-        from logicxkit.logic.services.stream import project_records as _recs
+        from logicxkit.logic.services.stream.stream import project_records as _recs
         orphan = next(r for r in _recs(out) if r.owner == 280 and r.tag == b"OCuA")
         self.assertEqual(orphan.raw[36 + 94:36 + 96], b"\xff\xff")
 
     def test_a_mixer_only_aux_on_the_same_instrument_output_is_unbound(self):
         from _records import rec
-        from logicxkit.logic.services.instout import bind_instrument_output, read_instrument_outputs
+        from logicxkit.logic.services.mixer.instout import bind_instrument_output, read_instrument_outputs
         def project(orphan_bound):
             parts = [env_obj(88, "Drums MIDI"), env_obj(96, "OH MIDI"), env_obj(80, "Master", grouping=True),
                      chan(86, "Inst 2", uuid=uuid(88)), rec(b"UCuA", 86, 13, bytes(192), 5),
@@ -299,7 +330,7 @@ class ReturnsTest(unittest.TestCase):
         self.assertEqual(list(read_instrument_outputs(out)), [67])
 
     def test_a_track_the_template_feeds_from_nothing_loses_its_input(self):
-        from logicxkit.logic.services.binding import input_routing
+        from logicxkit.logic.services.mixer.binding import input_routing
         fed = proj(env_obj(88, "Kick In"), env_obj(80, "Master", grouping=True),
                    chan(0, "Audio 1", uuid=uuid(88), fader=99, source=uuid(500)),
                    chan(256, "Input 1", uuid=uuid(500), size=201),
@@ -320,7 +351,7 @@ class GroupOpTest(unittest.TestCase):
 
     def _grouped(self):
         from _records import gnos, rec
-        from logicxkit.logic.services.groups import create_group
+        from logicxkit.logic.services.arrange.groups import create_group
         base = proj(gnos(88, 504, 80), rec(b"rpyH", 0xFFFF, 0xFFFF, bytes(40)),
                     env_obj(88, "Kick In"), env_obj(504, "Vox"), env_obj(80, "Master", grouping=True),
                     chan(0, "Audio 1", uuid=uuid(88), fader=99), chan(19, "Audio 20", uuid=uuid(504)),
@@ -329,7 +360,7 @@ class GroupOpTest(unittest.TestCase):
         return base, create_group(base, name="Drums", members=[88], settings=["Volume", "Solo"])[0]
 
     def test_a_template_group_is_made_and_joined(self):
-        from logicxkit.logic.services.groups import read_groups
+        from logicxkit.logic.services.arrange.groups import read_groups
         plain, grouped = self._grouped()
         ops = plan(grouped, plain, template_count=2, session_count=2)
         self.assertEqual([(op.kind, op.target, op.detail) for op in ops],
@@ -341,7 +372,7 @@ class GroupOpTest(unittest.TestCase):
         self.assertEqual(plan(grouped, out, template_count=2, session_count=2), [])
 
     def test_a_row_the_template_has_in_no_group_leaves_its_group(self):
-        from logicxkit.logic.services.groups import group_of
+        from logicxkit.logic.services.arrange.groups import group_of
         plain, grouped = self._grouped()
         ops = plan(plain, grouped, template_count=2, session_count=2)
         self.assertEqual([(op.kind, op.detail) for op in ops], [("group", "leave group Drums")])
@@ -352,8 +383,8 @@ class GroupOpTest(unittest.TestCase):
 
 class IconTest(unittest.TestCase):
     def test_an_icon_difference_becomes_an_op_and_applies(self):
-        from logicxkit.logic.services.environment import set_icon
-        from logicxkit.logic.services.stacks import read_tracks as rows_of
+        from logicxkit.logic.services.arrange.environment import set_icon
+        from logicxkit.logic.services.arrange.stacks import read_tracks as rows_of
         template, target = set_icon(session(), 88, 0x1234), session()
         ops = plan(template, target, template_count=2, session_count=2)
         self.assertEqual([(op.kind, op.detail) for op in ops], [("icon", "0 -> 4660")])
@@ -368,7 +399,7 @@ class ToleratedFlawTest(unittest.TestCase):
         that must still take a colour change, and the flaw must not grow."""
         from _fixtures import chunk
         from _records import rec
-        from logicxkit.logic.services.validate import require_valid, validate_project
+        from logicxkit.logic.services.stream.validate import require_valid, validate_project
 
         def slot(key):
             p = bytearray(600)

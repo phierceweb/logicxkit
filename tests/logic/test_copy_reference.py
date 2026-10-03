@@ -3,8 +3,8 @@
 import unittest
 
 from _records import chan, proj, rec
-from logicxkit.logic.services.stream import project_records
-from logicxkit.logic.services.transplant import copy_reference
+from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.mixer.transplant import copy_reference
 
 
 def ref(owner: int, key: int, name: str) -> bytes:

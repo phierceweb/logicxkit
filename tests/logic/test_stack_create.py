@@ -18,13 +18,13 @@ from _records import (
     track,
     uuid,
 )
-from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.sequence import sequences
-from logicxkit.logic.services.stack_create import SUB_NUMBER_AT, create_stack
-from logicxkit.logic.services.stacks import read_stacks, read_tracks, stack_parents
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.sequence import sequences
+from logicxkit.logic.services.arrange.stack_create import SUB_NUMBER_AT, create_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks, stack_parents
+from logicxkit.logic.services.stream.validate import validate_project
 
 TRACKS = 8
 

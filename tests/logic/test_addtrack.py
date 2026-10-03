@@ -3,8 +3,8 @@ real-file golden now holds the output to the invariants every Logic file obeys."
 
 import struct
 import unittest
-from logicxkit.logic.services.environment import clone_object
-from logicxkit.logic.services.recbuild import fresh_uuid, time_fields
+from logicxkit.logic.services.arrange.environment import clone_object
+from logicxkit.logic.services.stream.recbuild import fresh_uuid, time_fields
 
 
 class HelpersTest(unittest.TestCase):
@@ -19,7 +19,7 @@ class HelpersTest(unittest.TestCase):
 
     def test_rename_pads_odd_names_to_even(self):
         from _records import env_obj
-        from logicxkit.logic.services.environment import channel_objects
+        from logicxkit.logic.services.arrange.environment import channel_objects
         raw = env_obj(500, "Gtr 2 Amp")                  # 9 chars, padded
         for name, expect in (("Audio 27", 463 + 8), ("Kick In", 463 + 8), ("Test Bounce", 463 + 12)):
             out = clone_object(raw, object_id=508, name=name, colour=16, owner=26)
@@ -37,15 +37,15 @@ class TableEntryFallbackTest(unittest.TestCase):
         from types import SimpleNamespace
         from unittest import mock
 
-        from logicxkit.logic.services import addtrack
+        from logicxkit.logic.services.arrange import addtrack
         objs = dict.fromkeys((100, 104, 108))
         owners_of = {100: 1, 104: 2, 108: 30}
         chans = {1: SimpleNamespace(label="Audio 1"), 2: SimpleNamespace(label="Audio 2"),
                  30: SimpleNamespace(label="Aux 1")}
         sound = {100, 108}                               # 104, the pattern, is stale
         records = [SimpleNamespace(raw=b"")]
-        with mock.patch("logicxkit.logic.services.sequence.index_table", return_value=0), \
-                mock.patch("logicxkit.logic.services.sequence.sequences", return_value=[]), \
+        with mock.patch("logicxkit.logic.services.stream.sequence.index_table", return_value=0), \
+                mock.patch("logicxkit.logic.services.stream.sequence.sequences", return_value=[]), \
                 mock.patch.object(addtrack, "_sound_entry", lambda r, t, s, oid: oid in sound):
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Audio ", 104), 100)
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Inst ", 104), 108)
@@ -57,7 +57,7 @@ class Logic112AddTest(unittest.TestCase):
 
     def test_every_kind_is_refused_with_the_reason(self):
         from _records import chan, env_obj, proj, uuid
-        from logicxkit.logic.services.addtrack import add_track
+        from logicxkit.logic.services.arrange.addtrack import add_track
         data = proj(env_obj(88, "Piano", type_value=1760),
                     chan(5, "Inst 1", uuid=uuid(88), size=233, ver=6))
         for kind in ("audio", "instrument", "aux"):

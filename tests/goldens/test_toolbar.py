@@ -3,7 +3,7 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.toolbar import (BUTTONS, ORDER, alternative_dirs, buttons_of, ids_for, read_toolbar,
+from logicxkit.logic.services.song.toolbar import (BUTTONS, ORDER, alternative_dirs, buttons_of, ids_for, read_toolbar,
                                               toolbar_shown)
 
 ALL, REST = _goldens.path("toolbar-all-logic"), _goldens.path("toolbar-rest-logic")

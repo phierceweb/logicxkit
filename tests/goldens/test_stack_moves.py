@@ -5,10 +5,11 @@ import struct
 import unittest
 
 import _goldens
-from logicxkit.logic.services.binding import bound_channels, channels
-from logicxkit.logic.services.environment import channel_objects, object_record
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.stacks import move_out_of_stack, move_to_stack, read_stacks, read_tracks
+from logicxkit.logic.services.mixer.binding import bound_channels, channels
+from logicxkit.logic.services.arrange.environment import channel_objects, object_record
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.arrange.stack_moves import move_out_of_stack, move_to_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
 from _data import needs
 
 COUNT = 56
@@ -72,8 +73,8 @@ class GoldenStackMoveTest(unittest.TestCase):
 @needs("logic", "aux-track-12.3.1.json")
 class GoldenAuxTrackTest(unittest.TestCase):
     def test_the_record_set_and_the_channel_match_logics(self):
-        from logicxkit.logic.services.addtrack import add_track
-        from logicxkit.logic.services.recdiff import diff_records
+        from logicxkit.logic.services.arrange.addtrack import add_track
+        from logicxkit.logic.services.stream.recdiff import diff_records
         base, logic = _load("stack-move-in-b-logic"), _load("stack-new-aux-logic")
         anchor = next(oid for oid, o in channel_objects(base).items() if o.name == "Gtr Clean")
         ours, report = add_track(base, name="Aux 19", after=anchor, kind="aux", track_count=COUNT)

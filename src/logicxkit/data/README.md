@@ -15,7 +15,7 @@ a mono record each and a stereo one beside it where Logic writes another length.
 `logic/params-<type>.json` (and `params-<type>v<variant>.json` for a type two plug-ins share) are
 parameter tables of Logic's own plug-ins: each float index named by matching a save at defaults
 against one with every slider in Logic's Controls view moved (`stockfx-*`), read by
-`services/plugin_params`. `regen_data.py` leaves them alone.
+`services/mixer/plugin_params`. `regen_data.py` leaves them alone.
 
 `translate/` holds the translation maps `logic settings` and `replace-plugin --translate` read
 (`services/translate`): one per plug-in and family, naming its parameters in the family's
@@ -23,6 +23,6 @@ vocabulary; a native map's `automation` table is its sliders sampled position by
 
 `logic/rba-sequence-12.3.1.json` is not from the corpus: the RBA Sequence triple and the flex
 marker block shapes Logic writes on an audio quantize, taken from a tracking take with every
-per-region field zeroed (`services/flexmarkers.py` sets them). `regen_data.py` leaves it alone.
+per-region field zeroed (`services/regions/flexmarkers.py` sets them). `regen_data.py` leaves it alone.
 
 Drum maps live in groovebin (`groovebin.maps`), not here.

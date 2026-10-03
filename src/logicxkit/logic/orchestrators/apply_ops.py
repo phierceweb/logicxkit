@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from ..services.groups import read_groups
+from ..services.arrange.groups import read_groups
 from .ops import Op, _reason
 
 
@@ -10,20 +10,21 @@ def apply(template: bytes, session: bytes, ops: list[Op], *, session_count: int 
     """Run the planned ops in order -> ``(project, rows added)``. Structural ops change the
     session's rows, so the plan is re-derived after each of them. A writer answers for what
     it changes, not for flaws the session arrived with (`validate.tolerating`)."""
-    from ..services.addtrack import add_track
-    from ..services.environment import rename_track, set_colour, set_icon
-    from ..services.groups import assign, create_group
-    from ..services.insert import widen_channels
-    from ..services.instout import bind_instrument_output, unbind_instrument_output
-    from ..services.levels import set_levels
-    from ..services.reorder import move_track
-    from ..services.retrack import retrack_channels
-    from ..services.sends_write import copy_sends
-    from ..services.stack_create import create_stack
-    from ..services.stacks import move_out_of_stack, move_to_stack, set_hidden, set_power
-    from ..services.transplant import copy_reference, remove_slots, transplant
-    from ..services.routing import set_input, set_output
-    from ..services.validate import tolerating
+    from ..services.arrange.addtrack import add_track
+    from ..services.arrange.environment import rename_track, set_colour, set_icon
+    from ..services.arrange.groups import assign, create_group
+    from ..services.mixer.channel_width import widen_channels
+    from ..services.mixer.instout import bind_instrument_output, unbind_instrument_output
+    from ..services.mixer.levels import set_levels
+    from ..services.arrange.reorder import move_track
+    from ..services.arrange.retrack import retrack_channels
+    from ..services.mixer.sends_write import copy_sends
+    from ..services.arrange.stack_create import create_stack
+    from ..services.arrange.stack_moves import move_out_of_stack, move_to_stack
+    from ..services.arrange.track_flags import set_hidden, set_power
+    from ..services.mixer.transplant import copy_reference, remove_slots, transplant
+    from ..services.mixer.routing import set_input, set_output
+    from ..services.stream.validate import tolerating
 
     data, added = session, 0
     count = session_count

@@ -7,15 +7,15 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._binary import find_blocks
-from .services.donors import harvest_donors
-from .services.library import factory_settings
-from .services.retrack import find_project
+from .services.mixer.donors import harvest_donors
+from .services.mixer.library import factory_settings
+from .services.arrange.retrack import find_project
 
 
 def cmd_donors(args) -> int:
     from ..utils.data import PACKAGED, writable_root
-    from .services.plugin_names import native_names
-    from .services.plugin_library import WIDTH_NAMES, harvest_au, load_library
+    from .services.mixer.plugin_names import native_names
+    from .services.mixer.plugin_library import WIDTH_NAMES, harvest_au, load_library
     lib = Path(args.library) if args.library else writable_root() / "donors"
     skip = set() if args.library else {p.stem for p in (PACKAGED / "donors").glob("*.slot")}
     skipped: list[str] = []

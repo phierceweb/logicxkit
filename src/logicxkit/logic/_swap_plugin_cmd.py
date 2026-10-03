@@ -7,16 +7,16 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._add_plugin_cmd import _channels, _offsets, _pick
-from ._edit import CommandError, edit_copy, owner_by_label
+from ._edit import CommandError, edit_copy, owner_by_label, plan_alternatives, written_alternatives
 from ._plugin_settings import replace_slot, set_specs, translation
 
 
 def slot_names(payload: bytes, maps) -> set[str]:
     """Every name a slot answers to, lowercased: Logic's name for one of its own, its type id,
     a third-party's `Manufacturer/Subtype` code, and the plug-in's name in its translation map."""
-    from .services.plugin_names import native_name
-    from .services.plugins import plugin_identity
-    from .services.translate import map_for
+    from .services.mixer.plugin_names import native_name
+    from .services.mixer.plugins import plugin_identity
+    from .services.translate.translate import map_for
     identity = plugin_identity(payload)
     names: set[str] = set()
     if identity and identity[0] == "native":
@@ -32,15 +32,15 @@ def slot_names(payload: bytes, maps) -> set[str]:
 
 def matching_slots(data: bytes, owner: int, wanted: str, maps) -> list[int]:
     """The mixer positions (from 1, empty slots counted) on ``owner`` holding ``wanted``."""
-    from .services.slots import slot_index_base
-    from .services.stream import HEADER
-    from .services.transplant import channel_slots
+    from .services.mixer.slots import slot_index_base
+    from .services.stream.stream import HEADER
+    from .services.mixer.transplant import channel_slots
     base = slot_index_base(data)
     return [r.key - base + 1 for r in channel_slots(data, owner) if wanted.strip().lower() in slot_names(r.raw[HEADER:], maps)]
 
 
 def _labels(args, data: bytes, count) -> list[str]:
-    from .services.plugins import slot_payloads
+    from .services.mixer.plugins import slot_payloads
     if args.channel or args.stack:
         return _channels(args, data, count)
     return list(dict.fromkeys(ref.channel for ref, _p in slot_payloads(data)))
@@ -49,14 +49,14 @@ def _labels(args, data: bytes, count) -> list[str]:
 def _refusal(project: Path, args, donors, maps) -> str | None:
     """Why nothing would be swapped, read before any copy is made: ``--to`` names the plug-in
     ``--from`` does, or no slot of any alternative holds ``--from``."""
-    from .services.stream import HEADER
-    from .services.plugins import slot_payloads
-    from .services.project import project_metadata
+    from .services.stream.stream import HEADER
+    from .services.mixer.plugins import slot_payloads
+    from .services.project.project import project_metadata
     target = _pick(donors, args.target, None, None)
     if args.source.strip().lower() in slot_names(target.raw[HEADER:], maps):
         return f"--from {args.source} and --to {args.target} name the same plug-in ({target.label})"
     held: set[str] = set()
-    for data_file in sorted(project.glob("Alternatives/*/ProjectData")):
+    for data_file in written_alternatives(project):
         data = data_file.read_bytes()
         count = project_metadata(project, data_file.parent.name).get("tracks")
         if any(matching_slots(data, owner_by_label(data, label), args.source, maps) for label in _labels(args, data, count)):
@@ -80,11 +80,11 @@ def _plan_lines(data: bytes, owner: int, at: int, donor, translate: bool) -> lis
 
 def cmd_swap_plugin(args) -> int:
     from ..utils.data import data_dirs
-    from .services.mixer import channel_formats
-    from .services.plugin_library import load_library
-    from .services.retrack import find_project
-    from .services.translate import load_maps
-    from .services.transplant import slot_class_version
+    from .services.mixer.mixer import channel_formats
+    from .services.mixer.plugin_library import load_library
+    from .services.arrange.retrack import find_project
+    from .services.translate.translate import load_maps
+    from .services.mixer.transplant import slot_class_version
 
     if not args.plan and not args.out:
         print("  name the copy's directory with --out, or ask for --plan")
@@ -130,7 +130,7 @@ def cmd_swap_plugin(args) -> int:
         if (why := _refusal(project, args, donors, maps)):
             raise CommandError(why)
         if args.plan:
-            first = sorted(project.glob("Alternatives/*/ProjectData"))[0]
+            first = plan_alternatives(project)[0]
             step(first.read_bytes(), None, first)
         else:
             edit_copy(project, Path(args.out), step)

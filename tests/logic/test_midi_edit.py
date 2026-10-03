@@ -11,11 +11,11 @@ from groovebin.events import Event, Note
 from groovebin.song import Part
 from logicxkit.logic._edit import CommandError
 from logicxkit.logic._midi_edit_cmd import Edit, parse
-from logicxkit.logic.services.events import BAR_ONE, LINE, PPQ
-from logicxkit.logic.services.midi_edit import (edit, from_part, join, meter_map, remap, require_no_poly_aftertouch,
+from logicxkit.logic.services.song.events import BAR_ONE, LINE, PPQ
+from logicxkit.logic.services.midi.midi_edit import (edit, from_part, join, meter_map, remap, require_no_poly_aftertouch,
                                                 split, tick, to_part)
-from logicxkit.logic.services.midi_write import note_lines
-from logicxkit.logic.services.signature import Meter, TimeSignature
+from logicxkit.logic.services.midi.midi_write import note_lines
+from logicxkit.logic.services.song.signature import Meter, TimeSignature
 
 END = bytes.fromhex("f1000000ffffff3f0000000000000000")
 
@@ -175,8 +175,8 @@ class ChannelEditTest(unittest.TestCase):
 
     def test_a_tagged_notes_channel_lands_in_the_status_byte(self):
         from dataclasses import replace
-        from logicxkit.logic.services.midi_edit import from_part, to_part
-        from logicxkit.logic.services.midi_write import note_lines
+        from logicxkit.logic.services.midi.midi_edit import from_part, to_part
+        from logicxkit.logic.services.midi.midi_write import note_lines
         head, ext = note_lines(tick=38400, pitch=60, velocity=100, length=240, channel=1)
         part = to_part([(head, (ext,))])
         moved = replace(part, notes=tuple(replace(n, channel=5) for n in part.notes))
@@ -188,7 +188,7 @@ class ChannelEditTest(unittest.TestCase):
 
 class NoteOffLineTest(unittest.TestCase):
     def test_a_note_off_line_is_refused_by_name(self):
-        from logicxkit.logic.services.midi_edit import to_part
+        from logicxkit.logic.services.midi.midi_edit import to_part
         off = head(0x80, 38400, 0, 60)
         with self.assertRaises(ValueError) as e:
             to_part([(off, ())])

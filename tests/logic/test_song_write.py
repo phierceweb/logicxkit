@@ -2,7 +2,7 @@
 
 import struct
 import unittest
-from logicxkit.logic.services import arrangement_write as w
+from logicxkit.logic.services.song import arrangement_write as w
 
 
 class TextPayloadTest(unittest.TestCase):

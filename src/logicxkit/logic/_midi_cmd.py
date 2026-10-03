@@ -12,13 +12,13 @@ from groovebin.maps import NAMES, stroke
 
 from . import _midi_edit_cmd as edits
 from . import _midi_transform_cmd as transforms
-from ._edit import CommandError, edit_copy, first_project_data
-from .services.midi import MidiRegion, read_midi
-from .services.midi_write import add_note, add_region
-from .services.project import project_metadata
-from .services.signature import meter
-from .services.smf import meter_map, tempo_map, unexportable, write_smf
-from .services.retrack import find_project
+from ._edit import CommandError, edit_copy, first_project_data, written_alternatives
+from .services.midi.midi import MidiRegion, read_midi
+from .services.midi.midi_write import add_note, add_region
+from .services.project.project import project_metadata
+from .services.song.signature import meter
+from .services.midi.smf import meter_map, tempo_map, unexportable, write_smf
+from .services.arrange.retrack import find_project
 
 
 def _describe(e, drum_map: str | None = None) -> str:
@@ -75,9 +75,9 @@ def _write(args, project: Path) -> int:
     if not args.track and any(e.number is None for e in planned):
         print("  --remap SRC:DST remaps every region on --track NAME; give one, or a region: N=SRC:DST")
         return 2
-    listed = sorted(project.glob("Alternatives/*/ProjectData"))[0]
+    listed = written_alternatives(project)[0]
     try:
-        count = project_metadata(project).get("tracks")
+        count = project_metadata(project, listed.parent.name).get("tracks")
         resolved = edits.resolve(listed.read_bytes(), count, planned, track=args.track)
         transform = transforms.parse(args.steps, args.select)
         if args.regions and transform is None:

@@ -6,8 +6,8 @@ import unicodedata
 import unittest
 
 from logicxkit.logic.orchestrators.template_stacks import stack_targets
-from logicxkit.logic.services.pairing import Pair
-from logicxkit.logic.services.stacks import FOLDER, SUMMING, Stack
+from logicxkit.logic.services.mixer.pairing import Pair
+from logicxkit.logic.services.arrange.stacks import FOLDER, SUMMING, Stack
 
 
 def row(object_id: int, name: str, label: str) -> dict:

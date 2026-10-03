@@ -100,5 +100,25 @@ class RequirePublicTest(ResolutionTest):
         self.assertIn("1 of 2", line)
 
 
+
+class SessionKeysTest(ResolutionTest):
+    """The owner's sessions are whatever the owner's manifest files under `legacy/` and
+    `mixes/`, not a list kept here."""
+
+    def test_the_session_keys_come_from_the_owners_manifest(self):
+        self._write({}, {"legacy-a": {"path": "legacy/A/A.logicx"}, "mix-b": {"path": "mixes/B/B.logicx"},
+                         "mix-c": {"path": "mixes/C/C.logicx"}, "other": {"path": "experiments/x.logicx"},
+                         "legacy-x-logic": {"path": "experiments/legacy-x.logicx"},
+                         "backup": {"path": "mixes/C/C.logicx/Alternatives/000/Project File Backups/1/ProjectData"}})
+        self.assertEqual(_goldens.session_keys("legacy"), ("legacy-a",))
+        self.assertEqual(_goldens.session_keys("mix"), ("mix-b", "mix-c"))
+        self.assertEqual(_goldens.session_keys(), ("legacy-a", "mix-b", "mix-c"))
+
+    def test_no_owner_manifest_means_no_sessions(self):
+        self._write({}, {})
+        self.assertEqual(_goldens.session_keys(), ())
+        self.assertEqual(_goldens.sessions(), [])
+
+
 if __name__ == "__main__":
     unittest.main()

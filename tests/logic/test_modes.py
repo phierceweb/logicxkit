@@ -2,7 +2,7 @@
 
 import unittest
 
-from logicxkit.logic.services.modes import COUNT_IN, COUNT_INS, MODES, count_in_code, set_modes
+from logicxkit.logic.services.song.modes import COUNT_IN, COUNT_INS, MODES, count_in_code, set_modes
 
 
 class ModesTest(unittest.TestCase):

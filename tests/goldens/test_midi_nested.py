@@ -3,7 +3,7 @@ note-on (first in, first out), which is what groovebin's reader does too."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.midi import read_midi
+from logicxkit.logic.services.midi.midi import read_midi
 from logicxkit.logicx import project_data
 
 

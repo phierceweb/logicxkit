@@ -8,8 +8,8 @@ import unittest
 from pathlib import Path
 import _goldens
 import _paths  # noqa: F401
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.groups import (
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.arrange.groups import (
     FLAGS,
     assign,
     create_group,
@@ -19,8 +19,8 @@ from logicxkit.logic.services.groups import (
     set_group,
     settings_of,
 )
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.registry import group_entries
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.registry import group_entries
 from _data import needs
 
 GROUP_KEYS = {53: "group-1-audio5-logic", 55: "group-1-audio6-logic", 56: "group-2-audio7-logic",
@@ -103,7 +103,7 @@ class TemplateGroupsTest(unittest.TestCase):
     def test_a_members_events_are_rebuilt_from_its_channel_levels(self):
         """The template's overheads sit off unity, and their Volume events carry that."""
         from logicxkit.logicx import project_data
-        from logicxkit.logic.services.groups import _events_for, _values
+        from logicxkit.logic.services.arrange.groups import _events_for, _values
         data = project_data(TEMPLATE)
         oh = next(g for g in read_groups(data) if g.name == "OH")
         raw = project_records(data)[oh.start + 2].raw[HEADER:]
@@ -115,8 +115,8 @@ class EventsSurviveAddTrackTest(unittest.TestCase):
     """A track added after members were assigned keeps one fader event per member per fader."""
 
     def test_the_group_keeps_one_event_per_member_per_fader(self):
-        from logicxkit.logic.services.addtrack import add_track
-        from logicxkit.logic.services.groups import assign, create_group, group_errors, read_groups
+        from logicxkit.logic.services.arrange.addtrack import add_track
+        from logicxkit.logic.services.arrange.groups import assign, create_group, group_errors, read_groups
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("stack-folder-flattened-logic"))
         data, _made = create_group(data, name="Drums")

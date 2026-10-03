@@ -5,10 +5,10 @@ from unittest import mock
 
 import _paths  # noqa: F401
 from groovebin.midi import read
-from logicxkit.logic.services.events import BAR_ONE, PPQ
-from logicxkit.logic.services.midi import MidiEvent, MidiRegion
-from logicxkit.logic.services.smf import tempo_map, write_smf
-from logicxkit.logic.services.tempo import TempoEvent
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
+from logicxkit.logic.services.midi.midi import MidiEvent, MidiRegion
+from logicxkit.logic.services.midi.smf import tempo_map, write_smf
+from logicxkit.logic.services.song.tempo import TempoEvent
 
 FOUR_FOUR = [(BAR_ONE, 4, 4)]
 
@@ -54,7 +54,7 @@ class FileTest(unittest.TestCase):
 class TempoMapTest(unittest.TestCase):
     def test_ramp_points_logic_generated_are_tempo_events_too(self):
         track = [TempoEvent(BAR_ONE, 120.0, False), TempoEvent(BAR_ONE + PPQ, 125.0, True), TempoEvent(BAR_ONE + 2 * PPQ, 130.0, False)]
-        with mock.patch("logicxkit.logic.services.smf.read_tempo_events", return_value=track):
+        with mock.patch("logicxkit.logic.services.midi.smf.read_tempo_events", return_value=track):
             self.assertEqual(tempo_map(b""), [(BAR_ONE, 120.0), (BAR_ONE + PPQ, 125.0), (BAR_ONE + 2 * PPQ, 130.0)])
 
 

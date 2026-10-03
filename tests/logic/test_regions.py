@@ -5,12 +5,12 @@ import struct
 import unittest
 
 from _records import env_obj, marker, proj, rec, track
-from logicxkit.logic.services.stream import project_records
-from logicxkit.logic.services.regions import (
+from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.regions.regions import (
     ENTRY, ROW_COUNT_FROM_END, ROW_UNIT, TAIL, placements, region_errors, row_count_errors,
     sync_region_tracks, sync_row_count,
 )
-from logicxkit.logic.services.reorder import move_track
+from logicxkit.logic.services.arrange.reorder import move_track
 
 TAIL_BYTES = bytes.fromhex("f1000000ffffff3f") + bytes(8)
 
@@ -92,9 +92,9 @@ class RowCountTest(unittest.TestCase):
         self.assertEqual(sync_row_count(fixed, 2), fixed)
 
     def test_row_count_reads_the_container(self):
-        from logicxkit.logic.services.regions import row_count, song_container
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.tracklist import arrange_run
+        from logicxkit.logic.services.regions.regions import row_count, song_container
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.arrange.tracklist import arrange_run
         data = proj(*song([track(0, 88), track(1, 80, flag=3)], []), *flat(88, 80, 500))
         recs = project_records(data)
         self.assertEqual(row_count(recs, song_container(recs, arrange_run(recs, 1))), 2)
@@ -109,7 +109,7 @@ class TailTest(unittest.TestCase):
 
 class FlexEntryTest(unittest.TestCase):
     def test_flex_marker_blocks_after_an_entry_are_not_entries(self):
-        from logicxkit.logic.services.regions import entry_offsets
+        from logicxkit.logic.services.regions.regions import entry_offsets
         marker_block = bytearray(ENTRY)
         marker_block[6:8] = b"\x01\xaa"                  # a transient marker, as Logic writes it
         events = entry(10, 1) + bytes(marker_block) * 3 + entry(20, 2) + TAIL_BYTES
@@ -124,7 +124,7 @@ class FlexEntryTest(unittest.TestCase):
 class RegionPairTest(unittest.TestCase):
     def test_entry_pairs_come_from_every_sequence_take_folders_included(self):
         from _records import seq_triple
-        from logicxkit.logic.services.audio_regions import audio_entry_pairs
+        from logicxkit.logic.services.regions.audio_regions import audio_entry_pairs
 
         def audio_entry(slot: int, piece: int = 0) -> bytes:
             e = bytearray(ENTRY)

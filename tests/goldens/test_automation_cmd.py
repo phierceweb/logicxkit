@@ -9,7 +9,7 @@ from pathlib import Path
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.automation import read_automation
+from logicxkit.logic.services.regions.automation import read_automation
 from logicxkit.logicx import project_data
 
 

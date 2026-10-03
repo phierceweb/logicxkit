@@ -14,8 +14,8 @@ from _cli import data, owner, run, source, written
 from _records import chan, proj, rec
 from test_patch import bundle as patch_bundle
 
-from logicxkit.logic.services.chains import channel_references
-from logicxkit.logic.services.transplant import copy_reference
+from logicxkit.logic.services.mixer.chains import channel_references
+from logicxkit.logic.services.mixer.transplant import copy_reference
 
 BASE, PAUSE = "controlbar-base", "controlbar-pause-on"
 INSERTS = "inserts-native-logic"

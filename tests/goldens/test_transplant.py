@@ -8,7 +8,7 @@ The real-file part of tests/logic/test_transplant.py; skips without the owner's 
 import unittest
 import _goldens
 import _paths
-from logicxkit.logic.services.transplant import (
+from logicxkit.logic.services.mixer.transplant import (
     owner_of,
     transplant,
 )
@@ -19,7 +19,7 @@ from logicxkit.logic.services.transplant import (
 @_goldens.needs("tracking-template")
 class GoldenTransplantTest(unittest.TestCase):
     def test_guitar_amp_sim_lands_on_the_tracking_template(self):
-        from logicxkit.logic.services.manifest import manifest_from_bytes
+        from logicxkit.logic.services.project.manifest import manifest_from_bytes
         from logicxkit.logicx import project_data
         src = project_data(_paths.staged("Mix"))
         dst = project_data(_goldens.path("tracking-template"))
@@ -34,10 +34,10 @@ class LegacyBaseWordTest(unittest.TestCase):
     """Logic's verdict on the base word: the legacy song, rebased, and its re-save."""
 
     def test_legacy_song_and_logics_verdict(self):
-        from logicxkit.logic.services.binding import channels
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.sends import is_send
-        from logicxkit.logic.services.slotkeys import channel_bases, rebase
+        from logicxkit.logic.services.mixer.binding import channels
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.mixer.sends import is_send
+        from logicxkit.logic.services.mixer.slotkeys import channel_bases, rebase
         from logicxkit.logicx import project_data
         legacy, verdict = _goldens.path("legacy-song"), _goldens.path("legacy-base4-logic")
         if legacy is None or verdict is None:
@@ -57,7 +57,7 @@ class LegacyBaseWordTest(unittest.TestCase):
 @_goldens.needs("transplant-ours", "transplant-resave-logic")
 class LogicResavedTransplantTest(unittest.TestCase):
     def test_logic_kept_both_slots_byte_for_byte(self):
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("transplant-ours", "transplant-resave-logic"))
         owner = owner_of(ours, _goldens.fact("transplant-ours", "channel"))

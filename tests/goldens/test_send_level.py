@@ -5,8 +5,8 @@ without the public corpus."""
 import unittest
 
 import _goldens
-from logicxkit.logic.services.levels import fader_word, read_levels, shown_db
-from logicxkit.logic.services.sends import read_sends
+from logicxkit.logic.services.mixer.levels import fader_word, read_levels, shown_db
+from logicxkit.logic.services.mixer.sends import read_sends
 from logicxkit.logicx import project_data
 
 MODES = ("send-mode-pre-fader-logic", "send-mode-post-fader-logic", "send-independent-pan-logic",

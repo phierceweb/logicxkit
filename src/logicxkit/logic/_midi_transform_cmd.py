@@ -12,9 +12,9 @@ from groovebin.transforms import BY_NAME, WHOLE_PART, parse_operation, parse_sel
 
 from ._edit import CommandError
 from ._midi_edit_cmd import Edit, matched
-from .services.events import PPQ
-from .services.midi import MidiRegion, read_midi
-from .services.midi_transform import Transform, apply_transform
+from .services.song.events import PPQ
+from .services.midi.midi import MidiRegion, read_midi
+from .services.midi.midi_transform import Transform, apply_transform
 
 OPS = {
     "set": ("FIELD=VALUE", "set a field of every selected note"),

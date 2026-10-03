@@ -6,14 +6,14 @@ import unittest
 
 import _goldens
 
-from logicxkit.logic.services.binding import channels, input_labels, output_labels
-from logicxkit.logic.services.environment import PARENT_AT, channel_objects, object_record
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.stack_create import create_stack
-from logicxkit.logic.services.stack_summing import create_summing_stack
-from logicxkit.logic.services.stacks import read_stacks, read_tracks
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import channels, input_labels, output_labels
+from logicxkit.logic.services.arrange.environment import PARENT_AT, channel_objects, object_record
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.arrange.stack_create import create_stack
+from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 BASE, FOLDER, SUMMING, TWO = "stack-folder-logic", "nest-inner-folder-logic", "nest-inner-summing-logic", "nest-stack-in-stack-logic"
@@ -67,7 +67,7 @@ class InnerStackTest(unittest.TestCase):
         self.assertEqual((validate_project(ours), regressions(self.base, ours)), ([], []))
 
     def test_a_new_sub_strip_carries_the_projects_words(self):
-        from logicxkit.logic.services.channel_alloc import PROJECT_WORDS, project_words
+        from logicxkit.logic.services.mixer.channel_alloc import PROJECT_WORDS, project_words
         data = project_data(_goldens.path("markers-edits-resave-logic"))      # +42 is 3 there, 0 on the packaged strip
         out, report = create_stack(data, name="Band", members=members(data, "Audio 1", "Audio 2"))
         strip = max((r.raw for r in project_records(out) if r.tag == b"OCuA" and r.owner == report["owner"]), key=len)
@@ -81,7 +81,7 @@ class InnerStackTest(unittest.TestCase):
                     make(two, name="X", members=members(two, *names))
 
 
-OURS, RESAVE, SOURCE = "nest-inner-ours", "nest-inner-ours-resave-logic", "markers-edits-resave-logic"
+OURS, RESAVE, SOURCE = "nest-inner-stub-ours", "nest-inner-stub-resave-logic", "markers-edits-resave-logic"
 
 
 def whole(data: bytes) -> dict:

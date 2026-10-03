@@ -9,14 +9,14 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import object_by_name
-from logicxkit.logic.services.addtrack import add_track
-from logicxkit.logic.services.channel_alloc import AUX_FRESH, PROJECT_WORDS, is_mixer_record
-from logicxkit.logic.services.mixer import CHANNEL_BASE_AT
-from logicxkit.logic.services.slots import slot_index_base
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.slots import archive_index, is_plugin_slot, property_key_base
-from logicxkit.logic.services.stacks import read_tracks
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.arrange.addtrack import add_track
+from logicxkit.logic.services.mixer.channel_alloc import AUX_FRESH, PROJECT_WORDS, is_mixer_record
+from logicxkit.logic.services.mixer.mixer import CHANNEL_BASE_AT
+from logicxkit.logic.services.mixer.slots import slot_index_base
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.slots import archive_index, is_plugin_slot, property_key_base
+from logicxkit.logic.services.arrange.stacks import read_tracks
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 KEY = "master-track-limiter-logic"

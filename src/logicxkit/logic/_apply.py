@@ -10,13 +10,13 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes
 
 from ._edit import CommandError, edit_copy, first_project_data, owner_by_label, pairs
-from .services.retrack import find_project
-from .services.transplant import remove_slots, set_bypass, transplant
+from .services.arrange.retrack import find_project
+from .services.mixer.transplant import remove_slots, set_bypass, transplant
 
 
 def cmd_route(args) -> int:
     """Set channel outputs and inputs by mixer label."""
-    from .services.routing import set_input, set_output
+    from .services.mixer.routing import set_input, set_output
 
     def step(data, _count, _file):
         for spec, setter, word in ((args.output or [], set_output, "->"),
@@ -38,9 +38,9 @@ def _bus_number(spec: str) -> int:
 
 def cmd_send(args) -> int:
     """Add, set, copy or remove sends on named channels."""
-    from .services.levels import shown_db
-    from .services.sends import read_sends
-    from .services.sends_write import add_send, copy_sends, remove_sends, set_send
+    from .services.mixer.levels import shown_db
+    from .services.mixer.sends import read_sends
+    from .services.mixer.sends_write import add_send, copy_sends, remove_sends, set_send
 
     if args.copy and not args.src:
         print("  --copy needs --from SRC_PROJECT")
@@ -125,8 +125,8 @@ def cmd_transplant(args) -> int:
 def _targets(args, data: bytes, count: int | None) -> list[tuple[str, str]]:
     """(destination label, source label) for every ``--channel`` and every channel a ``--stack``
     member is bound to, each destination once."""
-    from .services.stacks import read_stacks, read_tracks, rows_below
-    from .services.trackname import stack_named
+    from .services.arrange.stacks import read_stacks, read_tracks, rows_below
+    from .services.arrange.trackname import stack_named
 
     out = pairs(args.channel or [])
     if args.stack:
@@ -169,7 +169,7 @@ def cmd_clear_slots(args) -> int:
 
 def cmd_strip_save(args) -> int:
     """Export one channel as a .cst, the way Logic's Save Channel Strip Setting does."""
-    from .services.stripsave import export_strip
+    from .services.mixer.stripsave import export_strip
 
     data = first_project_data(Path(args.project))
     try:
@@ -178,7 +178,7 @@ def cmd_strip_save(args) -> int:
         print(f"  {e}")
         return 1
     out = Path(args.out)
-    from .services.library import under_live_library
+    from .services.mixer.library import under_live_library
     if under_live_library(out) and not args.install:
         print(f"  refusing to write into Logic's own library at {out}: this is the library Logic loads, not a "
               "scratch directory. Pass --install to write there on purpose, or give -o elsewhere.")

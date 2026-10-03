@@ -2,7 +2,7 @@
 
 import unittest
 import _goldens
-from logicxkit.logic.services.audio_regions import read_audio_files, read_audio_regions
+from logicxkit.logic.services.regions.audio_regions import read_audio_files, read_audio_regions
 from logicxkit.logicx import project_data
 
 

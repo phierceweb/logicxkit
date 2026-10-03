@@ -3,7 +3,7 @@
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.trackname import one_object, rows_named, stack_named
+from logicxkit.logic.services.arrange.trackname import one_object, rows_named, stack_named
 
 ROWS = [
     {"object_id": 192, "name": "Drums MIDI", "label": "Sub 7"},

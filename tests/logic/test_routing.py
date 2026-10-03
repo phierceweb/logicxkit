@@ -2,8 +2,8 @@
 
 import unittest
 from _records import chan, proj, uuid
-from logicxkit.logic.services.binding import input_routing, output_routing
-from logicxkit.logic.services.routing import set_input, set_output
+from logicxkit.logic.services.mixer.binding import input_routing, output_routing
+from logicxkit.logic.services.mixer.routing import set_input, set_output
 
 
 def session():
@@ -70,8 +70,8 @@ class Class6RoutingTest(unittest.TestCase):
 class NoInputTest(unittest.TestCase):
     def test_none_zeroes_the_input_field(self):
         from _records import chan, proj, uuid
-        from logicxkit.logic.services.binding import channels, input_routing
-        from logicxkit.logic.services.routing import set_input
+        from logicxkit.logic.services.mixer.binding import channels, input_routing
+        from logicxkit.logic.services.mixer.routing import set_input
         data = proj(chan(0, "Audio 1", uuid=uuid(88), source=uuid(500)), chan(256, "Input 1", uuid=uuid(500), size=201))
         self.assertEqual(input_routing(data)[0], 256)
         out = set_input(data, 0, None)
@@ -80,8 +80,8 @@ class NoInputTest(unittest.TestCase):
 
     def test_no_input_on_an_aux_writes_logics_no_input_bytes(self):
         from _records import chan, proj, uuid
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.routing import set_input
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.mixer.routing import set_input
         data = proj(chan(67, "Aux 1", uuid=uuid(88), source=uuid(500)), chan(500, "Bus 1", uuid=uuid(500), size=201))
         out = set_input(data, 67, None)
         rec_ = next(r for r in project_records(out) if r.owner == 67 and r.tag == b"OCuA")

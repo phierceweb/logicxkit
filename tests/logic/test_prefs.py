@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.prefs import (
+from logicxkit.logic.services.song.prefs import (
     BY_KEY, DOMAIN, SETTINGS, backup, controlbar_default, plist_fragment, prefs_plist, read_settings,
 )
 
@@ -54,7 +54,7 @@ class ReadTest(unittest.TestCase):
         self.assertEqual(state["Double-clicking a MIDI region opens"], "Score Editor")
 
     def test_flag_and_data_kinds(self):
-        from logicxkit.logic.services.prefs import Setting, data_bytes, decode, encode
+        from logicxkit.logic.services.song.prefs import Setting, data_bytes, decode, encode
         bit = Setting("x", "K", "P", "bit", mask=0x10)
         self.assertTrue(decode(bit, "-4"))
         self.assertFalse(decode(bit, "-20"))
@@ -86,7 +86,7 @@ class ReadTest(unittest.TestCase):
         self.assertEqual(encode(absent, "System Default"), ("-delete", ""))
 
     def test_values_parse_from_words(self):
-        from logicxkit.logic.services.prefs import parse_value
+        from logicxkit.logic.services.song.prefs import parse_value
         self.assertIs(parse_value("Fade tool click zones", "off"), False)
         self.assertEqual(parse_value("Number of undo steps", "200"), 200)
         self.assertEqual(parse_value("Right mouse button", "tool menu"), "Opens Tool Menu")
@@ -110,7 +110,7 @@ class TextTest(unittest.TestCase):
         import subprocess
         if not shutil.which("defaults"):
             self.skipTest("no defaults(1)")
-        from logicxkit.logic.services.prefs import CONTROLBAR_DEFAULT_KEY, write_controlbar_default, write_settings
+        from logicxkit.logic.services.song.prefs import CONTROLBAR_DEFAULT_KEY, write_controlbar_default, write_settings
         layout = {"CLgTransportBtnsViewLeft": [100, 101], "CLgTransportBtnsViewRight": [110],
                   "CLgTransportBtnsTransport": [6, 11, 12, 13, 14, 16, 38], "CLgTransportBtnsDisplay": [18, 19],
                   "CLgTransportBtnsModus": [30, 42], "CLgTransportDisplayMode": 0}

@@ -3,15 +3,15 @@ tests/logic/test_reorder.py."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.reorder import move_track
-from logicxkit.logic.services.stacks import read_stacks, read_tracks
+from logicxkit.logic.services.arrange.reorder import move_track
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
 
 
 
 @_goldens.needs("tracking-template")
 class GoldenMoveTest(unittest.TestCase):
     def test_moving_ride_above_hi_hat_keeps_every_stack(self):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         from logicxkit.logicx import project_data
         template = _goldens.path("tracking-template")
         data = project_data(template)
@@ -27,9 +27,9 @@ class StackHeaderMoveTest(unittest.TestCase):
     """Logic's own drag of a stack header two rows down: header and member move as a block."""
 
     def test_moving_the_header_reproduces_logics_rows(self):
-        from logicxkit.logic.services.recdiff import diff_records, load_project_data
-        from logicxkit.logic.services.reorder import move_track
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.stream.recdiff import diff_records, load_project_data
+        from logicxkit.logic.services.arrange.reorder import move_track
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         a = load_project_data(_goldens.path("stack-folder-of-one-logic"))
         b = load_project_data(_goldens.path("stack-header-reordered-logic"))
         rows = {r["name"]: r for r in read_tracks(a, 5)}
@@ -43,7 +43,7 @@ class StackHeaderMoveTest(unittest.TestCase):
 @_goldens.needs("stack-summing-logic")
 class SummingStackMoveTest(unittest.TestCase):
     def setUp(self):
-        from logicxkit.logic.services.recdiff import load_project_data
+        from logicxkit.logic.services.stream.recdiff import load_project_data
         self.data = load_project_data(_goldens.path("stack-summing-logic"))
         self.rows = {r["name"]: r["object_id"] for r in read_tracks(self.data, 5)}
 
@@ -59,7 +59,7 @@ class SummingStackMoveTest(unittest.TestCase):
 @_goldens.needs("reorder-ours", "reorder-resave-logic")
 class LogicResavedPlainMoveTest(unittest.TestCase):
     def test_logic_kept_the_order(self):
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("reorder-ours", "reorder-resave-logic"))
         order = lambda data: [r["name"] for r in read_tracks(data, 3)]  # noqa: E731

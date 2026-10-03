@@ -10,19 +10,19 @@ from pathlib import Path
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.stream import HEADER, project_records, reassemble
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import ENTRY_TICK_AT, read_midi
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import ENTRY_TICK_AT, read_midi
 from groovebin import transforms as gt
-from logicxkit.logic.services.midi_edit import (_located, _written, copy_notes, copy_region, edit, edit_region, meter_map,
+from logicxkit.logic.services.midi.midi_edit import (_located, _written, copy_notes, copy_region, edit, edit_region, meter_map,
                                                 to_part)
-from logicxkit.logic.services.midi_write import _place_entry, add_region, entry_tick
-from logicxkit.logic.services.recbuild import rec
-from logicxkit.logic.services.regions import ENTRY, entry_offsets, song_container
-from logicxkit.logic.services.signature import meter
-from logicxkit.logic.services.tracklist import arrange_run
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.midi.midi_write import _place_entry, add_region, entry_tick
+from logicxkit.logic.services.stream.recbuild import rec
+from logicxkit.logic.services.regions.regions import ENTRY, entry_offsets, song_container
+from logicxkit.logic.services.song.signature import meter
+from logicxkit.logic.services.arrange.tracklist import arrange_run
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 TWO, RESAVE, LOOPED, NAMES = "midi-two-notes-logic", "midi-write-resave-logic", "midi-region-looped-logic", "midi-names-resave-logic"

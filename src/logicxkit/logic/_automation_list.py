@@ -6,12 +6,12 @@ from __future__ import annotations
 import json
 
 from ._edit import first_project_data
-from .services.automation import FRACTION_UNIT, read_automation
-from .services.automation_names import lane_target
-from .services.binding import bound_channels
-from .services.plugin_params import load_tables
-from .services.signature import meter
-from .services.translate import load_maps
+from .services.regions.automation import FRACTION_UNIT, read_automation
+from .services.regions.automation_names import lane_target
+from .services.mixer.binding import bound_channels
+from .services.mixer.plugin_params import load_tables
+from .services.song.signature import meter
+from .services.translate.translate import load_maps
 
 
 def _targets(data: bytes, folders) -> dict:

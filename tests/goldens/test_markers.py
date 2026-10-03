@@ -3,13 +3,13 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.arrangement import marker_sequence, read_sections, section_sequence
-from logicxkit.logic.services.events import BAR_ONE, events
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.markers import TO_NEXT, read_markers
-from logicxkit.logic.services.markers_write import add_marker, delete_marker, move_marker, rename_marker
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.song.arrangement import marker_sequence, read_sections, section_sequence
+from logicxkit.logic.services.song.events import BAR_ONE, events
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.song.markers import TO_NEXT, read_markers
+from logicxkit.logic.services.song.markers_write import add_marker, delete_marker, move_marker, rename_marker
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 BAR = 3840

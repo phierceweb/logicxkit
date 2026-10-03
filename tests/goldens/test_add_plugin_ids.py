@@ -9,11 +9,11 @@ import _goldens
 from logicxkit.logic._add_plugin_cmd import _offsets
 from logicxkit.logic._binary import find_blocks
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.plugin_library import find_donor, load_library
-from logicxkit.logic.services.transplant import ID_TAIL, ID_WINDOW, channel_slots, slot_class_version
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
+from logicxkit.logic.services.mixer.transplant import ID_TAIL, ID_WINDOW, channel_slots, slot_class_version
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 

@@ -9,9 +9,9 @@ The real-file part of tests/logic/test_sends_write.py; skips without the owner's
 import unittest
 import _goldens
 import _paths
-from logicxkit.logic.services.stream import project_records
-from logicxkit.logic.services.sends import read_sends
-from logicxkit.logic.services.sends_write import add_send, copy_sends, remove_sends
+from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.mixer.sends import read_sends
+from logicxkit.logic.services.mixer.sends_write import add_send, copy_sends, remove_sends
 
 MIX = _paths.staged("Mix")
 
@@ -25,8 +25,8 @@ class MixTemplateSendTest(unittest.TestCase):
     def setUpClass(cls):
         from collections import Counter
 
-        from logicxkit.logic.services.project import project_metadata
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.project.project import project_metadata
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         from logicxkit.logicx import project_data
         cls.data = project_data(MIX)
         cls.count = project_metadata(MIX)["tracks"]
@@ -38,7 +38,7 @@ class MixTemplateSendTest(unittest.TestCase):
 
     def test_add_then_remove_round_trips_and_stays_consistent(self):
         from _invariants import report
-        from logicxkit.logic.services.recdiff import diff_records
+        from logicxkit.logic.services.stream.recdiff import diff_records
         out, rep = add_send(self.data, owner=self.owner, bus=self.bus)
         self.assertEqual((rep["key"], rep["bus"], rep["replaced"]), (0, self.bus, False))
         self.assertEqual([(s.key, s.bus) for s in read_sends(out)[self.owner]], [(0, self.bus)])
@@ -69,7 +69,7 @@ class AddedSendSettingsTest(unittest.TestCase):
     project carries the same setting bytes."""
 
     def test_the_settings_match_logics_own_second_send(self):
-        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logic.services.stream.stream import HEADER
         from logicxkit.logicx import project_data
         before, logic = (project_data(_goldens.path(k)) for k in ("send-level-2-logic", "send-two-base-3-logic"))
         (owner, (first,)), = read_sends(before).items()
@@ -86,9 +86,9 @@ class LogicResavedPackagedSendTest(unittest.TestCase):
     """A send added to a project that had none to clone: the packaged template, re-saved."""
 
     def test_logic_kept_the_send_and_its_channel(self):
-        from logicxkit.logic.services.channel_alloc import is_mixer_record
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.sends import read_sends
+        from logicxkit.logic.services.mixer.channel_alloc import is_mixer_record
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.mixer.sends import read_sends
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("send-packaged-ours", "send-packaged-resave-logic"))
         owner = _goldens.fact("send-packaged-ours", "owner")

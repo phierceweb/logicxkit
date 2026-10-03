@@ -11,9 +11,9 @@ from pathlib import Path
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_write import add_region
-from logicxkit.logic.services.project import project_metadata
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_write import add_region
+from logicxkit.logic.services.project.project import project_metadata
 from logicxkit.logicx import project_data
 
 TWO, METER = "midi-two-notes-logic", "meter-song"

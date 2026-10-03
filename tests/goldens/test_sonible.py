@@ -5,8 +5,8 @@ Compressor and Noise Gate with what does not cross reported. Skips without the p
 import unittest
 
 import _goldens
-from logicxkit.logic.services.plugins import slot_payloads
-from logicxkit.logic.services.translate import load_maps, map_for, plan, read_settings
+from logicxkit.logic.services.mixer.plugins import slot_payloads
+from logicxkit.logic.services.translate.translate import load_maps, map_for, plan, read_settings
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 
@@ -62,8 +62,8 @@ class SonibleTest(unittest.TestCase):
         on a grid and settles the knobs' own positions for attack, hold and release."""
         from logicxkit.logic._binary import find_blocks, read_block_floats
         from logicxkit.logic._edit import owner_by_label
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.transplant import channel_slots
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.mixer.transplant import channel_slots
         rows = {}
         for key in ("translate-sonible-ours", "translate-sonible-resave-logic"):
             data = project_data(_goldens.path(key))

@@ -21,7 +21,7 @@ class NativeDirTest(unittest.TestCase):
 
     def test_the_au_host_resolves_its_probe_through_it(self):
         from logicxkit.au.services.host import auprobe_path
-        from logicxkit.logic.services.ocr import _script
+        from logicxkit.logic.services.project.ocr import _script
         self.assertEqual(auprobe_path(), native_dir() / "auprobe.swift")
         self.assertEqual(_script(), native_dir() / "vision_ocr.swift")
         self.assertTrue(auprobe_path().is_file())

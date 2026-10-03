@@ -18,7 +18,7 @@ CAPABILITIES = (
                "disabled by hand, 2026-09-16); `--validate` opens each listed component with auval -v "
                "and reports it broken"),
     *CONTENT_ROWS,
-    Capability(("stacks",), "CONFIRMED", "read-only until `--move` or `--move-out`, which need `--out`",
+    Capability(("stacks",), "CONFIRMED", "read-only until `--move`, `--move-out`, `--flatten` or `--convert`, which need `--out`",
                "Reads folder stacks and the arrange list, nested stacks included (the member byte is "
                "the depth). `--move TRACK:STACK --out DIR` writes a copy whose rows match Logic's own drag "
                "saves (2026-09-04; into and out of a nested stack 2026-09-16, the `nest-*` goldens, and "
@@ -31,7 +31,27 @@ CAPABILITIES = (
                "track added to a summing stack do; a stack is not moved into one at any depth. "
                "`--move-out TRACK` takes a row one level out as "
                "Logic's drags did (the `nest-*` goldens; `stack-folder-dragged-out-logic` to the top "
-               "level), keeping its bus out of a summing stack (`stack-summing-dragged-out-logic`)"),
+               "level), keeping its bus out of a summing stack (`stack-summing-dragged-out-logic`). "
+               "`--flatten STACK` writes what Logic's own Flatten Stack saved on a folder and on a "
+               "summing stack (`stack-*-flattened-logic`): the header's row out, the members up a "
+               "level and selected with their parents cleared, their routing and stack indices kept, "
+               "the header object and its strip left in place and in use. `--convert STACK` makes a "
+               "folder stack a summing stack as Logic 12.4's Track > Convert Folder Stack to Summing "
+               "Stack saved it (`stack-converted-to-summing-logic`): the flatten, then a summing "
+               "stack over the same members on the lowest free `Aux` and bus, the folder's header "
+               "object removed, its `Sub` strip out of use, the members at stack index 0; the name "
+               "stays when it was the user's, else `Sum N`, unnamed as Logic's own; the folder's Volume "
+               "lane moves onto the new header as Logic's moved it (`stack-convert-lane-after-logic`), its "
+               "level stays on the `Sub` strip out of use with the aux at 0 dB, as Logic left it "
+               "(`stack-convert-level-after-logic`); a folder inside another folder converts as Logic's "
+               "did, members and aux at stack index 0 under the outer one (`nest-convert-*-after-logic`). "
+               "Refused, each named: a folder with another lane or an insert, and members that output "
+               "anywhere but where the new aux will, as `--summing` refuses them. "
+               "A folder flattened inside another clears its members' parent as Logic's did "
+               "(`nest-flatten-after-logic`). Logic 12.4 opened a "
+               "written flatten of each kind and a written convert and re-saved every row, parent, "
+               "route and strip as written, re-laying only the index table (`stack-*-flatten-*`, "
+               "`stack-convert-*`, 2026-10-02)"),
     Capability(("levels",), "CONFIRMED",
                "read-only until `--fader`, `--pan` or `--to`, which need `--out`",
                "Reads fader and pan, the fader in dB to the hundredth. `--to OTHER --out DIR` copies "
@@ -93,8 +113,10 @@ CAPABILITIES = (
                "bus and routes each member to it, by UUID and by index word as Logic's own Create "
                "Track Stack (Summing) wrote both; Logic 12.4 showed two written stacks, one with an "
                "instrument member, and re-saved them with every row, route and channel record as "
-               "written (`stack-summing-*`, 2026-10-02). Logic's own binds the lowest free `Aux` "
-               "stub where this adds a fresh strip. Direct members of one stack make a stack inside "
+               "written (`stack-summing-*`, 2026-10-02). The header binds the lowest free `Aux` stub "
+               "as Logic's own does, a fresh strip after the highest when none is free; Logic 12.4 "
+               "re-saved two stub-bound stacks, and one inside a folder, as written "
+               "(`stack-summing-stub-*`, `nest-inner-stub-*`). Direct members of one stack make a stack inside "
                "it, of either kind, as Logic's own inner Create Track Stack inside a folder wrote them "
                "(`nest-inner-*-logic`); Logic showed an outer folder holding a written summing stack "
                "and a written folder and re-saved every row, route and stack (`nest-inner-ours*`). "
@@ -321,8 +343,11 @@ CAPABILITIES = (
                "and crossover knobs (4.0 as 3.675, 4 kHz as 3.9), and that re-save came back into a "
                "Pro-MB as written (`mb-*`, 2026-09-23). A stretch no source band covers is a live band "
                "at ratio 1, since an off band's range goes to the next live one (`mb-neutral-*`); Pro-MB's "
-               "range limit and percentage times, and a Multipressor band's expander beside its "
-               "compressor, are reported, not guessed"),
+               "range limit and percentage times are reported, not guessed. A Multipressor band crosses "
+               "into a Pro-MB band as one side, its expander when the compressor is neutral, else its "
+               "compressor, the plan naming the side; that side's lanes carry (the expander's threshold, "
+               "ratio and reduction onto an expand band's threshold, ratio and range) and the other "
+               "side's stay behind with the reason"),
     Capability(("clear-slots",), "CONFIRMED", "yes",
                "Drops the records and their key flags; the `.cst` reference label stays. Opened in "
                "Logic with the inserts empty (2026-09-04); without the flag sync Logic refuses the file"),
@@ -360,7 +385,8 @@ CAPABILITIES = (
                "(2026-09-16) re-saved in Logic with the identical row list and strip references, "
                "two of them repointed per channel. "
                "A template stack is the session stack its header pairs with, else the one stack "
-               "of its name; two of the name with neither paired refuse the move. An output to a "
+               "of its name; two of the name with neither paired refuse the move; a stack of tracks "
+               "the plan adds is made once they exist. An output to a "
                "bus the template returns and the session will not is refused. "
                "A Logic 11.2 save serves as the template: its routing is read from the channel "
                "records' index words (every routed channel as Logic 12.4 converted it, "

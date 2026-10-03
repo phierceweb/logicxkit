@@ -6,7 +6,7 @@ import struct
 import unittest
 
 from logicxkit.au.services.izotope import pack_izotope
-from logicxkit.logic.services.translate import Item, Map, load_maps, map_for, maps_for, plan, read_settings
+from logicxkit.logic.services.translate.translate import Item, Map, load_maps, map_for, maps_for, plan, read_settings
 from logicxkit.utils.data import PACKAGED
 
 MAPS = load_maps([PACKAGED / "translate"])
@@ -52,7 +52,7 @@ class LoadTest(unittest.TestCase):
     def test_no_map_directory_anywhere_is_an_error_not_an_empty_list(self):
         from unittest import mock
 
-        from logicxkit.logic.services import translate
+        from logicxkit.logic.services.translate import translate
         from logicxkit.utils.data import MissingData
         with mock.patch.object(translate, "data_dirs", return_value=[]):
             with self.assertRaises(MissingData):
@@ -83,14 +83,14 @@ class SnapTest(unittest.TestCase):
     """A native write lands on a sampled slider position, and stays put between them."""
 
     def test_a_sampled_position_is_taken_and_a_gap_is_left_alone(self):
-        from logicxkit.logic.services.slider import snap
+        from logicxkit.logic.services.mixer.slider import snap
         m = Map("compressor", "Synthetic", {}, type=999,
                 raw={"automation": {"Ratio": {"per": 128, "units": [[0, 1.0], [10, 1.5], [20, 2.0], [40, 4.0], [85, 30.0]]}}})
         self.assertEqual(snap(m, "Ratio", 2.02), 2.0)                       # unit 20, sampled (units follow the log of a ratio)
         self.assertEqual(snap(m, "Ratio", 3.0), 3.0)                        # unit 30, not sampled: as is
         self.assertEqual(snap(m, "Ratio", 1.49), 1.5)
         self.assertEqual(snap(m, "Threshold", -20.3), -20.3)                # unmeasured: as is
-        from logicxkit.logic.services.translate_write import _on_slider
+        from logicxkit.logic.services.translate.translate_write import _on_slider
         item = Item("Ratio")
         self.assertEqual(_on_slider(m, item, 3.0), (3.0, "between Synthetic's sampled Ratio positions; Logic lays it on the nearer one"))
         self.assertEqual(_on_slider(m, item, 2.02), (2.0, None))
@@ -212,6 +212,18 @@ class NeutronTest(unittest.TestCase):
         self.assertAlmostEqual(p.values["Attack"], 20.5, delta=1.0)        # the nearest sampled slider unit
         self.assertEqual(p.values["Mix"], 90.0)
 
+    def test_a_bypassed_element_sends_the_native_in_bypassed(self):
+        """Every Dynamics element off: the settings still read from the first, and the plan
+        has the native go in bypassed, saying so."""
+        both_off = self.payload(**{"Dynamics 0": {**self.COMP, "Bypass": True}})
+        s = read_settings(both_off, next(m for m in NEUTRON if m.family == "compressor"))
+        self.assertTrue(s.bypassed)
+        p = plan(s, COMP)
+        self.assertTrue(p.bypass)
+        self.assertIn("Neutron 5's Dynamics 0 is bypassed; Compressor goes in bypassed", p.notes)
+        live = plan(read_settings(self.payload(), next(m for m in NEUTRON if m.family == "compressor")), COMP)
+        self.assertFalse(live.bypass)
+
     def test_a_band_on_without_a_frequency_is_refused(self):
         eq = {k: v for k, v in self.EQ.items() if k != "Band 1 Frequency"}
         with self.assertRaises(ValueError) as e:
@@ -219,7 +231,7 @@ class NeutronTest(unittest.TestCase):
         self.assertIn("band 1 is on but its state has no frequency", str(e.exception))
 
     def test_the_state_is_read_only(self):
-        from logicxkit.logic.services.translate_write import write_settings
+        from logicxkit.logic.services.translate.translate_write import write_settings
         with self.assertRaises(ValueError):
             write_settings(self.payload(), next(m for m in NEUTRON if m.family == "compressor"), {"threshold": -20.0})
 

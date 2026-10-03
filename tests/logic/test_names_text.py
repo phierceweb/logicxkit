@@ -5,11 +5,11 @@ import struct
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.arrangement import TEXT_NAME_AT, _text
-from logicxkit.logic.services.arrangement_write import plain_text_payload
-from logicxkit.logic.services.groups import NAME_AT, _name_of, _with_name
-from logicxkit.logic.services.names import written
-from logicxkit.logic.services.rtf import rtf_text
+from logicxkit.logic.services.song.arrangement import TEXT_NAME_AT, _text
+from logicxkit.logic.services.song.arrangement_write import plain_text_payload
+from logicxkit.logic.services.arrange.groups import NAME_AT, _name_of, _with_name
+from logicxkit.logic.services.arrange.names import written
+from logicxkit.logic.services.song.rtf import rtf_text
 
 HEAD = (b"{\\rtf1\\ansi\\ansicpg1252\\cocoartf2870\n\\cocoatextscaling0\\cocoaplatform0"
         b"{\\fonttbl\\f0\\fnil\\fcharset0 HelveticaNeue;}\n{\\colortbl;\\red255\\green255\\blue255;}\n"

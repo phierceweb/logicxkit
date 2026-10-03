@@ -2,7 +2,7 @@
 
 import unittest
 
-from logicxkit.logic.services.tempo_write import time_word
+from logicxkit.logic.services.song.tempo_write import time_word
 
 ORIGIN = (38400, 7_200_000)          # bar 1 at Logic's default SMPTE start, 01:00:00:00
 

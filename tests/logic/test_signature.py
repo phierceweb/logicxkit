@@ -1,8 +1,8 @@
 """The signature track: time signatures, key numbers and bar arithmetic across a change."""
 
 import unittest
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.signature import Meter, TimeSignature
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.song.signature import Meter, TimeSignature
 
 
 class MeterTest(unittest.TestCase):

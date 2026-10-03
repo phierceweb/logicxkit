@@ -3,6 +3,44 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.9.0 — 2026-10-03
+
+### Added
+
+- `stacks --flatten STACK` takes a folder or summing stack apart as Logic's Flatten Stack does:
+  the header's row goes, the members come up a level and keep their routing.
+- `stacks --convert STACK` makes a folder stack a summing stack as Logic's Convert Folder Stack
+  to Summing Stack does: a new header on the lowest free `Aux` fed from a free bus, the members
+  routed to it, the `Sub` strip out of use with the folder's level left on it (the output says
+  so), the folder's Volume lane moved onto the new header. A folder inside another folder converts
+  too. Refused, each named: a folder with another lane or an insert, and members that output
+  anywhere but where the new aux will go.
+
+### Changed
+
+- A bundle holding an alternative an earlier Logic saved beside a current one is written: the
+  current alternatives are edited, the earlier ones left as they are and named in the output. A
+  bundle with no current alternative is still refused. `--plan`, the listing a write prints and
+  a `--src`/`--from` source read the alternatives the write edits.
+- The modules under `logicxkit.logic.services` sit in eight subpackages (`stream`, `mixer`,
+  `translate`, `arrange`, `song`, `regions`, `midi`, `project`): `logicxkit.logic.services.insert`
+  is `logicxkit.logic.services.mixer.insert`. `logicxkit.logic`'s own names are unchanged.
+- `apply-template --plan` plans a template stack of tracks the plan adds, saying how many are
+  added above it, instead of refusing it for members the session lacks.
+- `stack-create --summing` puts its header on the lowest free `Aux` stub, as Logic's own Create
+  Track Stack (Summing) does; a fresh strip after the highest only when none is free.
+- `replace-plugin --translate` from a Neutron whose read element is bypassed puts the native in
+  bypassed, and the plan says so.
+- A Multipressor band into a Pro-MB band crosses as one side, its expander when the compressor
+  is neutral, and the plan names the side; that side's automation lanes carry (the expander's
+  threshold, ratio and reduction onto an expand band), the other side's are dropped with the
+  reason.
+
+### Fixed
+
+- A track or stack that `add-track`, `stack-create` or `apply-template` adds starts with no
+  automation lanes, not a copy of another track's.
+
 ## 0.8.0 — 2026-10-02
 
 ### Added

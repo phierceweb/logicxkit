@@ -3,13 +3,13 @@ once head +15, the Event List's selection state, is masked, and read back as the
 
 import unittest
 import _goldens
-from logicxkit.logic.services.automation import FOLDER_NAME, RELATIVE, named, read_automation
-from logicxkit.logic.services.automation_write import clear_lane, copy_lane, set_lane
-from logicxkit.logic.services.events import BAR_ONE, events
-from logicxkit.logic.services.groups import FADER_IDS
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.sequence import sequences
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.regions.automation import FOLDER_NAME, RELATIVE, named, read_automation
+from logicxkit.logic.services.regions.automation_write import clear_lane, copy_lane, set_lane
+from logicxkit.logic.services.song.events import BAR_ONE, events
+from logicxkit.logic.services.arrange.groups import FADER_IDS
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.sequence import sequences
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logicx import project_data
 
 VOLUME, PAN = FADER_IDS["Volume"], FADER_IDS["Pan"]

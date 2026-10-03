@@ -12,11 +12,11 @@ from test_onsets import RATE, slow_track, write_wav
 
 from logicxkit.logic._drums_to_midi_cmd import detector_of, parse_hits, parse_velocity, register
 from logicxkit.logic._edit import CommandError
-from logicxkit.logic.services.audio_regions import AudioFile, AudioRegion
-from logicxkit.logic.services.drums_to_midi import SIXTEENTH, _track_hits, note_for, one_per_key, velocities
-from logicxkit.logic.services.events import BAR_ONE, PPQ
+from logicxkit.logic.services.regions.audio_regions import AudioFile, AudioRegion
+from logicxkit.logic.services.midi.drums_to_midi import SIXTEENTH, _track_hits, note_for, one_per_key, velocities
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
 from groovebin.events import Note
-from logicxkit.logic.services.onsets import Detector
+from logicxkit.logic.services.regions.onsets import Detector
 
 BPM = 120.0
 SAMPLES_PER_TICK = RATE * 60 / BPM / PPQ

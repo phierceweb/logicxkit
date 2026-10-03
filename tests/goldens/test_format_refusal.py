@@ -59,7 +59,7 @@ class Logic124AcceptedTest(unittest.TestCase):
     def test_its_save_is_the_measured_format(self):
         import plistlib
 
-        from logicxkit.logic.services.validate import (
+        from logicxkit.logic.services.stream.validate import (
             MEASURED_FORMAT, file_format, require_measured_format)
         project = _goldens.path("names-non-ascii-logic")
         data = (project / "Alternatives" / "000" / "ProjectData").read_bytes()

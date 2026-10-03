@@ -5,11 +5,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .services.controlbar import (
+from .services.song.controlbar import (
     CONTROLS, LCD_MODES, alternative_dirs, controls_of, copy_layout, read_layout, write_controls,
 )
-from ._edit import edit_display
-from .services.retrack import find_project
+from ._edit import display_source, edit_display
+from .services.arrange.retrack import find_project
 
 
 def _match(name: str) -> str:
@@ -47,7 +47,8 @@ def cmd_controlbar(args) -> int:
         want = {_match(n): True for n in args.show or []}
         want.update({_match(n): False for n in args.hide or []})
         src = find_project(Path(args.src)) if args.src else None
-        if src is not None and not alternative_dirs(src):
+        source = display_source(src) if src is not None else None
+        if src is not None and source is None:
             raise ValueError(f"{src}: no alternative carries a DisplayState.plist")
     except ValueError as e:
         print(f"  {e}")
@@ -57,7 +58,7 @@ def cmd_controlbar(args) -> int:
 
     def step(alt: Path) -> None:
         if src is not None:
-            copy_layout(alternative_dirs(src)[0], alt)
+            copy_layout(source, alt)
         state = write_controls(alt, want) if want else controls_of(read_layout(alt)[0])
         print(f"  {alt.name}:")
         _print_state(state, read_layout(alt)[1])

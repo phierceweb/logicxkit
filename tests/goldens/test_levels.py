@@ -3,7 +3,7 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.levels import read_levels
+from logicxkit.logic.services.mixer.levels import read_levels
 from logicxkit.logicx import project_data
 
 

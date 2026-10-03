@@ -9,7 +9,7 @@ The real-file part of tests/logic/test_sends.py; skips without the owner's files
 
 import unittest
 import _goldens
-from logicxkit.logic.services.sends import bus_owner, read_sends
+from logicxkit.logic.services.mixer.sends import bus_owner, read_sends
 
 SAVE = _goldens.path("legacy-pass2-resave")
 
@@ -31,7 +31,7 @@ class GoldenSendBaseTest(unittest.TestCase):
     def test_logic_wrote_the_vocal_sends_from_nineteen(self):
         """Logic's own re-save of a 20-input song: the sends it rewrote read as buses 10-12."""
         from logicxkit.logicx import project_data
-        from logicxkit.logic.services.sends import send_base
+        from logicxkit.logic.services.mixer.sends import send_base
         data = project_data(SAVE)
         self.assertEqual(send_base(data), 19)
         buses = sorted({s.bus for lst in read_sends(data).values() for s in lst})

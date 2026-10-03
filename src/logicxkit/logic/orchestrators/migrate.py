@@ -12,9 +12,9 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from ..services.pairing import format_map, parse_map_full, propose_map, row_key
-from ..services.project import project_metadata
-from ..services.stacks import read_tracks
+from ..services.mixer.pairing import format_map, parse_map_full, propose_map, row_key
+from ..services.project.project import project_metadata
+from ..services.arrange.stacks import read_tracks
 from .apply_template import lineage_problem
 
 PREFIX = "CLAUDE migrated - "

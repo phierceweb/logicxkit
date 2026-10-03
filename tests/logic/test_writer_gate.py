@@ -14,8 +14,8 @@ from test_stack_create import TRACKS, session
 from logicxkit.logic._edit import CommandError, bump_track_count, edit_copy
 from logicxkit.logic._inspect import cmd_stacks
 from logicxkit.logic._levels_cmd import cmd_levels
-from logicxkit.logic.services.levels import read_levels
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.mixer.levels import read_levels
+from logicxkit.logic.services.arrange.stacks import read_tracks
 
 
 def bundle(root: Path, name: str, data: bytes) -> Path:
@@ -61,7 +61,7 @@ class StacksMoveTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             src = bundle(root, "Song", session())
-            with mock.patch("logicxkit.logic.services.stacks.move_to_stack",
+            with mock.patch("logicxkit.logic.services.arrange.stack_moves.move_to_stack",
                             side_effect=lambda d, *a, **k: d + b"JUNK"), mock.patch("builtins.print"):
                 rc = cmd_stacks(Namespace(logicx=str(src), move=["Test Bounce:Drums"], move_out=None, out=str(root / "out")))
             self.assertEqual(rc, 1)

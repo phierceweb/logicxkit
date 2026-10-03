@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 import _goldens
-from logicxkit.logic.services.header import (
+from logicxkit.logic.services.stream.header import (
     BLOB_LEN,
     components_of,
     read_components,
@@ -23,7 +23,7 @@ PATHS = {k: _goldens.path(k) for k in KEYS}
 
 
 def blob(key: str) -> bytes:
-    from logicxkit.logic.services.header import _find_blob
+    from logicxkit.logic.services.stream.header import _find_blob
     p = sorted(PATHS[key].glob("Alternatives/*/DisplayState.plist"))[0]
     return _find_blob(plistlib.loads(p.read_bytes()))
 

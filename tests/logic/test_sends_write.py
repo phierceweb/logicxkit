@@ -7,9 +7,9 @@ and the target `Bus N` channel's UUID at `+60`; a copy's level bytes ride along 
 import struct
 import unittest
 from _records import chan, proj, rec, send, uuid
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.sends import read_sends
-from logicxkit.logic.services.sends_write import add_send, copy_sends, remove_sends
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.sends import read_sends
+from logicxkit.logic.services.mixer.sends_write import add_send, copy_sends, remove_sends
 
 SEND_LEN = HEADER + 76
 
@@ -154,7 +154,7 @@ def source(*, klass: int = 99, ver: int = 4) -> bytes:
 class DestinationBaseTest(unittest.TestCase):
     def test_a_copy_into_a_twenty_input_project_rebases_the_destination_word(self):
         import struct
-        from logicxkit.logic.services.sends_write import copy_sends
+        from logicxkit.logic.services.mixer.sends_write import copy_sends
         src = proj(chan(5, "Audio 6", uuid=uuid(1)), send(5, 0, 10), chan(130, "Bus 10", uuid=uuid(130), size=201))
         inputs = [chan(256 + k, f"Input {k + 1}", size=201, in_use=False) for k in range(20)]
         dst = proj(chan(2, "Audio 3", uuid=uuid(96)), send(2, 0, 5), chan(585, "Bus 10", uuid=uuid(585), size=201),
@@ -250,7 +250,7 @@ class RemoveSendsTest(unittest.TestCase):
         self.assertNotIn(2, read_sends(out))
 
     def test_a_channel_without_sends_is_untouched(self):
-        from logicxkit.logic.services.keyflags import sync_key_flags
+        from logicxkit.logic.services.stream.keyflags import sync_key_flags
         data = sync_key_flags(session())
         self.assertEqual(remove_sends(data, owner=3), data)
 
@@ -269,8 +269,8 @@ class PackagedSendTemplateTest(unittest.TestCase):
 
 def _base_2(data: bytes) -> bytes:
     """Every channel record stamped with slot base 2, as a project made before Logic 11.2."""
-    from logicxkit.logic.services.mixer import CHANNEL_BASE_AT, is_mixer_record
-    from logicxkit.logic.services.stream import reassemble
+    from logicxkit.logic.services.mixer.mixer import CHANNEL_BASE_AT, is_mixer_record
+    from logicxkit.logic.services.stream.stream import reassemble
     out = []
     for r in project_records(data):
         raw = bytearray(r.raw)
@@ -289,14 +289,14 @@ class ThirdSendAtBase2Test(unittest.TestCase):
                             slot(2, 2), bus(10), bus(15), bus(16)))
 
     def test_the_slot_moves_up_past_the_third_send(self):
-        from logicxkit.logic.services.slots import slot_index_base
+        from logicxkit.logic.services.mixer.slots import slot_index_base
         out, report = add_send(self._project(), owner=2, bus=10)
         self.assertEqual(report["key"], 2)
         self.assertEqual([k for _t, k in run(out, 2)], [0xFFFF, 0, 1, 2, 4])
         self.assertEqual(slot_index_base(out), 4)
 
     def test_two_sends_leave_the_base_alone(self):
-        from logicxkit.logic.services.slots import slot_index_base
+        from logicxkit.logic.services.mixer.slots import slot_index_base
         data = self._project()
         out = remove_sends(data, owner=2)
         out, _ = add_send(out, owner=2, bus=10)

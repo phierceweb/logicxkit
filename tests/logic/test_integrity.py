@@ -8,11 +8,11 @@ import unittest
 from _records import _slotted, chan, env_obj, gnos, proj, rec, seq_triple, track, uuid
 from test_regions import flat, song
 
-from logicxkit.logic.services.integrity import regressions, require_no_regression, structural_report
-from logicxkit.logic.services.integrity_regions import NO_SLOT, region_keys
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.regions import ENTRY, MARKER_BYTE, MARKER_BYTES_AT, MARKER_KIND, MARKER_KIND_AT
-from logicxkit.logic.services.reorder import move_track
+from logicxkit.logic.services.stream.integrity import regressions, require_no_regression, structural_report
+from logicxkit.logic.services.stream.integrity_regions import NO_SLOT, region_keys
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.regions.regions import ENTRY, MARKER_BYTE, MARKER_BYTES_AT, MARKER_KIND, MARKER_KIND_AT
+from logicxkit.logic.services.arrange.reorder import move_track
 
 MIDI, AUDIO = 0x20, 0x24
 BAR = 3840

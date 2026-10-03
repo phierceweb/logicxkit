@@ -42,7 +42,7 @@ class LookupTest(unittest.TestCase):
         self.assertEqual(data.data_file("logic", "audio-channel-12.4.0.json"), mine)
 
     def test_a_packaged_native_donor_shadows_the_roots_copy(self):
-        from logicxkit.logic.services.plugin_library import load_library
+        from logicxkit.logic.services.mixer.plugin_library import load_library
         packaged = (data.PACKAGED / "donors" / "154-v5.slot").read_bytes()
         (self.root / "donors").mkdir()
         (self.root / "donors" / "154-v5.slot").write_bytes(packaged[:-1] + bytes([packaged[-1] ^ 1]))

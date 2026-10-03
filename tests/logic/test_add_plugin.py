@@ -8,10 +8,10 @@ import struct
 import unittest
 
 from _records import proj
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.slots import SLOT_INDEX_AT
-from logicxkit.logic.services.stream import HEADER, KEY_OFF, project_records
-from logicxkit.logic.services.transplant import channel_slots
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.mixer.slots import SLOT_INDEX_AT
+from logicxkit.logic.services.stream.stream import HEADER, KEY_OFF, project_records
+from logicxkit.logic.services.mixer.transplant import channel_slots
 from test_transplant_ids import MONO, STEREO, TAIL, au, mono_chan, native, ref
 
 OWNER = 3
@@ -176,7 +176,7 @@ class SettingsTest(unittest.TestCase):
         return rec(b"UCuA", 9, 4, bytes(p) + body + bytes(20), 5)
 
     def _table(self):
-        from logicxkit.logic.services.plugin_params import Table
+        from logicxkit.logic.services.mixer.plugin_params import Table
         return Table.from_dict({"type": 999, "name": "Test Comp", "floats": 6, "params": [
             {"index": 1, "name": "Threshold", "unit": "dB", "min": -60, "max": 0},
             {"index": 2, "name": "Ratio", "min": 1, "max": 30},
@@ -219,7 +219,7 @@ class SideChainTest(unittest.TestCase):
     project it was saved from) never comes along."""
 
     def test_the_added_slot_carries_the_side_chain_asked_for(self):
-        from logicxkit.logic.services.sidechain import SideChain, side_chain
+        from logicxkit.logic.services.mixer.sidechain import SideChain, side_chain
         data = _project(native(OWNER, 4, 8))
         out, report = add_plugin(data, OWNER, au(9, 4, 7), side_chain=SideChain(0x45, 1))
         added = channel_slots(out, OWNER)[-1].raw
@@ -227,7 +227,7 @@ class SideChainTest(unittest.TestCase):
         self.assertEqual(report["side_chain"], "Bus 2")
 
     def test_a_donors_own_side_chain_is_cleared(self):
-        from logicxkit.logic.services.sidechain import SideChain, side_chain, with_side_chain
+        from logicxkit.logic.services.mixer.sidechain import SideChain, side_chain, with_side_chain
         data = _project(native(OWNER, 4, 8))
         donor = with_side_chain(au(9, 4, 7), SideChain(0x40, 3))
         out, report = add_plugin(data, OWNER, donor)

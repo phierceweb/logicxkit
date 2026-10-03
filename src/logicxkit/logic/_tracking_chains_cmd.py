@@ -9,17 +9,17 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._add_plugin_cmd import _channels, _offsets, _pick
-from ._edit import CommandError, edit_copy, owner_by_label
+from ._edit import CommandError, edit_copy, owner_by_label, plan_alternatives
 from ._plugin_settings import replace_slot, translation_of
 
 LATENT = {243: "Linear Phase EQ", 194: "Multipressor", 193: "Adaptive Limiter", 199: "Limiter", 157: "Enveloper"}
 
 
 def bypass_slot(data: bytes, owner: int, at: int) -> bytes:
-    from .services.slots import set_slot_bypass
-    from .services.stream import project_records
-    from .services.transplant import slot_at
-    from .services.validate import require_valid
+    from .services.mixer.slots import set_slot_bypass
+    from .services.stream.stream import project_records
+    from .services.mixer.transplant import slot_at
+    from .services.stream.validate import require_valid
     record = slot_at(data, owner, at)
     out = [set_slot_bypass(r.raw, True) if r.owner == owner and r.key == record.key else r.raw for r in project_records(data)]
     result = data[:24] + b"".join(out)
@@ -37,7 +37,7 @@ def _made_latent(donor, at: int, args) -> str | None:
 def live_families(payload: bytes, maps) -> list:
     """The maps of the slot's plug-in whose element is not bypassed (Neutron's gate, off in a
     fresh instance, stays out), in the vocabulary's order: eq, gate, compressor, multiband."""
-    from .services.translate import maps_for, read_settings
+    from .services.translate.translate import maps_for, read_settings
     order = {"eq": 0, "gate": 1, "compressor": 2, "multiband": 3}
     found = maps_for(payload, maps)
     if len(found) <= 1:
@@ -48,17 +48,17 @@ def live_families(payload: bytes, maps) -> list:
 
 def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, maps, natives, version, width):
     """One slot made native -> (data, lines, kind): kind is swapped / removed / bypassed / kept."""
-    from .services.plugin_names import native_name
-    from .services.stream import HEADER
-    from .services.add_plugin import add_plugin
-    from .services.remove_plugin import remove_plugin
-    from .services.translate_write import write_plan
+    from .services.mixer.plugin_names import native_name
+    from .services.stream.stream import HEADER
+    from .services.mixer.add_plugin import add_plugin
+    from .services.mixer.remove_plugin import remove_plugin
+    from .services.translate.translate_write import write_plan
     if identity and identity[0] == "native":
         name = native_name(identity[1], identity[2] if len(identity) > 2 else None) or f"type {identity[1]}"
         if identity[1] in LATENT and not args.keep_lookahead:
             return (data if args.plan else bypass_slot(data, owner, at)), [f"slot {at}: {name} bypassed: it carries lookahead"], "bypassed"
         return data, [], "kept"
-    from .services.transplant import is_instrument_channel
+    from .services.mixer.transplant import is_instrument_channel
     if at == 1 and is_instrument_channel(data, owner):          # the track's instrument, never an effect
         label = f"{identity[3]}/{identity[2]}" if identity else "an unreadable slot"
         return data, [f"slot 1: {label} kept: the channel's instrument"], "kept"
@@ -102,14 +102,14 @@ def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, map
 
 def cmd_tracking_chains(args) -> int:
     from ..utils.data import data_dirs
-    from .services.mixer import channel_formats
-    from .services.slots import slot_index_base
-    from .services.stream import HEADER
-    from .services.plugin_library import load_library
-    from .services.plugins import plugin_identity, slot_payloads
-    from .services.retrack import find_project
-    from .services.translate import load_maps
-    from .services.transplant import channel_slots, slot_class_version
+    from .services.mixer.mixer import channel_formats
+    from .services.mixer.slots import slot_index_base
+    from .services.stream.stream import HEADER
+    from .services.mixer.plugin_library import load_library
+    from .services.mixer.plugins import plugin_identity, slot_payloads
+    from .services.arrange.retrack import find_project
+    from .services.translate.translate import load_maps
+    from .services.mixer.transplant import channel_slots, slot_class_version
 
     if not args.plan and not args.out:
         print("  name the copy's directory with --out, or ask for --plan")
@@ -145,7 +145,7 @@ def cmd_tracking_chains(args) -> int:
     project = find_project(Path(args.project))
     try:
         if args.plan:
-            first = sorted(project.glob("Alternatives/*/ProjectData"))[0]
+            first = plan_alternatives(project)[0]
             step(first.read_bytes(), None, first)
         else:
             edit_copy(project, Path(args.out), step)

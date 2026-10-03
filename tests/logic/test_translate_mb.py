@@ -3,10 +3,10 @@ by its table, the spectrum segmented into the target's bands, and Pro-MB written
 
 import unittest
 
-from logicxkit.logic.services.plugin_params import load_tables, set_by_name, table_for
-from logicxkit.logic.services.translate import load_maps, map_for, plan, read_settings
-from logicxkit.logic.services.translate_mb import MBand, neutral, segments
-from logicxkit.logic.services.translate_write import write_plan
+from logicxkit.logic.services.mixer.plugin_params import load_tables, set_by_name, table_for
+from logicxkit.logic.services.translate.translate import load_maps, map_for, plan, read_settings
+from logicxkit.logic.services.translate.translate_mb import MBand, neutral, segments
+from logicxkit.logic.services.translate.translate_write import write_plan
 from logicxkit.utils.data import PACKAGED
 from test_translate import au_payload, native_payload
 

@@ -3,7 +3,7 @@
 import struct
 import unittest
 import _paths  # noqa: F401
-from logicxkit.logic.services.header import (
+from logicxkit.logic.services.stream.header import (
     BLOB_LEN,
     COMPONENTS,
     components_of,
@@ -61,7 +61,7 @@ class ClampedWidthTest(unittest.TestCase):
         from pathlib import Path
         from unittest import mock
         from logicxkit.logic._header import cmd_header
-        from logicxkit.logic.services.header import BLOB_KEY
+        from logicxkit.logic.services.stream.header import BLOB_KEY
         with tempfile.TemporaryDirectory() as tmp:
             alt = Path(tmp) / "Song.logicx" / "Alternatives" / "000"
             alt.mkdir(parents=True)

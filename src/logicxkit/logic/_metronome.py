@@ -6,8 +6,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data
-from .services.metronome import BITS, PREROLL, copy_metronome, read_metronome, set_metronome
-from .services.retrack import find_project
+from .services.song.metronome import BITS, PREROLL, copy_metronome, read_metronome, set_metronome
+from .services.arrange.retrack import find_project
 
 
 def _match(name: str) -> str:

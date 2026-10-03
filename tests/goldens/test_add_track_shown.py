@@ -8,11 +8,11 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import object_by_name
-from logicxkit.logic.services.add_plugin import SHOWN_AT, shown_slots
-from logicxkit.logic.services.addtrack import add_track
-from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.mixer import CHANNEL_TAG
-from logicxkit.logic.services.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.add_plugin import SHOWN_AT, shown_slots
+from logicxkit.logic.services.arrange.addtrack import add_track
+from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logicx import project_data
 
 KEY = "master-track-limiter-logic"

@@ -53,13 +53,13 @@ from ._inspect import (
     cmd_project,
     cmd_stacks,
 )
-from .services.comp import decode_comp
-from .services.library import strip_library, under_live_library
-from .services.eq import BAND_ORDER, decode_eq
-from .services.pst import output_root as pst_output_root
-from .services.pst import write_psts
-from .services.retrack import missing_strips, retrack_bundle
-from .services.spec import assemble, load_spec
+from .services.mixer.comp import decode_comp
+from .services.mixer.library import strip_library, under_live_library
+from .services.mixer.eq import BAND_ORDER, decode_eq
+from .services.translate.pst import output_root as pst_output_root
+from .services.translate.pst import write_psts
+from .services.arrange.retrack import left_line, missing_strips, retrack_bundle
+from .services.mixer.spec import assemble, load_spec
 
 def _byte_loader():
     """path -> bytes, cached; shared by every preset in a spec run."""
@@ -108,7 +108,7 @@ def cmd_build(args) -> int:
         try:
             data = assemble(spec, preset, load, name)
         except FileNotFoundError as e:
-            from .services.library import strip_library
+            from .services.mixer.library import strip_library
             root = spec.get("strip_root") or strip_library()
             print(f"  !!  {name}: no strip at {e.filename} — strips resolve under {root}; set the spec's "
                   "'strip_root' or LOGICXKIT_STRIP_ROOT (a checkout has the examples' under tests/corpus/strips)")
@@ -202,6 +202,8 @@ def cmd_retrack(args) -> int:
     print(f"in  : {r['source']}\nout : {r['dest']}\n")
     for name, rep in r["alternatives"]:
         print(f"  Alternatives/{name}: {rep['repointed']} reference(s) repointed")
+    for name, word in r["left"].items():
+        print(f"  {left_line(name, word)}")
     for old, new in r["changes"]:
         print(f"    {old:32s} -> {new}")
     if r["untouched"]:
@@ -214,8 +216,8 @@ def _retrack_channels(args) -> int:
     """`--channel 'Audio 5=Rack 1.cst'`: each named channel's reference repointed on its own,
     so channels that share a name can part ways. The strips must be in the library."""
     from ._edit import CommandError, edit_copy
-    from .services.binding import channels
-    from .services.retrack import retrack_channels
+    from .services.mixer.binding import channels
+    from .services.arrange.retrack import retrack_channels
     wanted = {}
     for spec in args.channel:
         label, _, name = spec.partition("=")
@@ -364,7 +366,11 @@ def main(argv: list[str] | None = None) -> int:
                     help="move a track into a stack (repeatable); writes a copy")
     st.add_argument("--move-out", action="append", metavar="TRACK",
                     help="move a track one level out of its stack (repeatable); writes a copy")
-    st.add_argument("--out", help="output directory, required with --move and --move-out")
+    st.add_argument("--flatten", action="append", metavar="STACK",
+                    help="take a stack apart, its members up a level (repeatable); writes a copy")
+    st.add_argument("--convert", action="append", metavar="STACK",
+                    help="make a folder stack a summing stack (repeatable); writes a copy")
+    st.add_argument("--out", help="output directory, required with --move, --move-out, --flatten and --convert")
     st.set_defaults(func=cmd_stacks)
     d = sub.add_parser("decode", help="dump EQ/Comp params from a .cst or .pst")
     d.add_argument("file")

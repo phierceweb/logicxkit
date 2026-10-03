@@ -10,8 +10,8 @@ from ._apply_template import _copy_display, _left_alone, _rebased, _skip
 from ._edit import CommandError, bump_track_count, edit_copy, first_project_data
 from .orchestrators import migrate
 from .orchestrators.apply_template import apply_template, session_only
-from .services.project import project_metadata
-from .services.retrack import find_project, project_folder
+from .services.project.project import project_metadata
+from .services.arrange.retrack import find_project, project_folder
 
 DIFFERENCES_SHOWN = 20
 
@@ -137,11 +137,11 @@ def cmd_migrate(args) -> int:
             for line in _copy_display(template_project, data_file.parent):
                 print("  " + line)
         if "modes" not in skip:
-            from .services.modes import copy_modes
+            from .services.song.modes import copy_modes
             out, modes = copy_modes(template, out)
             print(f"  modes    {', '.join(n for n, on in modes.items() if on is True) or 'none'} lit, as the template")
         if "metronome" not in skip:
-            from .services.metronome import copy_metronome
+            from .services.song.metronome import copy_metronome
             out, met = copy_metronome(template, out)
             print(f"  metronome {sum(v is True for v in met.values())} boxes on, as the template")
         if added:

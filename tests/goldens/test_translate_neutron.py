@@ -6,9 +6,9 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.transplant import slot_at
-from logicxkit.logic.services.translate import load_maps, map_for, maps_for, plan, read_settings
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.transplant import slot_at
+from logicxkit.logic.services.translate.translate import load_maps, map_for, maps_for, plan, read_settings
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 

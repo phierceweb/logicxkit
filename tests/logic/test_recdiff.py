@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 from _records import chan, env_obj, marker, proj, track
-from logicxkit.logic.services.recdiff import diff_records, load_project_data, noise_mask
+from logicxkit.logic.services.stream.recdiff import diff_records, load_project_data, noise_mask
 
 
 class DiffTest(unittest.TestCase):

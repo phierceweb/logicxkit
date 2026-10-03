@@ -13,8 +13,8 @@ TEMPLATE = _goldens.path("tracking-template")
 @_goldens.needs("tracking-template")
 class GoldenManifestTest(unittest.TestCase):
     def test_template_manifest_is_internally_consistent(self):
-        from logicxkit.logic.services.manifest import read_manifest
-        from logicxkit.logic.services.binding import channels
+        from logicxkit.logic.services.project.manifest import read_manifest
+        from logicxkit.logic.services.mixer.binding import channels
         from logicxkit.logicx import project_data
         m = read_manifest(TEMPLATE)
         self.assertEqual(len(m["tracks"]), m["metadata"]["tracks"] + 1)

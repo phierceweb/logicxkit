@@ -5,11 +5,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data
-from .services.binding import channels
-from .services.insert import widen_channels
-from .services.mixer import channel_formats
-from .services.slot_width import MONO, STEREO
-from .services.retrack import find_project
+from .services.mixer.binding import channels
+from .services.mixer.channel_width import widen_channels
+from .services.mixer.mixer import channel_formats
+from .services.mixer.slot_width import MONO, STEREO
+from .services.arrange.retrack import find_project
 
 WORDS = {MONO: "mono", STEREO: "stereo"}
 

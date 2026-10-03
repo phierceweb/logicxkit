@@ -2,7 +2,7 @@
 
 import unittest
 import _goldens
-from logicxkit.logic.services.plugins import project_plugins, verdict
+from logicxkit.logic.services.mixer.plugins import project_plugins, verdict
 from logicxkit.logicx import project_data
 
 

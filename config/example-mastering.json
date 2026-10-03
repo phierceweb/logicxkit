@@ -1,6 +1,6 @@
 {
   "label_prefix": "Demo Master",
-  "_comment": "A mastering chain on the Stereo Out. A chain keyed by a channel name (no .cst) lists its plug-ins in slot order, each a donor declared below with the parameters named in services/output_params.py; only measured parameters have names, any other float goes by its index.",
+  "_comment": "A mastering chain on the Stereo Out. A chain keyed by a channel name (no .cst) lists its plug-ins in slot order, each a donor declared below with the parameters named in services/mixer/output_params.py; only measured parameters have names, any other float goes by its index.",
   "chains": {
     "Stereo Out": {
       "label": "Master",

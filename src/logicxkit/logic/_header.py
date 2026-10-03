@@ -5,15 +5,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .services.header import (
+from .services.stream.header import (
     COMPONENTS,
     alternative_dirs,
     read_components,
     width_estimated,
     write_components,
 )
-from ._edit import edit_display
-from .services.retrack import find_project
+from ._edit import display_source, edit_display
+from .services.arrange.retrack import find_project
 
 
 def _match(name: str) -> str:
@@ -46,9 +46,10 @@ def cmd_header(args) -> int:
         want: dict[str, bool] = {}
         if args.src:
             src = find_project(Path(args.src))
-            if not alternative_dirs(src):
+            source = display_source(src)
+            if source is None:
                 raise ValueError(f"{src}: no alternative carries a DisplayState.plist")
-            want.update(read_components(alternative_dirs(src)[0]))
+            want.update(read_components(source))
             print(f"from : {src}")
         for name in args.show or []:
             want[_match(name)] = True

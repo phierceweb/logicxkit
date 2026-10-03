@@ -4,12 +4,12 @@ import unittest
 
 import _goldens
 import _paths
-from logicxkit.logic.services.events import BAR_ONE, events
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.integrity import require_no_regression
-from logicxkit.logic.services.sequence import sequences
-from logicxkit.logic.services.signature import KEY_TYPE, TIME_TYPE, read_signatures
-from logicxkit.logic.services.signature_write import add_key_change, add_meter_change, set_time_signature
+from logicxkit.logic.services.song.events import BAR_ONE, events
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import require_no_regression
+from logicxkit.logic.services.stream.sequence import sequences
+from logicxkit.logic.services.song.signature import KEY_TYPE, TIME_TYPE, read_signatures
+from logicxkit.logic.services.song.signature_write import add_key_change, add_meter_change, set_time_signature
 from logicxkit.logicx import project_data
 
 MIXES = sorted((_paths.RESOURCES / "mixes").glob("*/*.logicx"))

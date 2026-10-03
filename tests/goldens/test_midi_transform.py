@@ -15,16 +15,16 @@ import _goldens
 from groovebin.transforms import Operation, Range
 from logicxkit.cli import main
 from logicxkit.logic._edit import bump_track_count
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.addtrack import add_track
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_edit import copy_region
-from logicxkit.logic.services.midi_write import add_note, add_region
-from logicxkit.logic.services.midi_transform import Transform, apply_transform
-from logicxkit.logic.services.signature_write import add_meter_change
-from logicxkit.logic.services.stacks import read_tracks
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.arrange.addtrack import add_track
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_edit import copy_region
+from logicxkit.logic.services.midi.midi_write import add_note, add_region
+from logicxkit.logic.services.midi.midi_transform import Transform, apply_transform
+from logicxkit.logic.services.song.signature_write import add_meter_change
+from logicxkit.logic.services.arrange.stacks import read_tracks
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 _spec = importlib.util.spec_from_file_location("goldens_midi_edit", Path(__file__).with_name("test_midi_edit.py"))

@@ -16,8 +16,8 @@ import unittest
 from pathlib import Path
 
 from logicxkit.logic import donor_key, harvest_donors, load_donor_library
-from logicxkit.logic.services.donors import MANIFEST
-from logicxkit.logic.services.slot_width import SLOT_COUNT_AT
+from logicxkit.logic.services.mixer.donors import MANIFEST
+from logicxkit.logic.services.mixer.slot_width import SLOT_COUNT_AT
 
 HDR = 36
 

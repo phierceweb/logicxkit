@@ -3,7 +3,7 @@
 import struct
 import unittest
 
-from logicxkit.logic.services.events import BAR_ONE, END_TYPE, bar, events
+from logicxkit.logic.services.song.events import BAR_ONE, END_TYPE, bar, events
 
 def head(kind, tick, flags=0):
     return struct.pack("<II", kind, tick) + b"\0\0\0\0\x7f\0\0" + bytes([flags])

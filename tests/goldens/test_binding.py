@@ -9,7 +9,7 @@ The real-file part of tests/logic/test_binding.py; skips without the owner's fil
 
 import unittest
 import _goldens
-from logicxkit.logic.services.binding import (
+from logicxkit.logic.services.mixer.binding import (
     bound_objects,
     channels,
     output_routing,
@@ -38,7 +38,7 @@ class GoldenBindingTest(unittest.TestCase):
         self.assertEqual(len(set(bound.values())), len(bound))
 
     def test_folder_stacks_bind_to_sub_strips(self):
-        from logicxkit.logic.services.environment import channel_objects
+        from logicxkit.logic.services.arrange.environment import channel_objects
         names = {i: o.name for i, o in channel_objects(self.data).items()}
         subs = stack_channels(self.data)
         objs = bound_objects(self.data)

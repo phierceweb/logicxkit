@@ -7,9 +7,9 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.transplant import channel_slots, slot_at
-from logicxkit.logic.services.translate import load_maps, map_for, read_settings
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.transplant import channel_slots, slot_at
+from logicxkit.logic.services.translate.translate import load_maps, map_for, read_settings
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 
@@ -101,8 +101,8 @@ class OneBandEditTest(unittest.TestCase):
     the Logic-dialled Pro-Q 4 come through an edit of band 2 unchanged."""
 
     def test_the_other_bands_keep_their_brickwall_and_their_dynamics(self):
-        from logicxkit.logic.services.translate_eq import BRICKWALL, parse_band, read_bands
-        from logicxkit.logic.services.translate_write import apply_band_specs, write_state
+        from logicxkit.logic.services.translate.translate_eq import BRICKWALL, parse_band, read_bands
+        from logicxkit.logic.services.translate.translate_write import apply_band_specs, write_state
         data = project_data(_goldens.path("translate-proq"))
         payload = channel_slots(data, owner_by_label(data, "Audio 2"))[0].raw[HEADER:]
         m = map_for(payload, MAPS)

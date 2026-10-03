@@ -15,7 +15,8 @@ NOT_PATHS = {
     "audio", "note", "patch", "region", "setting", "show", "skip", "stack", "stereo", "time", "time_at", "track",
     "ref", "group", "off", "edits", "drum_map", "hit", "id", "category", "meter",
     "tempo", "intensity", "role", "unmapped", "select", "steps", "seed", "velocity", "clear",
-    "plugin", "as_name", "side_chain", "source", "target", "bypass", "fader", "mode", "pan", "move_out"}
+    "plugin", "as_name", "side_chain", "source", "target", "bypass", "fader", "mode", "pan", "move_out",
+    "flatten", "convert"}
 
 
 def _string_dests() -> set[str]:

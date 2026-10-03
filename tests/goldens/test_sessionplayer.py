@@ -3,7 +3,7 @@ control moved per save, and the generated notes in the region's sequence."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.sessionplayer import read_session_players
+from logicxkit.logic.services.regions.sessionplayer import read_session_players
 from logicxkit.logicx import project_data
 
 

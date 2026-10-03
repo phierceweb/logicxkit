@@ -14,9 +14,9 @@ import _goldens
 
 from logicxkit.logic import cli
 from logicxkit.logic._edit import first_project_data
-from logicxkit.logic.services.integrity import regressions, structural_report
-from logicxkit.logic.services.project import project_metadata
-from logicxkit.logic.services.transplant import owner_of
+from logicxkit.logic.services.stream.integrity import regressions, structural_report
+from logicxkit.logic.services.project.project import project_metadata
+from logicxkit.logic.services.mixer.transplant import owner_of
 
 
 def run(*argv) -> tuple[int, str]:

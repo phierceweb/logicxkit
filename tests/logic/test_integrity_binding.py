@@ -5,9 +5,9 @@ import unittest
 import _goldens
 from _records import chan, env_obj, proj, uuid
 
-from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.integrity import (
+from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import (
     _binding, _lost_bindings, regressions, structural_report)
 from logicxkit.logicx import project_data
 

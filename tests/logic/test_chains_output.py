@@ -4,9 +4,9 @@ import unittest
 
 from _fixtures import chunk
 from logicxkit.logic import chain_plan
-from logicxkit.logic.services.binding import LABEL_AT
-from logicxkit.logic.services.output_params import PARAMS
-from logicxkit.logic.services.slots import slot_index_base
+from logicxkit.logic.services.mixer.binding import LABEL_AT
+from logicxkit.logic.services.mixer.output_params import PARAMS
+from logicxkit.logic.services.mixer.slots import slot_index_base
 from test_chains import proj, rec
 
 OUT = 269
@@ -108,15 +108,15 @@ class RefusalsTest(unittest.TestCase):
 
 class ReportAndWidthTest(unittest.TestCase):
     def test_the_plan_names_the_channel_not_its_owner_number(self):
-        from logicxkit.logic.services.chain_report import chain_changes
+        from logicxkit.logic.services.mixer.chain_report import chain_changes
         data = proj(channel(0, "Audio 1"), channel(OUT, "Output 1-2"))
         extra = {"lim": (donor(93, 199, 13), 199)}
         plan, _ = chain_plan(data, {"chains": {"Stereo Out": {"plugins": [{"donor": "lim"}]}}}, None, None, extra=extra)
         self.assertEqual([c.ref for c in chain_changes(data, plan)], ["Stereo Out"])
 
     def test_stereo_on_a_channel_keyed_chain_widens_it(self):
-        from logicxkit.logic.services.chains import width_plan
-        from logicxkit.logic.services.slot_width import STEREO
+        from logicxkit.logic.services.mixer.chains import width_plan
+        from logicxkit.logic.services.mixer.slot_width import STEREO
         data = proj(channel(0, "Audio 1"), channel(OUT, "Output 1-2"))
         self.assertEqual(width_plan(data, {"chains": {"Stereo Out": {"stereo": True, "plugins": []}}}), {OUT: STEREO})
 
@@ -124,8 +124,8 @@ class ReportAndWidthTest(unittest.TestCase):
 class StampOrderTest(unittest.TestCase):
     def test_a_dialled_value_wins_over_the_strips_float(self):
         from logicxkit.logic._binary import find_blocks, read_block_floats
-        from logicxkit.logic.services.insert import _stamp
-        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logic.services.mixer.insert import _stamp
+        from logicxkit.logic.services.stream.stream import HEADER
         raw = _stamp(donor(93, 199, 13), 0, 4, [0.0] * 13, 13, "seed", overrides={3: -0.3})
         idx, _tid, n = find_blocks(raw[HEADER:])[0]
         self.assertAlmostEqual(read_block_floats(raw[HEADER:], idx, n)[3], -0.3, places=5)

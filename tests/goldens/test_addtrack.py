@@ -5,7 +5,7 @@ The real-file part of tests/logic/test_addtrack.py; skips without the owner's fi
 
 import unittest
 import _goldens
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logicx import project_data
 import _paths
 from _data import needs
@@ -23,8 +23,8 @@ class MixTemplateAddTest(unittest.TestCase):
         from collections import Counter
 
         from _invariants import report
-        from logicxkit.logic.services.project import project_metadata
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.project.project import project_metadata
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         from logicxkit.logicx import project_data
         cls.data = project_data(MIX)
         cls.count = project_metadata(MIX)["tracks"]
@@ -35,7 +35,7 @@ class MixTemplateAddTest(unittest.TestCase):
 
     def _check(self, out, report, kind):
         from _invariants import assert_consistent
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         assert_consistent(self, out, self.count + 1, selected=report["object_id"],
                           link_errors_before=self.before)
         rows = read_tracks(out, self.count + 1)
@@ -46,15 +46,15 @@ class MixTemplateAddTest(unittest.TestCase):
         self.assertTrue(new["label"].startswith("Audio " if kind == "audio" else "Inst "))
 
     def test_an_audio_track(self):
-        from logicxkit.logic.services.addtrack import add_audio_track
+        from logicxkit.logic.services.arrange.addtrack import add_audio_track
         out, report = add_audio_track(self.data, name="Second Audio", after=self.anchor["object_id"],
                                       track_count=self.count)
         self.assertEqual(report["input"], "Input 1")
         self._check(out, report, "audio")
 
     def test_an_instrument_track_shifts_every_later_owner(self):
-        from logicxkit.logic.services.addtrack import add_track
-        from logicxkit.logic.services.binding import channels
+        from logicxkit.logic.services.arrange.addtrack import add_track
+        from logicxkit.logic.services.mixer.binding import channels
         out, report = add_track(self.data, name="Second Inst", after=self.anchor["object_id"],
                                 kind="instrument", track_count=self.count)
         self._check(out, report, "instrument")
@@ -72,8 +72,8 @@ class StereoPairInputTest(unittest.TestCase):
 
     @staticmethod
     def _audio4(data):
-        from logicxkit.logic.services.binding import channels, input_routing
-        from logicxkit.logic.services.mixer import channel_formats
+        from logicxkit.logic.services.mixer.binding import channels, input_routing
+        from logicxkit.logic.services.mixer.mixer import channel_formats
         ch = channels(data)
         owner = next(o for o, c in ch.items() if c.label == "Audio 4")
         source = input_routing(data).get(owner)
@@ -86,7 +86,7 @@ class StereoPairInputTest(unittest.TestCase):
         self.assertEqual([r["name"] for r in read_tracks(logic)][:4], ["Audio 1", "Audio 2", "Audio 3", "Audio 4"])
 
     def test_ours_binds_the_pair_channel_like_logic(self):
-        from logicxkit.logic.services.addtrack import add_track
+        from logicxkit.logic.services.arrange.addtrack import add_track
         base = project_data(_goldens.path("tracks-three-audio-logic"))
         after = next(r["object_id"] for r in read_tracks(base) if r["name"] == "Audio 3")
         out, _report = add_track(base, name="Audio 4", after=after, stereo=True)
@@ -103,10 +103,10 @@ class NamelessObjectTest(unittest.TestCase):
     def test_the_index_of_a_nameless_bound_object_follows_its_channel(self):
         import struct
 
-        from logicxkit.logic.services.addtrack import add_track
-        from logicxkit.logic.services.binding import channels
-        from logicxkit.logic.services.environment import NAME_AT, name_end, object_record
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.arrange.addtrack import add_track
+        from logicxkit.logic.services.mixer.binding import channels
+        from logicxkit.logic.services.arrange.environment import NAME_AT, name_end, object_record
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         data = project_data(_goldens.path("tracks-three-audio-logic"))
         at = data.index(object_record(project_records(data), 80)) + HEADER + NAME_AT + 2
         data = data[:at] + b"\xfc" + data[at + 1:]

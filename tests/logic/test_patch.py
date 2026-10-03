@@ -10,7 +10,7 @@ from pathlib import Path
 
 import _paths  # noqa: F401
 from _records import rec
-from logicxkit.logic.services.patch import read_patch, unarchive
+from logicxkit.logic.services.mixer.patch import read_patch, unarchive
 
 
 def archive(top: dict, objects: list) -> bytes:

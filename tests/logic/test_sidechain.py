@@ -3,7 +3,7 @@
 import unittest
 
 from _records import chan, env_obj, proj, rec, track, uuid
-from logicxkit.logic.services.sidechain import SideChain, carry, resolve, side_chain, source_name, with_side_chain
+from logicxkit.logic.services.mixer.sidechain import SideChain, carry, resolve, side_chain, source_name, with_side_chain
 
 HDR = 36
 

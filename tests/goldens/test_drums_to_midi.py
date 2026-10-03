@@ -15,18 +15,18 @@ import _goldens
 from test_onsets import RATE, riff, slow_track, track, write_wav
 
 from logicxkit.logic._drums_to_midi_cmd import register
-from logicxkit.logic.services.audio_regions import REGION_FRAMES_AT, REGION_OFFSET_AT, REGION_TAG, read_audio_regions
-from logicxkit.logic.services.audio_write import add_audio_region
-from logicxkit.logic.services.drums_to_midi import SIXTEENTH, drums_to_midi
-from logicxkit.logic.services.events import BAR_ONE, PPQ
-from logicxkit.logic.services.stream import HEADER, project_records, reassemble
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_write import track_regions
-from logicxkit.logic.services.onsets import Detector
-from logicxkit.logic.services.tempo import project_tempo
-from logicxkit.logic.services.tempo_write import add_ramp, add_tempo
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.regions.audio_regions import REGION_FRAMES_AT, REGION_OFFSET_AT, REGION_TAG, read_audio_regions
+from logicxkit.logic.services.regions.audio_write import add_audio_region
+from logicxkit.logic.services.midi.drums_to_midi import SIXTEENTH, drums_to_midi
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_write import track_regions
+from logicxkit.logic.services.regions.onsets import Detector
+from logicxkit.logic.services.song.tempo import project_tempo
+from logicxkit.logic.services.song.tempo_write import add_ramp, add_tempo
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 GOLDEN = "midi-write-resave-logic"
@@ -322,7 +322,7 @@ class OverlapTest(unittest.TestCase):
 @_goldens.needs("songb-drums-to-midi-mine", "songb-drums-to-midi-logic")
 class LogicResavedTest(unittest.TestCase):
     def test_logic_kept_the_region_and_every_note_written_over_a_real_take(self):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         want = _goldens.fact("songb-drums-to-midi-mine", "regions")
         self.assertEqual([(r[0], len(r[2])) for r in want], [("Drums MIDI", 350)])
         for key in ("songb-drums-to-midi-mine", "songb-drums-to-midi-logic"):

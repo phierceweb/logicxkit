@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 import _paths  # noqa: F401
-from logicxkit.logic.services.controlbar import (
+from logicxkit.logic.services.song.controlbar import (
     CONTROLS, LAYOUT_KEY, SECTIONS, TRANSPORT_KEY, controls_of, copy_layout, read_layout,
     with_controls, write_controls, write_layout,
 )
@@ -185,13 +185,13 @@ class InsertionOrderTest(unittest.TestCase):
     id of lower canonical rank (two transitions Logic made, one per project measured)."""
 
     def test_a_stored_order_is_kept_and_the_new_id_lands_after_its_lower_ranked_neighbours(self):
-        from logicxkit.logic.services.controlbar import with_controls
+        from logicxkit.logic.services.song.controlbar import with_controls
         layout = {"CLgTransportBtnsDisplay": [18, 19, 21, 22, 23, 24]}       # MIDI Activity stored early
         out = with_controls(layout, {"Sample Rate / Buffer Size": True})
         self.assertEqual(out["CLgTransportBtnsDisplay"], [18, 19, 21, 22, 23, 24, 20])
 
     def test_midi_activity_ranks_after_key_signature(self):
-        from logicxkit.logic.services.controlbar import with_controls
+        from logicxkit.logic.services.song.controlbar import with_controls
         layout = {"CLgTransportBtnsDisplay": [18, 19, 21, 22, 24, 20, 46, 51]}
         out = with_controls(layout, {"MIDI Activity (In/Out)": True})
         self.assertEqual(out["CLgTransportBtnsDisplay"], [18, 19, 21, 22, 24, 20, 46, 51, 23])

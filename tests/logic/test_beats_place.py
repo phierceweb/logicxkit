@@ -18,13 +18,13 @@ from groovebin.library.compose import group_patterns
 from groovebin.library.pattern import pattern
 from groovebin.library.search import find_group
 from logicxkit.logic._beats_cmd import register
-from logicxkit.logic.services import beats_compose
-from logicxkit.logic.services.arrangement import Section
-from logicxkit.logic.services.beats_compose import plan
-from logicxkit.logic.services.beats_place import lay_over, note_part
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.midi_edit import END_TICK
-from logicxkit.logic.services.signature import Meter, TimeSignature
+from logicxkit.logic.services.midi import beats_compose
+from logicxkit.logic.services.song.arrangement import Section
+from logicxkit.logic.services.midi.beats_compose import plan
+from logicxkit.logic.services.midi.beats_place import lay_over, note_part
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.midi.midi_edit import END_TICK
+from logicxkit.logic.services.song.signature import Meter, TimeSignature
 
 
 class IndexedCase(unittest.TestCase):

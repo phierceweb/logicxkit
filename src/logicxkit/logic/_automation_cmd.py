@@ -11,10 +11,10 @@ from pathlib import Path
 from ..au.services.tables import load_table
 from ._automation_list import list_lanes
 from ._edit import CommandError, edit_copy, object_by_name
-from .services.automation_write import clear_lane, copy_lane, set_lane, set_param_lane
-from .services.groups import FADER_IDS
-from .services.retrack import find_project
-from .services.signature import meter
+from .services.regions.automation_write import clear_lane, copy_lane, set_lane, set_param_lane
+from .services.arrange.groups import FADER_IDS
+from .services.arrange.retrack import find_project
+from .services.song.signature import meter
 
 
 LANES = {**{k.lower(): (v, False) for k, v in FADER_IDS.items()},
@@ -69,13 +69,13 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
     ``obj`` is bound to, and a converter from its own value to a 0..1 point -> (plug-in, index,
     convert(value) -> (point, note)). The slot is the mixer's, empty slots counted — the insert
     number the lane carries."""
-    from .services.binding import bound_channels
-    from .services.stream import HEADER
-    from .services.plugin_params import load_tables, table_for
-    from .services.plugins import plugin_identity
-    from .services.slot_width import plugin_variant
-    from .services.transplant import channel_slots, slot_at, slot_position
-    from .services.translate import load_maps, map_for
+    from .services.mixer.binding import bound_channels
+    from .services.stream.stream import HEADER
+    from .services.mixer.plugin_params import load_tables, table_for
+    from .services.mixer.plugins import plugin_identity
+    from .services.mixer.slot_width import plugin_variant
+    from .services.mixer.transplant import channel_slots, slot_at, slot_position
+    from .services.translate.translate import load_maps, map_for
     owner = bound_channels(data).get(obj)
     if owner is None:
         raise CommandError(f"{track}: the track is bound to no mixer channel")
@@ -86,7 +86,7 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
     payload = record.raw[HEADER:]
     identity = plugin_identity(payload)
     if identity and identity[0] == "native":
-        from .services.slider import point_for, slider_by_name
+        from .services.mixer.slider import point_for, slider_by_name
         table = table_for(load_tables(), identity[1], plugin_variant(payload))
         m = map_for(payload, load_maps())
         param = next((p for p in (table.params if table else []) if p.name.lower() == name.lower()), None)
@@ -109,7 +109,7 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
             return point, f"{landed:g} (unit {units:g}{'' if sampled else ', between sampled positions'}{held})"
         return table.name, param.index - 1, native
     if identity and identity[0] == "au":
-        from .services.automation_remap import item_raw
+        from .services.translate.automation_remap import item_raw
         _t, subtype, manu = identity[1:]
         entries = (load_table(manu, subtype) or {}).get("params", [])
         entry = next((e for e in entries if str(e.get("name", "")).lower() == name.lower() or str(e.get("id")) == name), None)

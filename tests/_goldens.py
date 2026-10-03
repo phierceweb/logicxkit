@@ -17,9 +17,7 @@ TESTS = Path(__file__).resolve().parent
 CORPUS = TESTS / "corpus"                                   # the public corpus, tracked
 PUBLIC = TESTS / "goldens" / "manifest.json"                # its manifest, paths under CORPUS
 MANIFEST = RESOURCES / "experiments" / "manifest.json"      # the owner's, paths under RESOURCES
-LEGACY_KEYS = ("legacy-song", "legacy-02", "legacy-03")      # the owner's older-template projects
-MIX_KEYS = ("mix-01", "mix-02", "mix-03", "mix-04")          # the owner's finished mixes
-SESSION_KEYS = LEGACY_KEYS + MIX_KEYS
+SESSION_DIRS = {"legacy": "legacy/", "mix": "mixes/"}       # the owner's sessions, by where their manifest paths sit
 REQUIRE = "LOGICXKIT_REQUIRE_GOLDENS"
 MISSING_SHOWN = 8
 
@@ -84,9 +82,18 @@ def _relative(key: str, raw: str) -> str:
     return raw
 
 
+def session_keys(kind: str | None = None) -> tuple[str, ...]:
+    """The owner's session keys, in manifest order: the owner's entries whose file sits under
+    `legacy/` (older-template projects) or `mixes/` (finished mixes), or ``kind``'s alone."""
+    prefixes = tuple(SESSION_DIRS.values()) if kind is None else (SESSION_DIRS[kind],)
+    return tuple(k for k, e in _read(MANIFEST).items()
+                 if isinstance(e, dict) and str(e.get("path", "")).startswith(prefixes)
+                 and str(e["path"]).endswith(".logicx"))             # not a file inside a session's bundle
+
+
 def sessions(*keys: str) -> list[Path]:
     """The owner's sessions on this machine (every key asked, so the run's line counts it)."""
-    return [p for k in (keys or SESSION_KEYS) if (p := path(k)) is not None]
+    return [p for k in (keys or session_keys()) if (p := path(k)) is not None]
 
 
 def fact(key: str, name: str, default=None):

@@ -7,13 +7,13 @@ bound to a `Sub N` strip; its members are the rows below it whose +14 byte is se
 import struct
 import unittest
 from _records import chan, env_obj, marker, proj, track, uuid
-from logicxkit.logic.services.stacks import (
+from logicxkit.logic.services.arrange.stack_moves import move_to_stack
+from logicxkit.logic.services.arrange.stacks import (
     FOLDER,
     HIDDEN_BIT,
     HIDDEN_FLAG,
     SUMMING,
     arrange_list,
-    move_to_stack,
     read_stacks,
     read_tracks,
     stack_parents,
@@ -44,7 +44,7 @@ TRACKS = 8
 
 def retyped(data: bytes, type_value: int) -> bytes:
     """``data`` with every object's type word set to ``type_value``."""
-    from logicxkit.logic.services.stream import HEADER, project_records
+    from logicxkit.logic.services.stream.stream import HEADER, project_records
     buf, at = bytearray(data), 24
     for record in project_records(data):
         if record.tag == b"ivnE":
@@ -155,7 +155,7 @@ class MoveToStackTest(unittest.TestCase):
         self.assertEqual(stack_parents(out).get(152), 192)
 
     def test_the_channel_stack_index_follows(self):
-        from logicxkit.logic.services.binding import channels
+        from logicxkit.logic.services.mixer.binding import channels
         out = move_to_stack(session(), 152, 192, track_count=TRACKS)
         self.assertEqual(channels(out)[16].stack_index, 1)
 
@@ -194,7 +194,7 @@ class Logic112MoveTest(unittest.TestCase):
 
 class HideTest(unittest.TestCase):
     def test_the_bit_flips_and_nothing_else_moves(self):
-        from logicxkit.logic.services.stacks import set_hidden
+        from logicxkit.logic.services.arrange.track_flags import set_hidden
         data = session()
         out = set_hidden(data, 152, True, track_count=TRACKS)
         rows = {r["object_id"]: r for r in read_tracks(out, TRACKS)}
@@ -206,7 +206,7 @@ class HideTest(unittest.TestCase):
         self.assertEqual(back, data)
 
     def test_refuses_an_object_off_the_list(self):
-        from logicxkit.logic.services.stacks import set_hidden
+        from logicxkit.logic.services.arrange.track_flags import set_hidden
         with self.assertRaises(ValueError):
             set_hidden(session(), 999, True, track_count=TRACKS)
 
@@ -217,8 +217,9 @@ class PowerTest(unittest.TestCase):
 
     def test_the_bit_round_trips_and_the_row_reads_it(self):
         from _records import chan, env_obj, marker, proj, track, uuid
-        from logicxkit.logic.services.stacks import read_tracks, set_power
-        from logicxkit.logic.services.tracklist import OFF_BIT
+        from logicxkit.logic.services.arrange.stacks import read_tracks
+        from logicxkit.logic.services.arrange.track_flags import set_power
+        from logicxkit.logic.services.arrange.tracklist import OFF_BIT
         data = proj(env_obj(88, "Gtr 1 DI"), env_obj(80, "Master", grouping=True),
                     chan(0, "Audio 1", uuid=uuid(88)), chan(402, "Output 1-2", uuid=uuid(80), size=201),
                     track(0, 88), track(1, 80, flag=3), marker())
@@ -229,3 +230,14 @@ class PowerTest(unittest.TestCase):
         self.assertEqual(set_power(off, 88, True, track_count=2), data)
         with self.assertRaises(ValueError):
             set_power(data, 999, False, track_count=2)
+
+
+class StackModulesTest(unittest.TestCase):
+    """`stacks` reads; the moves and the row switches are modules of their own."""
+
+    def test_the_writers_live_beside_the_reader(self):
+        from logicxkit.logic.services.arrange import stack_moves, stacks, track_flags
+        self.assertTrue(callable(stack_moves.move_to_stack) and callable(stack_moves.move_out_of_stack))
+        self.assertTrue(callable(track_flags.set_power) and callable(track_flags.set_hidden))
+        for name in ("move_to_stack", "move_out_of_stack", "set_power", "set_hidden"):
+            self.assertFalse(hasattr(stacks, name), name)

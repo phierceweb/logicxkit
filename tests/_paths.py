@@ -102,7 +102,7 @@ def onto_staged_strips(config: dict) -> dict:
     An absolute donor path that is not under the live library cannot be rebased, and passing it
     through would read a file outside the repo that `_liveguard` does not cover.
     """
-    from logicxkit.logic.services.library import DEFAULT as LIVE
+    from logicxkit.logic.services.mixer.library import DEFAULT as LIVE
 
     out = dict(config)
     out["strip_root"] = str(STRIP_ROOT)

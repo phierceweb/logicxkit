@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from logicxkit.logic.services.toolbar import (BUTTONS, ORDER, buttons_of, ids_for, read_toolbar, show_toolbar,
+from logicxkit.logic.services.song.toolbar import (BUTTONS, ORDER, buttons_of, ids_for, read_toolbar, show_toolbar,
                                               toolbar_shown, write_toolbar)
 
 

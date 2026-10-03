@@ -37,7 +37,7 @@ class ShowTest(unittest.TestCase):
     """Four significant figures, never in exponent form."""
 
     def test_large_small_and_plain_values(self):
-        from logicxkit.logic.services.translate import _show
+        from logicxkit.logic.services.translate.translate import _show
         for value, unit, want in ((20000.0, "Hz", "20000 Hz"), (10000, "Hz", "10000 Hz"), (12345.6, "Hz", "12350 Hz"),
                                   (16000.0, "Hz", "16000 Hz"), (250000.0, "Hz", "250000 Hz"), (9999.4, "Hz", "9999 Hz"),
                                   (0.00001234, "s", "0.00001234 s"), (-20000.0, "dB", "-20000 dB"),
@@ -48,7 +48,7 @@ class ShowTest(unittest.TestCase):
 
     def test_the_command_prints_with_the_same_one(self):
         from logicxkit.logic import _settings_cmd
-        from logicxkit.logic.services import translate
+        from logicxkit.logic.services.translate import translate
         self.assertIs(_settings_cmd._show, translate._show)
 
 

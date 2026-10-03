@@ -4,7 +4,7 @@ The real-file part of tests/logic/test_signature.py; skips without the owner's f
 
 import unittest
 import _goldens
-from logicxkit.logic.services.signature import meter, read_signatures
+from logicxkit.logic.services.song.signature import meter, read_signatures
 from logicxkit.logicx import project_data
 
 SONGS = _goldens.sessions()
@@ -16,7 +16,7 @@ LIST_KEYS = ["signature-list-base-logic", "signature-meter-created-logic", "sign
 @unittest.skipUnless(SONGS, "no owner's session on this machine")
 class GoldenTest(unittest.TestCase):
     def test_every_session_reads_the_signatures_its_manifest_records(self):
-        for key in _goldens.SESSION_KEYS:
+        for key in _goldens.session_keys():
             song = _goldens.path(key)
             if song is None:
                 continue

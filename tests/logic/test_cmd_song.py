@@ -8,11 +8,11 @@ from pathlib import Path
 import _goldens
 from _cli import count, data, run, wrapped, written
 
-from logicxkit.logic.services.arrangement import read_sections
-from logicxkit.logic.services.groups import read_groups
-from logicxkit.logic.services.signature import BAR_ONE, PPQ, read_signatures
-from logicxkit.logic.services.stacks import read_tracks
-from logicxkit.logic.services.tempo import read_tempo_events
+from logicxkit.logic.services.song.arrangement import read_sections
+from logicxkit.logic.services.arrange.groups import read_groups
+from logicxkit.logic.services.song.signature import BAR_ONE, PPQ, read_signatures
+from logicxkit.logic.services.arrange.stacks import read_tracks
+from logicxkit.logic.services.song.tempo import read_tempo_events
 
 ARRANGEMENT = "arrangement-track-logic"        # the arrangement track shown, no sections yet
 BLANK = "signature-list-base-logic"            # 4/4, one key, one tempo
@@ -69,7 +69,7 @@ class SongCommandsTest(unittest.TestCase):
         self.assertEqual([k.tick for k in keys], [0, BAR_ONE + 4 * BAR])
 
     def test_arrangement_add_takes_every_section_kind(self):
-        from logicxkit.logic.services.arrangement import KINDS
+        from logicxkit.logic.services.song.arrangement import KINDS
         kinds = [k for k in KINDS.values() if k != "custom"]
         added = written(self, "arrangement", ARRANGEMENT,
                         *(arg for n, kind in enumerate(kinds) for arg in ("--add", f"{1 + 4 * n}:4:Part {n}:{kind}")),
@@ -82,7 +82,7 @@ class SongCommandsTest(unittest.TestCase):
         self.assertIn("refrain", text)
 
     def test_group_setting_ticks_the_named_boxes_and_clears_the_rest(self):
-        from logicxkit.logic.services.groups import settings_of
+        from logicxkit.logic.services.arrange.groups import settings_of
         made = written(self, "group", THREE, "--create", "Drums", "--track", "Audio 1", "--track", "Audio 2",
                        out=self.out / "a")
         self.assertEqual(settings_of(read_groups(data(made))[0].flags), ["Volume", "Mute", "Automation Mode"])

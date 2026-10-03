@@ -6,14 +6,15 @@ import unittest
 
 import _goldens
 
-from logicxkit.logic.services.addtrack import add_track
-from logicxkit.logic.services.binding import bound_channels, channels, output_labels
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.routing import set_output
-from logicxkit.logic.services.stack_create import create_stack
-from logicxkit.logic.services.stack_summing import create_summing_stack
-from logicxkit.logic.services.stacks import move_out_of_stack, move_to_stack, read_stacks
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.arrange.addtrack import add_track
+from logicxkit.logic.services.mixer.binding import bound_channels, channels, output_labels
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.mixer.routing import set_output
+from logicxkit.logic.services.arrange.stack_create import create_stack
+from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
+from logicxkit.logic.services.arrange.stack_moves import move_out_of_stack, move_to_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 THREE = "nest-three-audio-logic"

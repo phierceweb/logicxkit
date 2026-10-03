@@ -97,7 +97,7 @@ class StagedStripsTest(unittest.TestCase):
     """A rig config whose donors sit outside the live library must fail, not read through."""
 
     def test_a_live_library_donor_is_rebased(self):
-        from logicxkit.logic.services.library import DEFAULT as LIVE
+        from logicxkit.logic.services.mixer.library import DEFAULT as LIVE
         cfg = {"donors": {"d": {"cst": str(LIVE / "Track/L/D.cst"), "type": 1}}}
         got = _paths.onto_staged_strips(cfg)["donors"]["d"]["cst"]
         self.assertEqual(Path(got), _paths.STRIP_ROOT / "Track/L/D.cst")

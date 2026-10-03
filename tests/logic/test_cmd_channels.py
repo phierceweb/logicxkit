@@ -11,12 +11,12 @@ from unittest import mock
 import _goldens
 from _cli import data, owner, run, source, written
 
-from logicxkit.logic.services.binding import channels, output_routing
-from logicxkit.logic.services.mixer import channel_formats
-from logicxkit.logic.services.slots import slot_bypassed
-from logicxkit.logic.services.project import read_project, strip_chain
-from logicxkit.logic.services.sends import read_sends
-from logicxkit.logic.services.transplant import channel_slots
+from logicxkit.logic.services.mixer.binding import channels, output_routing
+from logicxkit.logic.services.mixer.mixer import channel_formats
+from logicxkit.logic.services.mixer.slots import slot_bypassed
+from logicxkit.logic.services.project.project import read_project, strip_chain
+from logicxkit.logic.services.mixer.sends import read_sends
+from logicxkit.logic.services.mixer.transplant import channel_slots
 
 INSERTS = "inserts-native-logic"        # Audio 1: Channel EQ -> Compressor; Audio 2 and 3 empty
 SEND = "send-bus-1-logic"               # Audio 1 sends to Bus 1
@@ -86,7 +86,7 @@ class ChannelCommandsTest(unittest.TestCase):
                 self.assertIn(said, text)
 
     def test_levels_sets_a_fader_in_db_and_a_pan(self):
-        from logicxkit.logic.services.levels import read_levels
+        from logicxkit.logic.services.mixer.levels import read_levels
         dest = written(self, "levels", LEVELS, "--fader", "Audio 1=-6", "--pan", "Audio 1=-20",
                        out=self.out)
         lv = read_levels(data(dest))[owner(data(dest), "Audio 1")]

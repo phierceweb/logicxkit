@@ -13,11 +13,11 @@ from groovebin import transforms as gt
 from groovebin.maps import NAMES
 
 from ._edit import CommandError
-from .services.events import BAR_ONE, PPQ
-from .services.midi import MidiRegion, read_midi
-from .services.midi_edit import (END_TICK, EventLines, copy_notes, copy_region, edit, edit_region, is_note, meter_map,
+from .services.song.events import BAR_ONE, PPQ
+from .services.midi.midi import MidiRegion, read_midi
+from .services.midi.midi_edit import (END_TICK, EventLines, copy_notes, copy_region, edit, edit_region, is_note, meter_map,
                                  remap, require_no_poly_aftertouch, to_part, from_part)
-from .services.signature import Meter, meter
+from .services.song.signature import Meter, meter
 
 SHAPES = {
     "transpose": ("N=SEMITONES", "transpose region N's notes"),

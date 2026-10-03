@@ -10,16 +10,16 @@ from collections import Counter
 from pathlib import Path
 
 import _goldens
-from logicxkit.logic.services.audio_regions import (
+from logicxkit.logic.services.regions.audio_regions import (
     AUDIO_ENTRY, ENTRY_ORDINAL_AT, FILE_TAG, OFFSET_AT, PATH_AT, REGION_TAG, SIZE_AT, magic_at, read_audio_files,
     read_audio_regions)
-from logicxkit.logic.services.audio_write import LINK_AT, ORDINAL_AT, _register, add_audio_region, wav_info
-from logicxkit.logic.services.stream import HEADER, project_records, reassemble
-from logicxkit.logic.services.recbuild import rec, slot_of, with_slot
-from logicxkit.logic.services.regions import ENTRY, TAIL, entry_offsets, song_container
-from logicxkit.logic.services.registry import TIME_STRIDE, UUID_STRIDE, run_entries
-from logicxkit.logic.services.tracklist import arrange_run
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.regions.audio_write import LINK_AT, ORDINAL_AT, _register, add_audio_region, wav_info
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream.recbuild import rec, slot_of, with_slot
+from logicxkit.logic.services.regions.regions import ENTRY, TAIL, entry_offsets, song_container
+from logicxkit.logic.services.stream.registry import TIME_STRIDE, UUID_STRIDE, run_entries
+from logicxkit.logic.services.arrange.tracklist import arrange_run
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 UNSIZED = (b"gnoS", b"qeSM", b"MroC", b"OCuA", b"UCuA")     # grow, shrink or carry the name on any load

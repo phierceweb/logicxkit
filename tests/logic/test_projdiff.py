@@ -9,7 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from logicxkit.cli import main
-from logicxkit.logic.services.projdiff import diff_against_library, diff_projects
+from logicxkit.logic.services.stream.projdiff import diff_against_library, diff_projects
 
 
 def report(channels, bpm=215):

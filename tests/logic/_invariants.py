@@ -3,17 +3,17 @@ held to the same standard without a byte-for-byte golden."""
 
 import struct
 
-from logicxkit.logic.services.binding import bound_channels
-from logicxkit.logic.services.channel_alloc import is_mixer_record
-from logicxkit.logic.services.environment import channel_objects, name_end, object_record
-from logicxkit.logic.services.groups import group_errors
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.regions import region_errors, row_count_errors
-from logicxkit.logic.services.registry import slot_errors
-from logicxkit.logic.services.sends import SEND_FLAG_AT
-from logicxkit.logic.services.sequence import link_errors
-from logicxkit.logic.services.tracklist import arrange_run, row_object
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import bound_channels
+from logicxkit.logic.services.mixer.channel_alloc import is_mixer_record
+from logicxkit.logic.services.arrange.environment import channel_objects, name_end, object_record
+from logicxkit.logic.services.arrange.groups import group_errors
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.regions.regions import region_errors, row_count_errors
+from logicxkit.logic.services.stream.registry import slot_errors
+from logicxkit.logic.services.mixer.sends import SEND_FLAG_AT
+from logicxkit.logic.services.stream.sequence import link_errors
+from logicxkit.logic.services.arrange.tracklist import arrange_run, row_object
+from logicxkit.logic.services.stream.validate import validate_project
 
 
 def report(data: bytes, track_count: int | None) -> dict:

@@ -14,15 +14,15 @@ REGION_SAVES = ("audio-one-region-logic", "audio-three-regions-logic", "audio-wr
 
 
 def _song(data: bytes):
-    from logicxkit.logic.services.stream import project_records
-    from logicxkit.logic.services.regions import song_container
-    from logicxkit.logic.services.tracklist import arrange_run
+    from logicxkit.logic.services.stream.stream import project_records
+    from logicxkit.logic.services.regions.regions import song_container
+    from logicxkit.logic.services.arrange.tracklist import arrange_run
     records = project_records(data)
     return records, song_container(records, arrange_run(records, None)).end
 
 
 def _replaced(data: bytes, index: int, raw: bytes | None) -> bytes:
-    from logicxkit.logic.services.stream import project_records, reassemble
+    from logicxkit.logic.services.stream.stream import project_records, reassemble
     kept = [raw if i == index else r.raw for i, r in enumerate(project_records(data))]
     return reassemble(data, [k for k in kept if k is not None])
 
@@ -30,7 +30,7 @@ def _replaced(data: bytes, index: int, raw: bytes | None) -> bytes:
 @_goldens.needs(*REGION_SAVES)
 class LogicRegionSavesTest(unittest.TestCase):
     def test_logics_blank_born_saves_hold_every_region_invariant(self):
-        from logicxkit.logic.services.integrity import structural_report
+        from logicxkit.logic.services.stream.integrity import structural_report
         from logicxkit.logicx import project_data
         for key in REGION_SAVES:
             with self.subTest(key):
@@ -48,11 +48,11 @@ class RegionRefusalTest(unittest.TestCase):
         import tempfile
         import wave
 
-        from logicxkit.logic.services.audio_regions import read_audio_regions
-        from logicxkit.logic.services.audio_write import add_audio_region
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.midi import read_midi
-        from logicxkit.logic.services.midi_write import add_note, add_region
+        from logicxkit.logic.services.regions.audio_regions import read_audio_regions
+        from logicxkit.logic.services.regions.audio_write import add_audio_region
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.midi.midi import read_midi
+        from logicxkit.logic.services.midi.midi_write import add_note, add_region
         from logicxkit.logicx import project_data
         base = project_data(_goldens.path("audio-one-region-logic"))
         (placed,) = read_audio_regions(base)
@@ -74,11 +74,11 @@ class RegionRefusalTest(unittest.TestCase):
         self.assertEqual(regressions(region, noted), [])
 
     def test_a_dropped_region_record_and_a_dropped_entry_are_refused_by_name(self):
-        from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, REGION_TAG
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import ENTRY, TAIL, entry_offsets
+        from logicxkit.logic.services.regions.audio_regions import AUDIO_ENTRY, REGION_TAG
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import ENTRY, TAIL, entry_offsets
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("audio-three-regions-logic"))
         last = max(i for i, r in enumerate(project_records(data)) if r.tag == REGION_TAG)
@@ -98,11 +98,11 @@ class RegionRefusalTest(unittest.TestCase):
     def test_a_stray_file_record_and_moved_counters_are_refused(self):
         import struct
 
-        from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, ENTRY_ORDINAL_AT, FILE_TAG
-        from logicxkit.logic.services.stream import HEADER, project_records, reassemble
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import TRACK_OBJECT_AT, entry_offsets
+        from logicxkit.logic.services.regions.audio_regions import AUDIO_ENTRY, ENTRY_ORDINAL_AT, FILE_TAG
+        from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import TRACK_OBJECT_AT, entry_offsets
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("audio-three-regions-logic"))
         records = project_records(data)
@@ -135,12 +135,12 @@ class RegionRefusalTest(unittest.TestCase):
     def test_two_regions_trading_tracks_at_one_tick_are_refused(self):
         import struct
 
-        from logicxkit.logic.services.audio_regions import AUDIO_ENTRY, read_audio_regions
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.integrity_regions import entry_key
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import ENTRY, TRACK_OBJECT_AT, entry_offsets, sync_region_tracks
+        from logicxkit.logic.services.regions.audio_regions import AUDIO_ENTRY, read_audio_regions
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.stream.integrity_regions import entry_key
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import ENTRY, TRACK_OBJECT_AT, entry_offsets, sync_region_tracks
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("audio-three-regions-logic"))
         records, end = _song(data)
@@ -158,8 +158,8 @@ class RegionRefusalTest(unittest.TestCase):
         self.assertFalse(any(f.startswith("lost_regions") for f in found), found)
 
     def test_a_dropped_registry_record_leaves_the_region_slots_unregistered(self):
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.registry import GNOS_TAG
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.stream.registry import GNOS_TAG
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("midi-write-resave-logic"))
         records, _end = _song(data)
@@ -169,12 +169,12 @@ class RegionRefusalTest(unittest.TestCase):
     def test_a_region_slot_taken_out_of_the_registry_is_refused_by_name(self):
         import struct
 
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.midi import ENTRY_SLOT_AT, MIDI_ENTRY
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import entry_offsets
-        from logicxkit.logic.services.registry import GNOS_TAG, SLOT_TYPE, TIME_STRIDE, UUID_STRIDE, run_entries
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.midi.midi import ENTRY_SLOT_AT, MIDI_ENTRY
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import entry_offsets
+        from logicxkit.logic.services.stream.registry import GNOS_TAG, SLOT_TYPE, TIME_STRIDE, UUID_STRIDE, run_entries
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("midi-write-resave-logic"))
         records, end = _song(data)
@@ -195,8 +195,8 @@ class FlexedSessionTest(unittest.TestCase):
     """A session Logic flexed and quantized: its marker blocks framed as the check reads them."""
 
     def setUp(self):
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.regions import MARKER_KIND, MARKER_KIND_AT
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.regions.regions import MARKER_KIND, MARKER_KIND_AT
         for project in sorted(p for d in ("legacy", "mixes") for p in (_paths.RESOURCES / d).rglob("*.logicx")):
             data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
             records, end = _song(data)
@@ -208,10 +208,10 @@ class FlexedSessionTest(unittest.TestCase):
         self.skipTest("no flexed session under resources/legacy or resources/mixes")
 
     def test_a_block_that_lost_its_mark_is_refused_by_name(self):
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.integrity import regressions, structural_report
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import MARKER_KIND_AT
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.stream.integrity import regressions, structural_report
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import MARKER_KIND_AT
         self.assertEqual(structural_report(self.data)["marker_blocks"], [])
         payload = bytearray(self.records[self.end].raw[HEADER:])
         payload[self.block + MARKER_KIND_AT] = 0
@@ -219,9 +219,9 @@ class FlexedSessionTest(unittest.TestCase):
         self.assertTrue(any(f.startswith("marker_blocks: 1 ") and "0x88 bytes without the 0xAA mark" in f for f in found), found)
 
     def _with_segments(self, arrange) -> bytes:
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.recbuild import rec
-        from logicxkit.logic.services.regions import ENTRY, TAIL, entry_blocks
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.stream.recbuild import rec
+        from logicxkit.logic.services.regions.regions import ENTRY, TAIL, entry_blocks
         payload = self.records[self.end].raw[HEADER:]
         segments = [payload[o:o + ENTRY * (1 + n)] for o, n in entry_blocks(payload)]
         self.assertEqual(sum(map(len, segments)), len(payload) - TAIL)
@@ -229,8 +229,8 @@ class FlexedSessionTest(unittest.TestCase):
         return _replaced(self.data, self.end, rec(b"qSvE", self.records[self.end].raw, body + payload[-TAIL:]))
 
     def test_a_flexed_entry_stripped_of_its_blocks_is_refused(self):
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.regions import ENTRY
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.regions.regions import ENTRY
 
         def strip(segs):
             flexed = next(i for i, s in enumerate(segs) if len(s) > ENTRY)
@@ -240,9 +240,9 @@ class FlexedSessionTest(unittest.TestCase):
         self.assertTrue(any(f.startswith("marker_blocks: 1 flexed entr(ies) lost their marker blocks") for f in found), found)
 
     def test_a_midi_entry_slipped_between_a_flexed_entry_and_its_blocks_is_refused(self):
-        from logicxkit.logic.services.integrity import regressions
-        from logicxkit.logic.services.midi import MIDI_ENTRY
-        from logicxkit.logic.services.regions import ENTRY
+        from logicxkit.logic.services.stream.integrity import regressions
+        from logicxkit.logic.services.midi.midi import MIDI_ENTRY
+        from logicxkit.logic.services.regions.regions import ENTRY
 
         def slip(segs):
             midi = next((i for i, s in enumerate(segs) if s[0] == MIDI_ENTRY and len(s) == ENTRY), None)

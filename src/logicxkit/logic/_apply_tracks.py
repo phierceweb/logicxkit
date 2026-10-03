@@ -12,7 +12,7 @@ UNVERIFIED = "\nUnverified until opened in Logic."
 
 def cmd_reorder(args) -> int:
     """Move a track before or after another one under the same parent."""
-    from .services.reorder import move_track
+    from .services.arrange.reorder import move_track
 
     def step(data, count, data_file):
         for spec in args.move:
@@ -29,8 +29,8 @@ def cmd_reorder(args) -> int:
 
 def cmd_colour(args) -> int:
     """Set track colours by palette index."""
-    from .services.environment import set_colour
-    from .services.validate import require_full_walk, require_valid
+    from .services.arrange.environment import set_colour
+    from .services.stream.validate import require_full_walk, require_valid
 
     def step(data, count, data_file):
         require_full_walk(data)
@@ -45,8 +45,8 @@ def cmd_colour(args) -> int:
 
 def cmd_rename(args) -> int:
     """Rename tracks."""
-    from .services.environment import rename_track
-    from .services.validate import require_full_walk, require_valid
+    from .services.arrange.environment import rename_track
+    from .services.stream.validate import require_full_walk, require_valid
 
     def step(data, count, data_file):
         require_full_walk(data)
@@ -63,7 +63,7 @@ def cmd_rename(args) -> int:
 
 def cmd_hide(args) -> int:
     """Hide (or --show) tracks in the arrange window."""
-    from .services.stacks import set_hidden
+    from .services.arrange.track_flags import set_hidden
 
     def step(data, count, data_file):
         for name in args.track:
@@ -75,7 +75,7 @@ def cmd_hide(args) -> int:
 
 def cmd_add_track(args) -> int:
     """Add an audio or instrument track after a named track; bumps NumberOfTracks."""
-    from .services.addtrack import add_track
+    from .services.arrange.addtrack import add_track
 
     def step(data, count, data_file):
         data, report = add_track(
@@ -92,8 +92,8 @@ def cmd_add_track(args) -> int:
 
 def cmd_stack_create(args) -> int:
     """Make a folder or summing stack from existing top-level tracks; bumps NumberOfTracks."""
-    from .services.stack_create import create_stack
-    from .services.stack_summing import create_summing_stack
+    from .services.arrange.stack_create import create_stack
+    from .services.arrange.stack_summing import create_summing_stack
 
     def step(data, count, data_file):
         members = [object_by_name(data, name, count) for name in args.track]

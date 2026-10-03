@@ -4,8 +4,8 @@ The real-file part of tests/logic/test_song.py; skips without the owner's files.
 
 import unittest
 import _paths
-from logicxkit.logic.services.arrangement import BAR_ONE, PPQ, read_sections
-from logicxkit.logic.services.tempo import project_tempo, read_tempo_events
+from logicxkit.logic.services.song.arrangement import BAR_ONE, PPQ, read_sections
+from logicxkit.logic.services.song.tempo import project_tempo, read_tempo_events
 from logicxkit.logicx import project_data
 
 SONGS = sorted(p for d in ("mixes", "legacy") for p in (_paths.RESOURCES / d).glob("*/*.logicx"))

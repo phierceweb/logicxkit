@@ -8,7 +8,7 @@ from pathlib import Path
 import _goldens
 from _cli import data, run, source, written
 
-from logicxkit.logic.services.plugins import slot_payloads
+from logicxkit.logic.services.mixer.plugins import slot_payloads
 
 INSTRUMENT = "tracks-instrument-logic"          # Inst 1 holds an Apple AU generator in slot 1
 

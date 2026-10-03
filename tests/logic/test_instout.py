@@ -5,8 +5,8 @@ and the template's three Drums MIDI auxes, checked when present."""
 import struct
 import unittest
 from _records import chan, proj, rec, uuid
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.instout import (
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.instout import (
     SIZE,
     bind_instrument_output,
     binding_key,
@@ -72,7 +72,7 @@ class BindTest(unittest.TestCase):
         self.assertEqual(binding_key(low), 12)                       # 11 was dropped by Logic
 
     def test_unbind_takes_the_record_and_the_source_bytes_away(self):
-        from logicxkit.logic.services.instout import unbind_instrument_output
+        from logicxkit.logic.services.mixer.instout import unbind_instrument_output
         out = bind_instrument_output(session(), 67, pattern=pattern(), instrument=2)
         back = unbind_instrument_output(out, 67)
         self.assertEqual(read_instrument_outputs(back), {})
@@ -81,7 +81,7 @@ class BindTest(unittest.TestCase):
         self.assertEqual(unbind_instrument_output(back, 67), back)
 
     def test_unbind_clears_a_bus_returns_source_byte_too(self):
-        from logicxkit.logic.services.instout import unbind_instrument_output
+        from logicxkit.logic.services.mixer.instout import unbind_instrument_output
         data = session()
         recs = project_records(data)
         i = next(k for k, r in enumerate(recs) if r.owner == 68 and r.tag == b"OCuA")

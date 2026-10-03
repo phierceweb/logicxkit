@@ -7,13 +7,13 @@ from dataclasses import replace
 from pathlib import Path
 
 import _goldens
-from logicxkit.logic.services.audio_regions import read_audio_regions
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.region_edit import listed, move_region, samples_per_tick_of, set_fade
-from logicxkit.logic.services.region_params import RegionParams
-from logicxkit.logic.services.region_params_write import overlapped, set_colour, set_crossfade, set_params
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.regions.audio_regions import read_audio_regions
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.regions.region_edit import listed, move_region, samples_per_tick_of, set_fade
+from logicxkit.logic.services.regions.region_params import RegionParams
+from logicxkit.logic.services.regions.region_params_write import overlapped, set_colour, set_crossfade, set_params
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 _spec = importlib.util.spec_from_file_location("goldens_region_edit", Path(__file__).with_name("test_region_edit.py"))
@@ -121,7 +121,7 @@ class LikeLogicTest(unittest.TestCase):
         out = set_colour(data, n, 36)
         self.assertEqual((audio(out, "v030-tone").colour, regressions(data, out)), (36, []))
         record = lambda d: next(r for r in read_audio_regions(d) if r.name == "v030-tone").record  # noqa: E731
-        from logicxkit.logic.services.stream import project_records
+        from logicxkit.logic.services.stream.stream import project_records
         self.assertEqual(project_records(out)[record(out)].raw[36:76], project_records(load(31))[record(load(31))].raw[36:76])
         midi = number(load(31), "Inst 1")
         out = set_colour(load(31), midi, 64)

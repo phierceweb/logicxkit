@@ -4,9 +4,9 @@ import unittest
 
 from logicxkit.logic._automation_cmd import LANES, _Edit, _lane, _param_lane, _param_points, _points, register
 from logicxkit.logic._edit import CommandError
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.groups import FADER_IDS
-from logicxkit.logic.services.signature import Meter, TimeSignature
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.arrange.groups import FADER_IDS
+from logicxkit.logic.services.song.signature import Meter, TimeSignature
 
 
 class LaneTest(unittest.TestCase):

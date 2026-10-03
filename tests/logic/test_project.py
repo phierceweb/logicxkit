@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from logicxkit.logicx import channel_label
-from logicxkit.logic.services.project import (
+from logicxkit.logic.services.project.project import (
     analyze,
     channel_chain,
     channel_cst_refs,

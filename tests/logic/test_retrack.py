@@ -159,7 +159,7 @@ class ProjectFolderTest(unittest.TestCase):
     def test_the_bundle_path_copies_the_folder_around_it(self):
         import tempfile
 
-        from logicxkit.logic.services.retrack import copy_project
+        from logicxkit.logic.services.arrange.retrack import copy_project
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             folder = root / "in/Song"
@@ -175,7 +175,7 @@ class ProjectFolderTest(unittest.TestCase):
     def test_a_bundle_without_audio_beside_it_copies_alone(self):
         import tempfile
 
-        from logicxkit.logic.services.retrack import copy_project
+        from logicxkit.logic.services.arrange.retrack import copy_project
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             bundle = root / "in/templates/Song.logicx"
@@ -186,7 +186,7 @@ class ProjectFolderTest(unittest.TestCase):
 
     def test_logic_autosaves_stay_behind(self):
         """Logic offers an autosave on open, and the source's predates every edit to the copy."""
-        from logicxkit.logic.services.retrack import copy_project
+        from logicxkit.logic.services.arrange.retrack import copy_project
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             alt = root / "in/Song/Song.logicx/Alternatives/000"
@@ -201,13 +201,13 @@ class ProjectFolderTest(unittest.TestCase):
         import subprocess
         from unittest import mock
 
-        from logicxkit.logic.services.retrack import copy_project
+        from logicxkit.logic.services.arrange.retrack import copy_project
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             bundle = root / "in/templates/Song.logicx"
             (bundle / "Alternatives/000/Autosave").mkdir(parents=True)
             (bundle / "Alternatives/000/ProjectData").write_bytes(project())
-            with mock.patch("logicxkit.logic.services.retrack.subprocess.run",
+            with mock.patch("logicxkit.logic.services.arrange.retrack.subprocess.run",
                             return_value=subprocess.CompletedProcess([], 1)):
                 copied = copy_project(bundle, root / "out")
             self.assertEqual([p.name for p in (copied["dest"] / "Alternatives/000").iterdir()], ["ProjectData"])
@@ -318,7 +318,7 @@ class RetrackChannelsTest(unittest.TestCase):
                     chan(0, "Audio 1"), ref(0, "Kick In.cst", "Drums"))
 
     def test_each_channel_gets_its_own_name_and_the_folder_stays(self):
-        from logicxkit.logic.services.retrack import cst_references, reference_owner, retrack_channels
+        from logicxkit.logic.services.arrange.retrack import cst_references, reference_owner, retrack_channels
         data = self._project()
         out, report = retrack_channels(data, {4: "Rack 1.cst", 6: "Rack 3.cst"})
         got = {reference_owner(out, r): (r.name, r.category) for r in cst_references(out)}
@@ -327,13 +327,13 @@ class RetrackChannelsTest(unittest.TestCase):
         self.assertEqual(report["changes"], [(4, "Rack.cst", "Rack 1.cst"), (6, "Rack.cst", "Rack 3.cst")])
 
     def test_a_folder_can_move_with_the_name(self):
-        from logicxkit.logic.services.retrack import cst_references, reference_owner, retrack_channels
+        from logicxkit.logic.services.arrange.retrack import cst_references, reference_owner, retrack_channels
         out, _ = retrack_channels(self._project(), {0: {"name": "Kick.cst", "category": "Cat"}})
         got = {reference_owner(out, r): (r.name, r.category) for r in cst_references(out)}
         self.assertEqual(got[0], ("Kick.cst", "Cat"))
 
     def test_refusals(self):
-        from logicxkit.logic.services.retrack import retrack_channels
+        from logicxkit.logic.services.arrange.retrack import retrack_channels
         with self.assertRaises(ValueError):
             retrack_channels(self._project(), {99: "Rack 1.cst"})
         with self.assertRaises(ValueError):

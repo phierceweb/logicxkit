@@ -6,7 +6,7 @@ import re
 import unittest
 
 import _goldens
-from logicxkit.logic.services.automation import read_automation
+from logicxkit.logic.services.regions.automation import read_automation
 from logicxkit.logicx import project_data
 
 

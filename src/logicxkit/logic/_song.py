@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy
-from .services.retrack import find_project
+from .services.arrange.retrack import find_project
 
 
 def _spec(spec: str, what: str) -> tuple[int, str]:
@@ -23,25 +23,25 @@ def _number(text: str, what: str) -> float:
 
 
 def _bar_tick(data: bytes, bar: str, what: str) -> int:
-    from .services.signature import meter
+    from .services.song.signature import meter
     return meter(data).tick(_number(bar, what))
 
 
 def _bar_length(data: bytes, bars: str, what: str, *, at: int) -> int:
-    from .services.signature import meter
+    from .services.song.signature import meter
     return meter(data).ticks(_number(bars, what), at)
 
 
 def _section_start(data: bytes, n: int) -> int:
-    from .services.arrangement import read_sections
-    from .services.events import BAR_ONE
+    from .services.song.arrangement import read_sections
+    from .services.song.events import BAR_ONE
     sections = read_sections(data)
     return sections[n - 1].start if 1 <= n <= len(sections) else BAR_ONE
 
 
 def _print_sections(project: Path, data: bytes) -> None:
-    from .services.arrangement import KINDS, read_sections
-    from .services.signature import meter, read_signatures
+    from .services.song.arrangement import KINDS, read_sections
+    from .services.song.signature import meter, read_signatures
     sections = read_sections(data)
     m = meter(data)
     times = ", ".join(f"{t.numerator}/{t.denominator}" for t in read_signatures(data)[0])
@@ -52,8 +52,8 @@ def _print_sections(project: Path, data: bytes) -> None:
 
 def cmd_arrangement(args) -> int:
     from logicxkit.logicx import project_data
-    from .services import arrangement_write as w
-    from .services.arrangement import KINDS
+    from .services.song import arrangement_write as w
+    from .services.song.arrangement import KINDS
     edits = [a for a in (args.rename, args.move, args.length, args.delete, args.add) if a]
     project = find_project(Path(args.project))
     if not edits:
@@ -92,12 +92,12 @@ def cmd_arrangement(args) -> int:
 
 def cmd_tempo(args) -> int:
     from logicxkit.logicx import project_data
-    from .services.tempo import project_tempo, read_tempo_events
-    from .services.tempo_write import add_ramp, add_tempo, set_tempo
+    from .services.song.tempo import project_tempo, read_tempo_events
+    from .services.song.tempo_write import add_ramp, add_tempo, set_tempo
     project = find_project(Path(args.project))
 
     def show(data):
-        from .services.signature import meter
+        from .services.song.signature import meter
         m = meter(data)
         shown, first = project_tempo(data)
         print(f"{project.name}: {shown:g} bpm" + (f" shown at save; {first:g} at bar 1" if first != shown else ""))
@@ -169,9 +169,9 @@ def register(sub) -> None:
 
 def cmd_signature(args) -> int:
     from logicxkit.logicx import project_data
-    from .services.settings import read_settings, set_division
-    from .services.signature import meter, read_signatures
-    from .services.signature_write import add_key_change, add_meter_change, set_key, set_time_signature
+    from .services.song.settings import read_settings, set_division
+    from .services.song.signature import meter, read_signatures
+    from .services.song.signature_write import add_key_change, add_meter_change, set_key, set_time_signature
     project = find_project(Path(args.project))
 
     def show(data):

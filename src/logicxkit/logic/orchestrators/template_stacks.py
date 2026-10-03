@@ -4,8 +4,8 @@ paired with a row that is no stack, or two stacks of the name, means none."""
 
 from __future__ import annotations
 
-from ..services.stacks import Stack
-from ..services.trackname import stacks_named
+from ..services.arrange.stacks import Stack
+from ..services.arrange.trackname import stacks_named
 
 
 def stack_of(stacks: list[Stack]) -> dict[int, Stack]:

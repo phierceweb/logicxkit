@@ -22116,5 +22116,3404 @@
     "Audio 2"
    ]
   }
+ },
+ "addplugin-end-logic-12-4": {
+  "path": "addplugin-b04-end-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-end-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter",
+    "Channel EQ"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ]
+  }
+ },
+ "addplugin-expander-stereo-logic-12-4": {
+  "path": "addplugin-b10-expander-stereo-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-expander-stereo-mine",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 6
+  }
+ },
+ "addplugin-fuzzwah-mono-logic-12-4": {
+  "path": "addplugin-b12-fuzzwah-mono-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-fuzzwah-mono-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 9
+  }
+ },
+ "addplugin-ids-logic-12-4": {
+  "path": "addplugin-b14-ids-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-ids-mine",
+  "facts": {
+   "plugin": "Channel EQ"
+  }
+ },
+ "addplugin-ids-shared-logic-12-4": {
+  "path": "addplugin-b16-ids-shared-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-ids-shared-mine",
+  "facts": {
+   "plugin": "Channel EQ",
+   "reassigned": "Audio 2"
+  }
+ },
+ "addplugin-mid-logic-12-4": {
+  "path": "addplugin-b02-mid-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-mid-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Channel EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ],
+   "mapping_slots": 6
+  }
+ },
+ "addplugin-remove-logic-12-4": {
+  "path": "addplugin-b06-remove-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-remove-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 9,
+   "archives": [
+    14,
+    15
+   ]
+  }
+ },
+ "addplugin-replace-logic-12-4": {
+  "path": "addplugin-b08-replace-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addplugin-replace-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "keys": [
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "inserts": [
+    "Linear Phase EQ",
+    "Gain",
+    "Multipressor",
+    "Adaptive Limiter",
+    "Limiter"
+   ],
+   "shown": 10,
+   "archives": [
+    15,
+    16
+   ]
+  }
+ },
+ "addtrack-fresh-logic-12-4": {
+  "path": "addtrack-f04-fresh-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addtrack-fresh-mine",
+  "facts": {
+   "plugin_slots": 9,
+   "tracks": 12
+  }
+ },
+ "addtrack-order-logic-12-4": {
+  "path": "addtrack-f02-order-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of addtrack-order-mine",
+  "facts": {
+   "plugin_slots": 0
+  }
+ },
+ "arrangement-resave-logic-12-4": {
+  "path": "arrangement-b06-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of arrangement-ours",
+  "facts": {
+   "sections": 1,
+   "names": [
+    "Intro"
+   ],
+   "bars": [
+    8
+   ]
+  }
+ },
+ "audio-write-two-resave-logic-12-4": {
+  "path": "audio-c13-write-two-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of audio-write-two-ours with its two wavs in the copy's Media folder (skipped as missing, Logic zeroes the file record's found byte)",
+  "facts": {
+   "regions": [
+    [
+     "Audio 2",
+     "v030-tone",
+     38400,
+     44100,
+     "v030-tone.wav",
+     1
+    ],
+    [
+     "Audio 3",
+     "v030-tone2",
+     42240,
+     88200,
+     "v030-tone2.wav",
+     2
+    ]
+   ]
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "project paths": 2
+   }
+  }
+ },
+ "auto-eqlanes-resave-logic-12-4": {
+  "path": "auto-a08-eqlanes-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of auto-eqlanes-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 127,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 53,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 17,
+     "val": 72,
+     "name": "Peak 3 Frequency"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 0,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 63,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 127,
+     "name": "Low Cut On/Off"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 10,
+     "val": 79,
+     "name": "Peak 1 Gain"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 17,
+     "val": 84,
+     "name": "Peak 3 Frequency"
+    }
+   ],
+   "shown": {
+    "1": {
+     "Low Cut On/Off": "1",
+     "Peak 1 Gain": "-4.0 dB",
+     "Peak 3 Frequency": "1000 Hz"
+    },
+    "2": {
+     "Low Cut On/Off": "0",
+     "Peak 1 Gain": "0.0 dB",
+     "Peak 3 Frequency": "1000 Hz"
+    },
+    "3": {
+     "Low Cut On/Off": "1",
+     "Peak 1 Gain": "+6.0 dB",
+     "Peak 3 Frequency": "2000 Hz"
+    }
+   },
+   "provenance": "Automation Event List and the plug-in's Controls view, read off the screen (Logic Pro 12.3.1, 2026-09-23)"
+  }
+ },
+ "auto-lanes-resave-logic-12-4": {
+  "path": "auto-a03-lanes-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of auto-lanes-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 40,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 1,
+     "val": 34,
+     "name": "Ratio"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 52,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 2,
+     "val": 32,
+     "name": "Attack"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 0,
+     "val": 76,
+     "name": "Threshold"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 1,
+     "val": 25,
+     "name": "Ratio"
+    }
+   ],
+   "provenance": "Automation Event List of the track, read off the screen (Logic Pro 12.3.1, 2026-09-23); position as bar beat division tick",
+   "shown": {
+    "1": {
+     "Threshold": "-30.0 dB",
+     "Ratio": "3.9:1",
+     "Attack": "10.5 ms"
+    },
+    "2": {
+     "Threshold": "-24.0 dB",
+     "Ratio": "3.9:1",
+     "Attack": "16.0 ms"
+    },
+    "3": {
+     "Threshold": "-12.0 dB",
+     "Ratio": "2.7:1",
+     "Attack": "16.0 ms"
+    }
+   }
+  }
+ },
+ "auto-mblanes-resave-logic-12-4": {
+  "path": "auto-a09-mblanes-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of auto-mblanes-ours",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor",
+   "event_list": [
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 8,
+     "val": 46,
+     "name": "Band 4 Comp. Ratio"
+    },
+    {
+     "pos": [
+      1,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 48,
+     "name": "Band 1 Comp. Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 60,
+     "name": "Band 1 Comp. Threshold"
+    },
+    {
+     "pos": [
+      2,
+      1,
+      1,
+      1
+     ],
+     "num": 42,
+     "val": 42,
+     "name": "Band 1 Make Up"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 8,
+     "val": 22,
+     "name": "Band 4 Comp. Ratio"
+    },
+    {
+     "pos": [
+      3,
+      1,
+      1,
+      1
+     ],
+     "num": 40,
+     "val": 32,
+     "name": "Band 1 Comp. Threshold"
+    }
+   ],
+   "shown": {
+    "1": {
+     "Band 1 Comp. Threshold": "-20.0 dB",
+     "Band 4 Comp. Ratio": "3.675",
+     "Band 1 Make Up": "1.0 dB"
+    },
+    "2": {
+     "Band 1 Comp. Threshold": "-12.0 dB",
+     "Band 4 Comp. Ratio": "3.675",
+     "Band 1 Make Up": "1.0 dB"
+    },
+    "3": {
+     "Band 1 Comp. Threshold": "-30.0 dB",
+     "Band 4 Comp. Ratio": "1.977",
+     "Band 1 Make Up": "1.0 dB"
+    }
+   },
+   "provenance": "Automation Event List and the plug-in's Controls view, read off the screen (Logic Pro 12.3.1, 2026-09-23)"
+  }
+ },
+ "autoset-mb-resave-logic-12-4": {
+  "path": "autoset-x04-mb-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of autoset-mb-ours",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "shown": {
+    "Band 1 Exp. Threshold": {
+     "1": [
+      "-20.0 dB",
+      60
+     ],
+     "5": [
+      "0.00 dB",
+      120
+     ]
+    },
+    "Band 1 Reduction": {
+     "1": [
+      "-10.0 dB",
+      80
+     ],
+     "5": [
+      "-25.5 dB",
+      49
+     ]
+    },
+    "Band 1 Response": {
+     "1": [
+      "100 ms",
+      50
+     ],
+     "5": [
+      "100 ms",
+      50
+     ]
+    }
+   }
+  }
+ },
+ "autoset-resave-logic-12-4": {
+  "path": "autoset-x02-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of autoset-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "shown": [
+    {
+     "bar": 1,
+     "num": 0,
+     "val": 40,
+     "name": "Threshold",
+     "ch": 2
+    },
+    {
+     "bar": 1,
+     "num": 13,
+     "val": 127,
+     "name": "Auto Release",
+     "ch": 2
+    },
+    {
+     "bar": 1,
+     "num": 4,
+     "val": 25,
+     "name": "Hold",
+     "ch": 3
+    },
+    {
+     "bar": 1,
+     "num": 1,
+     "val": 85,
+     "name": "Threshold",
+     "ch": 4
+    },
+    {
+     "bar": 5,
+     "num": 0,
+     "val": 52,
+     "name": "Threshold",
+     "ch": 2
+    },
+    {
+     "bar": 5,
+     "num": 13,
+     "val": 0,
+     "name": "Auto Release",
+     "ch": 2
+    },
+    {
+     "bar": 5,
+     "num": 4,
+     "val": 20,
+     "name": "Hold",
+     "ch": 3
+    },
+    {
+     "bar": 5,
+     "num": 1,
+     "val": 106,
+     "name": "Threshold",
+     "ch": 4
+    },
+    {
+     "bar": 9,
+     "num": 0,
+     "val": 76,
+     "name": "Threshold",
+     "ch": 2
+    }
+   ]
+  }
+ },
+ "beats-compose-resave-logic-12-4": {
+  "path": "beats-compose-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of beats-compose-ours",
+  "facts": {
+   "regions": [
+    [
+     "Intro",
+     38400,
+     [
+      [
+       38400,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       40320,
+       10,
+       38,
+       90,
+       240
+      ],
+      [
+       42240,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       44160,
+       10,
+       38,
+       110,
+       240
+      ],
+      [
+       46080,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       48000,
+       10,
+       38,
+       90,
+       240
+      ],
+      [
+       49920,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       51840,
+       10,
+       38,
+       110,
+       240
+      ],
+      [
+       53760,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       55680,
+       10,
+       38,
+       90,
+       240
+      ],
+      [
+       57600,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       59520,
+       10,
+       38,
+       110,
+       240
+      ],
+      [
+       61440,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       63360,
+       10,
+       38,
+       90,
+       240
+      ],
+      [
+       65280,
+       10,
+       71,
+       90,
+       240
+      ],
+      [
+       66240,
+       10,
+       71,
+       100,
+       240
+      ],
+      [
+       67200,
+       10,
+       38,
+       120,
+       240
+      ]
+     ]
+    ],
+    [
+     "Inst 1",
+     46080,
+     [
+      [
+       46080,
+       2,
+       60,
+       79,
+       960
+      ],
+      [
+       47040,
+       2,
+       62,
+       79,
+       960
+      ]
+     ]
+    ],
+    [
+     "Verse 01",
+     69120,
+     [
+      [
+       69120,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       69120,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       71040,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       72000,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       72960,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       72960,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       74880,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       75840,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       76800,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       76800,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       78720,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       79680,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       80640,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       80640,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       82560,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       83520,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       84480,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       84480,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       86400,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       87360,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       88320,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       88320,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       90240,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       91200,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       92160,
+       10,
+       36,
+       100,
+       480
+      ],
+      [
+       92160,
+       10,
+       49,
+       70,
+       240
+      ],
+      [
+       94080,
+       10,
+       38,
+       96,
+       240
+      ],
+      [
+       95040,
+       10,
+       49,
+       60,
+       240
+      ],
+      [
+       96000,
+       10,
+       71,
+       90,
+       240
+      ],
+      [
+       96960,
+       10,
+       71,
+       100,
+       240
+      ],
+      [
+       97920,
+       10,
+       38,
+       120,
+       240
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ "beats-place-generate-resave-logic-12-4": {
+  "path": "beats-place-generate-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of beats-place-generate-ours",
+  "facts": {
+   "regions": [
+    [
+     "Inst 1",
+     46080,
+     [
+      [
+       46080,
+       2,
+       60,
+       79,
+       960
+      ],
+      [
+       47040,
+       2,
+       62,
+       79,
+       960
+      ]
+     ]
+    ],
+    [
+     "Verse 02",
+     53760,
+     [
+      [
+       53760,
+       10,
+       36,
+       120,
+       240
+      ],
+      [
+       55680,
+       10,
+       38,
+       100,
+       240
+      ],
+      [
+       56640,
+       10,
+       75,
+       50,
+       60
+      ],
+      [
+       57600,
+       10,
+       36,
+       120,
+       240
+      ],
+      [
+       59520,
+       10,
+       38,
+       100,
+       240
+      ],
+      [
+       60480,
+       10,
+       75,
+       50,
+       60
+      ]
+     ]
+    ],
+    [
+     "Generated 3",
+     69120,
+     [
+      [
+       69124,
+       10,
+       36,
+       101,
+       480
+      ],
+      [
+       71045,
+       10,
+       38,
+       93,
+       240
+      ],
+      [
+       72955,
+       10,
+       49,
+       71,
+       240
+      ],
+      [
+       72956,
+       10,
+       36,
+       103,
+       480
+      ],
+      [
+       74879,
+       10,
+       38,
+       98,
+       240
+      ],
+      [
+       75838,
+       10,
+       49,
+       57,
+       240
+      ],
+      [
+       76802,
+       10,
+       36,
+       102,
+       480
+      ],
+      [
+       76803,
+       10,
+       49,
+       71,
+       240
+      ],
+      [
+       78721,
+       10,
+       38,
+       100,
+       240
+      ],
+      [
+       79677,
+       10,
+       49,
+       57,
+       240
+      ],
+      [
+       80645,
+       10,
+       71,
+       86,
+       240
+      ],
+      [
+       81603,
+       10,
+       71,
+       100,
+       240
+      ],
+      [
+       82555,
+       10,
+       38,
+       124,
+       240
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ "bypass-resave-logic-12-4": {
+  "path": "bypass-b03-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of bypass-ours",
+  "facts": {
+   "channel": "Audio 1",
+   "bypassed_keys": [
+    2,
+    3
+   ]
+  }
+ },
+ "levels-resave-logic-12-4": {
+  "path": "levels-01-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of levels-ours",
+  "facts": {
+   "click_owner": 8,
+   "fader": 120
+  }
+ },
+ "markers-edits-resave-logic-12-4": {
+  "path": "markers-edits-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of markers-edits-ours",
+  "facts": {
+   "regions": [
+    {
+     "kind": "midi",
+     "track": "Untitled",
+     "name": "Inst 1",
+     "start": 50880,
+     "loop": false,
+     "muted": false,
+     "offset": 0,
+     "events": [
+      [
+       49920,
+       60,
+       80,
+       240
+      ],
+      [
+       51840,
+       64,
+       100,
+       480
+      ]
+     ]
+    },
+    {
+     "kind": "midi",
+     "track": "Untitled",
+     "name": "Inst 1",
+     "start": 51840,
+     "loop": false,
+     "muted": false,
+     "offset": 960,
+     "events": [
+      [
+       49920,
+       60,
+       80,
+       240
+      ],
+      [
+       51840,
+       64,
+       100,
+       480
+      ]
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 2",
+     "name": "v030-tone",
+     "start": 43200,
+     "loop": false,
+     "muted": false,
+     "frames": 22050,
+     "offset": 22050,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2",
+     "start": 38400,
+     "loop": false,
+     "muted": false,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "tone renamed",
+     "start": 38400,
+     "loop": false,
+     "muted": true,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      500,
+      50,
+      1,
+      500,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2.1",
+     "start": 39360,
+     "loop": false,
+     "muted": false,
+     "frames": 22050,
+     "offset": 44100,
+     "piece": 1,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "markers": [
+    [
+     "Chorus A",
+     53760,
+     1
+    ],
+    [
+     "Outro",
+     72960,
+     7680
+    ]
+   ]
+  }
+ },
+ "mb-multi2promb-resave-logic-12-4": {
+  "path": "mb-m05-multi2promb-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of mb-multi2promb",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Pro-MB",
+   "shown": {
+    "1": {
+     "state": "Enabled",
+     "low": "30.000 Hz",
+     "high": "120.00 Hz",
+     "mode": "Compression",
+     "threshold": "-20.00 dB",
+     "range": "-30.00 dB",
+     "ratio": "3.00:1",
+     "attack": "30.0%",
+     "release": "40.0%",
+     "knee": "12.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "+1.00 dB"
+    },
+    "2": {
+     "state": "Enabled",
+     "low": "120.00 Hz",
+     "high": "2000.0 Hz",
+     "mode": "Expansion",
+     "threshold": "-40.00 dB",
+     "range": "-10.00 dB",
+     "ratio": "1.98:1",
+     "attack": "20.0%",
+     "release": "20.0%",
+     "knee": "24.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "0.00 dB"
+    },
+    "3": {
+     "state": "Enabled",
+     "low": "3900.1 Hz",
+     "high": "19999 Hz",
+     "mode": "Compression",
+     "threshold": "-12.00 dB",
+     "range": "-30.00 dB",
+     "ratio": "3.67:1",
+     "attack": "20.0%",
+     "release": "20.0%",
+     "knee": "24.00 dB",
+     "lookahead": "2.000 ms",
+     "level": "-1.50 dB"
+    },
+    "Mix": "100.0%",
+    "Output Level": "+2.00 dB"
+   }
+  }
+ },
+ "mb-neutral-logic-12-4": {
+  "path": "mb-m07-neutral-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of mb-neutral-mine",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 4,
+   "plugin": "Multipressor",
+   "editor": {
+    "bands": [
+     1,
+     2,
+     3,
+     4
+    ],
+    "band_3": {
+     "threshold": "0.00dB",
+     "ratio": "1.000",
+     "exp_ratio": "1.00",
+     "reduction": "0.0dB",
+     "make_up": "0.0dB"
+    },
+    "crossovers": [
+     "120Hz",
+     "2000Hz",
+     "3900Hz"
+    ]
+   }
+  }
+ },
+ "mb-promb-resave-logic-12-4": {
+  "path": "mb-m03-promb-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of mb-promb-ours",
+  "facts": {
+   "channel": "Audio 3",
+   "slot": 1,
+   "plugin": "Multipressor",
+   "shown": {
+    "Lookahead": "2.000 ms",
+    "Band 2 Xover Frequency 1/2": "120 Hz",
+    "Band 3 Xover Frequency 2/3": "2000 Hz",
+    "Band 4 Xover Frequency 3/4": "3900 Hz",
+    "Band 1 Comp. Threshold": "-20.0 dB",
+    "Band 1 Comp. Ratio": "3.000",
+    "Band 1 Make Up": "1.0 dB",
+    "Band 1 Attack": "2.0 ms",
+    "Band 1 Release": "61.0 ms",
+    "Band 1 Monitor": "1",
+    "Band 1 Exp. Ratio": "1.00",
+    "Band 2 Comp. Threshold": "0.00 dB",
+    "Band 2 Comp. Ratio": "1.000",
+    "Band 2 Exp. Ratio": "1.98",
+    "Band 2 Make Up": "0.0 dB",
+    "Band 2 Monitor": "1",
+    "Band 3 Comp. Threshold": "-15.0 dB",
+    "Band 3 Comp. Ratio": "2.022",
+    "Band 3 Monitor": "0",
+    "Band 4 Comp. Threshold": "-12.0 dB",
+    "Band 4 Comp. Ratio": "3.675",
+    "Band 4 Make Up": "-1.5 dB",
+    "Band 4 Monitor": "1",
+    "Master Gain": "2.0",
+    "Auto Gain": "0",
+    "Band 1 Bypass": "0",
+    "Band 2 Bypass": "0",
+    "Band 3 Bypass": "0",
+    "Band 4 Bypass": "0",
+    "Band 2 Reduction": "-10.0 dB"
+   },
+   "editor": {
+    "bands": [
+     1,
+     2,
+     4
+    ],
+    "crossover_3_4": "greyed",
+    "band_4_from_hz": 2000
+   }
+  }
+ },
+ "midi-edits-resave-logic-12-4": {
+  "path": "midi-b11-edits-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of midi-edits-ours",
+  "facts": {
+   "regions": [
+    [
+     "Keys",
+     42240,
+     [
+      [
+       42240,
+       1,
+       62,
+       80,
+       480
+      ],
+      [
+       43200,
+       1,
+       64,
+       72,
+       240
+      ],
+      [
+       44160,
+       1,
+       66,
+       56,
+       240
+      ],
+      [
+       47640,
+       1,
+       67,
+       100,
+       120
+      ],
+      [
+       48120,
+       1,
+       64,
+       90,
+       240
+      ],
+      [
+       49080,
+       1,
+       72,
+       60,
+       120
+      ]
+     ]
+    ],
+    [
+     "Pad Layer",
+     53760,
+     [
+      [
+       55320,
+       1,
+       67,
+       100,
+       120
+      ],
+      [
+       55800,
+       1,
+       64,
+       90,
+       240
+      ],
+      [
+       56760,
+       1,
+       72,
+       60,
+       120
+      ]
+     ]
+    ],
+    [
+     "Drums GM",
+     69120,
+     [
+      [
+       69120,
+       1,
+       36,
+       120,
+       120
+      ],
+      [
+       69120,
+       1,
+       49,
+       80,
+       120
+      ],
+      [
+       70080,
+       1,
+       49,
+       60,
+       120
+      ],
+      [
+       71040,
+       1,
+       38,
+       110,
+       120
+      ],
+      [
+       71040,
+       1,
+       49,
+       80,
+       120
+      ],
+      [
+       72000,
+       1,
+       55,
+       90,
+       240
+      ],
+      [
+       72960,
+       1,
+       36,
+       120,
+       120
+      ],
+      [
+       72960,
+       1,
+       77,
+       127,
+       480
+      ]
+     ]
+    ],
+    [
+     "Keys",
+     80640,
+     [
+      [
+       80640,
+       1,
+       62,
+       80,
+       480
+      ],
+      [
+       81600,
+       1,
+       64,
+       72,
+       240
+      ],
+      [
+       82560,
+       1,
+       66,
+       56,
+       240
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ "midi-names-resave-logic-12-4": {
+  "path": "midi-c14-region-names-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of midi-names-ours",
+  "facts": {
+   "regions": [
+    [
+     "Keys",
+     42240,
+     [
+      [
+       42240,
+       60,
+       100,
+       480
+      ]
+     ]
+    ],
+    [
+     "Pad Layer",
+     53760,
+     [
+      [
+       55680,
+       64,
+       90,
+       240
+      ]
+     ]
+    ]
+   ]
+  }
+ },
+ "midi-transform-resave-logic-12-4": {
+  "path": "midi-transform-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of midi-transform-ours",
+  "facts": {}
+ },
+ "neutron-comp-resave-logic-12-4": {
+  "path": "neutron-n04-comp-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of neutron-comp",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Compressor",
+   "shown": {
+    "Threshold": "-20.0 dB",
+    "Ratio": "2.9:1",
+    "Attack": "26.0 ms",
+    "Release": "120.0 ms",
+    "Make Up": "2.0 dB",
+    "Knee": "0.1",
+    "Mix": "80.0 %"
+   }
+  }
+ },
+ "neutron-eq-resave-logic-12-4": {
+  "path": "neutron-n08-eq-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of neutron-eq",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ",
+   "shown": {
+    "Peak 1 Frequency": "150 Hz",
+    "Peak 1 Gain": "-4.0 dB",
+    "Peak 1 Q-Factor": "1.50",
+    "Peak 2 Frequency": "3000 Hz",
+    "Peak 2 Gain": "-6.0 dB",
+    "Peak 2 Q-Factor": "4.00",
+    "High Shelf Frequency": "2000 Hz",
+    "High Shelf Gain": "+3.0 dB",
+    "High Shelf Q-Factor": "2.00",
+    "Peak 1 On/Off": "1",
+    "Peak 2 On/Off": "1",
+    "High Shelf On/Off": "1",
+    "Peak 3 On/Off": "0",
+    "Low Cut On/Off": "0"
+   }
+  }
+ },
+ "neutron-gate-resave-logic-12-4": {
+  "path": "neutron-n06-gate-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of neutron-gate",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Noise Gate",
+   "shown": {
+    "Threshold": "-100 dB",
+    "Hysteresis": "-0.5 dB",
+    "Attack": "5 ms",
+    "Hold": "250 ms",
+    "Release": "199.6 ms"
+   }
+  }
+ },
+ "regions-audio-edits-resave-logic-12-4": {
+  "path": "regions-audio-edits-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of regions-audio-edits-ours",
+  "facts": {
+   "regions": [
+    {
+     "kind": "midi",
+     "track": "Untitled",
+     "name": "Inst 1",
+     "start": 46080,
+     "loop": true,
+     "muted": false,
+     "offset": 0,
+     "events": [
+      [
+       46080,
+       60,
+       80,
+       240
+      ],
+      [
+       48000,
+       64,
+       100,
+       480
+      ]
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 2",
+     "name": "v030-tone",
+     "start": 43200,
+     "loop": false,
+     "muted": false,
+     "frames": 22050,
+     "offset": 22050,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2",
+     "start": 38400,
+     "loop": false,
+     "muted": false,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "tone renamed",
+     "start": 38400,
+     "loop": false,
+     "muted": true,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      500,
+      50,
+      1,
+      500,
+      30
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2.1",
+     "start": 40320,
+     "loop": false,
+     "muted": false,
+     "frames": 44100,
+     "offset": 44100,
+     "piece": 1,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ]
+  }
+ },
+ "regions-midi-edits-resave-logic-12-4": {
+  "path": "regions-midi-edits-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of regions-midi-edits-ours",
+  "facts": {
+   "regions": [
+    {
+     "kind": "midi",
+     "track": "Untitled",
+     "name": "Inst 1",
+     "start": 50880,
+     "loop": true,
+     "muted": false,
+     "offset": 0,
+     "events": [
+      [
+       49920,
+       60,
+       80,
+       240
+      ],
+      [
+       51840,
+       64,
+       100,
+       480
+      ]
+     ]
+    },
+    {
+     "kind": "midi",
+     "track": "Untitled",
+     "name": "Inst 1",
+     "start": 51840,
+     "loop": false,
+     "muted": false,
+     "offset": 960,
+     "events": [
+      [
+       49920,
+       60,
+       80,
+       240
+      ],
+      [
+       51840,
+       64,
+       100,
+       480
+      ]
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 2",
+     "name": "v030-tone",
+     "start": 43200,
+     "loop": false,
+     "muted": false,
+     "frames": 22050,
+     "offset": 22050,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2",
+     "start": 38400,
+     "loop": true,
+     "muted": false,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "tone renamed",
+     "start": 38400,
+     "loop": false,
+     "muted": true,
+     "frames": 44100,
+     "offset": 0,
+     "piece": 0,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "kind": "audio",
+     "track": "Audio 3",
+     "name": "v030-tone2.1",
+     "start": 40320,
+     "loop": false,
+     "muted": false,
+     "frames": 22050,
+     "offset": 44100,
+     "piece": 1,
+     "fade": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "markers": []
+  }
+ },
+ "regions-params-resave-logic-12-4": {
+  "path": "regions-params-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of regions-params-ours",
+  "facts": {}
+ },
+ "reorder-resave-logic-12-4": {
+  "path": "reorder-b09-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of reorder-ours",
+  "facts": {
+   "order": [
+    "Audio 3",
+    "Audio 1",
+    "Audio 2",
+    "Stereo Out"
+   ]
+  }
+ },
+ "route-resave-logic-12-4": {
+  "path": "route-b01-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of route-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "output": "Bus 1"
+  }
+ },
+ "send-packaged-resave-logic-12-4": {
+  "path": "send-b04-packaged-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of send-packaged-ours",
+  "facts": {
+   "owner": 0,
+   "bus": 1,
+   "level_byte": 0
+  }
+ },
+ "sidechain-inst-logic-12-4": {
+  "path": "sidechain-s12-inst-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of sidechain-inst-mine",
+  "facts": {
+   "channel": "Audio 1",
+   "slot": 1,
+   "source": {
+    "kind": 67,
+    "index": 0,
+    "label": "Inst 1"
+   }
+  }
+ },
+ "sidechain-ours-resave-logic-12-4": {
+  "path": "sidechain-s08-ours-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of sidechain-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 2,
+   "plugin": "Noise Gate",
+   "source": {
+    "kind": 69,
+    "index": 1,
+    "label": "Bus 2",
+    "name": "Bus 2",
+    "menu": "Bus 2"
+   }
+  }
+ },
+ "slots-front-logic-12-4": {
+  "path": "slots-s06-front-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of slots-front-mine",
+  "facts": {
+   "channel": "Audio 2",
+   "event_list": [
+    [
+     1,
+     0,
+     40,
+     "Threshold"
+    ],
+    [
+     1,
+     13,
+     127,
+     "Auto Release"
+    ],
+    [
+     1,
+     4,
+     25,
+     "Hold"
+    ],
+    [
+     1,
+     1,
+     85,
+     "Threshold"
+    ],
+    [
+     5,
+     0,
+     52,
+     "Threshold"
+    ],
+    [
+     5,
+     13,
+     0,
+     "Auto Release"
+    ],
+    [
+     5,
+     4,
+     20,
+     "Hold"
+    ],
+    [
+     5,
+     1,
+     106,
+     "Threshold"
+    ],
+    [
+     9,
+     0,
+     76,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-insert1-logic-12-4": {
+  "path": "slots-s01-insert1-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of auto-eqlanes",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Pro-Q 4",
+   "lane_insert": 1,
+   "event_list": [
+    [
+     1,
+     1,
+     127,
+     ""
+    ],
+    [
+     1,
+     26,
+     55,
+     ""
+    ],
+    [
+     1,
+     48,
+     73,
+     ""
+    ],
+    [
+     2,
+     1,
+     0,
+     ""
+    ],
+    [
+     2,
+     26,
+     64,
+     ""
+    ],
+    [
+     3,
+     1,
+     127,
+     ""
+    ],
+    [
+     3,
+     26,
+     76,
+     ""
+    ],
+    [
+     3,
+     48,
+     84,
+     ""
+    ]
+   ]
+  }
+ },
+ "slots-inst-logic-12-4": {
+  "path": "slots-s10-inst-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of slots-inst-mine",
+  "facts": {
+   "channel": "Inst 1",
+   "event_list": [
+    [
+     1,
+     0,
+     32,
+     "Level"
+    ],
+    [
+     1,
+     0,
+     64,
+     "Threshold"
+    ],
+    [
+     2,
+     1,
+     76,
+     ""
+    ],
+    [
+     3,
+     0,
+     96,
+     "Level"
+    ],
+    [
+     3,
+     0,
+     25,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-named-logic-12-4": {
+  "path": "slots-s12-named-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of slots-named-mine",
+  "facts": {
+   "track": "Untitled",
+   "insert": 2
+  }
+ },
+ "slots-remove-logic-12-4": {
+  "path": "slots-s08-remove-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of slots-remove-mine",
+  "facts": {
+   "channel": "Audio 2",
+   "event_list": [
+    [
+     1,
+     4,
+     25,
+     "Hold"
+    ],
+    [
+     1,
+     1,
+     85,
+     "Threshold"
+    ],
+    [
+     5,
+     4,
+     20,
+     "Hold"
+    ],
+    [
+     5,
+     1,
+     106,
+     "Threshold"
+    ]
+   ]
+  }
+ },
+ "slots-replace4-logic-12-4": {
+  "path": "slots-s04-replace4-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of slots-replace4-mine",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 4,
+   "plugin": "Channel EQ",
+   "event_list": [
+    [
+     1,
+     0,
+     127,
+     "Low Cut On/Off"
+    ],
+    [
+     1,
+     10,
+     53,
+     "Peak 1 Gain"
+    ],
+    [
+     1,
+     17,
+     72,
+     "Peak 3 Frequency"
+    ],
+    [
+     2,
+     0,
+     0,
+     "Low Cut On/Off"
+    ],
+    [
+     2,
+     10,
+     63,
+     "Peak 1 Gain"
+    ],
+    [
+     3,
+     0,
+     127,
+     "Low Cut On/Off"
+    ],
+    [
+     3,
+     10,
+     79,
+     "Peak 1 Gain"
+    ],
+    [
+     3,
+     17,
+     84,
+     "Peak 3 Frequency"
+    ]
+   ]
+  }
+ },
+ "snap-ours-resave-logic-12-4": {
+  "path": "snap-s04-ours-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of snap-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "kept": {
+    "Compressor": {
+     "ratio": 3.9,
+     "attack": 20.0,
+     "release": 110.0
+    },
+    "Noise Gate": {
+     "hold": 200.0,
+     "release": 350.99
+    }
+   }
+  }
+ },
+ "snap-raw-resave-logic-12-4": {
+  "path": "snap-s02-raw-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of snap-raw",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "kept": {
+    "Compressor": {
+     "ratio": 3.9,
+     "attack": 20.0,
+     "release": 110.0
+    },
+    "Noise Gate": {
+     "hold": 210.0,
+     "release": 350.99
+    }
+   }
+  }
+ },
+ "stack-resave-logic-12-4": {
+  "path": "stack-b05-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stack-ours",
+  "facts": {
+   "stacks": 1,
+   "name": "Drums",
+   "kind": "folder",
+   "members": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "owner": 270
+  }
+ },
+ "stack-sub2-resave-logic-12-4": {
+  "path": "stack-b07-sub2-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stack-sub2-ours",
+  "facts": {
+   "stacks": 1,
+   "name": "Drums",
+   "kind": "folder",
+   "members": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "owner": 271,
+   "label": "Sub 2"
+  }
+ },
+ "swap-packaged-resave-logic-12-4": {
+  "path": "swap-p04-packaged-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of swap-packaged-ours",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Audio 1": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Limiter On": "0",
+     "Auto Release": "1",
+     "Mix": "100.0 %"
+    },
+    "Audio 2": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Limiter On": "0",
+     "Auto Release": "1",
+     "Mix": "100.0 %"
+    }
+   }
+  }
+ },
+ "swap-resave-logic-12-4": {
+  "path": "swap-p02-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of swap-ours",
+  "facts": {
+   "channels": [
+    "Audio 1",
+    "Audio 2"
+   ],
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Audio 1": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Auto Release": "0",
+     "Mix": "100.0 %"
+    },
+    "Audio 2": {
+     "Threshold": "-15.0 dB",
+     "Ratio": "1.0:1",
+     "Attack": "26.0 ms",
+     "Release": "150.0 ms",
+     "Make Up": "0.0 dB",
+     "Knee": "0.0",
+     "Auto Release": "0",
+     "Mix": "100.0 %"
+    }
+   }
+  }
+ },
+ "translate-ours-resave-logic-12-4": {
+  "path": "translate-t03-ours-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of translate-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Compressor",
+   "shown": {
+    "Threshold": "-30.0 dB",
+    "Ratio": "3.1:1",
+    "Attack": "10.5 ms",
+    "Release": "110.0 ms",
+    "Make Up": "3.0 dB",
+    "Knee": "0.1",
+    "Auto Release": "0",
+    "Mix": "80.0 %",
+    "Input Gain": "0.0 dB",
+    "Output Gain": "0.0 dB"
+   }
+  }
+ },
+ "translate-proq-ours-resave-logic-12-4": {
+  "path": "translate-t08-proq-ours-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of translate-proq-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Channel EQ",
+   "shown": {
+    "Low Cut On/Off": "1",
+    "Low Cut Frequency": "80.0 Hz",
+    "Low Cut Q-Factor": "1.00",
+    "Low Shelf On/Off": "0",
+    "Low Shelf Frequency": "80.0 Hz",
+    "Low Shelf Gain": "0.0 dB",
+    "Low Shelf Q-Factor": "1.10",
+    "Peak 1 On/Off": "1",
+    "Peak 1 Frequency": "250 Hz",
+    "Peak 1 Gain": "-4.0 dB",
+    "Peak 1 Q-Factor": "2.50",
+    "Peak 2 On/Off": "1",
+    "Peak 2 Frequency": "500 Hz",
+    "Peak 2 Gain": "+1.0 dB",
+    "Peak 2 Q-Factor": "1.00",
+    "Peak 3 On/Off": "1",
+    "Peak 3 Frequency": "1000 Hz",
+    "Peak 3 Gain": "+3.0 dB",
+    "Peak 3 Q-Factor": "1.00",
+    "Peak 4 On/Off": "1",
+    "Peak 4 Frequency": "2000 Hz",
+    "Peak 4 Gain": "-1.0 dB",
+    "Peak 4 Q-Factor": "1.00",
+    "High Shelf On/Off": "1",
+    "High Shelf Frequency": "8000 Hz",
+    "High Shelf Gain": "-2.0 dB",
+    "High Shelf Q-Factor": "1.00",
+    "High Cut On/Off": "1",
+    "High Cut Frequency": "16000 Hz",
+    "High Cut Q-Factor": "1.00",
+    "Master  Gain": "0.0 dB"
+   }
+  }
+ },
+ "translate-sonible-resave-logic-12-4": {
+  "path": "translate-t05-sonible-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of translate-sonible-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2
+   },
+   "shown": {
+    "Compressor": {
+     "Threshold": "-10.0 dB",
+     "Ratio": "1.5:1",
+     "Attack": "41.0 ms",
+     "Release": "390.0 ms",
+     "Make Up": "2.5 dB",
+     "Knee": "0.0",
+     "Mix": "95.0 %",
+     "Input Gain": "+2.5 dB",
+     "Output Gain": "0.0 dB"
+    },
+    "Noise Gate": {
+     "Threshold": "-50 dB",
+     "Hysteresis": "-3.0 dB",
+     "Reduction": "-100 dB",
+     "Attack": "16 ms",
+     "Hold": "10 ms",
+     "Release": "351.0 ms"
+    }
+   }
+  }
+ },
+ "transplant-resave-logic-12-4": {
+  "path": "transplant-b02-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of transplant-ours",
+  "facts": {
+   "channel": "Audio 1",
+   "inserts": [
+    "Channel EQ",
+    "Compressor"
+   ]
+  }
+ },
+ "trk-neutron-resave-logic-12-4": {
+  "path": "trk-k02-neutron-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of trk-neutron-ours",
+  "facts": {
+   "channel": "Audio 2",
+   "shown": {
+    "Channel EQ": {
+     "Peak 1 Frequency": "150 Hz",
+     "Peak 1 Gain": "-4.0 dB",
+     "Peak 1 Q-Factor": "1.50",
+     "Peak 2 Frequency": "3000 Hz",
+     "Peak 2 Gain": "-6.0 dB",
+     "Peak 2 Q-Factor": "4.00",
+     "High Shelf Frequency": "2000 Hz",
+     "High Shelf Gain": "+3.0 dB",
+     "High Shelf Q-Factor": "2.00"
+    },
+    "Compressor@3": {
+     "Threshold": "-20.0 dB",
+     "Ratio": "2.9:1",
+     "Attack": "26.0 ms",
+     "Release": "120.0 ms",
+     "Make Up": "2.0 dB",
+     "Mix": "80.0 %",
+     "Auto Release": "1"
+    }
+   }
+  }
+ },
+ "trk-sonible-resave-logic-12-4": {
+  "path": "trk-k04-sonible-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of trk-sonible-ours",
+  "facts": {
+   "chains": {
+    "Audio 1": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ],
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ],
+    "Audio 2": [
+     [
+      "Compressor",
+      false
+     ],
+     [
+      "Noise Gate",
+      false
+     ]
+    ],
+    "Output 1-2": [
+     [
+      "Linear Phase EQ",
+      true
+     ],
+     [
+      "Multipressor",
+      true
+     ],
+     [
+      "Adaptive Limiter",
+      true
+     ],
+     [
+      "Limiter",
+      true
+     ]
+    ]
+   }
+  }
+ },
+ "write-comp2proc-resave-logic-12-4": {
+  "path": "write-w04-comp2proc-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of write-comp2proc",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "shown": {
+    "Threshold": "-30.00 dB",
+    "Ratio": "3.10:1",
+    "Knee": "+7.20 dB",
+    "Attack": "10.49 ms",
+    "Release": "109.8 ms",
+    "Auto Release": "Off",
+    "Lookahead": "0.000 ms",
+    "Wet Gain": "+3.00 dB",
+    "Auto Gain": "On",
+    "Mix": "80.00%",
+    "Input Level": "0.00 dB",
+    "Output Level": "0.00 dB"
+   }
+  }
+ },
+ "write-eq2proq-resave-logic-12-4": {
+  "path": "write-w06-eq2proq-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of write-eq2proq",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 1,
+   "plugin": "Pro-Q 4",
+   "shown": {
+    "1": {
+     "frequency": "79.996 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "2": {
+     "frequency": "250.01 Hz",
+     "gain": "-4.00 dB",
+     "q": "2.498",
+     "slope": "12 dB/oct"
+    },
+    "3": {
+     "frequency": "500.01 Hz",
+     "gain": "+1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "4": {
+     "frequency": "1000.0 Hz",
+     "gain": "+3.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "5": {
+     "frequency": "2000.0 Hz",
+     "gain": "-1.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "6": {
+     "frequency": "7999.6 Hz",
+     "gain": "-2.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    },
+    "7": {
+     "frequency": "15999 Hz",
+     "gain": "0.00 dB",
+     "q": "1.000",
+     "slope": "12 dB/oct"
+    }
+   }
+  }
+ },
+ "write-proc-resave-logic-12-4": {
+  "path": "write-w02-proc-resave-logic-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of write-proc",
+  "facts": {
+   "channel": "Audio 2",
+   "slot": 3,
+   "plugin": "Pro-C 2",
+   "shown": {
+    "Threshold": "-24.00 dB",
+    "Ratio": "6.00:1",
+    "Knee": "+6.00 dB",
+    "Attack": "10.72 ms",
+    "Release": "115.0 ms",
+    "Auto Release": "Off",
+    "Lookahead": "0.000 ms",
+    "Wet Gain": "+3.00 dB",
+    "Auto Gain": "Off",
+    "Mix": "80.00%",
+    "Input Level": "0.00 dB",
+    "Output Level": "0.00 dB"
+   }
+  }
+ },
+ "midi-write-resave-logic-12-4": {
+  "path": "midi-b10-write-resave-12-4.logicx",
+  "note": "Logic Pro 12.4 (6707)'s re-save of midi-write-ours; it keeps the un-named instrument track's object name (Inst 1) where Logic 12.3.1 wrote the preset's (Untitled), so it is not staged over the public key the base-project tests read",
+  "facts": {
+   "regions": 1,
+   "start": 46080,
+   "notes": [
+    [
+     46080,
+     1,
+     60,
+     80,
+     240
+    ],
+    [
+     48000,
+     2,
+     64,
+     100,
+     480
+    ]
+   ]
+  }
+ },
+ "stack-summing-stub-ours": {
+  "path": "stack-18-summing-stub-ours.logicx",
+  "note": "markers-edits-resave-logic with two summing stacks, the headers on the lowest free Aux stubs: logic stack-create --summing --name Gitarren --track 'Audio 1' --track 'Audio 3', then --name Rest --track 'Audio 2' --track Untitled on that copy (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Gitarren",
+     "Aux 1",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "Aux 2",
+     "Bus 2",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "kinds": [
+    "summing",
+    "summing"
+   ],
+   "rows": [
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Audio 2": "Bus 2"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Aux 2",
+    "Sub 1"
+   ]
+  }
+ },
+ "stack-summing-stub-resave-logic": {
+  "path": "stack-18-summing-stub-resave-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-summing-stub-ours and saved it (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Gitarren",
+     "Aux 1",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "Aux 2",
+     "Bus 2",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "kinds": [
+    "summing",
+    "summing"
+   ],
+   "rows": [
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Audio 2": "Bus 2"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Aux 2",
+    "Sub 1"
+   ]
+  }
+ },
+ "nest-inner-stub-ours": {
+  "path": "nest-c11-inner-stub-ours.logicx",
+  "note": "markers-edits-resave-logic with three stacks written in turn, the summing header on the lowest free Aux stub: logic stack-create --name Band over the four tracks, --summing --name Gitarren over Audio 1 and Audio 3 inside it, --name Rest over Untitled and Audio 2 inside it (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Band",
+     "folder",
+     "Sub 2",
+     [
+      "Gitarren",
+      "Rest"
+     ]
+    ],
+    [
+     "Gitarren",
+     "summing",
+     "Aux 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "folder",
+     "Sub 3",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "rows": [
+    "Band",
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Audio 2": "Output 1-2"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Sub 1",
+    "Sub 2",
+    "Sub 3"
+   ],
+   "steps": [
+    [
+     "Band",
+     false,
+     [
+      "Audio 1",
+      "Untitled",
+      "Audio 2",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Gitarren",
+     true,
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     false,
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ]
+  }
+ },
+ "nest-inner-stub-resave-logic": {
+  "path": "nest-c11-inner-stub-resave-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened nest-inner-stub-ours and saved it (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Band",
+     "folder",
+     "Sub 2",
+     [
+      "Gitarren",
+      "Rest"
+     ]
+    ],
+    [
+     "Gitarren",
+     "summing",
+     "Aux 1",
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     "folder",
+     "Sub 3",
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "rows": [
+    "Band",
+    "Gitarren",
+    "Audio 1",
+    "Audio 3",
+    "Rest",
+    "Untitled",
+    "Audio 2",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Audio 2": "Output 1-2"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Sub 1",
+    "Sub 2",
+    "Sub 3"
+   ],
+   "steps": [
+    [
+     "Band",
+     false,
+     [
+      "Audio 1",
+      "Untitled",
+      "Audio 2",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Gitarren",
+     true,
+     [
+      "Audio 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Rest",
+     false,
+     [
+      "Untitled",
+      "Audio 2"
+     ]
+    ]
+   ]
+  }
+ },
+ "stack-folder-flatten-ours": {
+  "path": "stack-19-folder-flatten-ours.logicx",
+  "note": "logic stacks --flatten 'Sub 1' on stack-folder-logic (2026-10-02)",
+  "facts": {
+   "stacks": [],
+   "kinds": [],
+   "rows": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Output 1-2",
+    "Audio 2": "Output 1-2",
+    "Audio 3": "Output 1-2"
+   },
+   "strips_in_use": [
+    "Sub 1"
+   ]
+  }
+ },
+ "stack-folder-flatten-resave-logic": {
+  "path": "stack-19-folder-flatten-resave-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-folder-flatten-ours and saved it (2026-10-02)",
+  "facts": {
+   "stacks": [],
+   "kinds": [],
+   "rows": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Output 1-2",
+    "Audio 2": "Output 1-2",
+    "Audio 3": "Output 1-2"
+   },
+   "strips_in_use": [
+    "Sub 1"
+   ]
+  }
+ },
+ "stack-summing-flatten-ours": {
+  "path": "stack-20-summing-flatten-ours.logicx",
+  "note": "logic stacks --flatten 'Sum 1' on stack-summing-logic (2026-10-02)",
+  "facts": {
+   "stacks": [],
+   "kinds": [],
+   "rows": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Sub 1"
+   ]
+  }
+ },
+ "stack-summing-flatten-resave-logic": {
+  "path": "stack-20-summing-flatten-resave-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-summing-flatten-ours and saved it (2026-10-02)",
+  "facts": {
+   "stacks": [],
+   "kinds": [],
+   "rows": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1"
+   },
+   "strips_in_use": [
+    "Aux 1",
+    "Sub 1"
+   ]
+  }
+ },
+ "stack-convert-ours": {
+  "path": "stack-21-convert-ours.logicx",
+  "note": "logic stacks --convert 'Sub 1' on stack-folder-logic (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sum 1",
+     "Aux 1",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 2",
+      "Audio 3"
+     ]
+    ]
+   ],
+   "kinds": [
+    "summing"
+   ],
+   "rows": [
+    "Sum 1",
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1"
+   },
+   "strips_in_use": [
+    "Aux 1"
+   ]
+  }
+ },
+ "stack-convert-resave-logic": {
+  "path": "stack-21-convert-resave-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-convert-ours and saved it (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sum 1",
+     "Aux 1",
+     "Bus 1",
+     [
+      "Audio 1",
+      "Audio 2",
+      "Audio 3"
+     ]
+    ]
+   ],
+   "kinds": [
+    "summing"
+   ],
+   "rows": [
+    "Sum 1",
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Stereo Out"
+   ],
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1"
+   },
+   "strips_in_use": [
+    "Aux 1"
+   ]
+  }
+ },
+ "stack-convert-lane-before-logic": {
+  "path": "stack-22-convert-lane-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-folder-logic written with a Volume lane on the folder track (90 at bar 1, 60 at bar 3) and saved it untouched (2026-10-02)",
+  "facts": {
+   "lane": [
+    "Sub 1",
+    "Volume",
+    [
+     [
+      1,
+      90
+     ],
+     [
+      3,
+      60
+     ]
+    ]
+   ]
+  }
+ },
+ "stack-convert-lane-after-logic": {
+  "path": "stack-23-convert-lane-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-lane-before-logic: the Sub 1 header selected, Track > Convert Folder Stack to Summing Stack: Sum 1 on Aux 1 fed from Bus 1, the folder's Volume lane moved onto Sum 1's automation folder byte for byte, the old folder's left with its end event (2026-10-02)",
+  "facts": {
+   "lane": [
+    "Sum 1",
+    "Volume",
+    [
+     [
+      1,
+      90
+     ],
+     [
+      3,
+      60
+     ]
+    ]
+   ]
+  }
+ },
+ "stack-convert-level-before-logic": {
+  "path": "stack-24-convert-level-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened stack-folder-logic written with Sub 1 at -10 dB and no lane, and saved it untouched (2026-10-02)",
+  "facts": {
+   "faders": {
+    "Sub 1": -10.0
+   }
+  }
+ },
+ "stack-convert-level-after-logic": {
+  "path": "stack-25-convert-level-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-level-before-logic: Track > Convert Folder Stack to Summing Stack: Aux 1 at 0 dB, the -10 dB left on Sub 1, now out of use; the members' faders as they were (2026-10-02)",
+  "facts": {
+   "faders": {
+    "Sub 1": -10.0,
+    "Aux 1": 0.0
+   }
+  }
+ },
+ "nest-flatten-before-logic": {
+  "path": "nest-c12-flatten-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened nest-c00-three-audio written with folder D over Audio 1 and folder E (Audio 2) inside it, and saved it untouched (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "D",
+     "Sub 1",
+     [
+      "Audio 1",
+      "E"
+     ]
+    ],
+    [
+     "E",
+     "Sub 2",
+     [
+      "Audio 2"
+     ]
+    ]
+   ]
+  }
+ },
+ "nest-flatten-after-logic": {
+  "path": "nest-c13-flatten-after-logic.logicx",
+  "note": "Logic 12.4 on nest-flatten-before-logic: the E header selected, Track > Flatten Stack: Audio 2 up into D with its parent cleared to 0 and its channel's stack index left at E's 2 (2026-10-02)",
+  "facts": {
+   "parents": {
+    "Audio 2": 0
+   },
+   "stack_index": {
+    "Audio 2": 2
+   }
+  }
+ },
+ "addtrack-lanes-before-logic": {
+  "path": "addtrack-f07-lanes-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened tracks-three-audio-logic written with a lane on each track (Audio 1 Volume, Audio 2 Pan, Audio 3 Volume) and saved it untouched (2026-10-02)",
+  "facts": {
+   "lanes": {
+    "Audio 1": "Volume",
+    "Audio 2": "Pan",
+    "Audio 3": "Volume"
+   }
+  }
+ },
+ "addtrack-lanes-after-logic": {
+  "path": "addtrack-f08-lanes-after-logic.logicx",
+  "note": "Logic 12.4 on addtrack-lanes-before-logic: Audio 1 selected, Track > New Audio Track: Audio 4 below Audio 1, its automation folder the end event alone beside three ridden tracks (2026-10-02)",
+  "facts": {
+   "added": "Audio 4",
+   "after": "Audio 1"
+  }
+ },
+ "nest-convert-wrapped-before-logic": {
+  "path": "nest-c14-convert-wrapped-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened nest-stack-in-stack-logic (folder Sub 1 inside folder Sub 2, Sub 1's strip on Sub 2's number) and saved it untouched (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sub 2",
+     "Sub 2",
+     [
+      "Sub 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Sub 1",
+     "Sub 1",
+     [
+      "Audio 1",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "stack_index": {
+    "Audio 1": 1,
+    "Audio 2": 1,
+    "Audio 3": 2,
+    "Sub 1": 2
+   }
+  }
+ },
+ "nest-convert-wrapped-after-logic": {
+  "path": "nest-c15-convert-wrapped-after-logic.logicx",
+  "note": "Logic 12.4 on nest-convert-wrapped-before-logic: the Sub 1 header selected, Track > Convert Folder Stack to Summing Stack: Sum 1 on Aux 1 inside Sub 2, fed from Bus 1, its object's parent Sub 2's; Audio 1 and 2 at stack index 0 under it, Aux 1 at 0, Sub 1 out of use (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sub 2",
+     "Sub 2",
+     [
+      "Sum 1",
+      "Audio 3"
+     ]
+    ],
+    [
+     "Sum 1",
+     "Aux 1",
+     [
+      "Audio 1",
+      "Audio 2"
+     ]
+    ]
+   ],
+   "stack_index": {
+    "Audio 1": 0,
+    "Audio 2": 0,
+    "Audio 3": 2,
+    "Aux 1": 0
+   },
+   "bus": "Bus 1"
+  }
+ },
+ "nest-convert-inner-before-logic": {
+  "path": "nest-c16-convert-inner-before-logic.logicx",
+  "note": "Logic Pro 12.4 (6707) opened nest-inner-folder-logic (folder Sub 2 inside folder Sub 1, Sub 2's strip at 0) and saved it untouched (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sub 1",
+     "Sub 1",
+     [
+      "Audio 1",
+      "Sub 2"
+     ]
+    ],
+    [
+     "Sub 2",
+     "Sub 2",
+     [
+      "Audio 2",
+      "Audio 3"
+     ]
+    ]
+   ],
+   "stack_index": {
+    "Audio 1": 1,
+    "Audio 2": 2,
+    "Audio 3": 2,
+    "Sub 2": 0
+   }
+  }
+ },
+ "nest-convert-inner-after-logic": {
+  "path": "nest-c17-convert-inner-after-logic.logicx",
+  "note": "Logic 12.4 on nest-convert-inner-before-logic: the Sub 2 header selected, Track > Convert Folder Stack to Summing Stack: Sum 1 on Aux 1 inside Sub 1, fed from Bus 1, its object's parent Sub 1's; Audio 2 and 3 at stack index 0 under it, Aux 1 at 0, Sub 2 out of use (2026-10-02)",
+  "facts": {
+   "stacks": [
+    [
+     "Sub 1",
+     "Sub 1",
+     [
+      "Audio 1",
+      "Sum 1"
+     ]
+    ],
+    [
+     "Sum 1",
+     "Aux 1",
+     [
+      "Audio 2",
+      "Audio 3"
+     ]
+    ]
+   ],
+   "stack_index": {
+    "Audio 1": 1,
+    "Audio 2": 0,
+    "Audio 3": 0,
+    "Aux 1": 0
+   },
+   "bus": "Bus 1"
+  }
  }
 }

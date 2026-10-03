@@ -57,17 +57,21 @@ next section before using one.
 modified.** There is no in-place mode and none will be added.
 
 **Every writer takes a project in file format 2513** — the u16 at +4 of `ProjectData`, which
-Logic 12.3.1 and 12.4 write — and refuses any other before anything is copied, naming the
-alternative and the format it found. Logic moves record layouts between builds, so a field
-written where another build keeps something else is damage no later check sees. Open the project
-in the current Logic and save it, every alternative, then run the command. The readers take any
-save as they find it.
+Logic 12.3.1 and 12.4 write. Logic moves record layouts between builds, so a field written where
+another build keeps something else is damage no later check sees. An alternative an earlier
+Logic saved is left as it is, byte for byte, and named in the output, when a current one sits
+beside it — Logic keeps such bundles itself. A bundle with no current alternative, or one holding
+an alternative a later Logic saved, is refused before anything is copied, naming the alternative
+and the format it found: open the project in the current Logic and save it, then run the
+command. A writer's pre-read (`--plan`, a preview), the listing it prints after the write and
+a `--src` or `--from` project it copies from take the current alternatives only, `--plan` naming
+the others as the run does. The readers take any save as they find it.
 
 Most editors route through `_edit.edit_copy`, which holds the result against its input using
-`logic/services/integrity.py` (region, file and marker checks in `integrity_regions.py`, marker
-targets in order and RBA Sequences no entry names among them), refuses on any structural regression, and then reads the file
-back to confirm the bytes that landed are the bytes that passed. A refused run discards the
-whole copy rather than leaving a bundle that disagrees with its own metadata.
+`logic/services/stream/integrity.py` (region, file and marker checks in `integrity_regions.py`, marker
+targets in order and RBA Sequences no entry names among them), refuses on any structural regression,
+and then reads the file back to confirm the bytes that landed are the bytes that passed. A refused
+run discards the whole copy rather than leaving a bundle that disagrees with its own metadata.
 
 Do not assume that gate covers everything:
 
@@ -85,8 +89,9 @@ channel lacks stays as it is — clearing one is not written — and the op says
 A template stack is the session stack whose header pairs with its own, else the one stack of
 its name; with two of that name and neither paired, the move is refused naming both. An output
 to a bus the template returns and the session will not (the return was refused) is refused.
-The channel ops are planned again once tracks are added and moved, so a run can do ops `--plan`
-did not list; the plan says so when it has any of those.
+A template stack of tracks the plan adds is planned above them, saying how many are added, and
+made once they exist. The channel ops are planned again once tracks are added and moved, so a
+run can do ops `--plan` did not list; the plan says so when it has any of those.
 
 `migrate` runs that in one pass: it drafts the pairing with `propose-map` (or takes `--map FILE`),
 applies it, and writes `CLAUDE migrated - <song>.logicx` into `--out`, never over an existing
@@ -100,32 +105,32 @@ command that drives Logic itself: it opens the copy, has Logic Save As it into `
 `tools/driver`, closes without saving, and compares the two row lists. It needs macOS, Logic Pro
 and a checkout, and refuses before writing anything when one is missing.
 
-A slot is its mixer slot: `--at N` and `slot N` count from 1 with empty slots included, the
-number automation names an insert by. `add-plugin` puts one plug-in from the donor library into
-slot N of a channel (after the last without `--at`): an empty slot takes it where it is, an
-occupied one moves it and every later slot down a key. `remove-plugin --at N` takes that slot's
-plug-in out and moves the later ones up, and `replace-plugin --at N --plugin NAME` puts another
-plug-in in its place. All three take `--channel LABEL` or `--stack NAME` (every member of a
-folder stack), and keep the channel's Smart Control mappings and automation lanes on the
-plug-ins they were made for, dropping a removed slot's. An instrument channel's slot 1 is its
-instrument: an effect is refused there, an append lands at slot 2, and removing the instrument
-leaves slot 1 empty. `transplant` replaces a channel's whole chain from another channel; `--stack
-NAME=SRC_LABEL` gives every member of a folder stack SRC_LABEL's slots, each copy with its own
-instance id when one source fans out to several channels (refused when the source holds no
-second instance to measure the id from). The library holds Logic's own plug-ins as packaged and
-whatever `logic donors PROJECT [--as NAME]` has harvested, third-party ones per width and class
-version, so a plug-in needs a donor project once; `--refresh` replaces donors the library holds
-after a plug-in update. Where the package and the data root hold a donor of one name, the
-package's is used, and `logic donors` into the data root leaves those plug-ins to the package. `transplant`, `chains` and `clear-slots` leave the destination's plug-in
-automation lanes as they are. `--plugin` takes the library's
-name for it, a `Manufacturer/Subtype` code or a native type id. `--side-chain NAME` points the
-new slot at a track, bus or aux return by name or mixer label (an aux stands for the bus feeding
-it); without it the slot listens to nothing, whatever the donor listened to in the project it
-came from. An input of the audio interface is `Input N`, and an instrument track is named like
-any other. `transplant` and `apply-template` carry each slot's side chain by its source's *name*
-— the channel of that name in the destination, whatever number it has there — and clear it with
-a line in the report when no channel of that name exists; `chains` clears a library donor's.
-`plugins` lists the source beside every slot that has one.
+A slot is its mixer slot: `--at N` and `slot N` count from 1 with empty slots included, the number
+automation names an insert by. `add-plugin` puts one plug-in from the donor library into slot N of a
+channel (after the last without `--at`): an empty slot takes it where it is, an occupied one moves
+it and every later slot down a key. `remove-plugin --at N` takes that slot's plug-in out and moves
+the later ones up, and `replace-plugin --at N --plugin NAME` puts another plug-in in its place. All
+three take `--channel LABEL` or `--stack NAME` (every member of a folder stack), and keep the
+channel's Smart Control mappings and automation lanes on the plug-ins they were made for, dropping a
+removed slot's. An instrument channel's slot 1 is its instrument: an effect is refused there, an
+append lands at slot 2, and removing the instrument leaves slot 1 empty. `transplant` replaces a
+channel's whole chain from another channel; `--stack NAME=SRC_LABEL` gives every member of a folder
+stack SRC_LABEL's slots, each copy with its own instance id when one source fans out to several
+channels (refused when the source holds no second instance to measure the id from). The library
+holds Logic's own plug-ins as packaged and whatever `logic donors PROJECT [--as NAME]` has
+harvested, third-party ones per width and class version, so a plug-in needs a donor project once;
+`--refresh` replaces donors the library holds after a plug-in update. Where the package and the data
+root hold a donor of one name, the package's is used, and `logic donors` into the data root leaves
+those plug-ins to the package. `transplant`, `chains` and `clear-slots` leave the destination's
+plug-in automation lanes as they are. `--plugin` takes the library's name for it, a
+`Manufacturer/Subtype` code or a native type id. `--side-chain NAME` points the new slot at a track,
+bus or aux return by name or mixer label (an aux stands for the bus feeding it); without it the slot
+listens to nothing, whatever the donor listened to in the project it came from. An input of the
+audio interface is `Input N`, and an instrument track is named like any other. `transplant` and
+`apply-template` carry each slot's side chain by its source's *name* — the channel of that name in
+the destination, whatever number it has there — and clear it with a line in the report when no
+channel of that name exists; `chains` clears a library donor's. `plugins` lists the source beside
+every slot that has one.
 
 `swap-plugin --from NAME --to NAME --out DIR` does that for every slot in the project holding
 one plug-in — Logic's name, a `Manufacturer/Subtype` code, a native type id or the name in its
@@ -167,8 +172,11 @@ compressor, a gate and an EQ at once and gets a `settings` line per family.
 A multiband compressor's settings are its bands by frequency range, each a compressor or an
 expander (Pro-MB by its band layout, Multipressor by its table), beside the globals; across the
 two the spectrum is segmented into at most the target's count of bands, a stretch no source band
-covers as a live band at ratio 1 (an off band's range goes to the next live one), and the report names what merged or has no analogue (Pro-MB's range limit and
-percentage attack and release, Multipressor's expander beside a compressor).
+covers as a live band at ratio 1 (an off band's range goes to the next live one), and the report
+names what merged or has no analogue (Pro-MB's range limit and percentage attack and release). A
+Multipressor band crosses into a Pro-MB band as one side: its expander when the compressor is
+neutral, else its compressor, and the plan names the side; that side's lanes carry and the
+other side's stay behind with the reason.
 
 A replaced slot's automation follows the translation: every plug-in parameter lane on that
 insert is carried through the two maps — the old plug-in's parameter named through its map, the
@@ -217,16 +225,30 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
 - `reorder --move TRACK:before:OTHER` (or `:after:`) moves a row among its siblings, under the
   same parent. A stack header moves with its members.
 - `stack-create --name NAME --track NAME` makes a folder stack from tracks; `--track` repeats.
-  `--summing` makes a summing stack instead: a stereo aux fed from the lowest bus nothing uses,
-  with every member's output sent to that bus. The tracks are all at the top level, or all
+  `--summing` makes a summing stack instead: a stereo aux on the lowest free `Aux` stub (a
+  fresh strip after the highest when none is free), fed from the lowest bus nothing uses, with
+  every member's output sent to that bus. The tracks are all at the top level, or all
   direct members of one stack, and the new stack then sits inside that one. A stack header as a
   member is refused, and so is a member whose output is not where the new aux will go (Output
   1-2, or the bus of a summing stack around it): where Logic sends the aux then is not measured.
   A track that comes to sit inside a summing stack, at any depth — `add-track`, `stack-create
   --summing` inside one, `stacks --move` into one or into a folder inside one — outputs to that
   stack's bus. `stacks --move-out TRACK` takes a track one level out, to just after the stack it
-  leaves; out of a summing stack it keeps the bus as its output, as it does in Logic. Where two
-  stacks share a name, `--stack` and `stacks --move` take `NAME (Sub 1)` or `NAME (Aux 9)`.
+  leaves; out of a summing stack it keeps the bus as its output, as it does in Logic. `stacks
+  --flatten STACK` takes a stack apart as Logic's Flatten Stack does: the header's row goes, the
+  members come up a level, selected, and keep their routing and their channels' stack index; the
+  header object and its strip stay, the strip in use. `stacks --convert STACK` makes a folder
+  stack a summing stack as Logic's Track > Convert Folder Stack to Summing Stack does: the
+  flatten, then a summing stack over the same members on the lowest free `Aux` fed from the
+  lowest free bus, the folder's header object gone and its `Sub` strip out of use, the members
+  at stack index 0; the name stays when it was the user's, else the stack is `Sum N`. The
+  folder's Volume lane moves onto the new header and its level stays on the `Sub` strip with the
+  aux at 0 dB, both as Logic's convert does, and the output names a level left behind. A folder
+  inside another folder converts as Logic's does, the new stack inside the outer one. Refused,
+  each named: a folder with another lane or an insert, and a folder whose members output
+  anywhere but where the new aux will go, as `--summing` refuses them. Where two
+  stacks share a name, `--stack`, `stacks --move`, `--flatten` and `--convert` take `NAME (Sub
+  1)` or `NAME (Aux 9)`.
 - `route --output CHANNEL=DEST` sets where a channel outputs to, and `--input CHANNEL=INPUT`
   what feeds it: an `Input N` for a track, a `Bus N` for an aux. The record's index words are
   set with its UUIDs. A mono audio track takes one input and a stereo one a pair (`Input 1-2`);
@@ -281,38 +303,39 @@ reads its parameters. `--no-host` forces the static tables instead. Without a `s
 the host is unavailable and the ladder falls back on its own.
 
 `au params` dumps a live parameter table from an installed plugin; `au tables` lists the tables
-already in the data root. `logic neural` decodes Neural DSP knob values specifically, from
-either a strip or a whole project. `logic plugins` stops at identity: every slot's plug-in, and
-which third-party components `auval -a` does not list on this Mac. That check is Apple's scan of
-every installed Audio Unit, run once per call when a slot holds a third-party plug-in; with many
-plug-ins installed it takes 25 seconds or more. `logic midi` reads the MIDI
-regions and `--export` writes what each region plays as a Standard MIDI File with the song's tempo
-map and time signatures, bar 1 at tick 0 (a split leaves both pieces holding the parent's events;
-the piece plays its own span, and the `midi` and `regions` listings say `2 event(s), 1 played` when
-they differ, `--json` carrying `played` beside `events`); a song with events before bar 1 is refused. `--region` and
-`--note` write a region and notes on a copy through the integrity gate; a note goes into the
-region on its track that holds its bar, and is refused when none or several do. The listing
-numbers regions across the song (`--json` carries it as `number`), and edits take that number:
-`--transpose`, `--velocity`, `--move`, `--delete` and `--quantize` change a region in place,
-`--copy-region` copies one elsewhere — the whole sequence, as Logic's own copy does, so a split piece's
-copy holds the parent's events too — and `--copy-notes` only the notes it plays, and `--remap [N=]SRC:DST` translates drum
-note numbers between [groovebin](https://github.com/phierceweb/groovebin)'s note maps
-(`gm`, `addictive-drums-2`, `drum-kit-designer`) in region N or every region on `--track`,
-counting the notes with no counterpart. In-place edits run in command-line order, then
-`--region`/`--note`, then the copies; a bad spec exits before anything is copied. A region number
-means the same region (track, start and name) in every alternative, and is refused where an
-alternative lacks it. An edit that moves an event out of its region is refused, a MIDI region
-goes only onto a software instrument track, and notes at one tick are written low to high.
-`--remap` keeps the pitch of chokes and stick clicks, which GM has no stroke for, and refuses a
-region holding polyphonic aftertouch. `--map NAME` names each note's stroke in the listing. The
-transforms are Logic's Transform window: `logic midi SONG N … --out DIR` (regions by listing number)
-or `--track NAME` (every region on it) with `--select COND[,COND…]` — `position` in song bars as the
-signature track numbers them, a meter change and all (a whole number is the whole bar), `pitch`, `velocity`, `length` (ticks or `1/16`), `channel`, each `=VALUE`,
-`=LO-HI` or `<`, `<=`, `>`, `>=`, `!=` a value — and the operations `--set`, `--add`, `--mul`, `--min`,
-`--max`, `--random`, `--flip`, `--quantize position=|length=`, `--crescendo`, `--exp` and `--reverse`
-(`FIELD=VALUE`), or the presets `--humanize`, `--fixed-velocity`, `--velocity-limit`, `--random-velocity`,
-`--crescendo LO..HI`, `--reverse-position`, `--reverse-pitch`, `--exp-velocity`, `--fixed-length`,
-`--max-length`, `--min-length`, `--half-speed`, `--double-speed`, `--legato`, `--staccato` and `--swing`.
+already in the data root. `logic neural` decodes Neural DSP knob values specifically, from either a
+strip or a whole project. `logic plugins` stops at identity: every slot's plug-in, and which
+third-party components `auval -a` does not list on this Mac. That check is Apple's scan of every
+installed Audio Unit, run once per call when a slot holds a third-party plug-in; with many plug-ins
+installed it takes 25 seconds or more. `logic midi` reads the MIDI regions and `--export` writes
+what each region plays as a Standard MIDI File with the song's tempo map and time signatures, bar 1
+at tick 0 (a split leaves both pieces holding the parent's events; the piece plays its own span, and
+the `midi` and `regions` listings say `2 event(s), 1 played` when they differ, `--json` carrying
+`played` beside `events`); a song with events before bar 1 is refused. `--region` and `--note` write
+a region and notes on a copy through the integrity gate; a note goes into the region on its track
+that holds its bar, and is refused when none or several do. The listing numbers regions across the
+song (`--json` carries it as `number`), and edits take that number: `--transpose`, `--velocity`,
+`--move`, `--delete` and `--quantize` change a region in place, `--copy-region` copies one elsewhere
+— the whole sequence, as Logic's own copy does, so a split piece's copy holds the parent's events
+too — and `--copy-notes` only the notes it plays, and `--remap [N=]SRC:DST` translates drum note
+numbers between [groovebin](https://github.com/phierceweb/groovebin)'s note maps (`gm`,
+`addictive-drums-2`, `drum-kit-designer`) in region N or every region on `--track`, counting the
+notes with no counterpart. In-place edits run in command-line order, then `--region`/`--note`, then
+the copies; a bad spec exits before anything is copied. A region number means the same region
+(track, start and name) in every alternative, and is refused where an alternative lacks it. An edit
+that moves an event out of its region is refused, a MIDI region goes only onto a software instrument
+track, and notes at one tick are written low to high. `--remap` keeps the pitch of chokes and stick
+clicks, which GM has no stroke for, and refuses a region holding polyphonic aftertouch. `--map NAME`
+names each note's stroke in the listing. The transforms are Logic's Transform window: `logic midi
+SONG N … --out DIR` (regions by listing number) or `--track NAME` (every region on it) with
+`--select COND[,COND…]` — `position` in song bars as the signature track numbers them, a meter
+change and all (a whole number is the whole bar), `pitch`, `velocity`, `length` (ticks or `1/16`),
+`channel`, each `=VALUE`, `=LO-HI` or `<`, `<=`, `>`, `>=`, `!=` a value — and the operations
+`--set`, `--add`, `--mul`, `--min`, `--max`, `--random`, `--flip`, `--quantize position=|length=`,
+`--crescendo`, `--exp` and `--reverse` (`FIELD=VALUE`), or the presets `--humanize`,
+`--fixed-velocity`, `--velocity-limit`, `--random-velocity`, `--crescendo LO..HI`,
+`--reverse-position`, `--reverse-pitch`, `--exp-velocity`, `--fixed-length`, `--max-length`,
+`--min-length`, `--half-speed`, `--double-speed`, `--legato`, `--staccato` and `--swing`.
 Consecutive operations apply in one pass reading each note as it was; each preset is its own pass,
 and `--select` picks the notes once for the whole run, so a later pass works on the ones the
 selection picked rather than re-picking against what an earlier pass changed. Notes outside the
@@ -322,42 +345,41 @@ any edit is; so is any step that moves a note's position on a region holding tho
 they would stay behind: `position=` under `--set`, `--add`, `--mul`, `--min`, `--max`, `--random`,
 `--flip`, `--crescendo` and `--quantize`, `--reverse position`, `--reverse-position`, `--swing`, and
 `--humanize` unless its `pos` is 0. A region holding polyphonic aftertouch is refused as `--remap`
-refuses one, half and double speed and swing take the whole region, and
-`--seed N` repeats the random moves (`random` prints the seed it chose; each alternative gets the
-same draws). Region numbers go before the transform flags — `--staccato 3` hands the 3 to
-`--staccato`, which is refused when it leaves no region named. The arithmetic is groovebin's
-(`groovebin transform` does the same to a `.mid`). `logic regions`
-lists every region, numbered, with its mute, loop, fades and audio file (a split's pieces with
-their first frame), and `--audio` imports a PCM WAV at the project's sample rate — other rates
-are refused, since Logic converts on import and this does not. It writes onto a project with
-no audio regions or with the ones Logic's own imports and splits leave, and refuses any other
-layout and a WAV whose name the project already holds, before anything is copied. Names outside
-ASCII are written as Logic writes them (UTF-8 region names, UTF-16 file names). The edits take
-the listing number, in command-line order on a copy: `--move N=BAR`, `--trim N=BAR:BARS` (the
-start with its content kept in place, the length, or both), `--split N=BAR`, `--loop N[=on|off]`,
-`--mute N[=on|off]`, `--rename N=NAME`, `--fade-in N=MS[:CURVE[:speed-up]]`, `--fade-out
-N=MS[:CURVE[:TYPE]]` (type `out`, `x`, `eqp` or `xs`), `--crossfade N=[MS][:CURVE[:TYPE]]` (from region
-N into the one that starts inside it on its track — exactly one must; MS is the overlap when empty,
-the type `eqp` by default), the inspector's `--gain N=DB`, `--delay N=TICKS`, `--transpose N=SEMITONES`,
-`--fine-tune N=CENTS` and `--reverse N[=on|off]`, and `--colour N=INDEX` (a palette index; the Color
-window's swatch k is 24 + k); the listing shows the parameters that are set and a colour that differs
-from the track's. A looping region is not split, a flexed (quantized) region is neither trimmed nor
-split, a trim past the file is refused, a MIDI region has no fades or parameters, and Transpose is
-written as the entry's field alone (Logic flexes the track itself when it transposes an unflexed
-region). Each edit names a region by
-its number in the input's listing, whatever the imports and edits before it moved; regions
-playing one sequence (aliases) take a mute each and no other edit. A number means the same region (track, name
-and start) in every alternative, and is refused where an alternative lacks it — as is a marker
-number (name and bar) for `logic markers`. `logic markers` lists the marker track and edits it on a copy: `--add
-BAR[:BARS]:NAME`, `--rename N=NAME`, `--move N=BAR`, `--delete N`. Logic's
-re-save of copies carrying every region edit and every marker edit kept all of them.
-`logic chains` also takes a chain keyed by a channel name instead of a strip reference — `Stereo Out`
-for the main output — listing its plug-ins in slot order as declared donors with parameters named as
-`services/output_params.py` names them, or by an index inside the donor's block; `config/example-mastering.json`
-is the shape. A label two channels carry, a channel keyed both by strip and by name, or an index past the
-block is refused before anything is written, and every configured value is read back afterwards.
-`logic plugins --validate` opens each listed third-party component with `auval -v`, since the
-registry keeps a component whose bundle has gone bad and Logic's own launch trusts that registry.
+refuses one, half and double speed and swing take the whole region, and `--seed N` repeats the
+random moves (`random` prints the seed it chose; each alternative gets the same draws). Region
+numbers go before the transform flags — `--staccato 3` hands the 3 to `--staccato`, which is refused
+when it leaves no region named. The arithmetic is groovebin's (`groovebin transform` does the same
+to a `.mid`). `logic regions` lists every region, numbered, with its mute, loop, fades and audio
+file (a split's pieces with their first frame), and `--audio` imports a PCM WAV at the project's
+sample rate — other rates are refused, since Logic converts on import and this does not. It writes
+onto a project with no audio regions or with the ones Logic's own imports and splits leave, and
+refuses any other layout and a WAV whose name the project already holds, before anything is copied.
+Names outside ASCII are written as Logic writes them (UTF-8 region names, UTF-16 file names). The
+edits take the listing number, in command-line order on a copy: `--move N=BAR`, `--trim N=BAR:BARS`
+(the start with its content kept in place, the length, or both), `--split N=BAR`, `--loop
+N[=on|off]`, `--mute N[=on|off]`, `--rename N=NAME`, `--fade-in N=MS[:CURVE[:speed-up]]`,
+`--fade-out N=MS[:CURVE[:TYPE]]` (type `out`, `x`, `eqp` or `xs`), `--crossfade
+N=[MS][:CURVE[:TYPE]]` (from region N into the one that starts inside it on its track — exactly one
+must; MS is the overlap when empty, the type `eqp` by default), the inspector's `--gain N=DB`,
+`--delay N=TICKS`, `--transpose N=SEMITONES`, `--fine-tune N=CENTS` and `--reverse N[=on|off]`, and
+`--colour N=INDEX` (a palette index; the Color window's swatch k is 24 + k); the listing shows the
+parameters that are set and a colour that differs from the track's. A looping region is not split, a
+flexed (quantized) region is neither trimmed nor split, a trim past the file is refused, a MIDI
+region has no fades or parameters, and Transpose is written as the entry's field alone (Logic flexes
+the track itself when it transposes an unflexed region). Each edit names a region by its number in
+the input's listing, whatever the imports and edits before it moved; regions playing one sequence
+(aliases) take a mute each and no other edit. A number means the same region (track, name and start)
+in every alternative, and is refused where an alternative lacks it — as is a marker number (name and
+bar) for `logic markers`. `logic markers` lists the marker track and edits it on a copy: `--add
+BAR[:BARS]:NAME`, `--rename N=NAME`, `--move N=BAR`, `--delete N`. Logic's re-save of copies
+carrying every region edit and every marker edit kept all of them. `logic chains` also takes a chain
+keyed by a channel name instead of a strip reference — `Stereo Out` for the main output — listing
+its plug-ins in slot order as declared donors with parameters named as `services/mixer/output_params.py`
+names them, or by an index inside the donor's block; `config/example-mastering.json` is the shape. A
+label two channels carry, a channel keyed both by strip and by name, or an index past the block is
+refused before anything is written, and every configured value is read back afterwards. `logic
+plugins --validate` opens each listed third-party component with `auval -v`, since the registry
+keeps a component whose bundle has gone bad and Logic's own launch trusts that registry.
 
 `logic automation` lists each track's automation lanes and points. A plug-in lane is listed as
 `--set` takes it, `slot N NAME`, with its plug-in, its parameter index and each point in the
@@ -369,36 +391,36 @@ Mute, Solo and ±Volume (the relative lane), values 0-127 with Volume 90 and Pan
 plug-in parameter lane is `slot N NAME` — `--set "Audio 2:slot 1 Threshold=-30@1,-12@9"` — N the
 mixer slot and TRACK the track's name or its mixer label, with values in the parameter's own unit
 (`on`/`off` for a switch): for one of Logic's own with a translation map (Compressor, Noise Gate,
-Channel EQ, Multipressor), NAME is a name from its measured table and each value lands on the
-nearer position of its slider, which the report names (a value past the slider's end is held there
-and the report gives the slider's range); the other natives are refused, their
-sliders unmeasured; for a third-party, NAME is a parameter name or id from its AU table (the
-value within the table's range) or a vocabulary name from its translation map (`threshold`,
-in the vocabulary's unit); a bare id with neither takes 0..1. A value or bar that is not a finite
-number is refused. `--clear` takes the same form. A parameter point whose type word carries bit 14 is listed with a `?`: read, not decoded.
+Channel EQ, Multipressor), NAME is a name from its measured table and each value lands on the nearer
+position of its slider, which the report names (a value past the slider's end is held there and the
+report gives the slider's range); the other natives are refused, their sliders unmeasured; for a
+third-party, NAME is a parameter name or id from its AU table (the value within the table's range)
+or a vocabulary name from its translation map (`threshold`, in the vocabulary's unit); a bare id
+with neither takes 0..1. A value or bar that is not a finite number is refused. `--clear` takes the
+same form. A parameter point whose type word carries bit 14 is listed with a `?`: read, not decoded.
 
-`logic sessionplayer` reads a Session Player region's settings and generated notes. `logic
-patch` reads a Library patch bundle; `--build` writes one from a `.cst`, refuses a file that does
-not read as a channel strip before writing anything, replaces an existing bundle with
-`--overwrite` only once the new one is complete, and like `build` refuses to write into Logic's
-own library without `--install`. `logic quantize-drums` quantizes a multitrack drum take on
-a copy without Logic: the members of a folder stack (or `--track`s) go into a Drums group with
-Editing (Selection) and Quantize-Locked (Audio), the groups named by `--off` are switched
-off, Q-Reference stays on the `--ref` tracks, every member is on flex Slicing, and each
-member region gets one flex marker per hit found in the reference tracks' audio with its
-target on the `--grid` (4, 8, 16 or 32, the measured values; 1/16 by default). The audio is read from where the file record says,
-from `Audio Files` beside the project, from the bundle's Media, or from `--audio DIR`; it may be
-16/24/32-bit PCM or 32/64-bit float WAV. A song whose tempo changes, and reference audio with no
-hits, are refused and nothing is written. `--bars FIRST-LAST` re-quantizes only the hits in
-those song bars, on `--grid` or each region's own Quantize value, and keeps every other marker
-block's bytes; regions outside the range are untouched. It refuses a region that does not start
-on a line of the song's grid (quantize it whole instead), a hit whose new target would cross a kept
-hit's, and an entry whose slot names a sequence other than an RBA Sequence; a region already
-quantized keeps its one RBA Sequence. On a project Logic quantized itself, whose first quantize
-writes the hits on the first Q-Reference region alone, a member whose list holds only the two
-anchors takes that region's hits as its own (the regions must start together with the same first
-frame and length), and the group is reused when every member that has audio regions is in it.
-Logic's re-save of a `--bars` copy kept every marker list.
+`logic sessionplayer` reads a Session Player region's settings and generated notes. `logic patch`
+reads a Library patch bundle; `--build` writes one from a `.cst`, refuses a file that does not read
+as a channel strip before writing anything, replaces an existing bundle with `--overwrite` only once
+the new one is complete, and like `build` refuses to write into Logic's own library without
+`--install`. `logic quantize-drums` quantizes a multitrack drum take on a copy without Logic: the
+members of a folder stack (or `--track`s) go into a Drums group with Editing (Selection) and
+Quantize-Locked (Audio), the groups named by `--off` are switched off, Q-Reference stays on the
+`--ref` tracks, every member is on flex Slicing, and each member region gets one flex marker per hit
+found in the reference tracks' audio with its target on the `--grid` (4, 8, 16 or 32, the measured
+values; 1/16 by default). The audio is read from where the file record says, from `Audio Files`
+beside the project, from the bundle's Media, or from `--audio DIR`; it may be 16/24/32-bit PCM or
+32/64-bit float WAV. A song whose tempo changes, and reference audio with no hits, are refused and
+nothing is written. `--bars FIRST-LAST` re-quantizes only the hits in those song bars, on `--grid`
+or each region's own Quantize value, and keeps every other marker block's bytes; regions outside the
+range are untouched. It refuses a region that does not start on a line of the song's grid (quantize
+it whole instead), a hit whose new target would cross a kept hit's, and an entry whose slot names a
+sequence other than an RBA Sequence; a region already quantized keeps its one RBA Sequence. On a
+project Logic quantized itself, whose first quantize writes the hits on the first Q-Reference region
+alone, a member whose list holds only the two anchors takes that region's hits as its own (the
+regions must start together with the same first frame and length), and the group is reused when
+every member that has audio regions is in it. Logic's re-save of a `--bars` copy kept every marker
+list.
 
 ## Drum patterns
 
@@ -430,15 +452,15 @@ own pattern, and timing and velocity move slightly. `--category`, `--role`, `--i
 
 `drums-to-midi PROJECT --out DIR --hit TRACK=TERM --track TARGET` turns drum hits in audio tracks
 into notes in one new MIDI region on a software instrument track, on a copy; Logic's re-save of one
-kept the region and every note. Each
-`--hit` names an audio track and the drum-map term its hits play (`kick`, `snare`, `hihat closed`
-…) in `--map NAME` (default `addictive-drums-2`); each hit becomes a sixteenth on that key, cut at the next note on that
-key, its velocity from the hit's peak scaled from the track's quietest to its loudest.
-`--threshold DB` sets how far under the track's loudest hit a hit may be (lower finds quieter
-hits). `--grid N` quantizes the notes first, and the region spans the whole bars holding the
-quantized notes. Audio is found as `quantize-drums` finds it (`--audio DIR`); a song whose tempo
-changes, an unknown term, two tracks on one key, a track with no audio regions, and a WAV whose
-sample rate or own frame count disagrees with its file record are refused.
+kept the region and every note. Each `--hit` names an audio track and the drum-map term its hits
+play (`kick`, `snare`, `hihat closed` …) in `--map NAME` (default `addictive-drums-2`); each hit
+becomes a sixteenth on that key, cut at the next note on that key, its velocity from the hit's peak
+scaled from the track's quietest to its loudest. `--threshold DB` sets how far under the track's
+loudest hit a hit may be (lower finds quieter hits). `--grid N` quantizes the notes first, and the
+region spans the whole bars holding the quantized notes. Audio is found as `quantize-drums` finds it
+(`--audio DIR`); a song whose tempo changes, an unknown term, two tracks on one key, a track with no
+audio regions, and a WAV whose sample rate or own frame count disagrees with its file record are
+refused.
 
 ## Logic's own settings
 

@@ -5,10 +5,10 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.transplant import channel_slots
-from logicxkit.logic.services.slider import snap
-from logicxkit.logic.services.translate import load_maps, map_for, read_settings
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.transplant import channel_slots
+from logicxkit.logic.services.mixer.slider import snap
+from logicxkit.logic.services.translate.translate import load_maps, map_for, read_settings
 from logicxkit.logicx import project_data
 from logicxkit.utils.data import PACKAGED
 
@@ -62,10 +62,10 @@ class LinearRowsTest(unittest.TestCase):
         import struct
 
         from logicxkit.logic._binary import find_blocks
-        from logicxkit.logic.services.slot_width import plugin_variant
-        from logicxkit.logic.services.stream import project_records
-        from logicxkit.logic.services.plugin_params import decode, load_tables, table_for
-        from logicxkit.logic.services.slider import along, is_linear, slider_curve
+        from logicxkit.logic.services.mixer.slot_width import plugin_variant
+        from logicxkit.logic.services.stream.stream import project_records
+        from logicxkit.logic.services.mixer.plugin_params import decode, load_tables, table_for
+        from logicxkit.logic.services.mixer.slider import along, is_linear, slider_curve
         natives, tables = {m.type: m for m in MAPS if m.type is not None}, load_tables()
         import json
         public = json.loads(_goldens.PUBLIC.read_text())

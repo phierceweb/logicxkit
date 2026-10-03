@@ -9,7 +9,7 @@ import struct
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.levels import (
+from logicxkit.logic.services.mixer.levels import (
     PAN_AT,
     PAN_CENTRE,
     UNITY,
@@ -100,7 +100,7 @@ class SetLevelsTest(unittest.TestCase):
 
     def test_every_record_of_that_owner_is_rewritten(self):
         """Logic keeps mixer state in each of a channel's records; a stale copy springs back."""
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
         data = proj(chan(0, 90, 64, size=257), chan(0, 90, 64, size=253))
         out, _ = set_levels(data, {0: {"fader": 99, "pan": 0}})
         seen = [(r.raw[HEADER + 85], r.raw[HEADER + 119], r.raw[HEADER + PAN_AT])
@@ -142,7 +142,7 @@ class ReferenceMatchTest(unittest.TestCase):
 class LabelMatchTest(unittest.TestCase):
     def test_sub_strips_pair_by_label(self):
         from _records import chan as bchan
-        from logicxkit.logic.services.levels import match_by_label
+        from logicxkit.logic.services.mixer.levels import match_by_label
         src = proj(bchan(378, "Sub 1", fader=70), bchan(0, "Audio 1"))
         dst = proj(bchan(500, "Sub 1"), bchan(3, "Audio 1"))
         self.assertEqual(match_by_label(src, dst), {500: 378, 3: 0})

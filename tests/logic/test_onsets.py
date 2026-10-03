@@ -10,7 +10,7 @@ import wave
 from pathlib import Path
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.onsets import Detector, merge_hits, onsets, read_wav
+from logicxkit.logic.services.regions.onsets import Detector, merge_hits, onsets, read_wav
 
 RATE = 44100
 

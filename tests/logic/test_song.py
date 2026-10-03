@@ -1,7 +1,7 @@
 """The arrangement track (sections) and the tempo track, read from the resources copies."""
 
 import unittest
-from logicxkit.logic.services.arrangement import BAR_ONE, PPQ, Section, _text
+from logicxkit.logic.services.song.arrangement import BAR_ONE, PPQ, Section, _text
 
 
 class TextTest(unittest.TestCase):

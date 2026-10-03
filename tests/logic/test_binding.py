@@ -9,7 +9,7 @@ Holds on every in-use channel of the sessions measured and the Recording templat
 import struct
 import unittest
 from _records import chan, count_record, env_obj, proj, uuid
-from logicxkit.logic.services.binding import (
+from logicxkit.logic.services.mixer.binding import (
     bound_channels,
     bound_objects,
     channels,

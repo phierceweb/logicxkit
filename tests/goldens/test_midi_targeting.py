@@ -9,11 +9,11 @@ from pathlib import Path
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.environment import rename_track
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_write import add_note, add_region
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.environment import rename_track
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_write import add_note, add_region
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logicx import project_data
 
 KEY = "midi-empty-region-logic"
@@ -72,7 +72,7 @@ class SharedNameTest(unittest.TestCase):
 
     @_goldens.needs("sessionplayer-track-logic")
     def test_regions_on_both_holding_the_tick_are_named(self):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         p = _goldens.path("sessionplayer-track-logic")                # two instrument tracks
         base, count = project_data(p), project_metadata(p).get("tracks")
         rows = [t for t in read_tracks(base, count) if (t["label"] or "").startswith("Inst ")]

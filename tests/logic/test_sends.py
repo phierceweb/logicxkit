@@ -7,7 +7,7 @@ are the B 15 / B 16 the mixer shows; 19 in a 20-input one). The level is NOT dec
 
 import unittest
 from _records import chan, proj, send, uuid
-from logicxkit.logic.services.sends import bus_owner, read_sends
+from logicxkit.logic.services.mixer.sends import bus_owner, read_sends
 
 
 class ReadSendsTest(unittest.TestCase):
@@ -45,7 +45,7 @@ class BusOwnerTest(unittest.TestCase):
 class SendBaseTest(unittest.TestCase):
     def test_a_project_with_twenty_inputs_counts_from_nineteen(self):
         import struct
-        from logicxkit.logic.services.sends import send_base
+        from logicxkit.logic.services.mixer.sends import send_base
         inputs = [chan(256 + k, f"Input {k + 1}", size=201, in_use=False) for k in range(20)]
         pairs = [chan(300 + k, f"Input {2 * k + 1}-{2 * k + 2}", size=201, in_use=False) for k in range(10)]
         raw = bytearray(send(2, 0, 10))
@@ -55,5 +55,5 @@ class SendBaseTest(unittest.TestCase):
         self.assertEqual([s.bus for s in read_sends(data)[2]], [10])
 
     def test_without_input_channels_the_base_is_the_thirty_two_input_one(self):
-        from logicxkit.logic.services.sends import send_base
+        from logicxkit.logic.services.mixer.sends import send_base
         self.assertEqual(send_base(proj(chan(0, "Audio 1"))), 31)

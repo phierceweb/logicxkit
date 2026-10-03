@@ -56,7 +56,7 @@ class EveryOverrideGoesThroughItTest(unittest.TestCase):
 
     def test_empty_env_leaves_every_root_at_its_default(self):
         import importlib
-        from logicxkit.logic.services import library
+        from logicxkit.logic.services.mixer import library
         from logicxkit.utils import data
         empty = {"LOGICXKIT_STRIP_ROOT": "", "LOGICXKIT_DATA": "", "LOGICXKIT_RESOURCES": "",
                  "LOGICXKIT_TEMPLATES": "", "LOGICXKIT_LOGIC_PREFS": ""}

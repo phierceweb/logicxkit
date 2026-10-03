@@ -7,7 +7,7 @@ import unittest
 from pathlib import Path
 
 from _fixtures import chunk
-from logicxkit.logic.services.plugin_params import Table, decode, load_table, load_tables, set_by_name, table_for
+from logicxkit.logic.services.mixer.plugin_params import Table, decode, load_table, load_tables, set_by_name, table_for
 
 TABLE = {"type": 999, "name": "Test Comp", "floats": 6, "opaque": [0],
          "params": [{"index": 1, "name": "Threshold", "unit": "dB", "min": -60, "max": 0, "default": -20},

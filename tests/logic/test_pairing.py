@@ -3,7 +3,7 @@
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.pairing import (
+from logicxkit.logic.services.mixer.pairing import (
     extra_rows,
     format_map,
     pair_rows,
@@ -85,18 +85,18 @@ class MatchQualityTest(unittest.TestCase):
                 for i in range(n)]
 
     def test_a_session_cut_from_the_template_scores_one(self):
-        from logicxkit.logic.services.pairing import match_quality, pair_rows
+        from logicxkit.logic.services.mixer.pairing import match_quality, pair_rows
         rows = self._rows(8)
         self.assertEqual(match_quality(pair_rows(rows, list(rows))), 1.0)
 
     def test_an_unrelated_project_scores_near_zero(self):
-        from logicxkit.logic.services.pairing import match_quality, pair_rows
+        from logicxkit.logic.services.mixer.pairing import match_quality, pair_rows
         template = self._rows(8)
         session = self._rows(8, offset=900, names=[f"X{i}" for i in range(8)])
         self.assertEqual(match_quality(pair_rows(template, session)), 0.0)
 
     def test_a_few_hand_added_tracks_still_score_high(self):
-        from logicxkit.logic.services.pairing import match_quality, pair_rows
+        from logicxkit.logic.services.mixer.pairing import match_quality, pair_rows
         template = self._rows(20)
         session = [dict(r) for r in template]
         for r in session[:2]:
@@ -104,7 +104,7 @@ class MatchQualityTest(unittest.TestCase):
         self.assertGreater(match_quality(pair_rows(template, session)), 0.85)
 
     def test_no_rows_is_zero_not_a_crash(self):
-        from logicxkit.logic.services.pairing import match_quality
+        from logicxkit.logic.services.mixer.pairing import match_quality
         self.assertEqual(match_quality([]), 0.0)
 
 
@@ -192,7 +192,7 @@ class MapTest(unittest.TestCase):
 
 class LeaveOutTest(unittest.TestCase):
     def test_the_proposal_lists_unclaimed_template_tracks_with_a_plus(self):
-        from logicxkit.logic.services.pairing import format_map, parse_map_full
+        from logicxkit.logic.services.mixer.pairing import format_map, parse_map_full
         t = [{"key": 0, "name": "Kick In", "label": "Audio 1", "object_id": 1},
              {"key": 1, "name": "Vox", "label": "Audio 2", "object_id": 2}]
         text = format_map([{"session": "Vox (Audio 9)", "template": "Vox (Audio 2)", "confidence": "high", "why": "same name"}], t)
@@ -203,7 +203,7 @@ class LeaveOutTest(unittest.TestCase):
         self.assertEqual(excluded, {"Kick In (Audio 1)"})
 
     def test_a_left_out_template_row_pairs_with_nothing(self):
-        from logicxkit.logic.services.pairing import pair_rows
+        from logicxkit.logic.services.mixer.pairing import pair_rows
         t = [{"key": 0, "name": "Kick In", "label": "Audio 1", "object_id": 1},
              {"key": 1, "name": "Vox", "label": "Audio 2", "object_id": 2}]
         s = [{"key": 0, "name": "Kick In", "label": "Audio 5", "object_id": 9},
@@ -214,7 +214,7 @@ class LeaveOutTest(unittest.TestCase):
             pair_rows(t, s, excluded={"Snare (Audio 3)"})
 
     def test_a_bad_leave_out_line_is_refused(self):
-        from logicxkit.logic.services.pairing import parse_map_full
+        from logicxkit.logic.services.mixer.pairing import parse_map_full
         with self.assertRaises(ValueError):
             parse_map_full("- \n")
         with self.assertRaises(ValueError):

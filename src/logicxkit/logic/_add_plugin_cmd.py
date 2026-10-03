@@ -12,10 +12,10 @@ from ._plugin_settings import dialled, donor_table, replace_slot, set_specs
 
 def cmd_add_plugin(args) -> int:
     from ..utils.data import data_dirs
-    from .services.add_plugin import add_plugin
-    from .services.mixer import channel_formats
-    from .services.plugin_library import load_library
-    from .services.transplant import slot_class_version
+    from .services.mixer.add_plugin import add_plugin
+    from .services.mixer.mixer import channel_formats
+    from .services.mixer.plugin_library import load_library
+    from .services.mixer.transplant import slot_class_version
 
     if not (args.channel or args.stack):
         print("  name the channels with --channel or --stack")
@@ -69,7 +69,7 @@ def cmd_add_plugin(args) -> int:
 
 
 def cmd_remove_plugin(args) -> int:
-    from .services.remove_plugin import remove_plugin
+    from .services.mixer.remove_plugin import remove_plugin
 
     if not (args.channel or args.stack):
         print("  name the channels with --channel or --stack")
@@ -105,9 +105,9 @@ def cmd_remove_plugin(args) -> int:
 def cmd_replace_plugin(args) -> int:
     """A removal and an insert at the same slot, one gate."""
     from ..utils.data import data_dirs
-    from .services.mixer import channel_formats
-    from .services.plugin_library import load_library
-    from .services.transplant import slot_class_version
+    from .services.mixer.mixer import channel_formats
+    from .services.mixer.plugin_library import load_library
+    from .services.mixer.transplant import slot_class_version
 
     if not (args.channel or args.stack):
         print("  name the channels with --channel or --stack")
@@ -153,12 +153,12 @@ def cmd_replace_plugin(args) -> int:
 
 def _side_chain(data, args):
     """The side chain `--side-chain NAME` asks for, resolved in this alternative."""
-    from .services.sidechain import resolve
+    from .services.mixer.sidechain import resolve
     return resolve(data, args.side_chain) if getattr(args, "side_chain", None) else None
 
 
 def _pick(donors, name: str, width: int | None, version: int | None):
-    from .services.plugin_library import find_donor
+    from .services.mixer.plugin_library import find_donor
     return find_donor(donors, name, width=width, version=version)
 
 
@@ -167,16 +167,16 @@ def _offsets(data: bytes, donor, libraries=None) -> tuple[int, ...]:
     tell the id apart, else the library's measurement, else against another library record of the
     plug-in, else none (the id is copied — Logic gives a second holder a fresh one on load)."""
     from ..utils.data import data_dirs
-    from .services.plugin_library import library_offsets
-    from .services.transplant import id_offsets
+    from .services.mixer.plugin_library import library_offsets
+    from .services.mixer.transplant import id_offsets
     return (id_offsets(data, donor.raw) or tuple(donor.id_offsets)
             or library_offsets(donor, libraries if libraries is not None else data_dirs("donors")))
 
 
 def _channels(args, data: bytes, count: int | None) -> list[str]:
     """Every ``--channel`` label and the channel of every ``--stack`` member, each once."""
-    from .services.stacks import read_stacks, read_tracks, rows_below
-    from .services.trackname import stack_named
+    from .services.arrange.stacks import read_stacks, read_tracks, rows_below
+    from .services.arrange.trackname import stack_named
 
     labels = [c.strip() for c in args.channel or []]
     if args.stack:

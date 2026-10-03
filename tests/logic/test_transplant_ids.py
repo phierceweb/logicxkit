@@ -11,8 +11,8 @@ import unittest
 
 from _fixtures import chunk
 from _records import chan, proj, rec
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.transplant import channel_slots, transplant
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.transplant import channel_slots, transplant
 
 TAIL = 20
 MONO, STEREO = 1, 2
@@ -140,7 +140,7 @@ class ChunkInWindowTest(unittest.TestCase):
         return rec(b"UCuA", owner, 4, bytes(p) + chunk(236, [gain] * 8) + bytes(4), 5)
 
     def test_floats_in_the_window_are_not_taken_for_an_id(self):
-        from logicxkit.logic.services.transplant import id_offsets
+        from logicxkit.logic.services.mixer.transplant import id_offsets
         src = proj(mono_chan(1, "Audio 1"), self._slot(1, 0.0), ref(1, 10),
                    mono_chan(2, "Audio 2"), self._slot(2, 6.0), ref(2, 10))
         raw = channel_slots(src, 1)[0].raw

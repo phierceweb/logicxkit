@@ -7,9 +7,9 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.sidechain import SideChain, carry, resolve, side_chain, source_name, with_side_chain
-from logicxkit.logic.services.transplant import channel_slots, slot_at
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.sidechain import SideChain, carry, resolve, side_chain, source_name, with_side_chain
+from logicxkit.logic.services.mixer.transplant import channel_slots, slot_at
 from logicxkit.logicx import project_data
 
 KEYS = ("sidechain-comp-none", "sidechain-comp-bus1", "sidechain-comp-bus2", "sidechain-comp-track",
@@ -94,8 +94,8 @@ class InputAndInstrumentTest(unittest.TestCase):
     as 0x41 1, Inst 1 as 0x43 0)."""
 
     def test_an_input_side_chain_is_the_interfaces_and_stays_as_it_is(self):
-        from logicxkit.logic.services.binding import channels
-        from logicxkit.logic.services.sidechain import SideChain, carry, resolve, with_side_chain
+        from logicxkit.logic.services.mixer.binding import channels
+        from logicxkit.logic.services.mixer.sidechain import SideChain, carry, resolve, with_side_chain
         data = project_data(_goldens.path("sidechain-comp-bus1"))
         slot = next(s[0] for o in channels(data) if (s := channel_slots(data, o)))
         raw = with_side_chain(slot.raw, SideChain(0x41, 2))                  # Input 3: no channel object for it here
@@ -103,7 +103,7 @@ class InputAndInstrumentTest(unittest.TestCase):
         self.assertEqual(resolve(data, "Input 3"), SideChain(0x41, 2))
 
     def test_an_instrument_track_feeds_a_side_chain(self):
-        from logicxkit.logic.services.sidechain import SideChain, resolve
+        from logicxkit.logic.services.mixer.sidechain import SideChain, resolve
         data = project_data(_goldens.path("tracks-instrument-logic"))
         self.assertEqual(resolve(data, "Inst 1"), SideChain(0x43, 0))
         self.assertEqual(SideChain(0x43, 0).label, "Inst 1")

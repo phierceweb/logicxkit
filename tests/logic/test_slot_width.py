@@ -1,6 +1,6 @@
 """A slot's width: the channel count a plug-in instance carries in seven fields, the variant id
 that picks its mono or stereo build, and a width change that is already there being a no-op
-(`services/slot_width`)."""
+(`services/mixer/slot_width`)."""
 
 import struct
 import unittest

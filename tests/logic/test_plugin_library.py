@@ -8,8 +8,8 @@ import unittest
 from pathlib import Path
 
 from _records import proj
-from logicxkit.logic.services.donors import harvest_donors
-from logicxkit.logic.services.plugin_library import Donor, find_donor, harvest_au, load_library
+from logicxkit.logic.services.mixer.donors import harvest_donors
+from logicxkit.logic.services.mixer.plugin_library import Donor, find_donor, harvest_au, load_library
 from test_transplant_ids import MONO, STEREO, TAIL, au, mono_chan, native, ref
 
 COMPONENT = ("aufx", "Aln2", "Srdx")
@@ -135,7 +135,7 @@ class LookupTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             lib = Path(td)
             from _records import rec
-            from logicxkit.logic.services.stream import HEADER
+            from logicxkit.logic.services.stream.stream import HEADER
             mono = proj(mono_chan(1, "Audio 1"), native(1, 4, 1), ref(1, 10))
             payload = native(2, 4, 2, fmt=STEREO)[HEADER:]
             longer = rec(b"UCuA", 2, 4, payload[:-20] + bytes(64) + payload[-20:], 5)

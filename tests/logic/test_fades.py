@@ -4,8 +4,8 @@ import unittest
 from dataclasses import replace
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.fades import Fade, check_fade, crossfade_bytes, read_fade, with_fade
-from logicxkit.logic.services.regions import ENTRY
+from logicxkit.logic.services.regions.fades import Fade, check_fade, crossfade_bytes, read_fade, with_fade
+from logicxkit.logic.services.regions.regions import ENTRY
 
 
 class FadeTest(unittest.TestCase):

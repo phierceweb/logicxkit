@@ -7,9 +7,9 @@ import unittest
 from logicxkit.au.services.aupreset import parse_au_state
 from logicxkit.au.services.embed import find_au_plists
 from logicxkit.au.services.ffp import parse_ffp
-from logicxkit.logic.services.translate import Settings, load_maps, plan, read_settings
-from logicxkit.logic.services.translate_eq import Band, parse_band
-from logicxkit.logic.services.translate_write import (
+from logicxkit.logic.services.translate.translate import Settings, load_maps, plan, read_settings
+from logicxkit.logic.services.translate.translate_eq import Band, parse_band
+from logicxkit.logic.services.translate.translate_write import (
     apply_band_specs,
     split_specs,
     write_bands,
@@ -133,7 +133,7 @@ class DialledDonorTest(unittest.TestCase):
         from types import SimpleNamespace
 
         from logicxkit.logic._plugin_settings import dialled
-        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logic.services.stream.stream import HEADER
         donor = SimpleNamespace(label="Pro-C 2", type_id=None, raw=bytes(HEADER) + au_payload({1: -18.0, 2: 0.6}))
         raw, by_table, notes = dialled(donor, {"threshold": "-24", "ratio": "6"})
         self.assertEqual((by_table, notes, len(raw)), (None, [], len(donor.raw)))
@@ -146,7 +146,7 @@ class DialledDonorTest(unittest.TestCase):
         from types import SimpleNamespace
 
         from logicxkit.logic._plugin_settings import dialled
-        from logicxkit.logic.services.stream import HEADER
+        from logicxkit.logic.services.stream.stream import HEADER
         comp = SimpleNamespace(label="Compressor", type_id=154, raw=bytes(HEADER) + native_payload([0.0] * 52))
         self.assertEqual(dialled(comp, {"Threshold": "-24"}), (comp.raw, {"Threshold": -24.0}, []))   # held and snapped
         eq = SimpleNamespace(label="Channel EQ", type_id=236, raw=bytes(HEADER) + native_payload([0.0] * CHEQ_FLOATS, 236))
@@ -197,7 +197,7 @@ class SliderEndsTest(unittest.TestCase):
         import sys
         sys.path.insert(0, str(__import__("pathlib").Path(__file__).parent))
         from test_translate import native_payload
-        from logicxkit.logic.services.translate import load_maps, map_for, read_settings
+        from logicxkit.logic.services.translate.translate import load_maps, map_for, read_settings
         from logicxkit.utils.data import PACKAGED
         payload = native_payload([0.0] * 29)
         m = map_for(payload, load_maps([PACKAGED / "translate"]))

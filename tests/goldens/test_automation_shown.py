@@ -5,8 +5,8 @@ alone. Skips without the public corpus."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.automation import FADER_NAMES, read_automation
-from logicxkit.logic.services.events import BAR_ONE, PPQ
+from logicxkit.logic.services.regions.automation import FADER_NAMES, read_automation
+from logicxkit.logic.services.song.events import BAR_ONE, PPQ
 from logicxkit.logicx import project_data
 
 DIVISION = PPQ // 4                      # the list's division is a sixteenth at 4/4; its tick is a file tick

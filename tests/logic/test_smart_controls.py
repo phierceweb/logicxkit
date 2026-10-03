@@ -5,9 +5,9 @@ import struct
 import unittest
 
 from _records import rec
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.smart_controls import mapping_slots, shift_mapping_slots
-from logicxkit.logic.services.slots import archive_index
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.smart_controls import mapping_slots, shift_mapping_slots
+from logicxkit.logic.services.mixer.slots import archive_index
 
 
 def archive(slots: list[int], *, key: int = 12, owner: int = 3, index: int = 1) -> bytes:

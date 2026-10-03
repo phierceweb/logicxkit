@@ -5,11 +5,11 @@ import copy
 import math
 import unittest
 
-from logicxkit.logic.services.automation import Lane, Point
-from logicxkit.logic.services.automation_remap import carry_lane, index_of, item_at, to_point, to_vocab
-from logicxkit.logic.services.plugin_params import Table, load_tables, table_for
-from logicxkit.logic.services.slider import point_for
-from logicxkit.logic.services.translate import Item, Map, load_maps
+from logicxkit.logic.services.regions.automation import Lane, Point
+from logicxkit.logic.services.translate.automation_remap import carry_lane, index_of, item_at, to_point, to_vocab
+from logicxkit.logic.services.mixer.plugin_params import Table, load_tables, table_for
+from logicxkit.logic.services.mixer.slider import point_for
+from logicxkit.logic.services.translate.translate import Item, Map, load_maps
 from logicxkit.utils.data import PACKAGED
 
 MAPS = load_maps([PACKAGED / "translate"])
@@ -159,6 +159,50 @@ class BandLanesTest(unittest.TestCase):
         notes = []
         got = carry_lane(lane, promb, multi, None, table, notes, assignment={1: raw["slots"][0]})
         self.assertEqual((got.param_index, math.floor(got.points[0].value * 128), notes), (8, 66, []))   # -18 dB between the table's points
+
+
+class ExpanderLanesTest(unittest.TestCase):
+    """A Multipressor band crosses into a Pro-MB band as one side, its compressor or its
+    expander; the plan says which, and that side's lanes carry while the other's drop."""
+
+    def _multi(self):
+        raw = {"slots": [{"on": "Band 1 Monitor", "threshold": "Band 1 Comp. Threshold", "ratio": "Band 1 Comp. Ratio",
+                          "level": "Band 1 Make Up", "exp_threshold": "Band 1 Exp. Threshold",
+                          "exp_ratio": "Band 1 Exp. Ratio", "reduction": "Band 1 Reduction"}],
+               "automation": {"Band 1 Comp. Threshold": {"per": 128, "units": [[0, -60.0], [60, -20.0], [160, 10.0]]},
+                              "Band 1 Exp. Threshold": {"per": 128, "units": [[0, -60.0], [60, -20.0], [160, 10.0]]},
+                              "Band 1 Exp. Ratio": {"per": 128, "units": [[0, 1.0], [128, 4.0]]},
+                              "Band 1 Reduction": {"per": 128, "units": [[0, -30.0], [128, 0.0]]}}}
+        multi = Map("multiband", "Synthetic MB", {}, type=998, raw=raw)
+        table = Table.from_dict({"type": 998, "name": "Synthetic MB", "floats": 10, "params": [
+            {"index": 9, "name": "Band 1 Comp. Threshold", "unit": "dB"}, {"index": 7, "name": "Band 1 Exp. Threshold", "unit": "dB"},
+            {"index": 8, "name": "Band 1 Exp. Ratio"}, {"index": 6, "name": "Band 1 Reduction", "unit": "dB"}]})
+        return multi, table
+
+    def test_the_expanders_lanes_land_on_a_pro_mb_band_set_to_expand(self):
+        promb = next(m for m in MAPS if m.plugin == "Pro-MB")
+        multi, table = self._multi()
+        notes = []
+        exp = Lane("insert 1 parameter 6", None, 6, (Point(38400, 60 / 128),), False, slot=1)       # Exp. Threshold -20 dB
+        got = carry_lane(exp, multi, promb, table, None, notes, assignment={1: 1}, modes={1: "expand"})
+        self.assertEqual(got.param_index, 6)                                                           # band 1 threshold
+        red = Lane("insert 1 parameter 5", None, 5, (Point(38400, 0.5),), False, slot=1)             # Reduction -15 dB
+        got = carry_lane(red, multi, promb, table, None, notes, assignment={1: 1}, modes={1: "expand"})
+        self.assertEqual((got.param_index, got.points[0].value), (7, 0.25))                           # range -30..30
+        self.assertEqual(notes, [])
+
+    def test_the_other_sides_lanes_drop_saying_which_side_crossed(self):
+        promb = next(m for m in MAPS if m.plugin == "Pro-MB")
+        multi, table = self._multi()
+        notes = []
+        comp = Lane("insert 1 parameter 8", None, 8, (Point(38400, 0.5),), False, slot=1)            # Comp. Threshold
+        self.assertIsNone(carry_lane(comp, multi, promb, table, None, notes, assignment={1: 1}, modes={1: "expand"}))
+        exp = Lane("insert 1 parameter 6", None, 6, (Point(38400, 0.5),), False, slot=1)             # Exp. Threshold
+        self.assertIsNone(carry_lane(exp, multi, promb, table, None, notes, assignment={1: 1}, modes={1: "compress"}))
+        self.assertEqual(notes, ["lane insert 1 parameter 8 (band 1 threshold): band 1 crossed as its expander; "
+                                 "the compressor's threshold has no place in Pro-MB; dropped",
+                                 "lane insert 1 parameter 6 (band 1 exp_threshold): band 1 crossed as its compressor; "
+                                 "the expander's exp_threshold has no place in Pro-MB; dropped"])
 
 
 class CarryTest(unittest.TestCase):

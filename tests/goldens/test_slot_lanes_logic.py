@@ -7,9 +7,9 @@ import unittest
 
 import _goldens
 from logicxkit.logic._edit import owner_by_label
-from logicxkit.logic.services.automation import read_automation
-from logicxkit.logic.services.insert_lanes import channel_object
-from logicxkit.logic.services.transplant import slot_at
+from logicxkit.logic.services.regions.automation import read_automation
+from logicxkit.logic.services.mixer.insert_lanes import channel_object
+from logicxkit.logic.services.mixer.transplant import slot_at
 from logicxkit.logicx import project_data
 
 

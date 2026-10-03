@@ -8,11 +8,11 @@ import unittest
 from _records import chan, proj, uuid
 from test_sends_write import bus, donor_send, send_raw
 
-from logicxkit.logic.services.levels import (
+from logicxkit.logic.services.mixer.levels import (
     db_position, fader_word, level_word, position_db, shown_db)
-from logicxkit.logic.services.sends import read_sends
-from logicxkit.logic.services.sends_write import add_send, set_send
-from logicxkit.logic.services.stream import HEADER
+from logicxkit.logic.services.mixer.sends import read_sends
+from logicxkit.logic.services.mixer.sends_write import add_send, set_send
+from logicxkit.logic.services.stream.stream import HEADER
 
 # (level word, dB shown) as Logic's send knob reported them
 KNOB = ((0, None), (5976913, -96.1), (150995100, -40.0), (575290700, -16.8), (1509949696, 0.0),

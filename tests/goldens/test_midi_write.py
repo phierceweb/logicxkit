@@ -4,17 +4,17 @@ the Pencil tool, and the note it then made in the Event List."""
 import unittest
 from collections import Counter
 import _goldens
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_write import add_note, add_region
-from logicxkit.logic.services.recdiff import diff_records
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_write import add_note, add_region
+from logicxkit.logic.services.stream.recdiff import diff_records
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 UNSIZED = (b"gnoS", b"qeSM")
 
 
 def shape(data: bytes) -> Counter:
-    from logicxkit.logic.services.stream import project_records
+    from logicxkit.logic.services.stream.stream import project_records
     return Counter((r.tag, None if r.tag in UNSIZED else len(r.raw)) for r in project_records(data))
 
 
@@ -71,8 +71,8 @@ class LogicResavedNamesTest(unittest.TestCase):
 
     def payloads(self, data: bytes, names) -> dict[str, bytes]:
         import struct
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.midi import NAME_AT
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.midi.midi import NAME_AT
         out = {}
         for r in project_records(data):
             p = r.raw[HEADER:]
@@ -83,7 +83,7 @@ class LogicResavedNamesTest(unittest.TestCase):
         return out
 
     def test_logic_kept_the_regions_their_words_and_notes(self):
-        from logicxkit.logic.services.midi_write import name_end
+        from logicxkit.logic.services.midi.midi_write import name_end
         ours, logic = (project_data(_goldens.path(k)) for k in ("midi-names-ours", "midi-names-resave-logic"))
         facts = _goldens.fact("midi-names-ours", "regions")
         for data in (ours, logic):
@@ -105,7 +105,7 @@ def _regions(data: bytes, count: int | None) -> dict[tuple[str, str], int]:
 @_goldens.needs("sessionplayer-track-logic")
 class OtherTrackAtTheSameTickTest(unittest.TestCase):
     def setUp(self):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         p = _goldens.path("sessionplayer-track-logic")
         self.count = project_metadata(p).get("tracks")
         data = project_data(p)
@@ -137,9 +137,9 @@ class NameLengthTest(unittest.TestCase):
 
     def test_length_and_track_follow_the_name(self):
         import struct
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.midi import NAME_AT
-        from logicxkit.logic.services.sequence import sequences, triple_by_slot
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.midi.midi import NAME_AT
+        from logicxkit.logic.services.stream.sequence import sequences, triple_by_slot
         base = project_data(_goldens.path("midi-empty-region-logic"))
         start = 38400 + 8 * 3840
         out, report = add_region(base, track="Inst 1", start=start, length=3840 * 4, name="a longer name")

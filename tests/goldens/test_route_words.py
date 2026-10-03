@@ -5,11 +5,11 @@ import unittest
 
 import _goldens
 
-from logicxkit.logic.services.addtrack import add_track
-from logicxkit.logic.services.binding import _input_by_word, _output_by_word, channels, input_labels, output_labels
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.mixer import device_inputs
-from logicxkit.logic.services.routing import set_input, set_output
+from logicxkit.logic.services.arrange.addtrack import add_track
+from logicxkit.logic.services.mixer.binding import _input_by_word, _output_by_word, channels, input_labels, output_labels
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.mixer.mixer import device_inputs
+from logicxkit.logic.services.mixer.routing import set_input, set_output
 from logicxkit.logicx import project_data
 
 THREE = "nest-three-audio-logic"
@@ -48,8 +48,8 @@ class RouteWordsTest(unittest.TestCase):
 @_goldens.needs("stack-folder-flattened-logic", "route-resave-logic")
 class LogicsResavedRouteTest(unittest.TestCase):
     def test_route_writes_the_channel_record_logic_saved_but_its_version_word(self):
-        from logicxkit.logic.services.mixer import is_mixer_record
-        from logicxkit.logic.services.stream import HEADER, project_records
+        from logicxkit.logic.services.mixer.mixer import is_mixer_record
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
 
         def record(data: bytes) -> bytearray:
             own = next(o for o, c in channels(data).items() if c.label == "Audio 2")

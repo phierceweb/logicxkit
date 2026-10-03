@@ -6,8 +6,8 @@ import struct
 import unittest
 import _paths  # noqa: F401
 from _records import index_entry, marker, proj, seq_triple, track
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.sequence import (
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.sequence import (
     QESM_FRESH_AT,
     QESM_INDEX_AT,
     QESM_OBJECT_AT,

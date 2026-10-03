@@ -2,7 +2,7 @@
 
 import unittest
 
-from logicxkit.logic.services.chain_report import ChainChange
+from logicxkit.logic.services.mixer.chain_report import ChainChange
 
 
 def change(before: list[str], after: list[str], replaced: list[str] = ()) -> ChainChange:

@@ -5,8 +5,8 @@ import struct
 import unittest
 
 from _records import proj, rec
-from logicxkit.logic.services.add_plugin import add_plugin
-from logicxkit.logic.services.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.add_plugin import add_plugin
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 from test_transplant_ids import au, mono_chan, native, ref
 
 OWNER = 3
@@ -28,14 +28,14 @@ def _keyed(data: bytes, owner: int) -> list[int]:
 
 
 def _shown(data: bytes) -> dict[int, int]:
-    from logicxkit.logic.services.mixer import CHANNEL_TAG
+    from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
     return {r.owner: struct.unpack_from("<H", r.raw, HEADER + 30)[0]
             for r in project_records(data) if r.tag == CHANNEL_TAG}
 
 
 def _with_shown(data: bytes, shown: int) -> bytes:
-    from logicxkit.logic.services.mixer import CHANNEL_TAG
-    from logicxkit.logic.services.stream import reassemble
+    from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
+    from logicxkit.logic.services.stream.stream import reassemble
     out = []
     for r in project_records(data):
         raw = bytearray(r.raw)
@@ -57,8 +57,8 @@ class GrowthTest(unittest.TestCase):
                     mono_chan(5, "Audio 5"), native(5, 4, 50), ref(5, 10), archive(5, 12, 1), archive(5, 13, 2))
 
     def test_a_fifth_slot_pushes_the_layout_up_one_key_on_every_channel(self):
-        from logicxkit.logic.services.keyflags import flag_errors
-        from logicxkit.logic.services.slots import property_key_base
+        from logicxkit.logic.services.stream.keyflags import flag_errors
+        from logicxkit.logic.services.mixer.slots import property_key_base
         data = self._project(*(native(OWNER, 4 + i, i) for i in range(4)))
         out, report = add_plugin(data, OWNER, au(9, 4, 7))
         self.assertEqual((report["key"], report["grown"]), (8, 1))
@@ -72,7 +72,7 @@ class GrowthTest(unittest.TestCase):
         """Reference 13 over slots to key 7 is a six-key headroom (the owner's sessions): a
         slot at key 8 moves the reference to 14 and the archives to 16 and 17, as Logic's
         own re-save does; three keys would leave the second archive past the flag words."""
-        from logicxkit.logic.services.keyflags import flag_errors
+        from logicxkit.logic.services.stream.keyflags import flag_errors
         data = proj(mono_chan(OWNER, "Audio 3"), *(native(OWNER, 4 + i, i) for i in range(4)), ref(OWNER, 13),
                     archive(OWNER, 15, 1), archive(OWNER, 16, 2),
                     mono_chan(5, "Audio 5"), native(5, 4, 50), ref(5, 13), archive(5, 15, 1), archive(5, 16, 2))
@@ -103,7 +103,7 @@ class GrowthTest(unittest.TestCase):
         self.assertEqual(_shown(out), {OWNER: 6, 5: 6})
 
     def test_the_projects_shown_count_is_the_highest_any_record_carries(self):
-        from logicxkit.logic.services.add_plugin import shown_slots
+        from logicxkit.logic.services.mixer.add_plugin import shown_slots
         self.assertEqual(shown_slots(self._project(native(OWNER, 4, 1))), 0)
         self.assertEqual(shown_slots(_with_shown(self._project(native(OWNER, 4, 1)), 9)), 9)
 
@@ -113,7 +113,7 @@ class GrowthTest(unittest.TestCase):
         self.assertEqual(_shown(out), {OWNER: 9, 5: 9})
 
     def test_the_reference_position_is_read_from_the_archives_when_no_channel_names_a_strip(self):
-        from logicxkit.logic.services.slots import property_key_base
+        from logicxkit.logic.services.mixer.slots import property_key_base
         data = proj(mono_chan(OWNER, "Audio 3"), native(OWNER, 6, 1), archive(OWNER, 11, 1), archive(OWNER, 12, 2))
         self.assertEqual(property_key_base(data), 9)
         out, report = add_plugin(data, OWNER, au(9, 4, 7))

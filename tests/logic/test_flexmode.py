@@ -5,11 +5,11 @@ import unittest
 
 import _paths  # noqa: F401
 from _records import env_obj
-from logicxkit.logic.services.environment import KIND_AT, name_end
-from logicxkit.logic.services.flexmode import (
+from logicxkit.logic.services.arrange.environment import KIND_AT, name_end
+from logicxkit.logic.services.regions.flexmode import (
     FLEX_MODE_AFTER_NAME, MODES, flex_mode, q_reference, set_flex_mode, set_q_reference,
 )
-from logicxkit.logic.services.stream import HEADER
+from logicxkit.logic.services.stream.stream import HEADER
 
 
 class QReferenceTest(unittest.TestCase):

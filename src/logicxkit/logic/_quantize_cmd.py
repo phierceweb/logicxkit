@@ -7,14 +7,14 @@ import re
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy
-from .services.flexmarkers import GRIDS
+from .services.regions.flexmarkers import GRIDS
 
 
 def _members(data: bytes, args, count: int | None) -> list[str]:
     if args.track:
         return list(args.track)
-    from .services.stacks import read_stacks, rows_below
-    from .services.trackname import stack_named
+    from .services.arrange.stacks import read_stacks, rows_below
+    from .services.arrange.trackname import stack_named
     stacks = read_stacks(data, count)
     stack = stack_named(stacks, args.stack)
     if stack is None:
@@ -62,7 +62,7 @@ def bar_range(text: str) -> tuple[int, int]:
 
 
 def cmd_quantize(args) -> int:
-    from .services.quantize_drums import quantize_drums
+    from .services.regions.quantize_drums import quantize_drums
 
     if not args.out:
         print("  --out is needed to write")

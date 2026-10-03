@@ -6,8 +6,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data
-from .services.modes import COUNT_IN, COUNT_INS, MODES, copy_modes, read_modes, set_modes
-from .services.retrack import find_project
+from .services.song.modes import COUNT_IN, COUNT_INS, MODES, copy_modes, read_modes, set_modes
+from .services.arrange.retrack import find_project
 
 
 def _match(name: str) -> str:

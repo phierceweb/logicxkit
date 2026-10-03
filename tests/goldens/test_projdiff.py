@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 import _goldens
 import _paths
-from logicxkit.logic.services.projdiff import diff_against_library, diff_projects
+from logicxkit.logic.services.stream.projdiff import diff_against_library, diff_projects
 
 TRK = _goldens.path("tracking-template")
 MIX = str(_paths.project("Mix"))

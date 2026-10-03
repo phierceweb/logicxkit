@@ -1,8 +1,8 @@
 """Division and key: the song-record bytes and the key event, against Logic's own edits."""
 
 import unittest
-from logicxkit.logic.services.settings import root_semitone
-from logicxkit.logic.services.signature import key_number
+from logicxkit.logic.services.song.settings import root_semitone
+from logicxkit.logic.services.song.signature import key_number
 
 
 class NamesTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class NamesTest(unittest.TestCase):
                 key_number(bad)
 
     def test_key_names(self):
-        from logicxkit.logic.services.signature import KeySignature
+        from logicxkit.logic.services.song.signature import KeySignature
         self.assertEqual([KeySignature(0, n).name for n in (7, 8, 0x17, 0x18, 0x12)], ["C major", "G major", "A minor", "E minor", "Bb minor"])
         self.assertEqual(KeySignature(0, 0x18).root, "E")
 

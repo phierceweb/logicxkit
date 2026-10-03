@@ -7,8 +7,8 @@ import json
 from pathlib import Path
 
 from ._edit import first_project_data
-from .services.retrack import find_project
-from .services.sessionplayer import SETTINGS_ROLES, read_session_players
+from .services.arrange.retrack import find_project
+from .services.regions.sessionplayer import SETTINGS_ROLES, read_session_players
 
 
 def cmd_sessionplayer(args) -> int:

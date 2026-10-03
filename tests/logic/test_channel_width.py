@@ -86,7 +86,7 @@ class WidenGateTest(unittest.TestCase):
     def test_widen_refuses_a_stream_it_cannot_walk(self):
         from _records import chan as bchan
         from _records import proj as bproj
-        from logicxkit.logic.services.insert import widen_channels
+        from logicxkit.logic.services.mixer.channel_width import widen_channels
         data = bproj(bchan(0, "Audio 1")) + b"\x00" * 3
         with self.assertRaises(ValueError):
             widen_channels(data, {0: 1})
@@ -104,10 +104,10 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def _slot(self, owner: int, key: int, width: int) -> bytes:
         from _fixtures import chunk
-        from logicxkit.logic.services.slot_width import (
+        from logicxkit.logic.services.mixer.slot_width import (
             SLOT_BUS_AT, SLOT_CFG_AT, SLOT_COUNT_AT, SLOT_VARIANT_AT,
         )
-        from logicxkit.logic.services.slots import SLOT_INDEX_AT
+        from logicxkit.logic.services.mixer.slots import SLOT_INDEX_AT
         p = bytearray(160)
         p[SLOT_INDEX_AT] = key - 4
         p[SLOT_CFG_AT] = width
@@ -125,8 +125,8 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def test_widening_also_widens_a_slot_already_on_the_channel(self):
         from logicxkit.logic import widen_channels
-        from logicxkit.logic.services.slot_width import slot_format
-        from logicxkit.logic.services.stream import project_records as walk
+        from logicxkit.logic.services.mixer.slot_width import slot_format
+        from logicxkit.logic.services.stream.stream import project_records as walk
         data = proj(self._chan(76, 1), self._slot(76, 4, 1))
         out, changed = widen_channels(data, {76: 2})
         self.assertEqual(changed, [76])
@@ -135,10 +135,21 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
 
     def test_widening_leaves_slots_on_other_channels_alone(self):
         from logicxkit.logic import widen_channels
-        from logicxkit.logic.services.slot_width import slot_format
-        from logicxkit.logic.services.stream import project_records as walk
+        from logicxkit.logic.services.mixer.slot_width import slot_format
+        from logicxkit.logic.services.stream.stream import project_records as walk
         data = proj(self._chan(76, 1), self._slot(76, 4, 1),
                     self._chan(77, 1), self._slot(77, 4, 1))
         out, _ = widen_channels(data, {76: 2})
         by_owner = {r.owner: slot_format(r.raw) for r in walk(out) if r.tag == b"UCuA"}
         self.assertEqual(by_owner, {76: 2, 77: 1})
+
+
+class WidthModuleTest(unittest.TestCase):
+    """The channel's width sits beside the slot's, not inside slot insertion."""
+
+    def test_the_channel_width_has_its_own_module(self):
+        from logicxkit.logic.services.mixer import channel_width, insert
+        self.assertTrue(callable(channel_width.set_channel_format))
+        self.assertTrue(callable(channel_width.widen_channels))
+        self.assertIn(86, channel_width.CHANNEL_WIDTH)
+        self.assertFalse(hasattr(insert, "widen_channels"))

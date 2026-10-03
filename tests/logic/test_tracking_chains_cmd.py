@@ -9,7 +9,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from test_translate import au_payload, native_payload  # noqa: E402
 
 from logicxkit.logic._tracking_chains_cmd import LATENT, live_families, register  # noqa: E402
-from logicxkit.logic.services.translate import load_maps  # noqa: E402
+from logicxkit.logic.services.translate.translate import load_maps  # noqa: E402
 from logicxkit.utils.data import PACKAGED  # noqa: E402
 
 MAPS = load_maps([PACKAGED / "translate"])

@@ -4,10 +4,10 @@ own saves wrote them (2026-09-16). Skips without the public corpus."""
 import unittest
 import _goldens
 from logicxkit.logic._binary import find_blocks, read_block_floats
-from logicxkit.logic.services.binding import channels
-from logicxkit.logic.services.plugin_names import PLUGIN_NAMES
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.output_params import NAMES, PARAMS
+from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.mixer.plugin_names import PLUGIN_NAMES
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.output_params import NAMES, PARAMS
 from logicxkit.logicx import project_data
 
 OUT_LABEL = "Output 1-2"
@@ -52,7 +52,7 @@ class DonorSavesTest(unittest.TestCase):
 
     def test_the_slot_config_byte_is_the_tables_mono_and_stereo_value(self):
         """Audio 1 is mono and the Stereo Out stereo: each plug-in's config byte reads as PLUGIN_CFG says."""
-        from logicxkit.logic.services.slot_width import MONO, PLUGIN_CFG, SLOT_CFG_AT, STEREO
+        from logicxkit.logic.services.mixer.slot_width import MONO, PLUGIN_CFG, SLOT_CFG_AT, STEREO
         data = project_data(_goldens.path("master-track-limiter-logic"))
         owners = {c.label: o for o, c in channels(data).items()}
         for label, width in ((OUT_LABEL, STEREO), ("Audio 1", MONO)):
@@ -75,13 +75,13 @@ class LinearPhaseEqLayoutTest(unittest.TestCase):
     and the cut bands' slope orders where a peak band keeps its gain."""
 
     def test_the_default_frequency_ladder_sits_at_every_fourth_index(self):
-        from logicxkit.logic.services.output_params import BAND_ORDER, lpeq_index
+        from logicxkit.logic.services.mixer.output_params import BAND_ORDER, lpeq_index
         floats = dict(_inserts(project_data(_goldens.path("master-out-lpeq-logic")), OUT_LABEL))[243]
         ladder = [floats[lpeq_index(band, "freq")] for band in BAND_ORDER]
         self.assertEqual([round(f) for f in ladder], [20, 75, 100, 250, 750, 2500, 7500, 20000])
 
     def test_the_cut_bands_third_float_is_a_slope_order(self):
-        from logicxkit.logic.services.output_params import lpeq_index
+        from logicxkit.logic.services.mixer.output_params import lpeq_index
         floats = dict(_inserts(project_data(_goldens.path("master-out-lpeq-logic")), OUT_LABEL))[243]
         self.assertEqual((floats[lpeq_index("low_cut", "slope")], floats[lpeq_index("high_cut", "slope")]), (2.0, 4.0))
         self.assertAlmostEqual(floats[lpeq_index("low_cut", "q")], 0.71, places=2)
@@ -107,8 +107,8 @@ class WriteOnTheBlankTest(unittest.TestCase):
     def test_the_example_config_places_the_chain(self):
         from pathlib import Path
         from logicxkit.logic import chain_plan
-        from logicxkit.logic.services.chains import load_chain_config, load_extra_donors
-        from logicxkit.logic.services.insert import insert_slots
+        from logicxkit.logic.services.mixer.chains import load_chain_config, load_extra_donors
+        from logicxkit.logic.services.mixer.insert import insert_slots
         from logicxkit.utils.data import data_dirs
         data = project_data(_goldens.path("blank-base"))
         cfg = load_chain_config(Path(__file__).resolve().parents[2] / "config" / "example-mastering.json")
@@ -130,8 +130,8 @@ class WriteOnTheBlankTest(unittest.TestCase):
         import struct
         from pathlib import Path
         from logicxkit.logic import chain_plan
-        from logicxkit.logic.services.chains import load_chain_config, load_extra_donors, verify_channel_values
-        from logicxkit.logic.services.insert import insert_slots
+        from logicxkit.logic.services.mixer.chains import load_chain_config, load_extra_donors, verify_channel_values
+        from logicxkit.logic.services.mixer.insert import insert_slots
         from logicxkit.utils.data import data_dirs
         data = project_data(_goldens.path("blank-base"))
         cfg = load_chain_config(Path(__file__).resolve().parents[2] / "config" / "example-mastering.json")

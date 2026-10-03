@@ -7,8 +7,8 @@ import unittest
 import _goldens
 from logicxkit.logic._automation_cmd import _apply
 from logicxkit.logic._edit import CommandError
-from logicxkit.logic.services.automation import read_automation
-from logicxkit.logic.services.signature import meter
+from logicxkit.logic.services.regions.automation import read_automation
+from logicxkit.logic.services.song.signature import meter
 from logicxkit.logicx import project_data
 
 
@@ -72,9 +72,9 @@ class NamedTrackTest(unittest.TestCase):
 
     def test_a_named_tracks_lane_lands_on_its_channels_insert(self):
         from logicxkit.logic._edit import owner_by_label
-        from logicxkit.logic.services.add_plugin import add_plugin
-        from logicxkit.logic.services.plugin_library import find_donor, load_library
-        from logicxkit.logic.services.transplant import slot_class_version
+        from logicxkit.logic.services.mixer.add_plugin import add_plugin
+        from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
+        from logicxkit.logic.services.mixer.transplant import slot_class_version
         from logicxkit.utils.data import PACKAGED
         data = project_data(_goldens.path("audio-one-region-logic"))
         comp = find_donor(load_library([PACKAGED / "donors"]), "Compressor", width=None, version=slot_class_version(data))
@@ -118,8 +118,8 @@ class MultipressorRowsTest(unittest.TestCase):
     """The rows the Controls view lists without a band name, on their measured sliders."""
 
     def test_the_written_units_are_what_logic_showed(self):
-        from logicxkit.logic.services.slider import units_at
-        from logicxkit.logic.services.translate import load_maps
+        from logicxkit.logic.services.mixer.slider import units_at
+        from logicxkit.logic.services.translate.translate import load_maps
         from logicxkit.utils.data import PACKAGED
         mb = next(m for m in load_maps([PACKAGED / "translate"]) if m.plugin == "Multipressor")
         ours = _lanes(project_data(_goldens.path("autoset-mb-ours")), "Audio 3")

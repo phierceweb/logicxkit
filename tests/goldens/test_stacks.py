@@ -8,7 +8,7 @@ The real-file part of tests/logic/test_stacks.py; skips without the owner's file
 
 import unittest
 import _goldens
-from logicxkit.logic.services.stacks import (
+from logicxkit.logic.services.arrange.stacks import (
     read_stacks,
     read_tracks,
 )
@@ -24,7 +24,7 @@ TEMPLATE = _goldens.path("tracking-template")
 class GoldenStackTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         from logicxkit.logicx import project_data
         cls.data = project_data(TEMPLATE)
         cls.count = project_metadata(TEMPLATE)["tracks"]
@@ -52,8 +52,8 @@ class GoldenStackTest(unittest.TestCase):
 class GoldenPowerTest(unittest.TestCase):
     def test_switching_a_track_on_flips_the_bit_on_its_row_only(self):
         from logicxkit.logicx import project_data
-        from logicxkit.logic.services.project import project_metadata
-        from logicxkit.logic.services.stacks import read_tracks
+        from logicxkit.logic.services.project.project import project_metadata
+        from logicxkit.logic.services.arrange.stacks import read_tracks
         off, on = project_data(GOLDEN_OFF), project_data(GOLDEN_ON)
         a = {r["name"]: r["on"] for r in read_tracks(off, project_metadata(GOLDEN_OFF)["tracks"])}
         b = {r["name"]: r["on"] for r in read_tracks(on, project_metadata(GOLDEN_ON)["tracks"])}

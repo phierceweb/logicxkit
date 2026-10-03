@@ -4,13 +4,13 @@ The real-file part of tests/logic/test_settings.py; skips without the owner's fi
 
 import unittest
 import _goldens
-from logicxkit.logic.services.events import events
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.integrity import require_no_regression
-from logicxkit.logic.services.sequence import sequences
-from logicxkit.logic.services.settings import read_settings, set_division
-from logicxkit.logic.services.signature import KEY_TYPE, read_signatures
-from logicxkit.logic.services.signature_write import set_key
+from logicxkit.logic.services.song.events import events
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import require_no_regression
+from logicxkit.logic.services.stream.sequence import sequences
+from logicxkit.logic.services.song.settings import read_settings, set_division
+from logicxkit.logic.services.song.signature import KEY_TYPE, read_signatures
+from logicxkit.logic.services.song.signature_write import set_key
 from logicxkit.logicx import project_data
 
 SONGS = _goldens.sessions()
@@ -23,7 +23,7 @@ def key_event(data):
 @unittest.skipUnless(SONGS, "no owner's session on this machine")
 class GoldenTest(unittest.TestCase):
     def test_every_session_reads_the_division_and_key_its_manifest_records(self):
-        for key in _goldens.SESSION_KEYS:
+        for key in _goldens.session_keys():
             song = _goldens.path(key)
             if song is None:
                 continue
@@ -96,9 +96,9 @@ class SignatureChangesTest(unittest.TestCase):
 
     @staticmethod
     def _events(data):
-        from logicxkit.logic.services.events import events
-        from logicxkit.logic.services.stream import HEADER, project_records
-        from logicxkit.logic.services.sequence import sequences
+        from logicxkit.logic.services.song.events import events
+        from logicxkit.logic.services.stream.stream import HEADER, project_records
+        from logicxkit.logic.services.stream.sequence import sequences
         recs = project_records(data)
         return events(recs[sequences(recs)[0].end].raw[HEADER:])
 
@@ -112,7 +112,7 @@ class SignatureChangesTest(unittest.TestCase):
         return head, data, e.lines[1:]
 
     def test_key_change_matches_logics(self):
-        from logicxkit.logic.services.signature_write import add_key_change
+        from logicxkit.logic.services.song.signature_write import add_key_change
         tick, key = _goldens.fact("key-change-logic", "tick"), _goldens.fact("key-change-logic", "key")
         ours = self._events(add_key_change(project_data(CHANGES_BASE), tick, key))
         logic = self._events(project_data(KEY_CHANGE))
@@ -120,8 +120,8 @@ class SignatureChangesTest(unittest.TestCase):
         self.assertEqual([k.name for k in read_signatures(project_data(KEY_CHANGE))[1]], ["C major", f"{key} major"])
 
     def test_meter_change_matches_logics(self):
-        from logicxkit.logic.services.events import BAR_ONE
-        from logicxkit.logic.services.signature_write import add_key_change, add_meter_change
+        from logicxkit.logic.services.song.events import BAR_ONE
+        from logicxkit.logic.services.song.signature_write import add_key_change, add_meter_change
         f = _goldens.entry("meter-change-logic")["facts"]
         data = add_key_change(project_data(CHANGES_BASE), f["key_tick"], f["key"])
         ours = self._events(add_meter_change(data, BAR_ONE + (f["bar"] - 1) * 3840, f["numerator"], f["denominator"]))
@@ -131,8 +131,8 @@ class SignatureChangesTest(unittest.TestCase):
         self.assertEqual([(t.numerator, t.denominator) for t in times], [(4, 4), (f["numerator"], f["denominator"])])
 
     def test_refusals(self):
-        from logicxkit.logic.services.events import BAR_ONE
-        from logicxkit.logic.services.signature_write import add_key_change, add_meter_change
+        from logicxkit.logic.services.song.events import BAR_ONE
+        from logicxkit.logic.services.song.signature_write import add_key_change, add_meter_change
         base = project_data(CHANGES_BASE)
         with self.assertRaises(ValueError):
             add_meter_change(base, BAR_ONE + 100, 3, 4)                # not on a bar line

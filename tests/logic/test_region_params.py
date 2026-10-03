@@ -4,9 +4,9 @@ encoding above all — the fade-out type codes, and the ranges held."""
 import unittest
 
 import _paths  # noqa: F401
-from logicxkit.logic.services.fades import CROSS_OUT, Fade, check_fade, read_fade, with_fade
-from logicxkit.logic.services.region_params import RegionParams, check_params, read_params, with_params
-from logicxkit.logic.services.regions import ENTRY
+from logicxkit.logic.services.regions.fades import CROSS_OUT, Fade, check_fade, read_fade, with_fade
+from logicxkit.logic.services.regions.region_params import RegionParams, check_params, read_params, with_params
+from logicxkit.logic.services.regions.regions import ENTRY
 
 
 class ParamsTest(unittest.TestCase):

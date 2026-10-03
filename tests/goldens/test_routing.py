@@ -4,16 +4,16 @@ The real-file part of tests/logic/test_routing.py; skips without the owner's fil
 
 import unittest
 import _goldens
-from logicxkit.logic.services.binding import output_routing
-from logicxkit.logic.services.routing import set_output
+from logicxkit.logic.services.mixer.binding import output_routing
+from logicxkit.logic.services.mixer.routing import set_output
 
 
 
 @_goldens.needs("tracking-template")
 class GoldenRoutingTest(unittest.TestCase):
     def test_rerouting_a_drum_to_stereo_out_changes_only_that_channel(self):
-        from logicxkit.logic.services.recdiff import diff_records
-        from logicxkit.logic.services.transplant import owner_of
+        from logicxkit.logic.services.stream.recdiff import diff_records
+        from logicxkit.logic.services.mixer.transplant import owner_of
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("tracking-template"))
         kick, so = owner_of(data, "Audio 1"), owner_of(data, "Output 1-2")
@@ -27,7 +27,7 @@ class GoldenRoutingTest(unittest.TestCase):
 @_goldens.needs("route-ours", "route-resave-logic")
 class LogicResavedRouteTest(unittest.TestCase):
     def test_logic_kept_the_rerouted_output(self):
-        from logicxkit.logic.services.binding import channels
+        from logicxkit.logic.services.mixer.binding import channels
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in ("route-ours", "route-resave-logic"))
         labels = {o: c.label for o, c in channels(logic).items()}

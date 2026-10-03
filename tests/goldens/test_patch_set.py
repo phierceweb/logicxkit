@@ -3,7 +3,7 @@
 
 import unittest
 import _goldens
-from logicxkit.logic.services.patch import read_patch
+from logicxkit.logic.services.mixer.patch import read_patch
 
 KEYS = ("patch-base-logic", "patch-fader-logic", "patch-insert-logic", "patch-send-logic", "patch-stack-logic")
 

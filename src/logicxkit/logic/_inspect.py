@@ -9,10 +9,10 @@ import shutil
 from pathlib import Path
 
 
-from .services.library import strip_library
-from .services.neural import read_neural
-from .services.projdiff import diff_against_library, diff_projects
-from .services.project import project_metadata, read_project, window_image_path
+from .services.mixer.library import strip_library
+from .services.translate.neural import read_neural
+from .services.stream.projdiff import diff_against_library, diff_projects
+from .services.project.project import project_metadata, read_project, window_image_path
 
 _NEURAL_NOISE = {"metronomeParameters", "tunerParameters"}  # UI state, not tone
 
@@ -136,7 +136,7 @@ def cmd_neural(args) -> int:
 
 
 def cmd_ocr(args) -> int:
-    from .services.ocr import OcrClient, fader_row
+    from .services.project.ocr import OcrClient, fader_row
     client = OcrClient()
     p = Path(args.file)
     d = client.ocr_logicx(p) if p.is_dir() else client.ocr_image(p)
@@ -156,15 +156,17 @@ def cmd_ocr(args) -> int:
 
 def cmd_stacks(args) -> int:
     """Track stacks and the arrange track list; --move puts a track into one."""
-    from .services.stacks import read_stacks, read_tracks
+    from .services.arrange.stacks import read_stacks, read_tracks
 
-    from .services.retrack import find_project
+    from .services.arrange.retrack import find_project
 
     project = find_project(Path(args.logicx))
-    if args.move or args.move_out:
+    if args.move or args.move_out or getattr(args, "flatten", None) or getattr(args, "convert", None):
         return _move_into_stack(args, project)
-    data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
-    count = project_metadata(project).get("tracks")
+    from ._edit import written_alternatives
+    listed = written_alternatives(project)[0]
+    data = listed.read_bytes()
+    count = project_metadata(project, listed.parent.name).get("tracks")
     stacks = read_stacks(data, count)
 
 
@@ -180,8 +182,8 @@ def cmd_stacks(args) -> int:
                            "depth": s.depth, "parent": s.parent,
                            "members": [n for _k, n in s.members]} for s in stacks], indent=2))
         return 0
-    from .services.levels import read_levels
-    from .services.stacks import stack_parents
+    from .services.mixer.levels import read_levels
+    from .services.arrange.stacks import stack_parents
     parents = stack_parents(data)
     levels = read_levels(data)
     rows = read_tracks(data, count)
@@ -200,15 +202,26 @@ def cmd_stacks(args) -> int:
 
 
 def _move_into_stack(args, project: Path) -> int:
-    """`--move "Track:Stack"` and `--move-out Track` — writes a copy, never the input; each
-    alternative read with its own track count. Moves in come first."""
-    from ._edit import CommandError, edit_copy, object_by_name
-    from .services.stacks import move_out_of_stack, move_to_stack, read_stacks
-    from .services.trackname import stack_named
+    """`--move "Track:Stack"`, `--move-out Track`, `--flatten Stack` and `--convert Stack` —
+    writes a copy, never the input; each alternative read with its own track count. Moves in
+    come first, then moves out, flattens, converts."""
+    from ._edit import CommandError, bump_track_count, edit_copy, object_by_name, written_alternatives
+    from .services.arrange.stack_convert import convert_to_summing
+    from .services.arrange.stack_moves import flatten_stack, move_out_of_stack, move_to_stack
+    from .services.arrange.stacks import read_stacks
+    from .services.arrange.trackname import stack_named
 
     if not args.out:
-        print("logic stacks: --move and --move-out need --out")
+        print("logic stacks: --move, --move-out, --flatten and --convert need --out")
         return 2
+
+    def named(data, count, name):
+        stacks = read_stacks(data, count)
+        found = stack_named(stacks, name)
+        if found is None:
+            have = ", ".join(sorted(s.name for s in stacks))
+            raise CommandError(f"no stack named {name!r} (have: {have})")
+        return found
 
     def step(data, count, data_file):
         for pair in args.move or []:
@@ -227,6 +240,26 @@ def _move_into_stack(args, project: Path) -> int:
                 raise CommandError(f"{track!r} is already at the top level")
             data = moved
             print(f"  {data_file.parent.name}: {track} one level out")
+        for name in getattr(args, "flatten", None) or []:
+            found = named(data, count, name)
+            try:
+                data = flatten_stack(data, found.object_id, track_count=count)
+            except ValueError as e:
+                raise CommandError(f"{name}: {e}") from None
+            count = bump_track_count(data_file, -1)
+            print(f"  {data_file.parent.name}: {name} flattened, {len(found.members)} member(s) up a level")
+        for name in getattr(args, "convert", None) or []:
+            found = named(data, count, name)
+            try:
+                data, made = convert_to_summing(data, found.object_id, track_count=count)
+            except ValueError as e:
+                raise CommandError(f"{name}: {e}") from None
+            print(f"  {data_file.parent.name}: {name} -> {made['name']} on {made['label']} fed from {made['bus']}; "
+                  f"{made['sub']} out of use")
+            if made["level_left"] is not None:
+                level = "-inf" if made["level_left"] == float("-inf") else f"{made['level_left']:.1f} dB"
+                print(f"    {made['sub']}'s fader ({level}) stays on it, as Logic's convert leaves it; "
+                      f"{made['label']} is at 0 dB")
         return data
 
     print(f"in  : {project}")
@@ -235,7 +268,7 @@ def _move_into_stack(args, project: Path) -> int:
     except CommandError as e:
         print(f"  {e}")
         return 1
-    for stack in read_stacks(sorted(dest.glob("Alternatives/*/ProjectData"))[0].read_bytes(),
-                             project_metadata(dest).get("tracks")):
+    written = written_alternatives(dest)[0]
+    for stack in read_stacks(written.read_bytes(), project_metadata(dest, written.parent.name).get("tracks")):
         print(f"\n  {stack.name}: {', '.join(n for _k, n in stack.members) or '(empty)'}")
     return 0

@@ -2,9 +2,9 @@
 
 import unittest
 import _goldens
-from logicxkit.logic.services.slots import slot_bypassed
-from logicxkit.logic.services.stream import project_records
-from logicxkit.logic.services.transplant import owner_of
+from logicxkit.logic.services.mixer.slots import slot_bypassed
+from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.mixer.transplant import owner_of
 from logicxkit.logicx import project_data
 
 

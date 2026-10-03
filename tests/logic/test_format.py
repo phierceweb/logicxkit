@@ -32,9 +32,20 @@ def restamped(root: Path, key: str, word: int) -> Path:
     return dest
 
 
+def with_stale_alternative(project: Path, word: int) -> Path:
+    """``project`` with its first alternative copied to a second one whose format word is
+    ``word`` -> that alternative's ProjectData."""
+    stale = project / "Alternatives" / "001"
+    shutil.copytree(project / "Alternatives" / "000", stale)
+    data = bytearray((stale / "ProjectData").read_bytes())
+    struct.pack_into("<H", data, 4, word)
+    (stale / "ProjectData").write_bytes(data)
+    return stale / "ProjectData"
+
+
 class FormatWordTest(unittest.TestCase):
     def setUp(self):
-        from logicxkit.logic.services import validate
+        from logicxkit.logic.services.stream import validate
         self.validate = validate
 
     def test_the_measured_format_is_logic_12_3_1s(self):
@@ -125,6 +136,61 @@ class EveryWriterRefusesTest(unittest.TestCase):
             with self.subTest(command[0]):
                 code, text = run(command[0], project, *command[1:])
                 self.assertEqual(code, 0, text)
+
+
+@_goldens.needs(THREE, BASE)
+class StaleAlternativeTest(unittest.TestCase):
+    """A bundle holding a current alternative beside one an earlier Logic saved. Logic keeps
+    such bundles itself, so the current alternative is written and the other left as it is,
+    named in the output."""
+
+    OLD = 2000
+
+    def setUp(self):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name)
+        self.out = self.root / "out"
+
+    def test_the_current_alternative_is_written_and_the_stale_one_left_byte_for_byte(self):
+        project = restamped(self.root, THREE, MEASURED)
+        stale = with_stale_alternative(project, self.OLD)
+        before = stale.read_bytes()
+        code, text = wrapped("rename", project, "--track", "Audio 2=Snare", "--out", self.out)
+        self.assertEqual(code, 0, text)
+        out = self.out / "probe.logicx"
+        self.assertEqual((out / "Alternatives" / "001" / "ProjectData").read_bytes(), before)
+        self.assertNotEqual((out / "Alternatives" / "000" / "ProjectData").read_bytes(),
+                            (project / "Alternatives" / "000" / "ProjectData").read_bytes())
+        self.assertIn(f"Alternatives/001 left as it is: saved by an earlier Logic (file format {self.OLD})", text)
+
+    def test_a_display_writer_leaves_it_too(self):
+        project = restamped(self.root, BASE, MEASURED)
+        stale = with_stale_alternative(project, self.OLD)
+        before = {p.name: p.read_bytes() for p in stale.parent.iterdir()}
+        code, text = wrapped("controlbar", project, "--show", "Pause", "--out", self.out)
+        self.assertEqual(code, 0, text)
+        out = self.out / "probe.logicx" / "Alternatives" / "001"
+        self.assertEqual({p.name: p.read_bytes() for p in out.iterdir()}, before)
+        self.assertIn("Alternatives/001 left as it is", text)
+
+    def test_a_writers_pre_read_takes_the_first_current_alternative(self):
+        from logicxkit.logic._edit import first_project_data
+        project = restamped(self.root, THREE, MEASURED)
+        current = with_stale_alternative(project, MEASURED)
+        first = project / "Alternatives" / "000" / "ProjectData"
+        data = bytearray(first.read_bytes())
+        struct.pack_into("<H", data, 4, self.OLD)
+        first.write_bytes(data)
+        self.assertEqual(first_project_data(project), current.read_bytes())
+
+    def test_one_saved_by_a_later_logic_still_refuses_the_bundle(self):
+        project = restamped(self.root, THREE, MEASURED)
+        with_stale_alternative(project, NEXT)
+        code, text = wrapped("rename", project, "--track", "Audio 2=Snare", "--out", self.out)
+        self.assertEqual(code, 1, text)
+        self.assertIn(f"file format {NEXT}", text)
+        self.assertFalse(self.out.exists() and any(self.out.iterdir()))
 
 
 if __name__ == "__main__":

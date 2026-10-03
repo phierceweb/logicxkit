@@ -11,7 +11,7 @@ import unittest
 from pathlib import Path
 import _goldens
 import _paths
-from logicxkit.logic.services.project import (
+from logicxkit.logic.services.project.project import (
     strip_chain,
 )
 

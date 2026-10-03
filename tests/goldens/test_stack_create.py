@@ -9,12 +9,12 @@ import unittest
 from collections import Counter
 import _goldens
 import _paths
-from logicxkit.logic.services.binding import channels, output_labels
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.stream import HEADER, project_records
-from logicxkit.logic.services.stack_create import SUB_NUMBER_AT, create_stack
-from logicxkit.logic.services.stacks import read_stacks, read_tracks, stack_parents
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import channels, output_labels
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.arrange.stack_create import SUB_NUMBER_AT, create_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks, stack_parents
+from logicxkit.logic.services.stream.validate import validate_project
 
 MIX = _paths.staged("Mix")
 def names(rows: list[dict]) -> list[str]:
@@ -26,7 +26,7 @@ class MixTemplateStackTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         from _invariants import report
-        from logicxkit.logic.services.project import project_metadata
+        from logicxkit.logic.services.project.project import project_metadata
         from logicxkit.logicx import project_data
         cls.data = project_data(MIX)
         cls.count = project_metadata(MIX)["tracks"]
@@ -79,7 +79,7 @@ class MixTemplateStackTest(unittest.TestCase):
     def test_a_track_inside_a_stack_gets_a_stack_inside_it(self):
         """Both kinds, on the first member of the template's first stack that is a plain track."""
         from _invariants import assert_consistent
-        from logicxkit.logic.services.stack_summing import create_summing_stack
+        from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
         headers = {s.object_id for s in read_stacks(self.data, self.count)}
         member = next(r for r in read_tracks(self.data, self.count)
                       if r["depth"] == 1 and r["name"] and r["object_id"] not in headers
@@ -109,8 +109,8 @@ class PublicStacklessTest(unittest.TestCase):
     """Our stack over Logic's three flat tracks against Logic's own Create Track Stack."""
 
     def test_our_stack_reads_like_logics(self):
-        from logicxkit.logic.services.stack_create import create_stack
-        from logicxkit.logic.services.stacks import read_stacks, read_tracks
+        from logicxkit.logic.services.arrange.stack_create import create_stack
+        from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
         base = _goldens.path("tracks-three-audio-logic").joinpath("Alternatives/000/ProjectData").read_bytes()
         ids = [r["object_id"] for r in read_tracks(base, 3) if r["name"].startswith("Audio")]
         out, _ = create_stack(base, name="Sub 1", members=ids, track_count=3)
@@ -125,7 +125,7 @@ class LogicResavedStacksTest(unittest.TestCase):
     project whose flattened stack left a `Sub 1` strip behind."""
 
     def _check(self, ours_key: str, logic_key: str):
-        from logicxkit.logic.services.stacks import read_stacks
+        from logicxkit.logic.services.arrange.stacks import read_stacks
         from logicxkit.logicx import project_data
         ours, logic = (project_data(_goldens.path(k)) for k in (ours_key, logic_key))
         (mine,), (theirs,) = read_stacks(ours, 4), read_stacks(logic, 4)

@@ -120,6 +120,9 @@ def scrub(raw: bytes, words: list[str]) -> tuple[bytes, dict[str, int]]:
         text, k = re.subn(rb"/Users/[^/\x00]+/", home, text)
         if k:
             counts["home paths"] = counts.get("home paths", 0) + k
+        text, k = re.subn(rb"~/projects/", b"~/xxxxxxxx/", text)        # the same length, so a record keeps its layout
+        if k:
+            counts["project paths"] = counts.get("project paths", 0) + k
         for word in words:
             text, k = re.subn(re.escape(word.encode()), lambda m: b"x" * len(m.group(0)), text, flags=re.I)
             if k:

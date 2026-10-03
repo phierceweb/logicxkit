@@ -2,9 +2,9 @@
 
 import unittest
 import _paths  # noqa: F401
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.midi import REGION_BAR_ONE
-from logicxkit.logic.services.midi_write import entry_tick, note_lines
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.midi.midi import REGION_BAR_ONE
+from logicxkit.logic.services.midi.midi_write import entry_tick, note_lines
 
 
 class TickTest(unittest.TestCase):
@@ -32,9 +32,9 @@ class TickTest(unittest.TestCase):
 class NameTest(unittest.TestCase):
     def test_a_region_name_outside_ascii_is_utf8_with_its_byte_length(self):
         import struct
-        from logicxkit.logic.services.stream import HEADER
-        from logicxkit.logic.services.midi import NAME_AT, _name
-        from logicxkit.logic.services.midi_write import _template, _with_name
+        from logicxkit.logic.services.stream.stream import HEADER
+        from logicxkit.logic.services.midi.midi import NAME_AT, _name
+        from logicxkit.logic.services.midi.midi_write import _template, _with_name
         raw = _with_name(_template()["qesm"], "Pad — é")
         self.assertEqual((_name(raw), struct.unpack_from("<H", raw, HEADER + NAME_AT)[0]), ("Pad — é", 10))
 
@@ -42,8 +42,8 @@ class NameTest(unittest.TestCase):
 class PlaceEntryTest(unittest.TestCase):
     def test_a_new_entry_lands_between_flexed_entries_with_their_marker_blocks_intact(self):
         import struct
-        from logicxkit.logic.services.midi_write import _place_entry
-        from logicxkit.logic.services.regions import ENTRY, TAIL, entry_offsets
+        from logicxkit.logic.services.midi.midi_write import _place_entry
+        from logicxkit.logic.services.regions.regions import ENTRY, TAIL, entry_offsets
 
         def entry(tick: int) -> bytes:
             e = bytearray(ENTRY)

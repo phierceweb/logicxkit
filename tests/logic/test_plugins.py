@@ -5,7 +5,7 @@ import plistlib
 import struct
 import unittest
 import _paths  # noqa: F401
-from logicxkit.logic.services.plugins import PluginRef, installed_from_auval, project_plugins, validate_components, verdict
+from logicxkit.logic.services.mixer.plugins import PluginRef, installed_from_auval, project_plugins, validate_components, verdict
 
 HDR = 36
 
@@ -90,16 +90,16 @@ class VerdictTest(unittest.TestCase):
         def fake_run(argv, **_k):
             code, out = runs[tuple(argv[2:5])]
             return subprocess.CompletedProcess(argv, code, out, "")
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value="/usr/bin/auval"), \
-             mock.patch("logicxkit.logic.services.plugins.subprocess.run", side_effect=fake_run):
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value="/usr/bin/auval"), \
+             mock.patch("logicxkit.logic.services.mixer.plugins.subprocess.run", side_effect=fake_run):
             self.assertEqual(validate_components(set(runs)), {("aufx", "FC2p", "FabF"): True, ("aufx", "Xxxx", "Nono"): False})
 
     def test_a_registry_scan_that_hangs_reads_as_unknown_not_clean(self):
         import subprocess
         from unittest import mock
-        from logicxkit.logic.services.plugins import installed_components
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value="/usr/bin/auval"), \
-             mock.patch("logicxkit.logic.services.plugins.subprocess.run",
+        from logicxkit.logic.services.mixer.plugins import installed_components
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value="/usr/bin/auval"), \
+             mock.patch("logicxkit.logic.services.mixer.plugins.subprocess.run",
                         side_effect=subprocess.TimeoutExpired(["auval", "-a"], 1)):
             self.assertIsNone(installed_components(timeout=1))
         v = verdict(self.REFS[:2], installed=None)
@@ -115,8 +115,8 @@ class VerdictTest(unittest.TestCase):
             if comp == ("aufx", "Hang", "Hung"):
                 raise subprocess.TimeoutExpired(argv, kw.get("timeout"))
             return subprocess.CompletedProcess(argv, 0, "* * PASS\n", "")
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value="/usr/bin/auval"), \
-             mock.patch("logicxkit.logic.services.plugins.subprocess.run", side_effect=fake_run):
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value="/usr/bin/auval"), \
+             mock.patch("logicxkit.logic.services.mixer.plugins.subprocess.run", side_effect=fake_run):
             got = validate_components({("aufx", "Hang", "Hung"), ("aufx", "Fine", "Good")}, progress=seen.append)
         self.assertEqual(got, {("aufx", "Hang", "Hung"): False, ("aufx", "Fine", "Good"): True})
         self.assertEqual(seen, [("aufx", "Fine", "Good"), ("aufx", "Hang", "Hung")])
@@ -125,14 +125,14 @@ class VerdictTest(unittest.TestCase):
         import subprocess
         from unittest import mock
         text = "* * PASS\n* * PASS\nAU VALIDATION FAILED\n"
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value="/usr/bin/auval"), \
-             mock.patch("logicxkit.logic.services.plugins.subprocess.run",
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value="/usr/bin/auval"), \
+             mock.patch("logicxkit.logic.services.mixer.plugins.subprocess.run",
                         return_value=subprocess.CompletedProcess([], 0, text, "")):
             self.assertEqual(validate_components({("aufx", "Xxxx", "Nono")}), {("aufx", "Xxxx", "Nono"): False})
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value=None):
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value=None):
             self.assertEqual(validate_components({("aufx", "Xxxx", "Nono")}), {})
-        with mock.patch("logicxkit.logic.services.plugins.shutil.which", return_value="/usr/bin/auval"), \
-             mock.patch("logicxkit.logic.services.plugins.subprocess.run",
+        with mock.patch("logicxkit.logic.services.mixer.plugins.shutil.which", return_value="/usr/bin/auval"), \
+             mock.patch("logicxkit.logic.services.mixer.plugins.subprocess.run",
                         return_value=subprocess.CompletedProcess([], 0, "", "")):
             self.assertEqual(validate_components({("aufx", "Xxxx", "Nono")}), {("aufx", "Xxxx", "Nono"): False},
                              "a clean exit that ran no test is not a pass")

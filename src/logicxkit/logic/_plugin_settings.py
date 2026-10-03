@@ -20,9 +20,9 @@ def dialled(donor, settings: dict[str, str], raw: bytes | None = None):
     """``--set`` applied: band specs (``band N=…``) and a third-party's items through its map into
     the donor's payload; one of Logic's own keeps its table names for `add_plugin` to dial ->
     ``(raw, values for the table, notes)``."""
-    from .services.stream import HEADER
-    from .services.translate import load_maps, map_for
-    from .services.translate_write import apply_band_specs, split_specs, write_settings
+    from .services.stream.stream import HEADER
+    from .services.translate.translate import load_maps, map_for
+    from .services.translate.translate_write import apply_band_specs, split_specs, write_settings
     raw = donor.raw if raw is None else raw
     if not settings:
         return raw, None, []
@@ -49,8 +49,8 @@ def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
     """Table-name values for one of Logic's own as its sliders keep them: held to a measured
     slider's ends with a note, on the item's grid and the nearer sampled position — what
     `settings --set` writes. A parameter no map measures goes as given."""
-    from .services.slider import slider_curve, snap
-    from .services.translate import load_maps, map_for
+    from .services.mixer.slider import slider_curve, snap
+    from .services.translate.translate import load_maps, map_for
     m = map_for(payload, load_maps())
     if m is None:
         return values, []
@@ -78,8 +78,8 @@ def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
 def translation(data, owner: int, at: int, donor):
     """The old slot's settings carried into ``donor`` through the family vocabulary, with the
     old slot's side chain riding along; refused when either plug-in has no map."""
-    from .services.stream import HEADER
-    from .services.transplant import slot_at
+    from .services.stream.stream import HEADER
+    from .services.mixer.transplant import slot_at
     record = slot_at(data, owner, at)
     if record is None:
         raise ValueError(f"slot {at} holds no plug-in")
@@ -93,10 +93,10 @@ def translation_of(old: bytes, donor, family: str | None = None):
     """The plan carrying ``old``'s settings into ``donor`` — through the map of ``family`` when
     the old plug-in has several — with its side chain; LookupError when the old plug-in has no
     map, ValueError when the donor has none or the families differ."""
-    from .services.stream import HEADER
-    from .services.plugin_params import load_tables
-    from .services.sidechain import side_chain
-    from .services.translate import load_maps, map_for, maps_for, plan, read_settings
+    from .services.stream.stream import HEADER
+    from .services.mixer.plugin_params import load_tables
+    from .services.mixer.sidechain import side_chain
+    from .services.translate.translate import load_maps, map_for, maps_for, plan, read_settings
     maps = load_maps()
     src_maps, dst_map = maps_for(old, maps), map_for(donor.raw[HEADER:], maps)
     if not src_maps:
@@ -113,11 +113,11 @@ def translation_of(old: bytes, donor, family: str | None = None):
 def carry_lanes(data, owner: int, at: int, carried, raw: bytes, old_raw: bytes, lanes) -> tuple[bytes, list[str]]:
     """``lanes``, the old slot's automation taken before it was emptied, carried through the
     plan's maps onto insert ``at`` (`automation_remap`)."""
-    from .services.automation_remap import carry_slot
-    from .services.stream import HEADER
-    from .services.insert_lanes import channel_object
-    from .services.plugin_params import load_tables, table_for
-    from .services.slot_width import plugin_variant
+    from .services.translate.automation_remap import carry_slot
+    from .services.stream.stream import HEADER
+    from .services.mixer.insert_lanes import channel_object
+    from .services.mixer.plugin_params import load_tables, table_for
+    from .services.mixer.slot_width import plugin_variant
     obj = channel_object(data, owner)
     if obj is None:
         return data, ["automation: the channel is bound to no track; nothing to carry"]
@@ -125,13 +125,14 @@ def carry_lanes(data, owner: int, at: int, carried, raw: bytes, old_raw: bytes, 
     src, dst = carried.source, carried.target
     src_table = table_for(tables, src.type, plugin_variant(old_raw[HEADER:])) if src.type is not None else None
     dst_table = table_for(tables, dst.type, plugin_variant(raw[HEADER:])) if dst.type is not None else None
-    return carry_slot(data, obj, at, src, dst, src_table, dst_table, carried.assignment, lanes=lanes)
+    return carry_slot(data, obj, at, src, dst, src_table, dst_table, carried.assignment, lanes=lanes,
+                      modes=carried.modes)
 
 
 def restore_lanes(data, owner: int, at: int, lanes) -> bytes:
     """``lanes`` written back onto insert ``at`` as they were (`--keep-automation`)."""
-    from .services.automation_write import set_param_lane
-    from .services.insert_lanes import channel_object
+    from .services.regions.automation_write import set_param_lane
+    from .services.mixer.insert_lanes import channel_object
     obj = channel_object(data, owner)
     for lane in lanes:
         data = set_param_lane(data, obj, lane.param_index, [(p.tick, p.value, p.fraction) for p in lane.points], slot=at)
@@ -139,9 +140,9 @@ def restore_lanes(data, owner: int, at: int, lanes) -> bytes:
 
 
 def donor_table(donor):
-    from .services.slot_width import plugin_variant
-    from .services.stream import HEADER
-    from .services.plugin_params import load_tables, table_for
+    from .services.mixer.slot_width import plugin_variant
+    from .services.stream.stream import HEADER
+    from .services.mixer.plugin_params import load_tables, table_for
     table = (table_for(load_tables(), donor.type_id, plugin_variant(donor.raw[HEADER:]))
              if donor.type_id is not None else None)
     if table is None:
@@ -156,13 +157,13 @@ def replace_slot(data, owner: int, at: int, donor, *, id_offsets, settings: dict
     """Mixer slot ``at`` of channel ``owner`` replaced by ``donor`` — the old slot's settings
     carried when ``translate``, its lanes carried after them (or kept as they were, or dropped
     with a note), ``--set`` values dialled in — one gate. Returns the data and the report lines."""
-    from .services.add_plugin import add_plugin
-    from .services.stream import HEADER
-    from .services.insert_lanes import insert_lanes
-    from .services.remove_plugin import remove_plugin
-    from .services.sidechain import resolve, side_chain as side_chain_of, source_name
-    from .services.transplant import slot_at
-    from .services.translate_write import write_plan
+    from .services.mixer.add_plugin import add_plugin
+    from .services.stream.stream import HEADER
+    from .services.mixer.insert_lanes import insert_lanes
+    from .services.mixer.remove_plugin import remove_plugin
+    from .services.mixer.sidechain import resolve, side_chain as side_chain_of, source_name
+    from .services.mixer.transplant import slot_at
+    from .services.translate.translate_write import write_plan
     old = slot_at(data, owner, at)
     old_key = side_chain_of(old.raw[HEADER:]) if old is not None else None
     dropped = source_name(data, old_key) if old_key and not side_chain and not translate else None
@@ -175,7 +176,8 @@ def replace_slot(data, owner: int, at: int, donor, *, id_offsets, settings: dict
     raw, by_table, notes = dialled(donor, settings or {}, raw)
     notes = kept + notes
     data, gone = remove_plugin(data, owner, at)
-    data, report = add_plugin(data, owner, raw, at=at, id_offsets=id_offsets, type_id=donor.type_id, bypass=bypass,
+    data, report = add_plugin(data, owner, raw, at=at, id_offsets=id_offsets, type_id=donor.type_id,
+                              bypass=bypass or bool(carried and carried.bypass),
                               force=force, settings=by_table, table=donor_table(donor) if by_table else None,
                               side_chain=resolve(data, side_chain) if side_chain else (carried.side_chain if carried else None))
     if lanes and keep_automation:

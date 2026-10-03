@@ -123,8 +123,8 @@ class OverwriteGuardTest(_BuildCase):
 
     def test_a_relative_output_dir_resolves_into_the_strip_library(self):
         """The reason the guard exists: nothing in the spec has to name Logic's library."""
-        from logicxkit.logic.services.library import strip_library
-        from logicxkit.logic.services.spec import load_spec
+        from logicxkit.logic.services.mixer.library import strip_library
+        from logicxkit.logic.services.mixer.spec import load_spec
         with tempfile.TemporaryDirectory() as d:
             spec_path = Path(d) / "rel.json"
             spec_path.write_text(json.dumps(

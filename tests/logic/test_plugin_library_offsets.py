@@ -7,7 +7,7 @@ from pathlib import Path
 
 from _records import rec
 
-from logicxkit.logic.services.plugin_library import Donor, find_donor, library_offsets, load_library
+from logicxkit.logic.services.mixer.plugin_library import Donor, find_donor, library_offsets, load_library
 from logicxkit.utils.data import PACKAGED
 
 

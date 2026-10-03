@@ -4,9 +4,9 @@ folder's other lanes kept. Skips without the public corpus."""
 import unittest
 
 import _goldens
-from logicxkit.logic.services.automation import read_automation
-from logicxkit.logic.services.automation_write import set_param_lane
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.regions.automation import read_automation
+from logicxkit.logic.services.regions.automation_write import set_param_lane
+from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logicx import project_data
 
 
@@ -27,8 +27,8 @@ class ParamLaneTest(unittest.TestCase):
 @_goldens.needs("translate-proc")
 class CarrySlotTest(unittest.TestCase):
     def test_lanes_of_a_slot_are_carried_and_the_rest_left(self):
-        from logicxkit.logic.services.automation_remap import carry_slot, slot_lanes
-        from logicxkit.logic.services.translate import load_maps
+        from logicxkit.logic.services.translate.automation_remap import carry_slot, slot_lanes
+        from logicxkit.logic.services.translate.translate import load_maps
         from logicxkit.utils.data import PACKAGED
         proc = next(m for m in load_maps([PACKAGED / "translate"]) if m.plugin == "Pro-C 2")
         data = project_data(_goldens.path("translate-proc"))

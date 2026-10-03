@@ -9,7 +9,7 @@ from groovebin.transforms import Operation, Range
 from logicxkit.logic._edit import CommandError
 from logicxkit.logic._midi_transform_cmd import parse, seed_of, targets
 from logicxkit.logic._midi_cmd import register
-from logicxkit.logic.services.midi_transform import Transform
+from logicxkit.logic.services.midi.midi_transform import Transform
 
 
 def args(*argv):

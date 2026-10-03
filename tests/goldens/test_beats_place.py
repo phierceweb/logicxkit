@@ -17,14 +17,14 @@ from groovebin.library.generate import load_pool, phrase
 from groovebin.library.pattern import pattern
 from groovebin.library.search import find_group
 from logicxkit.cli import main
-from logicxkit.logic.services.beats_compose import compose, plan
-from logicxkit.logic.services.beats_place import place, place_notes, place_phrase
-from logicxkit.logic.services.events import BAR_ONE
-from logicxkit.logic.services.integrity import regressions
-from logicxkit.logic.services.midi import read_midi
-from logicxkit.logic.services.midi_edit import END_TICK
-from logicxkit.logic.services.midi_write import track_regions
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.midi.beats_compose import compose, plan
+from logicxkit.logic.services.midi.beats_place import place, place_notes, place_phrase
+from logicxkit.logic.services.song.events import BAR_ONE
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.midi.midi import read_midi
+from logicxkit.logic.services.midi.midi_edit import END_TICK
+from logicxkit.logic.services.midi.midi_write import track_regions
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 TWO, WALTZ = "midi-two-notes-logic", "signature-meter-3-4-logic"

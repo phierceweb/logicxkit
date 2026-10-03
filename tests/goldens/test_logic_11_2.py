@@ -8,11 +8,11 @@ import struct
 import unittest
 
 import _goldens
-from logicxkit.logic.services.binding import (
+from logicxkit.logic.services.mixer.binding import (
     bound_objects, channels, input_labels, input_routing, output_labels, output_routing)
 from logicxkit.logicx import project_data
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.stacks import read_tracks
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.arrange.stacks import read_tracks
 
 KEYS = ("logic-11-2-a", "logic-11-2-b")
 CONVERTED = {"logic-11-2-a": "logic-11-2-a-converted", "logic-11-2-b": "logic-11-2-b-converted"}

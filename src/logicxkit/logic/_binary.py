@@ -81,7 +81,7 @@ def identify_plugin(data: bytes, idx: int) -> str:
     """Native plugin name for the GAMETSPP block at ``idx``, else ``"Unknown"``.
 
     A Logic re-save's paired copy of a block sits beyond the name, so it reads Unknown —
-    which is what lets the patcher recognise and update copies (see services/spec.py).
+    which is what lets the patcher recognise and update copies (see services/mixer/spec.py).
     """
     # stop short of the 12-byte chunk pre-header: its size/count words can carry a printable
     # byte that would glue onto the name ("Compressor" + 0x50 -> "Compressor P").

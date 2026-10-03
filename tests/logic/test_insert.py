@@ -53,7 +53,7 @@ class ProjectRecordsTest(unittest.TestCase):
     def test_tag_bytes_are_the_raw_on_disk_form(self):
         """Logic's tags read reversed: the channel record's bytes are OCuA, not AuCO. Matching
         the display form silently finds nothing in a real project."""
-        from logicxkit.logic.services.mixer import CHANNEL_TAG
+        from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
         self.assertEqual(CHANNEL_TAG, b"OCuA")
 
     def test_accepts_the_many_tag_types_a_project_uses(self):
@@ -199,8 +199,8 @@ class VerifiedInstanceIdTest(unittest.TestCase):
 
     def test_stamp_without_offsets_touches_only_the_slot_index(self):
         """The slot index is structural and always written; the per-instance id is not."""
-        from logicxkit.logic.services.insert import _stamp
-        from logicxkit.logic.services.slots import SLOT_INDEX_AT
+        from logicxkit.logic.services.mixer.insert import _stamp
+        from logicxkit.logic.services.mixer.slots import SLOT_INDEX_AT
         donor = rec(b"UCuA", 9, 4, bytes(range(60)))
         out = _stamp(donor, owner=1, key=4, floats=None, limit=0, seed="x",
                      label=None, fmt=None, id_offsets=())
@@ -208,8 +208,8 @@ class VerifiedInstanceIdTest(unittest.TestCase):
         self.assertEqual(changed, {SLOT_INDEX_AT})
 
     def test_stamp_writes_only_the_given_offsets(self):
-        from logicxkit.logic.services.insert import _stamp
-        from logicxkit.logic.services.slots import SLOT_INDEX_AT
+        from logicxkit.logic.services.mixer.insert import _stamp
+        from logicxkit.logic.services.mixer.slots import SLOT_INDEX_AT
         donor = rec(b"UCuA", 9, 4, bytes(60))
         out = _stamp(donor, owner=1, key=4, floats=None, limit=0, seed="x",
                      label=None, fmt=None, id_offsets=(50, 51))
@@ -265,7 +265,7 @@ class SlotIndexTest(unittest.TestCase):
 
     def test_index_follows_the_key(self):
         """Default base 4 (Logic 11.2/12): key 4 is index 0."""
-        from logicxkit.logic.services.insert import _stamp
+        from logicxkit.logic.services.mixer.insert import _stamp
         for key, want in ((4, 0), (5, 1), (6, 2), (7, 3)):
             out = _stamp(self._slot(9), owner=1, key=key, floats=None, limit=0, seed="s")
             self.assertEqual(out[36 + 6], want, f"key {key} must write index {want}")

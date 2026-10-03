@@ -4,7 +4,8 @@ which a drag chooses and a write appends."""
 
 import unittest
 import _goldens
-from logicxkit.logic.services.stacks import move_out_of_stack, move_to_stack, read_stacks, read_tracks, stack_parents
+from logicxkit.logic.services.arrange.stack_moves import move_out_of_stack, move_to_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks, stack_parents
 from logicxkit.logicx import project_data
 
 KEYS = ("nest-folder-logic", "nest-stack-in-stack-logic", "nest-member-into-inner-logic",
@@ -103,7 +104,7 @@ class AddTrackInNestedStackTest(unittest.TestCase):
     header, or beside a nested header at the outer level."""
 
     def _added(self, after, member):
-        from logicxkit.logic.services.addtrack import add_track
+        from logicxkit.logic.services.arrange.addtrack import add_track
         base = _load("nest-stack-in-stack-logic")
         out, _report = add_track(base, name="New", after=_object(base, after), member=member)
         rows = {r["name"]: (r["depth"], r["stack_index"]) for r in read_tracks(out)}

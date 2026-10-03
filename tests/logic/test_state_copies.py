@@ -8,9 +8,9 @@ import unittest
 from _records import chan, rec
 
 from logicxkit.logic._binary import find_blocks, read_block_floats
-from logicxkit.logic.services.insert import _stamp, apply_float_overrides
-from logicxkit.logic.services.stream import HEADER
-from logicxkit.logic.services.project import channel_natives
+from logicxkit.logic.services.mixer.insert import _stamp, apply_float_overrides
+from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.project.project import channel_natives
 
 COMPRESSOR = 154
 FLOATS = [0.0, -20.0, 2.0, 0.0, 30.0, 100.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]   # 14, decode_comp's count

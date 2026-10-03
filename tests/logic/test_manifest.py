@@ -2,7 +2,7 @@
 
 import unittest
 from _records import chan, env_obj, proj, send, track, uuid
-from logicxkit.logic.services.manifest import manifest_from_bytes
+from logicxkit.logic.services.project.manifest import manifest_from_bytes
 
 
 def _session():

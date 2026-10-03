@@ -3,9 +3,9 @@
 import unittest
 
 import _goldens
-from logicxkit.logic.services.metronome import BITS, PREROLL, copy_metronome, read_metronome, set_metronome
-from logicxkit.logic.services.modes import read_modes
-from logicxkit.logic.services.recdiff import diff_records, load_project_data
+from logicxkit.logic.services.song.metronome import BITS, PREROLL, copy_metronome, read_metronome, set_metronome
+from logicxkit.logic.services.song.modes import read_modes
+from logicxkit.logic.services.stream.recdiff import diff_records, load_project_data
 
 KEYS = ["metronome-simple-off-logic", "metronome-click-recording-off-logic", "metronome-click-playing-off-logic",
         "metronome-polyphonic-on-logic", "metronome-rows-base-logic", "metronome-rows-flipped-logic",

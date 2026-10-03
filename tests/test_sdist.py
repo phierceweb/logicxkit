@@ -68,6 +68,13 @@ class SdistTest(unittest.TestCase):
             with self.subTest(name):
                 self.assertIn(name, self.members)
 
+    def test_every_file_the_tests_read_ships(self):
+        """`recursive-include tests *.py` takes no data file, and a test that reads a missing one
+        fails the sdist's collection."""
+        wanted = [n for n in self.index("tests") if not n.startswith(("tests/corpus/", "tests/goldens/"))]
+        self.assertTrue(any(not n.endswith(".py") for n in wanted))
+        self.assertEqual(sorted(set(wanted) - set(self.members)), [])
+
     def test_every_packaged_data_file_ships_in_both(self):
         from logicxkit.utils.data import PACKAGED_KINDS
         tracked = [n for n in self.index("src/logicxkit/data") if n.split("/")[3:4] and n.split("/")[3] in PACKAGED_KINDS]

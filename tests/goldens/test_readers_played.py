@@ -8,7 +8,7 @@ import unittest
 
 import _goldens
 from logicxkit.cli import main
-from logicxkit.logic.services.midi import read_midi
+from logicxkit.logic.services.midi.midi import read_midi
 from logicxkit.logicx import project_data
 
 SPLIT, TWO = "regions-a10-midi-split-logic", "midi-two-notes-logic"

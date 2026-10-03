@@ -7,12 +7,12 @@ import unittest
 import _goldens
 
 from logicxkit.logic.orchestrators.apply_template import apply_template
-from logicxkit.logic.services.binding import bound_channels, output_labels
-from logicxkit.logic.services.environment import channel_objects
-from logicxkit.logic.services.stack_create import create_stack
-from logicxkit.logic.services.stack_summing import create_summing_stack
-from logicxkit.logic.services.stacks import read_stacks
-from logicxkit.logic.services.validate import validate_project
+from logicxkit.logic.services.mixer.binding import bound_channels, output_labels
+from logicxkit.logic.services.arrange.environment import channel_objects
+from logicxkit.logic.services.arrange.stack_create import create_stack
+from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
+from logicxkit.logic.services.arrange.stacks import read_stacks
+from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
 THREE, SUMMING = "nest-three-audio-logic", "stack-summing-logic"
@@ -53,7 +53,7 @@ class TwoStacksOfOneNameTest(unittest.TestCase):
 
     def test_a_track_in_the_other_stack_of_the_name_is_moved(self):
         out, ops = self._apply("Audio 1", "Audio 2", "Audio 3")
-        self.assertIn("move from D (Aux 3) to D (Sub 1)", [op.detail for op in ops])
+        self.assertIn("move from D (Aux 1) to D (Sub 1)", [op.detail for op in ops])     # the summing header on the lowest free stub
         self.assertEqual(members(out)["Sub 1"], ["Audio 1", "Audio 2", "Audio 3"])
         self.assertEqual([output(out, f"Audio {n}") for n in (1, 2, 3)], ["Output 1-2"] * 3)
 
