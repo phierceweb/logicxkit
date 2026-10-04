@@ -19,7 +19,7 @@ from collections.abc import Iterable
 from ..mixer.binding import bound_channels, bound_objects, channels
 from ..mixer.channel_alloc import is_mixer_record
 from ..arrange.environment import channel_objects, name_end, object_record
-from ..arrange.groups import group_errors
+from ..arrange.groups import group_errors, missing_group_events
 from ..mixer.mixer import CHANNEL_TAG
 from .stream import HEADER, project_records
 from .integrity_regions import (
@@ -30,6 +30,7 @@ from ..regions.regions import region_errors, row_count_errors
 from .registry import slot_errors
 from ..mixer.sends import SEND_FLAG_AT, SEND_TAG
 from .sequence import link_errors
+from .table_index import index_errors
 from ..mixer.slots import property_key_base
 from .validate import validate_project
 
@@ -104,30 +105,33 @@ def _lost_bindings(was: dict, now: dict) -> list[str]:
 
 
 def _empty() -> dict:
-    return {"validate": [], "link_errors": 0, "bad_object_index": [], "bad_send_flags": [],
+    return {"validate": [], "link_errors": 0, "index_errors": 0, "bad_object_index": [], "bad_send_flags": [],
             "bad_key_flags": [], "bad_region_tracks": [], "bad_row_count": [], "bad_slot_entries": [],
-            "bad_groups": [], "misplaced_references": [], "unbound_channels": [],
+            "bad_groups": [], "missing_group_events": 0, "misplaced_references": [], "unbound_channels": [],
             "binds_by_uuid": False, "regions": [],
             "dangling_files": {"entries": [], "records": [], "unfiled": [], "files": [], "doubled": [], "rba": []},
             "unregistered_slots": [], "marker_blocks": [], "unreadable": None}
 
 
-def structural_report(data: bytes) -> dict:
+def structural_report(data: bytes, track_count: int | None = None) -> dict:
     """Every invariant this module knows, as counts and id lists. Never raises on a project it
     can walk; a project it cannot walk reports the failure under ``unreadable``.
-    ``regions`` is an inventory, not a problem list: `regressions` names what it loses."""
+    ``regions`` is an inventory, not a problem list: `regressions` names what it loses.
+    ``track_count`` is the metadata's, which finds the arrange list where a guess can miss it."""
     try:
         records = project_records(data)
         return {
             "validate": validate_project(data),
             "link_errors": len(link_errors(records)),
+            "index_errors": len(index_errors(records)),
             "bad_object_index": _bad_object_index(records, data),
             "bad_send_flags": _bad_send_flags(records, data),
             "bad_key_flags": flag_errors(data),
-            "bad_region_tracks": region_errors(data),
-            "bad_row_count": row_count_errors(data),
+            "bad_region_tracks": region_errors(data, track_count),
+            "bad_row_count": row_count_errors(data, track_count),
             "bad_slot_entries": slot_errors(data),
             "bad_groups": group_errors(data),
+            "missing_group_events": missing_group_events(data),
             "misplaced_references": _misplaced_references(records, data),
             **_binding(data),
             "regions": placed(records),
@@ -140,16 +144,24 @@ def structural_report(data: bytes) -> dict:
         return {**_empty(), "unreadable": f"{type(e).__name__}: {e}"}
 
 
-def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = ()) -> list[str]:
+def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (),
+                track_counts: tuple[int | None, int | None] = (None, None)) -> list[str]:
     """What ``after`` broke that ``before`` had right. Empty means the write is safe to keep.
-    ``removed``: the region keys (`integrity_regions.region_keys`) a writer deletes on purpose."""
-    was, now = structural_report(before), structural_report(after)
+    ``removed``: the region keys (`integrity_regions.region_keys`) a writer deletes on purpose.
+    ``track_counts``: the metadata's track count before and after."""
+    was, now = structural_report(before, track_counts[0]), structural_report(after, track_counts[1])
     if now["unreadable"]:
         return [f"the result cannot be read back — {now['unreadable']}"]
 
     out = [f"new record-level problem: {p}" for p in now["validate"] if p not in was["validate"]]
     if now["link_errors"] > was["link_errors"]:
         out.append(f"sequence link errors {was['link_errors']} -> {now['link_errors']}")
+    if now["index_errors"] > was["index_errors"]:
+        out.append(f"index-table entries off their place in mixer order {was['index_errors']} -> "
+                   f"{now['index_errors']} — Logic re-lays them, and a channel with no track loses its sequence")
+    if now["missing_group_events"] > was["missing_group_events"]:
+        out.append(f"group member events missing {was['missing_group_events']} -> {now['missing_group_events']}"
+                   " — a member lost the event of a fader its group links")
     for field, label in (("bad_object_index", "object(s) whose mixer index no longer matches "
                           "their channel"),
                          ("bad_send_flags", "channel(s) whose send flags no longer match their "
@@ -160,8 +172,8 @@ def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (
                           "matches the row — the region shows on the wrong track"),
                          ("bad_slot_entries", "track(s) whose sequence slot has no registry entry"),
                          ("bad_groups", "group problem(s) — a member numbered for a group that is "
-                          "not there, events that do not match the members, a slot without its "
-                          "registry pair"),
+                          "not there, an event for a track or fader the group does not link, a slot "
+                          "without its registry pair"),
                          ("bad_row_count", "song container row count off — Logic reads that many "
                           "rows and drops the rest"),
                          ("misplaced_references", "strip reference(s) placed outside their channel's "
@@ -172,9 +184,10 @@ def regressions(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (
     return out + _lost_bindings(was, now) + region_regressions(was, now, removed)
 
 
-def require_no_regression(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = ()) -> None:
+def require_no_regression(before: bytes, after: bytes, *, removed: Iterable[RegionKey] = (),
+                          track_counts: tuple[int | None, int | None] = (None, None)) -> None:
     """Raise rather than let a writer's output reach disk in a worse state than its input."""
-    found = regressions(before, after, removed=removed)
+    found = regressions(before, after, removed=removed, track_counts=track_counts)
     if found:
         raise ValueError("refusing to write — the edit broke structure the input had right:\n  "
                          + "\n  ".join(found))

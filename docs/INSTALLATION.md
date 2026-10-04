@@ -52,7 +52,7 @@ without a physical console's scene file.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
   `PYTHON=python3.13` (or any 3.12+) to choose another interpreter.
 - **Logic Pro**, to confirm anything. A file that opens is not proof a write was correct — see
-  [CAPABILITIES.md](CAPABILITIES.md).
+  [EVIDENCE.md](EVIDENCE.md).
 - **A Swift toolchain**, optionally. Without `swift` on `PATH`, `au` falls back to the static
   parameter tables and `logic ocr` is unavailable. Everything else works.
 

@@ -94,5 +94,25 @@ class MultipressorLanesTest(unittest.TestCase):
         self.assertAlmostEqual(_number(shown["3"]["Band 4 Comp. Ratio"]), 2.0, delta=0.15)
 
 
+@_goldens.needs("mb-expander-lanes", "mb-expander-lanes-ours", "mb-expander-lanes-resave-logic")
+class ExpanderLanesTest(unittest.TestCase):
+    def test_a_multipressor_expanders_lanes_reached_the_pro_mb_band_and_logic_named_them(self):
+        """Exp. Threshold and Reduction (parameters 27, 26) onto the band's threshold and range
+        (28, 29), the threshold on Pro-MB's own curve; Logic kept the points and its Event List
+        named them."""
+        source, ours, theirs = (_lanes(k, 1) for k in ("mb-expander-lanes", "mb-expander-lanes-ours",
+                                                       "mb-expander-lanes-resave-logic"))
+        self.assertEqual((sorted(source), sorted(ours)), ([26, 27], [28, 29]))
+        self.assertEqual([[t for t, _v in ours[to]] for to in (28, 29)], [[t for t, _v in source[was]] for was in (27, 26)])
+        self.assertEqual([round(v, 4) for _t, v in ours[28]], [0.3333, 0.5, 0.1917])       # -40, -30, -50 dB
+        self.assertEqual([round(v, 4) for _t, v in ours[29]], [0.3, 0.4])                  # -12, -6 dB
+        self.assertEqual(theirs, ours)
+        facts = _goldens.entry("mb-expander-lanes-resave-logic")["facts"]
+        self.assertEqual({(e["num"], e["name"]) for e in facts["event_list"]}, {(28, "Band 2 Threshold"), (29, "Band 2 Range")})
+        self.assertEqual(sorted(e["val"] for e in facts["event_list"]),
+                         sorted(round(v * 127) for points in ours.values() for _t, v in points))
+        self.assertEqual((facts["shown"]["Band 2 Dynamics Mode"], _number(facts["shown"]["Band 2 Threshold"])), ("Expansion", -40.0))
+
+
 if __name__ == "__main__":
     unittest.main()

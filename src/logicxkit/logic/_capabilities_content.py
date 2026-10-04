@@ -162,5 +162,5 @@ CONTENT_ROWS = (
                "phrase picked bar by bar from real library bars by their kick and snare onsets. Each "
                "region is written as `midi --region` writes one and filled through the region edits, on "
                "a software instrument track only, never lengthened for a note; the loop flag is never "
-               "written and no output has been opened in Logic or listened to. Logic re-saved a copy holding a placed pattern and a generated phrase, and one holding two composed sections with their fills, with every region and note as written (2026-09-15, `beats-place-generate-*`, `beats-compose-*`)"),
+               "written and no output has been listened to. Logic re-saved a copy holding a placed pattern and a generated phrase, and one holding two composed sections with their fills, with every region and note as written (2026-09-15, `beats-place-generate-*`, `beats-compose-*`)"),
 )

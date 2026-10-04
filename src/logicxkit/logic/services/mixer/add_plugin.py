@@ -20,16 +20,12 @@ from ..stream.stream import HEADER, VER_OFF, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
 from ..stream.recbuild import with_key
 from .sidechain import SideChain, with_side_chain
-from .slots import archive_index, is_plugin_slot, property_key_base
+from .slots import SHOWN_AT, archive_index, is_plugin_slot, property_key_base
 from .smart_controls import shift_mapping_slots
 from .insert_lanes import move_lanes
 from .plugins import is_instrument_plugin
 from .transplant import channel_slots, is_audio, is_instrument_channel, refuse_width, slot_class_version
 from ..stream.validate import require_full_walk, require_valid
-
-# channel record +30: the insert slots the mixer shows, one value for the project (the logic
-# README, "The slot key range grows")
-SHOWN_AT = 30
 
 
 def add_plugin(data: bytes, owner: int, donor: bytes, *, at: int | None = None,

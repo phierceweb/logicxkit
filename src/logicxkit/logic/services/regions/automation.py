@@ -30,7 +30,7 @@ from dataclasses import dataclass
 from ..song.events import events
 from ..arrange.groups import FADER_IDS
 from ..stream.stream import HEADER, project_records
-from ..stream.sequence import QESM_ID_AT, QESM_OBJECT_AT, sequences
+from ..stream.sequence import QESM_ID_AT, QESM_OBJECT_AT, is_group, sequences
 from ..arrange.stacks import read_tracks
 
 NAME_AT = 18
@@ -117,8 +117,8 @@ def read_automation(data: bytes, track_count: int | None = None) -> list[Automat
     for t in triples:
         qesm = records[t.start].raw[HEADER:]
         folder = named(qesm, FOLDER_NAME)
-        if not folder and (t.slot in referenced or named(qesm, ROOT_NAME)):
-            continue
+        if not folder and (t.slot in referenced or named(qesm, ROOT_NAME) or is_group(records[t.start].raw)):
+            continue                                 # a group's member events are fader events too
         seq_id = struct.unpack_from("<I", qesm, QESM_ID_AT)[0]
         track_object = struct.unpack_from("<I", qesm, QESM_OBJECT_AT)[0]
         found: dict = {}

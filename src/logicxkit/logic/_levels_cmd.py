@@ -68,10 +68,11 @@ def cmd_levels(args) -> int:
             return 0
         print(f"{'owner':>5}  {'ref':24s} {'fader':>5} {'dB':>7} {'pan':>5}")
         for owner, v in sorted(rows.items()):
-            if v["fader"] == UNITY and v["pan"] == PAN_CENTRE and not refs.get(owner):
+            state = "".join(f"  {word}" for word, on in (("muted", v["mute"]), ("soloed", v["solo"])) if on)
+            if v["fader"] == UNITY and v["pan"] == PAN_CENTRE and not refs.get(owner) and not state:
                 continue
             print(f"{owner:5d}  {str(refs.get(owner, '')):24s} "
-                  f"{v['fader']:5d} {db_text(v['fader_db']):>7} {v['pan_display']:+5d}")
+                  f"{v['fader']:5d} {db_text(v['fader_db']):>7} {v['pan_display']:+5d}{state}")
         return 0
 
     if not args.out:

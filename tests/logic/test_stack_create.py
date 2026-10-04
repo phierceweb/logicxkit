@@ -19,9 +19,12 @@ from _records import (
     uuid,
 )
 from logicxkit.logic.services.mixer.binding import channels
+from logicxkit.logic.services.mixer.levels import read_levels
 from logicxkit.logic.services.arrange.environment import channel_objects
 from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.arrange.tracklist import arrange_run, flat_run, row_object
 from logicxkit.logic.services.stream.sequence import sequences
+from logicxkit.logic.services.stream.table_index import index_errors
 from logicxkit.logic.services.arrange.stack_create import SUB_NUMBER_AT, create_stack
 from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks, stack_parents
 from logicxkit.logic.services.stream.validate import validate_project
@@ -31,8 +34,8 @@ TRACKS = 8
 MIXER = [88, 92, 152, 504, 212, 216, 80, 192, 196]      # the flat list's bound rows, mixer order
 
 
-def sub(owner: int, number: int, *, uuid: bytes) -> bytes:
-    raw = bytearray(chan(owner, f"Sub {number}", uuid=uuid, size=201))
+def sub(owner: int, number: int, *, uuid: bytes, in_use: bool = True) -> bytes:
+    raw = bytearray(chan(owner, f"Sub {number}", uuid=uuid, size=201, in_use=in_use))
     raw[HEADER + SUB_NUMBER_AT] = number
     return bytes(raw)
 
@@ -171,8 +174,11 @@ class BookkeepingTest(unittest.TestCase):
         big = max((r.raw[HEADER:] for r in recs if r.tag == b"qSvE"), key=len)
         self.assertEqual(len(big), 10 * 80)
         entry = big[-80:]
+        run = arrange_run(recs, TRACKS + 1)
+        place = [row_object(recs[i].raw) for i in flat_run(recs, run)].index(508) + 1
         self.assertEqual((struct.unpack_from("<I", entry, 16)[0], entry[20],
-                          struct.unpack_from("<H", entry, 32)[0]), (508, 11, 56))
+                          struct.unpack_from("<H", entry, 32)[0]), (508, place, 56))   # indexed by its mixer-order place
+        self.assertEqual(index_errors(recs, TRACKS + 1), [])
 
     def test_the_count_record(self):
         out, _ = create_stack(session(), name="Nested Stack", members=[504], track_count=TRACKS)
@@ -197,9 +203,14 @@ class RefusalTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_stack(session(), name="X", members=[9999], track_count=TRACKS)
 
-    def test_a_stack_header(self):
-        with self.assertRaises(ValueError):
-            create_stack(session(), name="X", members=[192], track_count=TRACKS)
+    def test_a_stack_header_takes_its_rows_into_the_new_stack(self):
+        out, report = create_stack(session(), name="X", members=[192, 196], track_count=TRACKS)
+        rows = [(r["name"], r["depth"]) for r in read_tracks(out, TRACKS + 1)][:6]
+        self.assertEqual(rows, [("X", 0), ("Drums", 1), ("Kick In", 2), ("Snare Up", 2), ("Bass", 1), ("Bass DI", 2)])
+        stacks = {s.name: [n for _k, n in s.members] for s in read_stacks(out, TRACKS + 1)}
+        self.assertEqual(stacks, {"X": ["Drums", "Bass"], "Drums": ["Kick In", "Snare Up"], "Bass": ["Bass DI"]})
+        self.assertEqual({channels(out)[o].stack_index for o in (379, 380)}, {3})      # the two Sub strips
+        self.assertEqual(validate_project(out), [])
 
     def test_members_of_two_stacks_or_two_levels(self):
         for members in ([88, 152], [88, 504]):          # Drums' and Bass's; Drums' and a top-level track
@@ -257,9 +268,9 @@ class StacklessSessionTest(unittest.TestCase):
                          ["Master", "Sub 1", "Input 1-2", "Output 1-2"])
 
 
-def session_with_free_sub_above() -> bytes:
-    """``session()`` plus an unbound `Sub 4` strip a flattened stack left behind, after Sub 2 —
-    so the new Sub 3 lands below it and it has to move up."""
+def session_with_sub_above(in_use: bool = True) -> bytes:
+    """``session()`` plus an unbound `Sub 4` strip after Sub 2: in use, as a flattened stack
+    leaves one, or out of use, as a converted one does."""
     table = b"".join(index_entry(oid, 2 + k, 20 + 4 * k) for k, oid in enumerate(MIXER))
     return proj(
         count_record(13, [6, 0, 2, 1, 1, 0, 4], 13),
@@ -273,7 +284,7 @@ def session_with_free_sub_above() -> bytes:
         chan(16, "Audio 17", uuid=uuid(152), stack_index=2),
         chan(68, "Aux 2", uuid=uuid(212)), chan(69, "Aux 3", uuid=uuid(216)),
         chan(88, "Inst 4", uuid=uuid(504)),
-        sub(379, 1, uuid=uuid(192)), sub(380, 2, uuid=uuid(196)), sub(381, 4, uuid=uuid(900)),
+        sub(379, 1, uuid=uuid(192)), sub(380, 2, uuid=uuid(196)), sub(381, 4, uuid=uuid(900), in_use=in_use),
         chan(382, "Input 1-2", size=201, in_use=False),
         chan(383, "Output 1-2", uuid=uuid(80), size=201), send(383, 0, 5),
         seq_triple(1, big=table),
@@ -286,18 +297,49 @@ def session_with_free_sub_above() -> bytes:
         seq_triple(11, slot=100, size=341))
 
 
-class SubStripsAboveTheInsertTest(unittest.TestCase):
-    """A Sub strip that moves up keeps label == +6: `Sub N` stores N there (every Sub strip
-    Logic wrote), so a shift is one on both, not two on the label."""
+class SubStripsBesideTheStacksTest(unittest.TestCase):
+    """Which `Sub` strip a new folder takes when one sits above the folder stacks: a new one
+    after the highest while that one is in use, the strip itself when it is out of use."""
 
-    def test_a_free_sub_above_the_new_one_moves_up_one(self):
-        out, report = create_stack(session_with_free_sub_above(), name="Nested Stack", members=[504],
+    def test_a_new_strip_goes_after_a_higher_sub_that_is_in_use(self):
+        out, report = create_stack(session_with_sub_above(), name="Nested Stack", members=[504],
                                    track_count=TRACKS)
-        self.assertEqual(report["label"], "Sub 3")
+        self.assertEqual((report["label"], report["owner"]), ("Sub 5", 382))
         strip = next(r.raw[HEADER:] for r in project_records(out) if r.tag == b"OCuA" and r.owner == 382)
         self.assertEqual((channels(out)[382].label, strip[SUB_NUMBER_AT]), ("Sub 5", 5))
         self.assertEqual([c.label for o, c in sorted(channels(out).items()) if c.label.startswith("Sub ")],
-                         ["Sub 1", "Sub 2", "Sub 3", "Sub 5"])
+                         ["Sub 1", "Sub 2", "Sub 4", "Sub 5"])
+        self.assertEqual(validate_project(out), [])
+
+    def test_a_sub_out_of_use_is_taken_and_no_channel_moves(self):
+        data = session_with_sub_above(in_use=False)
+        out, report = create_stack(data, name="Nested Stack", members=[504], track_count=TRACKS)
+        self.assertEqual((report["label"], report["owner"]), ("Sub 4", 381))
+        self.assertEqual({o: c.label for o, c in channels(out).items()}, {o: c.label for o, c in channels(data).items()})
+        self.assertEqual((channels(data)[381].in_use, channels(out)[381].in_use), (False, True))
+        header = channel_objects(out)[report["object_id"]]
+        self.assertEqual(channels(out)[381].uuid, header.uuid)
+        self.assertEqual(validate_project(out), [])
+
+    def test_a_sub_out_of_use_comes_back_at_0_db_and_not_muted(self):
+        data = bytearray(session_with_sub_above(in_use=False))
+        strip = next(r for r in project_records(bytes(data)) if r.tag == b"OCuA" and r.owner == 381)
+        at = bytes(data).index(strip.raw) + HEADER
+        data[at + 85] = data[at + 119] = 60                       # its fader, left off unity
+        data[at + 90] |= 1                                        # and its mute
+        out, report = create_stack(bytes(data), name="Nested Stack", members=[504], track_count=TRACKS)
+        level = read_levels(out)[381]
+        self.assertEqual((report["label"], level["fader"], level["fader_fixed"], level["mute"]),
+                         ("Sub 4", 90, 90 << 24, False))
+
+    def test_a_sub_out_of_use_with_a_pan_or_a_solo_is_refused(self):
+        for at, value, what in ((89, 20, "a pan"), (88, 1, "a solo")):
+            with self.subTest(what):
+                data = bytearray(session_with_sub_above(in_use=False))
+                strip = next(r for r in project_records(bytes(data)) if r.tag == b"OCuA" and r.owner == 381)
+                data[bytes(data).index(strip.raw) + HEADER + at] = value
+                with self.assertRaisesRegex(ValueError, f"Sub 4 is out of use .* {what}"):
+                    create_stack(bytes(data), name="Nested Stack", members=[504], track_count=TRACKS)
 
 
 SUMMING_MIXER = MIXER + [600, 604]

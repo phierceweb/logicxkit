@@ -29,6 +29,7 @@ ROW_UUID_AT = 24
 EXPANDED_AT, EXPANDED_BIT = 40, 0x80
 SELECTED_AT = 43
 ROW_TYPE_AT = 51
+ROW_WORD_AT = 52         # u32: ffffffff on an audio or instrument row, 0 on every aux row Logic made
 ROW_TYPE = {"audio": 0x07, "instrument": 0x85}
 HIDDEN_BIT = 0x04000000
 OFF_BIT = 0x20000000               # +0: the track's power button off (measured: switching one on
@@ -96,11 +97,11 @@ def row_position(records: list[ProjRecord], run: list[int], object_id: int) -> i
 
 
 def new_row(template: bytes, *, object_id: int, member: int, row_type: int | None = None,
-            expanded: bool | None = None) -> bytes:
+            expanded: bool | None = None, word: int | None = None) -> bytes:
     """An arrange row for a new object in the shape of ``template``: base flags, no group
     word, fresh UUID, unselected. ``member`` is the +14 byte of the row it will sit under;
-    a top-level row is written expanded, as Logic writes fresh ones; ``row_type`` stays the
-    template's when not given."""
+    a top-level row is written expanded, as Logic writes fresh ones; ``row_type`` and the
+    ``word`` at `+52` stay the template's when not given."""
     row = bytearray(template)
     struct.pack_into("<I", row, HEADER + TRACK_FLAG_AT, FLAG_BASE)
     struct.pack_into("<I", row, HEADER + 4, 0)
@@ -113,6 +114,8 @@ def new_row(template: bytes, *, object_id: int, member: int, row_type: int | Non
     row[HEADER + SELECTED_AT] = 0
     if row_type is not None:
         row[HEADER + ROW_TYPE_AT] = row_type
+    if word is not None:
+        struct.pack_into("<I", row, HEADER + ROW_WORD_AT, word)
     return bytes(row)
 
 

@@ -54,6 +54,15 @@ class ReadLevelsTest(unittest.TestCase):
         self.assertEqual({k: got[1][k] for k in ("fader", "pan", "pan_display")},
                          {"fader": 47, "pan": 127, "pan_display": 63})
 
+    def test_mute_and_solo_are_bit_0_of_their_bytes(self):
+        raw = bytearray(chan(0, 90, 64))
+        raw[36 + 90], raw[36 + 88] = 0x03, 0x02          # muted, and silenced by a solo; no solo of its own
+        got = read_levels(proj(bytes(raw), chan(1, 90, 64)))
+        self.assertEqual([(got[o]["mute"], got[o]["solo"]) for o in (0, 1)], [(True, False), (False, False)])
+        raw[36 + 90], raw[36 + 88] = 0x02, 0x01
+        got = read_levels(proj(bytes(raw)))[0]
+        self.assertEqual((got["mute"], got["solo"]), (False, True))
+
     def test_the_exact_fader_is_the_fixed_point_word(self):
         import struct
         raw = bytearray(chan(0, 99, 0))

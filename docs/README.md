@@ -25,10 +25,12 @@ lives outside this directory, and they are listed too — see
 |---|---|
 | [INSTALLATION.md](INSTALLATION.md) | Installing, or pointing the tools at files that are not in the repo |
 | [commands.md](commands.md) | Working out which command to use and what rules govern it |
-| [CAPABILITIES.md](CAPABILITIES.md) | **Before pointing any writer at a session you care about** |
+| [CAPABILITIES.md](CAPABILITIES.md) | Finding out what logicxkit can do to a project, in plain words |
+| [EVIDENCE.md](EVIDENCE.md) | **Before pointing any writer at a session you care about** |
 
-`CAPABILITIES.md` is generated from `src/logicxkit/logic/_capabilities.py` and enforced by
+`EVIDENCE.md` is generated from `src/logicxkit/logic/_capabilities.py` and enforced by
 `tests/logic/test_capabilities.py`. Change a confidence level in the code, never in the doc.
+The same test fails when `CAPABILITIES.md` leaves a command out.
 
 ## Format references
 

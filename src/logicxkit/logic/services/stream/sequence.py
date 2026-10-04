@@ -6,7 +6,7 @@ older saves), a zero-size `karT` marker and a 16-byte `qSvE`. The three share a 
 object to its triple through that slot:
 
     entry +16   object id             qeSM +234   u16 object id
-    entry +20   17 + mixer rank       qeSM +242   i16, -(entry +20)
+    entry +20   place in mixer order  qeSM +242   i16, -(entry +20)
     entry +32   slot word             qeSM +300   u32, 382 on a track Logic just made
                                       qeSM +39    9 on a track, 20 on a stack (Sub 5: 9)
 
@@ -15,6 +15,8 @@ before the tail with the lowest free slot word (multiples of 4 from 20); every e
 past the new index moves up one, and the triple it links to has +242 decremented; the new
 triple goes into the stream in slot order; no other triple moves. `qeSM +8`, repeated as the
 `qSvE` owner, is a per-triple id Logic renumbers freely — any unused value will do.
+
+The index is the object's 1-based place in the mixer-order track list (`table_index`).
 """
 
 from __future__ import annotations

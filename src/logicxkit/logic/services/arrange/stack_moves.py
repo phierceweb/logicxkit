@@ -9,7 +9,8 @@ from ..mixer.mixer import CHANNEL_TAG
 from ..stream.recbuild import with_key
 from ..regions.regions import sync_region_tracks, sync_row_count
 from .selection import select_track
-from .stacks import FOLDER, SUMMING, read_stacks, span_end, summing_around
+from .stack_place import summing_bus, to_summing_bus
+from .stacks import FOLDER, SUMMING, read_stacks, require_two_levels, span_end, summing_holder
 from ..stream.stream import HEADER, NO_KEY, project_records, reassemble
 from .tracklist import MEMBER_AT, arrange_run, row_object, with_member
 from ..stream.validate import require_full_walk, require_valid
@@ -21,8 +22,9 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
     stack (both measured on Logic's own drags, 2026-09-04): reposition the row as the last
     member, set its member byte, stamp the parent pointer, set the stack index on the
     track's mixer channel, and leave the track selected. Into a summing stack its parent and
-    stack index stay (`stack-summing-dragged-in-logic`); a track entering one, directly or
-    through a folder inside it, outputs to its bus (`stack_place`). Refuses an invalid result."""
+    stack index stay (`stack-summing-dragged-in-logic`) and it outputs to the stack's bus; a
+    stack moved in takes its members along, a summing one's aux onto the bus, a folder's rows
+    alone (`stack_place`). Refuses an invalid result."""
     require_full_walk(data)
     records = list(project_records(data))
     run = arrange_run(records, track_count)
@@ -34,16 +36,12 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
         raise ValueError(f"object {stack_object} is not a stack")
     stack = stacks[stack_object]
     summing = stack.kind == SUMMING
-    from .stack_place import summing_bus, to_summing_bus
-    listed = list(stacks.values())
-    entering = stack if summing else summing_around(listed, stack.track_key)
-    if entering is not None and track_object in stacks:
-        raise ValueError("a stack moved into a summing stack is not written: where its members "
-                         "route then has not been measured")
-    was = summing_around(listed, order.index(track_object))
-    routed = entering is not None and (was is None or was.object_id != entering.object_id)
-    if routed and summing_bus(data, entering) is None:
-        raise ValueError(f"{entering.name!r} is fed from no bus, so a track moved into it has nowhere to go")
+    require_two_levels(list(stacks.values()), stack.track_key, [order.index(track_object)])
+    was = summing_holder(list(stacks.values()), order.index(track_object))
+    folder_moved = track_object in stacks and stacks[track_object].kind == FOLDER     # no output of its own
+    routed = summing and not folder_moved and (was is None or was.object_id != stack_object)
+    if routed and summing_bus(data, stack) is None:
+        raise ValueError(f"{stack.name!r} is fed from no bus, so a track moved into it has nowhere to go")
 
     depths = [records[i].raw[HEADER + MEMBER_AT] for i in run]
     start = order.index(stack_object)
@@ -78,7 +76,7 @@ def move_to_stack(data: bytes, track_object: int, stack_object: int,
 
     result = sync_region_tracks(reassemble(data, out), track_count)
     if routed:
-        result = to_summing_bus(result, {track_object: entering})
+        result = to_summing_bus(result, {track_object: stack})
     result = select_track(result, track_object, track_count)
     require_valid(result)
     return result
@@ -98,8 +96,10 @@ def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = 
     """Move a member row one level out, right after the stack it leaves, the way Logic's drag
     does: depth byte down by one, the parent pointer and the channel's stack index now the
     enclosing stack's (cleared at the top level; a summing stack gives its members no index), the
-    row selected. Its routing stays, out of a summing stack too. A row two levels deep takes two
-    moves to reach the top."""
+    row selected. A row that lands as a direct member of a summing stack outputs to its bus
+    (`stack-out-of-folder-after-logic`, `stack-out-of-inner-summing-after-logic`); at the top
+    level its routing stays, out of a summing stack too. A row two levels deep takes two moves
+    to reach the top."""
     require_full_walk(data)
     records = list(project_records(data))
     run = arrange_run(records, track_count)
@@ -127,6 +127,9 @@ def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = 
         outer = next((s for s in stacks if s.object_id == outer_object), None)
         if outer is None:
             raise ValueError(f"object {outer_object} encloses the row but is not a stack")
+    routed = outer is not None and outer.kind == SUMMING
+    if routed and summing_bus(data, outer) is None:
+        raise ValueError(f"{outer.name!r} is fed from no bus, so a track moved into it has nowhere to go")
 
     track_owner = bound_channels(data).get(track_object)
     replace = dict(zip(run, rows, strict=True))
@@ -137,10 +140,11 @@ def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = 
             raw = set_parent(raw, outer.object_id if outer else 0)
         elif (record.tag == CHANNEL_TAG and record.key == NO_KEY
                 and record.owner == track_owner and len(raw) - HEADER > 200):
-            if outer is None or outer.kind == FOLDER:
-                raw = set_stack_index(raw, outer.index if outer else 0)
+            raw = set_stack_index(raw, outer.index if outer and outer.kind == FOLDER else 0)
         out.append(raw)
     result = sync_region_tracks(reassemble(data, out), track_count)
+    if routed:
+        result = to_summing_bus(result, {track_object: outer})
     result = select_track(result, track_object, track_count)
     require_valid(result)
     return result

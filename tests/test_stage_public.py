@@ -48,10 +48,19 @@ class WordsTest(unittest.TestCase):
         self.assertEqual(stage.leaks("the blue-heron take", ["Blue Heron", "other"]), ["Blue Heron"])
         self.assertEqual(stage.leaks("nothing here", ["Blue Heron"]), [])
 
-    def test_autosaves_backups_and_window_images_are_skipped(self):
-        skipped = stage.SKIP("x", ["Autosave", "Project File Backups", "WindowImage_1.jpg", "ProjectData",
-                                   "DisplayState.plist"])
-        self.assertEqual(sorted(skipped), ["Autosave", "Project File Backups", "WindowImage_1.jpg"])
+    def test_autosaves_backups_and_logics_screen_captures_are_skipped(self):
+        skipped = stage.SKIP("x", ["Autosave", "Project File Backups", "WindowImage_1.jpg", "PreviewMovie.mp4",
+                                   "Undo Data.nosync", "ProjectData", "DisplayState.plist"])
+        self.assertEqual(sorted(skipped), ["Autosave", "PreviewMovie.mp4", "Project File Backups", "Undo Data.nosync",
+                                           "WindowImage_1.jpg"])
+
+    def test_the_corpus_holds_project_files_and_no_capture_or_media(self):
+        """Logic writes a picture and, at times, a movie of the window into a save; neither ships."""
+        allowed = {"ProjectData", "MetaData.plist", "DisplayState.plist", "DisplayStateArchive",
+                   "ProjectInformation.plist", "data.plist"}
+        stray = sorted(str(p.relative_to(CORPUS)) for p in CORPUS.rglob("*")
+                       if p.is_file() and p.name not in allowed and p.suffix != ".cst")
+        self.assertEqual(stray, [])
 
 
 def _bookmark(*items: tuple[int, bytes]) -> bytes:

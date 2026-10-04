@@ -4,8 +4,8 @@
 
 spec: [{"save": "<bundle name under out/scratch>", "name": "<public bundle name>",
         "key": "<manifest key>", "note": "...", "facts": {...}}, ...]
-One alternative per save, without its WindowImage or Autosave; Resources/ProjectInformation.plist
-kept. A save is refused unless every project title in it carries the neutral prefix, and a name,
+One alternative per save, without its WindowImage, PreviewMovie or Autosave;
+Resources/ProjectInformation.plist kept. A save is refused unless every project title in it carries the neutral prefix, and a name,
 key or note is refused when it holds a word of `LOGICXKIT_PRIVATE_WORDS` (the environment or `.env`).
 """
 import json
@@ -20,7 +20,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SCRATCH, CORPUS, MANIFEST = ROOT / "out/scratch", ROOT / "tests/corpus", ROOT / "tests/goldens/manifest.json"
 NEUTRAL = ("CLAUDE ", "{PROJECT_NAME}")
-SKIP = shutil.ignore_patterns("WindowImage*", "Autosave*", "Project File Backups")
+# WindowImage and PreviewMovie are Logic's own captures of the screen the save was made on
+SKIP = shutil.ignore_patterns("WindowImage*", "PreviewMovie*", "Autosave*", "Project File Backups", "Undo Data.nosync")
 
 
 def private_words() -> list[str]:

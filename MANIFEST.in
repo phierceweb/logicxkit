@@ -11,7 +11,7 @@ prune config/local
 # (config/local/ holds a real rig spec; docs/pf-core is a symlink into the venv).
 include bin/regen_data.py
 include tests/logic/data/send-taper.json tests/logic/data/fader-steps.json
-include docs/README.md docs/INSTALLATION.md docs/commands.md docs/CAPABILITIES.md
+include docs/README.md docs/INSTALLATION.md docs/commands.md docs/CAPABILITIES.md docs/EVIDENCE.md
 include config/example-chains.json config/example-mastering.json config/example-psts.json
 include config/example-retrack.json config/example-strips.json
 include CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md .env.example

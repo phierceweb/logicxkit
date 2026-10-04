@@ -11,6 +11,9 @@ from _cli import count, data, run, wrapped, written
 from logicxkit.logic.services.arrange.stacks import read_stacks, read_tracks
 
 THREE = "tracks-three-audio-logic"          # Audio 1, Audio 2, Audio 3, then the Stereo Out row
+# the track named Audio 1 plays through the strip Audio 3, the strips Audio 1 and Audio 2 are free,
+# and the tracks FX 01-03 have no channel
+FIRST_STRIP_FREE = ("addtrack-order-logic", "addtrack-order-logic-12-4")
 
 
 def rows(bundle) -> list[dict]:
@@ -23,6 +26,27 @@ def names(bundle) -> list[str]:
 
 def row(bundle, name: str) -> dict:
     return next(r for r in rows(bundle) if r["name"] == name)
+
+
+@_goldens.needs(*FIRST_STRIP_FREE)
+class FirstStripFreeTest(unittest.TestCase):
+    def test_add_track_binds_the_first_audio_strip_when_it_is_the_free_one(self):
+        for key in FIRST_STRIP_FREE:
+            with self.subTest(key), tempfile.TemporaryDirectory() as tmp:
+                dest = written(self, "add-track", key, "--name", "Room", "--after", "Audio 1", out=Path(tmp))
+                self.assertEqual(names(dest)[:2], ["Audio 1", "Room"])
+                self.assertEqual(row(dest, "Room")["label"], "Audio 1")
+
+    def test_a_summing_stack_over_a_track_with_no_channel_is_refused_by_the_tracks_name(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            code, text = wrapped("stack-create", _goldens.path(FIRST_STRIP_FREE[0]), "--out", tmp, "--summing",
+                                 "--name", "S", "--track", "Audio 1", "--track", "FX 01")
+            self.assertEqual(code, 1, text)
+            self.assertIn("'FX 01': a track with no channel", text)
+            self.assertEqual(list(Path(tmp).iterdir()), [])
+            folder = written(self, "stack-create", FIRST_STRIP_FREE[0], "--name", "F", "--track", "Audio 1",
+                             "--track", "FX 01", out=Path(tmp))
+            self.assertEqual(names(folder)[:3], ["F", "Audio 1", "FX 01"])
 
 
 @_goldens.needs(THREE)

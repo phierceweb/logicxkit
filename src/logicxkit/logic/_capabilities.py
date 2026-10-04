@@ -1,6 +1,6 @@
 """What each command is trusted for, declared next to the code rather than in prose.
 
-`docs/CAPABILITIES.md` is generated from this table, and `tests/logic/test_capabilities.py`
+`docs/EVIDENCE.md` is generated from this table, and `tests/logic/test_capabilities.py`
 fails when the two disagree or when a subcommand has no entry, so "can I point this at a real
 song?" is answered by one command rather than by reading the code.
 
@@ -40,7 +40,7 @@ def notice(cmd: str, args=None) -> str | None:
     if level not in NOTICE_LEVELS:
         return None
     return (f"logicxkit: '{cmd}' is {level} — {cap.safe}. Open the result in Logic before "
-            f"trusting it; `logic capabilities -v` and docs/CAPABILITIES.md say why.")
+            f"trusting it; `logic capabilities -v` and docs/EVIDENCE.md say why.")
 
 
 def emit_notice(args) -> None:
@@ -62,7 +62,7 @@ def _names(cap: Capability) -> str:
 
 
 def table() -> str:
-    """The markdown table `docs/CAPABILITIES.md` carries, generated: one line per command; the
+    """The markdown table `docs/EVIDENCE.md` carries, generated: one line per command; the
     catch, prose, goes in `catches()` below it."""
     rows = ["| Command | Level | Safe on a real song? |", "|---|---|---|"]
     for cap in CAPABILITIES:
@@ -72,7 +72,7 @@ def table() -> str:
 
 
 def catches() -> str:
-    """The catch per command, generated for `docs/CAPABILITIES.md`: what each level was measured
+    """The catch per command, generated for `docs/EVIDENCE.md`: what each level was measured
     against, and where it stops."""
     out = []
     for cap in CAPABILITIES:
@@ -90,7 +90,7 @@ def cmd_capabilities(args) -> int:
         print(f"  {names:{width}s}  {cap.level:9s}  {cap.safe}")
         if cap.catch and args.verbose:
             print(f"  {'':{width}s}             {cap.catch}")
-    print("\nThe catch per command: -v; full detail, including the reproduced defects: docs/CAPABILITIES.md")
+    print("\nThe catch per command: -v; full detail, including the reproduced defects: docs/EVIDENCE.md")
     return 0
 
 

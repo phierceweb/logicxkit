@@ -1,11 +1,15 @@
-"""Channel fader and pan — read them, and copy them between projects.
+"""Channel fader, pan, mute and solo — read them, and copy fader and pan between projects.
 
-Both live in the `OCuA` channel record:
+All live in the `OCuA` channel record:
 
     +116..119      fader as u32, 8.24 fixed point: the integer part is the 0-127 position
     +85 and +119   the integer part again, twice (+119 is the u32's own high byte); all three
                    must agree, and do on every record measured
-    +89            pan, 0-127, where 64 is centre.
+    +89            pan, 0-127, where 64 is centre
+    +90            bit 0 mute (`mute-audio-1-logic`); bit 1 on every channel a solo elsewhere
+                   silences, a muted one too
+    +88            bit 0 solo (`solo-audio-2-logic`); bit 2 on Master and Output 1-2 while a
+                   solo is on. Bit 1 is not read: set on two channels of a blank project.
 
 Confirmed against Logic's own mixer display: pan reads out as ``byte - 64`` (-64 hard left,
 +63 hard right), matching every hard-panned pair in the sessions, and fader byte 90 shows
@@ -33,6 +37,7 @@ FADER_FIXED_AT = 116
 FIXED_ONE = 1 << 24
 PAN_AT = 89
 PAN_CENTRE = 64
+MUTE_AT, SOLO_AT = 90, 88         # bit 0 of each
 UNITY = 90
 _MIN_PAYLOAD = 200
 TOP, TOP_DB = 127.0, 6.0
@@ -90,7 +95,7 @@ def _is_mixer_channel(record) -> bool:
 
 
 def read_levels(data: bytes) -> dict[int, dict[str, int]]:
-    """owner -> ``{"fader": 0-127, "pan": 0-127, "pan_display": -64..+63}``.
+    """owner -> ``{"fader": 0-127, "pan": 0-127, "pan_display": -64..+63, "mute", "solo"}``.
 
     A channel can own several records; the longest wins, the same rule ``channel_formats``
     uses, because the short ones are stubs that carry no mixer state.
@@ -107,7 +112,8 @@ def read_levels(data: bytes) -> dict[int, dict[str, int]]:
         fixed = struct.unpack_from("<I", payload, FADER_FIXED_AT)[0]
         out[owner] = {"fader": payload[FADER_AT[0]], "fader_fixed": fixed,
                       "fader_exact": fixed / FIXED_ONE, "fader_db": position_db(fixed / FIXED_ONE),
-                      "pan": payload[PAN_AT], "pan_display": payload[PAN_AT] - PAN_CENTRE}
+                      "pan": payload[PAN_AT], "pan_display": payload[PAN_AT] - PAN_CENTRE,
+                      "mute": bool(payload[MUTE_AT] & 1), "solo": bool(payload[SOLO_AT] & 1)}
     return out
 
 

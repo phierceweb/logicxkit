@@ -14,10 +14,14 @@ The `qSvE` holds one 32-byte event per member per linked fader — Volume, Mute,
 Pan; every other box is flag-only — then a 16-byte tail. Event `+4` is the member's object
 id doubled, `+12` the fader as Logic numbers them (7 Volume, 9 Mute, 3 Solo, 10 Pan), `+8`
 the member's value for it as the channel stores it (the fader's fixed-point word; the pan
-byte in the top byte), its halves repeated at `+20` and `+30`. A member's `ivnE` carries a
-**bitmask of its groups** at `+24` (bit N-1 = group N; 0 = none — a channel in groups 1 and 4
-reads 9), and the registry holds a `<0x11><slot>` entry per group in both runs, directly
-before the object entries. The row's `+4` and the channel's `+92` do not change. Bit 31 of
+byte in the top byte), its halves repeated at `+20` and `+30`. Logic's own saves can lack
+them: a switched-off group carries none (`songb-bars-9-12-logic`), Logic 12.4's re-saves of
+sessions dropped every Volume event and kept the Mute ones (`tracking-template-12-4`), and
+Logic 12.3.1 wrote missing Volume events back on its next save (`width-tracking-logic`). A
+member's `ivnE` carries a **bitmask of its groups** at `+24` (bit N-1 = group N; 0 = none — a
+channel in groups 1 and 4 reads 9), and the registry holds a `<0x11><slot>` entry per group
+in both runs, directly before the object entries. The row's `+4` and the channel's `+92` do
+not change. Bit 31 of
 the flags is the table's **On** box (clear on a switched-off group; measured on two groups
 switched off). Create Group in Logic sets the new bit and leaves a member's other groups and
 their events alone; leaving is composed here (the member's events go, its bit clears).
@@ -370,10 +374,27 @@ def set_group(data: bytes, number: int, *, name: str | None = None, settings=Non
     return result
 
 
+def _linked_events(records, g: Group) -> tuple[set[tuple[int, int]], list[tuple[int, int]]]:
+    """(member, fader) pairs the group's boxes call for, and the pairs its event list holds."""
+    events = records[g.start + 2].raw[HEADER:]
+    want = {(m, FADERS.index(f)) for m in g.members for f in FADERS if g.flags >> FLAGS[f] & 1}
+    have = [(struct.unpack_from("<I", events, k + EVENT_OBJECT_AT)[0] // 2,
+             _FADER_INDEX.get(events[k + EVENT_FADER_AT], -1))
+            for k in range(0, len(events) - TAIL, EVENT)]
+    return want, have
+
+
+def missing_group_events(data: bytes) -> int:
+    """How many member events the groups' boxes call for and their lists lack. Logic's own saves
+    lack some, so this is a count to hold a write to, not a fault."""
+    records = project_records(data)
+    return sum(len(want - set(have)) for want, have in (_linked_events(records, g) for g in _groups(records)))
+
+
 def group_errors(data: bytes) -> list[str]:
     """Where a project's three group structures disagree: an object numbered for a group
-    that does not exist, a group whose events are not one per member per linked fader, a
-    group slot without its registry pair."""
+    that does not exist, a group event for a track or fader the group does not link, a group
+    slot without its registry pair. A missing event is no error: Logic's own saves lack them."""
     from ..stream.registry import group_entries
     records = project_records(data)
     groups = _groups(records)
@@ -382,14 +403,10 @@ def group_errors(data: bytes) -> list[str]:
            for oid, mask in _object_groups(records).items() for n in _numbers(mask) if n not in numbers]
     g_reg = next((r.raw[HEADER:] for r in records if r.tag == GNOS_TAG), None)
     for g in groups:
-        events = records[g.start + 2].raw[HEADER:]
-        want = sorted((m, FADERS.index(f)) for m in g.members for f in FADERS if g.flags >> FLAGS[f] & 1)
-        have = sorted((struct.unpack_from("<I", events, k + EVENT_OBJECT_AT)[0] // 2,
-                       _FADER_INDEX.get(events[k + EVENT_FADER_AT], -1))
-                      for k in range(0, len(events) - TAIL, EVENT))
-        if want != have:
-            out.append(f"group {g.number}: {len(have)} event(s) for {len(g.members)} member(s), "
-                       f"{len(want)} expected")
+        want, have = _linked_events(records, g)
+        stray = len(have) - len(set(have) & want)
+        if stray:
+            out.append(f"group {g.number}: {stray} event(s) for a track or a fader it does not link, or repeated")
         if g_reg is not None and any(g.slot not in {s for _at, s in group_entries(g_reg, stride)}
                                      for stride in (24, 16)):
             out.append(f"group {g.number}: slot {g.slot} has no registry entry")

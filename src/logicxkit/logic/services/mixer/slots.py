@@ -65,19 +65,37 @@ def set_slot_bypass(raw: bytes, bypassed: bool) -> bytes:
 
 _DEFAULT_PROPERTY_KEY = 10
 
+# channel record +30: the insert slots the mixer shows, one value for the project (the logic
+# README, "The slot key range grows")
+SHOWN_AT = 30
+
 
 def property_key_base(data: bytes) -> int:
     """The key of the `.cst` reference record — the first key that is a property, not a slot.
     A project whose channels carry no reference (blank-born) still places the two archive
-    records every channel carries at that key + 2 and + 3 (the logic README, "The slot key
-    range grows"), so their pair says where it would be."""
+    records a channel carries at that key + 2 and + 3 (the logic README, "The slot key range
+    grows"), so a pair, or one archive alone, says where it would be. With no archive either
+    it is slot base + shown slots + 1, where every Logic save without a reference has it."""
     records = [r for r in project_records(data) if r.tag == b"UCuA"]
     keys = [r.key for r in records if len(r.raw) - HEADER < 400 and b".cst" in r.raw]
     if keys:
         return min(keys)
     archives = {n: {r.key for r in records if archive_index(r.raw) == n} for n in (1, 2)}
     pairs = [k for k in archives[1] if k + 1 in archives[2]]
-    return min(pairs) - 2 if pairs else _DEFAULT_PROPERTY_KEY
+    if pairs:
+        return min(pairs) - 2
+    lone = [key - 1 - n for n, found in archives.items() for key in found]
+    return min(lone) if lone else _base_from_words(data) or _DEFAULT_PROPERTY_KEY
+
+
+def _base_from_words(data: bytes) -> int | None:
+    """Slot base + shown slots + 1, when every channel record carries the same two words."""
+    words = {struct.unpack_from("<HH", r.raw, HEADER + CHANNEL_BASE_AT) for r in project_records(data)
+             if r.tag == CHANNEL_TAG and len(r.raw) - HEADER >= SHOWN_AT + 2}
+    if len(words) != 1:
+        return None
+    (base, shown), = words
+    return base + shown + 1 if base in (2, 3, 4) and shown >= 2 else None
 
 
 def archive_index(raw: bytes) -> int | None:

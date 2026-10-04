@@ -63,7 +63,8 @@ class SdistTest(unittest.TestCase):
                 self.assertEqual([n for n in self.members if n.startswith(prefix)], [])
 
     def test_the_named_files_ship(self):
-        for name in ("docs/CAPABILITIES.md", "docs/commands.md", "config/example-mastering.json",
+        for name in ("docs/CAPABILITIES.md", "docs/EVIDENCE.md", "docs/commands.md",
+                     "config/example-mastering.json",
                      "tests/conftest.py", "tests/_goldens.py", "CHANGELOG.md"):
             with self.subTest(name):
                 self.assertIn(name, self.members)

@@ -135,19 +135,17 @@ def read_tracks(data: bytes, track_count: int | None = None) -> list[dict]:
 
 
 def _stack_kind(row: dict, following: dict | None) -> str | None:
-    """folder for a grouping row bound to a Sub strip; summing for one bound to an Aux whose
+    """folder for a grouping row bound to a Sub strip; summing for a row bound to an Aux whose
     next row sits one level under it — the grouping flag alone is set on plain aux, instrument
     and output tracks too, and an aux inside a folder stack is followed by its sibling (Logic's
     own Create Track Stack of each kind on a blank project, 2026-09-12, against a template with
-    three grouping aux tracks that are not stacks); else None."""
-    if not row["grouping"]:
-        return None
+    three grouping aux tracks that are not stacks); else None. A summing header need not be a
+    grouping object: an aux track Logic's convert made the main track keeps its kind
+    (`tracking-convert-after-logic`, 2026-10-03)."""
     label = row["label"] or ""
-    if label.startswith(_SUB):
-        return FOLDER
     if label.startswith(_AUX) and following is not None and following["depth"] > row["depth"]:
         return SUMMING
-    return None
+    return FOLDER if row["grouping"] and label.startswith(_SUB) else None
 
 
 def _is_stack(row: dict, following: dict | None = None) -> bool:
@@ -157,8 +155,8 @@ def _is_stack(row: dict, following: dict | None = None) -> bool:
 def read_stacks(data: bytes, track_count: int | None = None) -> list[Stack]:
     """Stacks in the arrange list, each with the tracks it holds.
 
-    A stack is a grouping object bound to a ``Sub N`` strip (folder) or an ``Aux N`` strip
-    (summing); its members are the rows that follow it while their ``+14`` byte is set. The byte
+    A stack is a grouping object bound to a ``Sub N`` strip (folder) or a row bound to an
+    ``Aux N`` strip with rows under it (summing); its members are the rows that follow it while their ``+14`` byte is set. The byte
     is the nesting depth: a header at depth d
     holds the rows after it at depth d+1, a nested header among them. Position still orders
     them — a member row always sits below its header — but the byte is what says it belongs.
@@ -213,8 +211,31 @@ def enclosing(stacks: list[Stack], key: int) -> list[Stack]:
     return out
 
 
-def summing_around(stacks: list[Stack], key: int) -> Stack | None:
-    return next((s for s in enclosing(stacks, key) if s.kind == SUMMING), None)
+MAX_LEVELS = 2          # Logic 12.4 disables Create Track Stack wherever it would make a third
+
+
+def levels_under(stacks: list[Stack], row_keys: list[int]) -> int:
+    """How many stacks deep the rows ``row_keys`` go: 0 for tracks, 1 for a stack of tracks."""
+    by_key = {s.track_key: s for s in stacks}
+    deepest = 0
+    for key in row_keys:
+        if key in by_key:
+            deepest = max(deepest, 1 + levels_under(stacks, [k for k, _name in by_key[key].members]))
+    return deepest
+
+
+def require_two_levels(stacks: list[Stack], inside_key: int | None, row_keys: list[int], new: int = 0) -> None:
+    """Refuse a third level of stack: ``row_keys`` placed, under ``new`` new headers, inside the
+    stack whose header row is ``inside_key`` (None for the top level)."""
+    around = 0 if inside_key is None else 1 + len(enclosing(stacks, inside_key))
+    if around + new + levels_under(stacks, row_keys) > MAX_LEVELS:
+        raise ValueError("Logic nests stacks two deep and makes no third level; neither is one written")
+
+
+def summing_holder(stacks: list[Stack], key: int) -> Stack | None:
+    """The summing stack the arrange row ``key`` is a direct member of."""
+    held = enclosing(stacks, key)[:1]
+    return held[0] if held and held[0].kind == SUMMING else None
 
 
 def span_end(depths: list[int], start: int) -> int:

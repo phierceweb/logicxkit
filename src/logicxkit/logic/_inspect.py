@@ -254,12 +254,26 @@ def _move_into_stack(args, project: Path) -> int:
                 data, made = convert_to_summing(data, found.object_id, track_count=count)
             except ValueError as e:
                 raise CommandError(f"{name}: {e}") from None
-            print(f"  {data_file.parent.name}: {name} -> {made['name']} on {made['label']} fed from {made['bus']}; "
-                  f"{made['sub']} out of use")
+            print(f"  {data_file.parent.name}: {name} -> {made['name']} on {made['label']} fed from {made['bus']}, "
+                  f"output {made['output']}; {made['sub']} out of use")
+            if made["tracks_added"]:
+                count = bump_track_count(data_file, made["tracks_added"])
+            if made["reused"]:
+                from ._apply_tracks import reused_aux
+                print(reused_aux(made))
+            if made["lanes_replaced"]:
+                print(f"    {made['label']}'s own {', '.join(made['lanes_replaced'])} lane is replaced by the folder's, "
+                      "as Logic's convert replaces it")
+            if made["left"]:
+                from ._apply_tracks import left_outputs
+                print(left_outputs(made["left"]))
             if made["level_left"] is not None:
                 level = "-inf" if made["level_left"] == float("-inf") else f"{made['level_left']:.1f} dB"
                 print(f"    {made['sub']}'s fader ({level}) stays on it, as Logic's convert leaves it; "
-                      f"{made['label']} is at 0 dB")
+                      f"{made['label']} {'keeps its own level' if made['reused'] else 'is at 0 dB'}")
+            if made["mute_left"]:
+                print(f"    {made['sub']}'s mute stays on it, as Logic's convert leaves it; {made['label']} "
+                      f"{'keeps its own' if made['reused'] else 'is not muted'}")
         return data
 
     print(f"in  : {project}")

@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 import _goldens
-from _cli import data, owner, run, source, written
+from _cli import count, data, owner, run, source, written
 
 from logicxkit.logic.services.mixer.binding import channels, output_routing
 from logicxkit.logic.services.mixer.mixer import channel_formats
@@ -17,6 +17,7 @@ from logicxkit.logic.services.mixer.slots import slot_bypassed
 from logicxkit.logic.services.project.project import read_project, strip_chain
 from logicxkit.logic.services.mixer.sends import read_sends
 from logicxkit.logic.services.mixer.transplant import channel_slots
+from logicxkit.logic.services.stream.integrity import regressions
 
 INSERTS = "inserts-native-logic"        # Audio 1: Channel EQ -> Compressor; Audio 2 and 3 empty
 SEND = "send-bus-1-logic"               # Audio 1 sends to Bus 1
@@ -24,6 +25,7 @@ LEVELS = "levels-resave-logic"          # Audio 1 alone, no sends
 STEREO = "tracks-stereo-pair-logic"     # Audio 4 stereo, Audio 1-3 mono
 STACK = "stack-folder-logic"            # Sub 1 holding Audio 1, 2 and 3
 LANES = "auto-lanes"                    # Audio 2: Compressor -> Noise Gate -> Pro-C 2, four lanes on insert 3
+UNASSIGNED_ROW = "stack-convert-holding-folder-after-logic"     # Logic's convert left a row assigned to nothing
 
 
 def chain(bundle, label: str) -> list:
@@ -43,11 +45,35 @@ class ChannelCommandsTest(unittest.TestCase):
         after = data(dest)
         self.assertEqual(channels(after)[output_routing(after)[owner(after, "Audio 2")]].label, "Bus 1")
         self.assertEqual(channels(after)[output_routing(after)[owner(after, "Audio 1")]].label, "Output 1-2")
+        self.assertEqual(self.returns(after), {"Aux 1": "Bus 1"})          # the bus's aux, as Logic brings one in
+        self.assertEqual(count(dest), count("stack-folder-flattened-logic"))
+
+    @_goldens.needs(UNASSIGNED_ROW)
+    def test_route_to_a_bus_passes_the_gate_where_a_row_is_assigned_to_nothing(self):
+        code, text = run("route", source(UNASSIGNED_ROW), "--output", "Audio 1=Bus 1", "--out", self.out)
+        self.assertEqual(code, 0, text)
+        after = data(self.out / source(UNASSIGNED_ROW).name)
+        self.assertEqual(channels(after)[output_routing(after)[owner(after, "Audio 1")]].label, "Bus 1")
+        self.assertEqual(regressions(data(UNASSIGNED_ROW), after,
+                                     track_counts=(count(UNASSIGNED_ROW), count(UNASSIGNED_ROW))), [])
+
+    def returns(self, after: bytes) -> dict:
+        from logicxkit.logic.services.mixer.binding import input_labels
+        return {c.label: input_labels(after).get(o) for o, c in channels(after).items()
+                if c.in_use and c.label.startswith("Aux ")}
+
+    def test_route_says_what_it_brought_into_use_and_a_second_output_adds_nothing(self):
+        code, text = run("route", source("stack-folder-flattened-logic"), "--output", "Audio 2=Bus 1",
+                         "--output", "Audio 3=Bus 1", "--out", self.out)
+        self.assertEqual(code, 0, text)
+        self.assertEqual(text.count("000: Bus 1 put in use: Aux 1 fed from it, output Output 1-2, as Logic's own does"), 1)
+        self.assertIn("000: Audio 3 -> Bus 1", text)
 
     def test_send_add(self):
         dest = written(self, "send", LEVELS, "--add", "Audio 1=Bus 1", out=self.out)
         after = data(dest)
         self.assertEqual([s.bus for s in read_sends(after)[owner(after, "Audio 1")]], [1])
+        self.assertEqual(self.returns(after).get("Aux 1"), "Bus 1")
 
     def test_send_set_level_mode_and_bypass(self):
         dest = written(self, "send", SEND, "--set", "Audio 1=Bus 1", "--level", "-10", "--mode",

@@ -94,11 +94,7 @@ class SummingStackTest(unittest.TestCase):
         self.assertEqual((by_uuid[member.dest_uuid], member.words[0], header.words), ("Bus 1", 1, (0, 1)))
         self.assertEqual((OUTPUT_WORD_AT, INPUT_WORD_AT), (92, 94))
 
-    def test_a_header_and_no_member_are_refused(self):
-        folder = project_data(_goldens.path(FOLDER))
-        objs = {o.name: i for i, o in channel_objects(folder).items()}
-        with self.assertRaisesRegex(ValueError, "stack header"):
-            create_summing_stack(folder, name="Sum", members=[objs["Sub 1"]])
+    def test_no_member_is_refused(self):
         with self.assertRaisesRegex(ValueError, "at least one member"):
             create_summing_stack(self.base, name="Sum", members=[])
 
@@ -146,10 +142,10 @@ class LogicResavedTest(unittest.TestCase):
                 buf[at + HEADER + KIND_AT] = 128
             at += len(r.raw)
         data = bytes(buf)
-        self.assertEqual(read_stacks(data), [])
+        self.assertEqual([s.kind for s in read_stacks(data)], [SUMMING])     # the rows under it make it a header
         out, second = create_summing_stack(data, name="Second", members=[objs["Audio 2"]])
-        (stack,) = read_stacks(out)
-        self.assertEqual((stack.name, stack.kind, [n for _k, n in stack.members]), ("Second", SUMMING, ["Audio 2"]))
+        stack = next(s for s in read_stacks(out) if s.name == "Second")
+        self.assertEqual((stack.kind, [n for _k, n in stack.members]), (SUMMING, ["Audio 2"]))
         self.assertEqual(channel_objects(out)[second["object_id"]].kind, 0)
 
     def test_the_writer_still_makes_what_logic_opened(self):
@@ -227,11 +223,12 @@ class MoveIntoSummingTest(unittest.TestCase):
         sub = next(c for c in channels(data).values() if c.label == "Sub 1")
         self.assertEqual(sub.in_use, _goldens.fact(key, "sub_1_in_use"))
 
-    def test_a_stack_is_not_moved_into_a_summing_stack(self):
+    def test_a_folder_moved_into_a_summing_stack_keeps_its_tracks_outputs(self):
         from logicxkit.logic.services.arrange.stack_moves import move_to_stack
         data, report = create_stack(self.base, name="Folder", members=[self.objs["Audio 3"]])
-        with self.assertRaisesRegex(ValueError, "a stack moved into a summing stack"):
-            move_to_stack(data, report["object_id"], self.objs["Sum A"])
+        out = move_to_stack(data, report["object_id"], self.objs["Sum A"])
+        self.assertEqual((track(out, "Folder")["depth"], track(out, "Audio 3")["depth"]), (1, 2))
+        self.assertEqual(whole(out)["routes"]["Audio 3"], whole(data)["routes"]["Audio 3"])
 
 
 if __name__ == "__main__":

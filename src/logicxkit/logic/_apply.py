@@ -14,17 +14,37 @@ from .services.arrange.retrack import find_project
 from .services.mixer.transplant import remove_slots, set_bypass, transplant
 
 
+def _bus_in_use(data: bytes, bus: str, count: int | None, alt: str) -> bytes:
+    """``bus`` as Logic leaves one an output or a send first goes to (`bus_return`), said when
+    it changes anything; a label that is no bus is left to the caller."""
+    from .services.arrange.bus_return import use_bus
+    from .services.mixer.binding import channels
+    owner = next((o for o, c in channels(data).items() if c.label == bus), None)
+    if owner is None or not bus.startswith("Bus "):
+        return data
+    data, made = use_bus(data, owner, count)
+    if made["aux"]:
+        print(f"  {alt}: {bus} put in use: {made['aux']} fed from it, output Output 1-2, as Logic's own does")
+    elif made["minted"]:
+        print(f"  {alt}: {bus} given a UUID of its own, as Logic's own has")
+    return data
+
+
 def cmd_route(args) -> int:
     """Set channel outputs and inputs by mixer label."""
     from .services.mixer.routing import set_input, set_output
 
-    def step(data, _count, _file):
-        for spec, setter, word in ((args.output or [], set_output, "->"),
-                                   (args.input or [], set_input, "<-")):
-            for item in spec:
-                channel, _, target = item.partition("=")
-                data = setter(data, owner_by_label(data, channel), owner_by_label(data, target))
-                print(f"  {channel.strip()} {word} {target.strip()}")
+    def step(data, count, data_file):
+        alt = data_file.parent.name
+        for item in args.output or []:
+            channel, _, target = item.partition("=")
+            data = _bus_in_use(data, target.strip(), count, alt)
+            data = set_output(data, owner_by_label(data, channel), owner_by_label(data, target))
+            print(f"  {alt}: {channel.strip()} -> {target.strip()}")
+        for item in args.input or []:
+            channel, _, target = item.partition("=")
+            data = set_input(data, owner_by_label(data, channel), owner_by_label(data, target))
+            print(f"  {alt}: {channel.strip()} <- {target.strip()}")
         return data
     return _run(args, step)
 
@@ -57,18 +77,20 @@ def cmd_send(args) -> int:
 
     def told(data, channel: str, report: dict) -> str:
         s = next(s for s in read_sends(data)[report["owner"]] if s.key == report["key"])
-        return (f"  {channel.strip():11s} -> Bus {report['bus']} (send {report['key']}): "
+        return (f"{channel.strip():11s} -> Bus {report['bus']} (send {report['key']}): "
                 f"{shown_db(s.level_exact)} dB, {s.mode}{', bypassed' if s.bypassed else ''}")
 
-    def step(data, _count, _file):
+    def step(data, count, data_file):
+        alt = data_file.parent.name
         for label in args.remove or []:
             data = remove_sends(data, owner=owner_by_label(data, label))
-            print(f"  {label.strip():11s} sends removed")
+            print(f"  {alt}: {label.strip():11s} sends removed")
         for spec in args.add or []:
             channel, _, bus = spec.partition("=")
+            data = _bus_in_use(data, f"Bus {_bus_number(bus)}", count, alt)
             data, report = add_send(data, owner=owner_by_label(data, channel),
                                     bus=_bus_number(bus), key=args.key, **settings)
-            print(told(data, channel, report) + (", replaced" if report["replaced"] else ""))
+            print(f"  {alt}: " + told(data, channel, report) + (", replaced" if report["replaced"] else ""))
         for spec in args.set or []:
             channel, _, bus = spec.partition("=")
             try:
@@ -76,11 +98,11 @@ def cmd_send(args) -> int:
                                         bus=_bus_number(bus), **settings)
             except ValueError as e:
                 raise CommandError(f"{channel.strip()}: {e}") from None
-            print(told(data, channel, report))
+            print(f"  {alt}: " + told(data, channel, report))
         for dst_label, src_label in pairs(args.copy or []):
             data, report = copy_sends(src, data, src_owner=owner_by_label(src, src_label),
                                       dst_owner=owner_by_label(data, dst_label))
-            print(f"  {dst_label:11s} <- {src_label:11s} sends {report['keys']} to buses "
+            print(f"  {alt}: {dst_label:11s} <- {src_label:11s} sends {report['keys']} to buses "
                   f"{report['buses']}{' replacing ' + str(report['replaced']) if report['replaced'] else ''}")
         return data
     return _run(args, step, note="\nUnverified until opened in Logic.")

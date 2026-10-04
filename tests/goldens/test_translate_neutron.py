@@ -86,5 +86,28 @@ class NeutronCarryTest(unittest.TestCase):
         self.assertEqual((shown["Peak 3 On/Off"], shown["Low Cut On/Off"]), ("0", "0"))
 
 
+@_goldens.needs("neutron-gate", "neutron-gate-bypassed-ours", "neutron-gate-bypassed-resave-logic")
+class BypassedElementTest(unittest.TestCase):
+    def test_a_bypassed_gate_went_in_bypassed_and_logic_opened_it_so(self):
+        """The Gate Expander element is off in `neutron-dialled`: the Noise Gate carries its values
+        and the slot's bypass, and Logic's Controls view showed the values behind the bypass."""
+        from logicxkit.logic.services.mixer.slots import slot_bypassed
+
+        def slot(key: str):
+            data = project_data(_goldens.path(key))
+            facts = _goldens.entry(key)["facts"]
+            return slot_at(data, owner_by_label(data, facts["channel"]), 4).raw, facts
+        (ours, facts), (theirs, shown), (plain, _f) = (slot(k) for k in (
+            "neutron-gate-bypassed-ours", "neutron-gate-bypassed-resave-logic", "neutron-gate"))
+        self.assertEqual((slot_bypassed(ours), slot_bypassed(theirs), slot_bypassed(plain)), (True, True, False))
+        self.assertEqual((facts["bypassed"], shown["bypassed"]), (True, True))
+        target = map_for(ours[HEADER:], MAPS)
+        written, kept = read_settings(ours[HEADER:], target).values, read_settings(theirs[HEADER:], target).values
+        self.assertEqual({k: round(v, 1) for k, v in written.items()}, {k: round(v, 1) for k, v in kept.items()})
+        for name, vocab in (("Threshold", "threshold"), ("Hysteresis", "hysteresis"), ("Attack", "attack"), ("Hold", "hold"), ("Release", "release")):
+            with self.subTest(name):
+                self.assertAlmostEqual(_number(shown["shown"][name]), written[vocab], places=1)
+
+
 if __name__ == "__main__":
     unittest.main()

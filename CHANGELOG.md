@@ -3,6 +3,85 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.10.0 — 2026-10-04
+
+### Added
+
+- `levels` reads each channel's mute and solo: the listing marks a muted and a soloed channel,
+  and `--json` carries `mute` and `solo`.
+- `stack-create` takes a stack's header as a `--track` and makes a stack around that stack. A
+  folder around any stack changes no routing; `--summing` around a folder stack sends the tracks
+  the folder holds to the new bus, and around a summing stack sends that stack's aux there, as
+  Logic's own does. Around a folder the new stack outputs to Output 1-2 and reuses no bus's aux,
+  whatever bus the folder's tracks fed; the output names each output replaced.
+- `stacks --move STACK:SUMMING` moves a stack into a summing stack: a summing stack's aux then
+  outputs to the outer bus, a folder's tracks keep their outputs.
+- `plugins` keeps Apple's `auval -a` scan and uses it again for a day while the two Components
+  folders stay as they are and it lists every plug-in the project uses that one of them holds;
+  `--rescan` runs it again.
+- A write that leaves a routing loop — a channel that reaches itself through bus outputs and
+  sends — prints a warning naming the channels and buses along it. The copy is still written.
+
+### Changed
+
+- `stack-create --summing` and `stacks --convert` take members that output somewhere other than
+  Output 1-2: the stack outputs where every member did, or to Output 1-2 when their outputs
+  differ, as Logic's own does, and the output names each member output replaced. A summing stack
+  made inside a summing stack follows the same rule. Members that are the only channels on their
+  bus get no new aux: that bus's own aux becomes the stack's main track, as in Logic, with no
+  output changed.
+- `route --output CHANNEL=Bus N` and `send --add` to a bus nothing uses put the bus in use as
+  Logic does: the lowest free `Aux` comes into use fed from it (with no track), and the output
+  says so.
+- A track moved into a folder that sits inside a summing stack, or added there, keeps its
+  output, as Logic's own drag leaves it; only a direct member of a summing stack is sent to its
+  bus.
+- `stacks --convert` carries a folder's Mute and Solo lanes onto the new header beside its
+  Volume lane, and says when a muted folder's mute stays on the `Sub` strip, as Logic's convert
+  leaves it.
+- `stack-create` and `stacks --move` refuse a third level of stack: Logic nests stacks two
+  deep. `stacks --convert` names a folder that holds a stack in its refusal.
+- `docs/CAPABILITIES.md` says what each command does, in plain words; the generated table and
+  the evidence per command are in `docs/EVIDENCE.md`.
+- A new folder stack takes the lowest `Sub` strip that is out of use, as Logic's own does, and
+  a new strip after the highest otherwise. A strip left with a level or a mute comes back at
+  0 dB and not muted; one carrying a pan, a solo, an insert or a send is refused.
+- `stacks --move-out` sends a track that lands as a direct member of a summing stack to that
+  stack's bus, as Logic's drag does.
+- A new summing stack's header takes its first member's colour, as Logic's does; `--colour`
+  sets another.
+- logicxkit depends on `pf-core~=0.25.0` and `groovebin~=0.5.0`. The `rig` extra pins
+  `x32scene~=0.7.0`.
+
+### Fixed
+
+- A track, stack or convert no longer leaves index-table entries off their track's place in
+  mixer order, which Logic re-laid on the next open.
+- A summing stack whose main track is an ordinary aux track is read as a stack by `stacks`,
+  `project` and the writers that take a stack by name.
+- `stacks --convert` in a project with no free `Aux` strip no longer leaves the folder's `Sub`
+  strip in use, which the write gate refused.
+- A project Logic saved after `add-track --instrument` on a project with no plug-in is no longer
+  refused by the writers ("keyed archive 2, expected at key 13").
+- `add-track --instrument` on a project with no plug-in keys the new channel's record where
+  Logic's own New Software Instrument Track does.
+- A group whose member events Logic left out of a save is no longer counted as a group problem:
+  a switched-off group has none, and a Logic 12.4 save can lack every Volume event.
+- `automation` no longer lists a group's member events as lanes on a track with no name.
+- `plugins` says when `auval -a` left out a plug-in that a Components folder holds, instead of
+  reporting it missing.
+- A new aux track's arrange row carries what Logic's own aux rows do when the session had no
+  aux row to pattern it on.
+- `stack-create` no longer refuses "Sub N already exists" where a `Sub` strip is numbered above
+  every folder stack.
+- `add-track` no longer fails with "max() iterable argument is empty" when the free audio
+  channel it takes is the project's first.
+- `stack-create --summing` over a track with no channel is refused by the track's name,
+  where it failed with a bare number.
+- A write to a project holding a track assigned to nothing is no longer refused with "song
+  container says N rows": the write gate reads the arrange list by the project's track count.
+- The write gate refuses a write that loses a group member's event.
+
 ## 0.9.0 — 2026-10-03
 
 ### Added

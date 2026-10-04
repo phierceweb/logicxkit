@@ -45,7 +45,7 @@ FabFilter or iZotope state that Logic itself only shows you as a preset name, re
 across a whole session, copy a control bar or a set of mixer groups from one project onto
 another, add and rename and reorder tracks, repoint strip references after a library rename,
 migrate an old session onto a newer template, and build native Channel EQ / Compressor strips
-from a JSON spec.
+from a JSON spec. [`docs/CAPABILITIES.md`][caps] has the whole list in plain words.
 
 If what you want is to drive a *running* Logic — press a button, arm a track, move the playhead —
 that is a different job, and [logic-pro-mcp](https://github.com/MongLong0214/logic-pro-mcp) does it
@@ -57,11 +57,11 @@ None of these formats are documented, so everything here came out of measurement
 change per Logic save, then a byte diff against the save before it. The control bar is the tidiest
 example — every button id was pinned on fifty single-toggle saves (2026-09-04), and a control bar
 written by this tool and copied whole onto another project came up in Logic with that exact set.
-That standard is not uniform across the tool. Some commands have been opened in Logic and confirmed,
-some are reasoned from diffs and never opened, and a defect reproduced on a real project is recorded
-until a regression test closes it. **[`docs/CAPABILITIES.md`][caps] carries the level and the
-evidence for every command, and `bin/run logic capabilities` prints the same table.** Read it before
-you point a writer at a session you care about.
+Each command is rated by what was checked: opened in Logic and confirmed, or reasoned from diffs
+and never opened, and a defect reproduced on a real project is recorded until a regression test
+closes it. **[`docs/EVIDENCE.md`][evidence] carries the level and the evidence for every command,
+and `bin/run logic capabilities` prints the same table.** Read it before you point a writer at a
+session you care about.
 
 ## Requirements
 
@@ -203,7 +203,7 @@ leaving a bundle that disagrees with its own metadata.
 
 A write by a command that has not been confirmed in Logic prints a one-line notice naming its
 level before it runs, so you get the warning without having to have read
-[`docs/CAPABILITIES.md`][caps] first. `LOGICXKIT_NO_NOTICE=1` silences it.
+[`docs/EVIDENCE.md`][evidence] first. `LOGICXKIT_NO_NOTICE=1` silences it.
 
 And the gate covers structure, not sound. It cannot tell you a chain landed on the wrong
 channel. **Open every output in Logic before trusting it** — that, not a green run, is what
@@ -228,7 +228,7 @@ Three more things write outside `--out`, and one warning:
   reference, and `validate_project` cannot see the loss. A clone across record class versions
   cannot be legalised either. Both stop the run and say what to do instead; `--force` writes
   anyway. Any open defect is listed in
-  [`docs/CAPABILITIES.md`][caps].
+  [`docs/EVIDENCE.md`][evidence].
 
 ## Layout
 
@@ -236,7 +236,8 @@ Three more things write outside `--out`, and one warning:
 logicxkit/
   bin/run                  venv wrapper: setup|pytest|python|pip|ruff|lint|logic|au
   config/example-*.json    neutral example specs (strips, psts, chains, retrack)
-  docs/CAPABILITIES.md     what each writer is trusted for, and the evidence behind it
+  docs/CAPABILITIES.md     what each command does, in plain words
+  docs/EVIDENCE.md         what each writer is trusted for, and the evidence behind it
   src/logicxkit/
     cli.py                 unified entry point: logicxkit logic|au …
     logicx/                the .logicx container: alternatives, ProjectData, OCuA channel
@@ -324,6 +325,7 @@ files. [`CONTRIBUTING.md`][contributing] has the full loop; the house rules are:
 Apache License 2.0. See [`LICENSE`][license] and [`NOTICE`][notice].
 
 [caps]: https://github.com/phierceweb/logicxkit/blob/main/docs/CAPABILITIES.md
+[evidence]: https://github.com/phierceweb/logicxkit/blob/main/docs/EVIDENCE.md
 [logic-fmt]: https://github.com/phierceweb/logicxkit/blob/main/src/logicxkit/logic/README.md
 [au-fmt]: https://github.com/phierceweb/logicxkit/blob/main/src/logicxkit/au/README.md
 [corpus]: https://github.com/phierceweb/logicxkit/blob/main/resources/README.md

@@ -1,5 +1,6 @@
-"""Every CLI subcommand declares what it is trusted for, and docs/CAPABILITIES.md's table is
-generated from `_capabilities.py`; these tests fail when either drifts."""
+"""Every CLI subcommand declares what it is trusted for, docs/EVIDENCE.md's table is generated
+from `_capabilities.py`, and docs/CAPABILITIES.md says what each does in plain words; these tests
+fail when any of them drifts."""
 
 import contextlib
 import io
@@ -9,7 +10,8 @@ from pathlib import Path
 
 import _paths  # noqa: F401
 
-DOC = Path(__file__).resolve().parents[2] / "docs" / "CAPABILITIES.md"
+DOC = Path(__file__).resolve().parents[2] / "docs" / "EVIDENCE.md"
+PLAIN = DOC.parent / "CAPABILITIES.md"
 
 
 def subcommands() -> set[str]:
@@ -66,24 +68,40 @@ class DocMatchesCodeTest(unittest.TestCase):
     def test_the_doc_carries_the_generated_table(self):
         from logicxkit.logic._capabilities import table
         self.assertIn(table(), DOC.read_text(),
-                      "docs/CAPABILITIES.md is stale — regenerate it from _capabilities.py")
+                      "docs/EVIDENCE.md is stale — regenerate it from _capabilities.py")
 
     def test_the_doc_carries_the_generated_catches(self):
         from logicxkit.logic._capabilities import catches
         self.assertIn(catches(), DOC.read_text(),
-                      "docs/CAPABILITIES.md is stale — regenerate its catches from _capabilities.py")
+                      "docs/EVIDENCE.md is stale — regenerate its catches from _capabilities.py")
 
     def test_the_doc_points_at_the_source_of_truth(self):
         self.assertIn("generated from src/logicxkit/logic/_capabilities.py", DOC.read_text())
 
 
+def _unnamed(commands, text: str) -> list[str]:
+    return sorted(c for c in commands if not re.search(
+        rf"`[^`\n]*(?<![\w-]){re.escape(c)}(?![\w-])[^`\n]*`", text))
+
+
 class CommandGuideTest(unittest.TestCase):
     def test_the_guide_names_every_command(self):
         from logicxkit.logic._capabilities import by_command
-        guide = (DOC.parent / "commands.md").read_text()
-        missing = sorted(c for c in by_command() if not re.search(
-            rf"`[^`\n]*(?<![\w-]){re.escape(c)}(?![\w-])[^`\n]*`", guide))
+        missing = _unnamed(by_command(), (DOC.parent / "commands.md").read_text())
         self.assertEqual(missing, [], "docs/commands.md never names these as commands")
+
+    def test_the_plain_doc_names_every_command(self):
+        from logicxkit.logic._capabilities import by_command
+        missing = _unnamed(by_command(), PLAIN.read_text())
+        self.assertEqual(missing, [], "docs/CAPABILITIES.md never says what these do")
+
+    def test_the_plain_doc_names_every_unconfirmed_writer_where_it_says_how_far_to_trust_it(self):
+        from logicxkit.logic._capabilities import CAPABILITIES
+        section = PLAIN.read_text().split("## How far to trust it", 1)[1].split("\n## ", 1)[0]
+        unconfirmed = [n for cap in CAPABILITIES if cap.level in ("CLAIMED", "DERIVED", "BROKEN")
+                       for n in cap.commands]
+        self.assertEqual(_unnamed(unconfirmed, section), [],
+                         "docs/CAPABILITIES.md says every writer was checked in Logic; name these")
 
 
 def test_notice_only_for_unconfirmed_levels():

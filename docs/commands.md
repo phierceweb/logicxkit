@@ -3,8 +3,9 @@
 What the CLI is organised into and the rules that govern each group.
 
 This file is about shape and safety, not flags. For a command's flags run
-`logicxkit logic <command> --help`; for whether a command is trusted against a real session read
-[CAPABILITIES.md](CAPABILITIES.md), which is generated from the code and cannot drift from it.
+`logicxkit logic <command> --help`; for what each command does in plain words read
+[CAPABILITIES.md](CAPABILITIES.md), and for whether it is trusted against a real session
+[EVIDENCE.md](EVIDENCE.md), which is generated from the code and cannot drift from it.
 
 ---
 
@@ -69,7 +70,8 @@ the others as the run does. The readers take any save as they find it.
 
 Most editors route through `_edit.edit_copy`, which holds the result against its input using
 `logic/services/stream/integrity.py` (region, file and marker checks in `integrity_regions.py`, marker
-targets in order and RBA Sequences no entry names among them), refuses on any structural regression,
+targets in order and RBA Sequences no entry names among them; the arrange list read by the track
+count before and after), refuses on any structural regression,
 and then reads the file back to confirm the bytes that landed are the bytes that passed. A refused
 run discards the whole copy rather than leaving a bundle that disagrees with its own metadata.
 
@@ -81,6 +83,12 @@ Do not assume that gate covers everything:
   and never touch `ProjectData`, which is what the gate inspects.
 - **`retrack --map` bypasses it**: it rewrites each `ProjectData` in the copy checked only for
   an unchanged length. `retrack --channel` goes through the gate.
+
+A write through `edit_copy` that leaves a channel feeding itself — its output, or a send that is
+not bypassed, on a bus whose aux leads back to it — prints `warning: this leaves a routing loop:`
+and the channels and buses along it. The copy is still written: Logic's own drags of two
+summing stacks into each other leave the same loop without an alert. A loop the project already
+had is not named again.
 
 `apply-template` is the orchestrator over the rest: it migrates a session onto another
 project's layout, pairing tracks by Environment object id within a lineage and by an explicit
@@ -225,16 +233,38 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
 - `reorder --move TRACK:before:OTHER` (or `:after:`) moves a row among its siblings, under the
   same parent. A stack header moves with its members.
 - `stack-create --name NAME --track NAME` makes a folder stack from tracks; `--track` repeats.
+  Its header takes the lowest `Sub` strip that is out of use (a converted stack leaves one), as
+  Logic's own does, and a new strip after the highest otherwise. A strip the convert left with
+  the folder's level or mute comes back at 0 dB and not muted, as in Logic; one carrying a pan,
+  a solo, an insert or a send is refused.
   `--summing` makes a summing stack instead: a stereo aux on the lowest free `Aux` stub (a
   fresh strip after the highest when none is free), fed from the lowest bus nothing uses, with
   every member's output sent to that bus. The tracks are all at the top level, or all
-  direct members of one stack, and the new stack then sits inside that one. A stack header as a
-  member is refused, and so is a member whose output is not where the new aux will go (Output
-  1-2, or the bus of a summing stack around it): where Logic sends the aux then is not measured.
-  A track that comes to sit inside a summing stack, at any depth — `add-track`, `stack-create
-  --summing` inside one, `stacks --move` into one or into a folder inside one — outputs to that
-  stack's bus. `stacks --move-out TRACK` takes a track one level out, to just after the stack it
-  leaves; out of a summing stack it keeps the bus as its output, as it does in Logic. `stacks
+  direct members of one stack, and the new stack then sits inside that one. The stack outputs
+  where every member did, or to Output 1-2 when their outputs differ, as Logic's own does —
+  inside another summing stack too — and the output names each member output it replaced.
+  Members that are the only channels on their bus get no new aux: that bus's own aux becomes
+  the main track, as in Logic, with no output changed, under its own name (`--name` is not
+  applied, and the output says so); `NumberOfTracks` grows only when the aux had no track.
+  A stack's header as a `--track` makes a stack around that stack: a folder around any stack
+  changes no routing; `--summing` around a folder stack sends the tracks the folder holds to the
+  new bus, and around a summing stack sends that stack's aux there, as Logic's own does. Around
+  a folder the new stack always outputs to Output 1-2 and no bus's aux is reused: tracks that
+  fed a bus of their own leave it for the new one, that bus's aux is left with nothing feeding
+  it, and the output names each output replaced. A summing stack's header takes its first
+  member's colour unless `--colour` names one.
+  Refused: a third level of stack, which Logic does not make either (its Create Track Stack is
+  disabled there), and the reuse above inside another stack or with a summing stack among the
+  members.
+  A track that becomes a direct member of a summing stack — `add-track`, `stacks --move` —
+  outputs to that stack's bus; one that goes into a folder inside a summing stack keeps its
+  output, as Logic's drag leaves it. `stacks --move STACK:SUMMING` moves a stack with its rows:
+  a summing stack's aux then outputs to the outer bus, a folder's tracks keep their outputs. A
+  move that would make a third level is refused.
+  `stacks --move-out TRACK` takes a track one level out, to just after the stack it
+  leaves. One that lands as a direct member of a summing stack outputs to that stack's bus; out
+  to the top level it keeps its output, the bus of a summing stack it left included, each as in
+  Logic. `stacks
   --flatten STACK` takes a stack apart as Logic's Flatten Stack does: the header's row goes, the
   members come up a level, selected, and keep their routing and their channels' stack index; the
   header object and its strip stay, the strip in use. `stacks --convert STACK` makes a folder
@@ -242,17 +272,27 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   flatten, then a summing stack over the same members on the lowest free `Aux` fed from the
   lowest free bus, the folder's header object gone and its `Sub` strip out of use, the members
   at stack index 0; the name stays when it was the user's, else the stack is `Sum N`. The
-  folder's Volume lane moves onto the new header and its level stays on the `Sub` strip with the
-  aux at 0 dB, both as Logic's convert does, and the output names a level left behind. A folder
-  inside another folder converts as Logic's does, the new stack inside the outer one. Refused,
-  each named: a folder with another lane or an insert, and a folder whose members output
-  anywhere but where the new aux will go, as `--summing` refuses them. Where two
+  folder's Volume, Mute and Solo lanes move onto the new header; its level and its mute stay on
+  the `Sub` strip with the aux at 0 dB and playing, all as Logic's convert does, and the output
+  names a level or a mute left behind. A folder
+  inside another folder converts as Logic's does, the new stack inside the outer one. Members
+  on other outputs convert by `--summing`'s rule, and members that are the only channels on
+  their bus take that bus's own aux as the main track: the header carries the aux's name and
+  the track count drops by one when the aux was a track already; the aux keeps its own level
+  and lanes, but a folder's Volume lane moves onto it in place of the aux's own, as Logic's
+  convert does, and the output says so. Refused, each named: a folder with a lane other than
+  those three or with an insert, a reused aux with a lane other than Volume under a folder with
+  a Volume lane, a folder's Mute or Solo lane where the aux is reused, and a folder that holds
+  a stack (Logic's own convert of one leaves a track assigned to nothing). Where two
   stacks share a name, `--stack`, `stacks --move`, `--flatten` and `--convert` take `NAME (Sub
   1)` or `NAME (Aux 9)`.
 - `route --output CHANNEL=DEST` sets where a channel outputs to, and `--input CHANNEL=INPUT`
   what feeds it: an `Input N` for a track, a `Bus N` for an aux. The record's index words are
   set with its UUIDs. A mono audio track takes one input and a stereo one a pair (`Input 1-2`);
-  `width` changes which.
+  `width` changes which. An output sent to a bus nothing uses puts that bus in use as Logic
+  does: the bus takes a UUID of its own and the lowest free `Aux` (a fresh strip when none is
+  free) comes into use fed from it, output Output 1-2, with no track; the output says so.
+  `NumberOfTracks` does not change. A second output to the same bus adds nothing.
 - `send --add CHANNEL=BUS` adds a send in the lowest free of a channel's three slots (`--key`
   picks one), `--remove CHANNEL` drops every send on it, and `--copy LABEL=SRC_LABEL --from
   SRC_PROJECT` replaces a channel's sends with another project's. Buses are not remapped across
@@ -260,12 +300,13 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   that is already there. `--level DB` (`--level=-inf` to 6), `--mode post-pan|post-fader|pre-fader`
   and `--bypass on|off` apply to every `--add` and `--set` of the call, and need one; an added
   send given none comes in as Logic adds one, at −∞ dB, post pan and on. A second send to a bus
-  the channel already sends to is refused: `--set` changes the one there.
+  the channel already sends to is refused: `--set` changes the one there. `--add` to a bus
+  nothing uses puts it in use first, as `route --output` does.
 - `levels --fader CHANNEL=DB` sets a fader in dB and `--pan CHANNEL=N` a pan from -64 (left) to
   63 (right). A fader is written at exactly that level; Logic's own readout shows its steps as
   labelled and a level between two of them up to 0.1 dB low (an exact -6.0 shows -6.1). Without
-  either flag `levels` lists every fader in dB to the hundredth, as written, and `--to OTHER`
-  copies a project's faders and pans onto another.
+  either flag `levels` lists every fader in dB to the hundredth, as written, marking a muted
+  and a soloed channel, and `--to OTHER` copies a project's faders and pans onto another.
 - `width --stereo LABEL` (or `--mono`) changes a channel's width and the build of every plug-in
   on it. With neither flag it lists the widths and writes nothing.
 
@@ -306,8 +347,13 @@ the host is unavailable and the ladder falls back on its own.
 already in the data root. `logic neural` decodes Neural DSP knob values specifically, from either a
 strip or a whole project. `logic plugins` stops at identity: every slot's plug-in, and which
 third-party components `auval -a` does not list on this Mac. That check is Apple's scan of every
-installed Audio Unit, run once per call when a slot holds a third-party plug-in; with many plug-ins
-installed it takes 25 seconds or more. `logic midi` reads the MIDI regions and `--export` writes
+installed Audio Unit, run when a slot holds a third-party plug-in; with many plug-ins installed it
+takes 25 seconds or more, so the scan is kept (in `~/Library/Caches/logicxkit/`) and used again
+for a day while the two Components folders stay as they are. `--rescan` runs it again, which an
+Audio Unit that ships inside an app needs, since it shows in neither folder. auval lists what the
+system has registered so far, which right after a start can be part of it: a scan that leaves out
+a plug-in a Components folder holds is not kept, and the output says so. `logic midi` reads the
+MIDI regions and `--export` writes
 what each region plays as a Standard MIDI File with the song's tempo map and time signatures, bar 1
 at tick 0 (a split leaves both pieces holding the parent's events; the piece plays its own span, and
 the `midi` and `regions` listings say `2 event(s), 1 played` when they differ, `--json` carrying
@@ -432,7 +478,7 @@ from that index into a copy of a project; `--db` names the index (default: groov
 the user cache).
 
 `beats place`, `compose` and `generate` write MIDI regions into a copy through the integrity gate,
-each on a software instrument track only; they are DERIVED. Each tries the whole write on the
+each on a software instrument track only. Each tries the whole write on the
 first alternative before copying, so a refusal leaves no copy. `beats place PROJECT ID --out DIR
 --track NAME --bar N` lays one pattern as a region from bar N, `--repeat` times back to back,
 refused at the first bar whose meter is not the pattern's; `--map NAME` translates its notes from
@@ -483,7 +529,7 @@ command that changes state Logic owns globally rather than per-session.
    `tests/logic/test_capabilities.py` fails when a subcommand has no entry, so this is not
    optional.
 3. Start at `DERIVED` unless you have opened the output in Logic. Raising a level needs
-   evidence the level itself names — see [CAPABILITIES.md](CAPABILITIES.md).
+   evidence the level itself names — see [EVIDENCE.md](EVIDENCE.md).
 4. If it writes a project, route it through `_edit.edit_copy` unless there is a reason not to,
    and state that reason in the capability entry's catch.
 5. Add it to the right group above only if it opens a new category. A new editor does not need

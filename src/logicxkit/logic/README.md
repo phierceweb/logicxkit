@@ -395,7 +395,17 @@ records' flag words: a write that grew a base-4 session by three keys instead of
 back with every channel's second archive gone (2026-09-21). So a writer grows the
 range to the project's own headroom, measured from the input: `add_plugin.headroom` and
 `grow_range` move everything from reference −2 up by the deficit, and `property_key_base`
-reads the reference's place from the archive pair when no channel names a strip.
+reads the reference's place from the archive pair when no channel names a strip, or from one
+archive alone: a new instrument channel carries only its second (`tracks-instrument-logic`,
+`addtrack-inst-stereo-logic`), which Logic's own New Software Instrument Track keyed at slot
+base + shown slots + 4 at four layouts (`addtrack-inst-shown-{3,4,5}-logic`,
+`addtrack-inst-base-3-logic`). With no archive either, the place is **slot base + shown slots
++ 1** (channel record `+28` and `+30`): 340 of the public corpus's 340 Logic saves that carry
+an archive and no record at that key fit it (2026-10-03). The saves that do not are this tool's own writes,
+which Logic re-lays on its next save (an archive written at 13 came back at 8,
+`addtrack-inst-stereo-*`), and projects with a reference at the base, a strip's or a loaded
+patch's (192 bytes: `patch-built-loaded-logic`, the Session Player saves, a project made from
+a MIDI file), which keep one to three keys more.
 
 **The two archives are the channel's Smart Controls**: the first an `NSMutableDictionary` of
 knob number → `NSMutableArray` of `MAPlugInParameterMapping`, each naming the plug-in it
@@ -464,6 +474,16 @@ Binaural Post-Processing has no slider, and I/O's row the OCR never read. A save
 made after a plug-in's window was opened and a parameter moved carries its record with a
 second `GAMETSPP` block appended (the compare state), so the `-spots` and `-mono` saves' edited
 records are longer than the `-defaults` save's.
+
+Logic 12.4 saved each of those bundles again without opening a plug-in (`stockfx-*-12-4`,
+2026-10-04): every slot keeps its length and its block type, so the tables' offsets hold. Bit
+0x10 of a slot payload's `+151` is set while the plug-in's window has been open and cleared in
+those saves. Past that byte seven plug-ins differ. Five values Logic restated: Pedalboard's
+five macro values (0.001 to 0), ChromaVerb's Freeze (1 to 0) and Damping Low Shelf Ratio (1.01
+to 1.0), Tuner's Reference (440.1 to 440.0) and Output Mute (1 to 0). Space Designer's `+198`
+went from 3 to 5, and Remix FX, Beat Breaker and one third-party slot changed bytes no table
+names. The Controls views were not read again under 12.4, so whether a restated value is 12.4's
+slider grid or a reset on load is not known.
 
 **A block type is not always one plug-in.** The word after `GAMETSPP` is shared by Tape Delay
 and Echo (147), by Pedalboard and its Tru-Tape Delay stompbox (273) and by Phaser and
@@ -994,11 +1014,18 @@ its last step, so the events carry the fader the template set. Confirmed: the mi
 in Logic with `1: OH` / `2: Room` in the mixer's Group row, and Logic's re-save kept both group
 records byte for byte and the row list unchanged.
 
-A track added *after* members are assigned once left the group short of fader events ("2
-event(s) for 2 member(s), 4 expected"), which is why `apply-template` runs over another lineage
-passed `--skip group`. On Logic's blank-born project the sequence create, assign, add, assign
-keeps one event per member per fader (`tests/goldens/test_groups.py`, 2026-09-13); drop the skip
-and report the message if it returns on a converted session.
+The events are not always all there, and that is Logic's doing. A switched-off group carries
+none (`songb-bars-9-12-logic`). Logic 12.4, re-saving sessions it had only opened, kept every
+group's settings, members and Mute events and dropped every Volume event
+(`tracking-template-12-4`, `mix-01-12-4`, 2026-10-04), while two other 12.4 saves of a session
+kept them (`tracking-convert-after-logic`, `tracking-convert-resave-logic`); and Logic 12.3.1
+wrote missing Volume events back when it saved a copy that lacked them (`width-tracking-logic`).
+What decides it is not known. So a missing event is no fault: `group_errors` reports an event
+for a track or fader the group does not link, or a repeated one, and nothing else about them.
+`missing_group_events` counts the missing ones apart, and `integrity.regressions` refuses a write
+that leaves more missing than its input had.
+On Logic's blank-born project the sequence create, assign, add, assign keeps one event per
+member per fader (`tests/goldens/test_groups.py`, 2026-09-13).
 
 Leaving a group was composed until 2026-09-12: Logic's own No Group on one member of a group
 made by `logic group` on a blank project (Logic re-saved that group intact first) changed the
@@ -1146,13 +1173,21 @@ byte for byte (`addtrack-inst-stereo-mine`, `-logic`, 2026-10-01).
 
 **The sequence triple and the index table are linked by slot.** The three records of a
 triple share a header slot (`+10`); the table entry with that slot word at `+32` names the
-object (`+16`) and its index (`+20`, 17 + mixer rank), and the `qeSM` repeats both: `+234`
+object (`+16`) and its index (`+20`), and the `qeSM` repeats both: `+234`
 the object id, `+242` the index negated, plus `+300 = 382` on a fresh track and a kind byte at
-`+39` (9 track, 20 stack). A new track takes the lowest free slot word, the index after its
-pattern's, and goes into the stream in slot order; every entry at or past its index moves up
-one and that entry's triple has `+242` decremented; no other triple moves. `qeSM +8` (repeated
+`+39` (9 track, 20 stack). A new track takes the lowest free slot word and goes into the stream
+in slot order; no other triple moves. `qeSM +8` (repeated
 as the `qSvE` owner) is a per-triple id Logic renumbers on its own saves — any unused value
 serves. Measured on both adds; `services/stream/sequence.py`.
+
+**The index is the object's place in the mixer-order track list**, counted from 1: on every
+Logic save on hand, the public corpus and the owner's sessions alike (2026-10-03). Logic
+re-lays an entry that is off its place on the next open, and where the object has no arrange
+row it gives the sequence to whichever object holds that place (an aux in use with no track
+came back as `Preview`'s). `table_index.sync_indices` sets every entry, and its own triple's `+242`,
+after a writer adds a channel or a row; with that Logic re-saved a written route, send, stack
+and convert with the table as written (`route-bus-*`, `send-bus-*`, `stack-summing-*-resave-logic`,
+`stack-convert-*-resave-logic`), and `integrity.regressions` counts the entries off their place.
 
 **Three more things a row add must keep straight** — get any of them wrong and Logic's
 re-save drops or misplaces rows (measured 2026-09-04; `services/regions/regions.py`,
@@ -1207,13 +1242,59 @@ followed by its sibling, at its own depth). A track dragged into a summing stack
 `stack-summing-dragged-in-logic`) takes the bus as its output, by UUID and by word, with its row
 one level in; its parent pointer and stack index stay as they were, and dragged back out
 (`stack-summing-dragged-out-logic`) it keeps the bus. `move_to_stack` writes the same — Logic
-re-saved one with every row, route and stack kept (`stack-summing-move-resave-logic`) — and
-refuses a stack moved into a summing stack, whose members' routing is not measured. Logic's
-manual has any track added to a summing stack take its bus, and `stack_place` routes every row
-that comes to sit inside one at any depth — a track add, a summing stack made inside one, a move
-into a folder inside one; a row moving within its summing stack keeps its output, as Logic's own
-saves keep some subtracks routed elsewhere. The manual also has a track dragged out go to Stereo
-Out; Logic 12.4's own drag kept the bus, and the file wins. A member's stack index is not a
+re-saved one with every row, route and stack kept (`stack-summing-move-resave-logic`). Only a
+direct member takes the bus. A track dragged into a folder inside a summing stack keeps its
+output and takes the folder's stack index (`stack-drag-into-folder-after-logic`); a folder
+stack dragged into a summing stack moves its rows and nothing else, its tracks still on their
+outputs (`stack-folder-into-summing-after-logic`); a summing stack dragged in has its aux
+output to the outer bus while its members stay on its own
+(`stack-summing-into-summing-after-logic`). `stack_place` writes each, and a track added
+beside a summing stack's members is routed the same way; a row moving within its summing stack
+keeps its output, as Logic's own saves keep some subtracks routed elsewhere. Logic's manual has
+any track added to a summing stack take its bus, and a track dragged out go to Stereo Out; the
+drags above and Logic 12.4's own drag out, which kept the bus, are the file, and the file wins.
+A track dragged out of an inner stack to a direct place in the summing stack around it takes
+that stack's bus, out of a folder (`stack-out-of-folder-after-logic`: output word, destination
+UUID, stack index cleared) and out of a summing stack (`stack-out-of-inner-summing-after-logic`)
+alike; Flatten Stack on a folder inside a summing stack changes no channel record, so a track
+on another output stays there (`stack-flatten-in-summing-after-logic`). A summing stack dragged
+out to the top level keeps its aux on the outer bus (`stack-loop-out-logic`), and the outer
+stack dragged into it then has its own aux sent to the inner bus: the two auxes feed each
+other, saved with no alert (`stack-loop-after-logic`). `routing_loops` names such a loop.
+Create Track Stack over a stack's header makes a stack around it. A folder around a summing
+stack (`stack-folder-around-summing-after-logic`) and around a folder
+(`nest-stack-in-stack-logic`) changes no routing: the rows go one level in and the inner
+header's strip takes the new folder's index. A summing stack around a folder
+(`stack-summing-around-folder-after-logic`) routes the folder's tracks to the new bus and makes
+the new header the parent of the folder and of each of those tracks, their stack index still the
+folder's. The folder has no output of its own, so that stack outputs to Output 1-2 and takes
+no bus's aux as its main track, whatever its tracks fed: over a folder whose three tracks were
+all Bus 1 had, Logic made a new aux on Bus 2, moved the tracks onto it and left Bus 1's aux as
+it was, a track or not (`stack-summing-busfolder-after-logic`, `-track-after-logic`,
+`tracking-sum-busfolder-after-logic`). The new header takes its first member's colour, the
+folder's there. A summing stack around a summing stack
+(`stack-summing-around-summing-after-logic`) routes the inner aux to the new bus and parents
+its header to the new one; the inner members stay on their bus. Logic 12.4 re-saved a written
+copy of each move and each wrap with every row, route, parent, table entry and channel record
+as written (`stack-*-ours`, `stack-*-resave-logic`, 2026-10-04). A new folder stack's strip is
+the lowest `Sub` out of use, as a convert leaves one: Logic sets `+24`/`+25` and the strip's
+own UUID to the new header's and changes nothing else of it, adds no channel record, and keeps
+the `Sub` rows of the mixer-order list in strip order (`stack-sub-gap-after-logic`,
+`stack-sub-after-convert-after-logic`). A strip the convert left with the folder's level or mute
+is put back at its defaults: `+85` to 90, the fixed word at `+116` to `00 00 00 5a`, bit 0 of
+`+90` cleared (`stack-sub-level-after-logic`, `stack-sub-muted-after-logic`). In those two saves
+the new header also took the object id of the header the convert removed, whose registry entry
+and mixer-order row were still there, so the row left the head of the list and no id was added;
+`create_stack` takes a new id and leaves that row, and Logic re-saved the copy with every row,
+strip and table entry as written, setting the new header's parent to the stack around it. With none out of use the strip is a new one numbered
+after the highest `Sub`, one a flattened stack left in use included
+(`stack-sub-after-flatten-after-logic`). Stacks nest two deep: with a stack inside a stack, Logic's
+Create Track Stack is disabled for the outer header, for the inner header and for the tracks
+inside it (read with the Track menu open, 2026-10-04), and a third level is not written
+(`stacks.require_two_levels`). Logic's Convert Folder Stack to Summing Stack on a folder that
+holds a folder makes no summing stack: the save has no stack, and a first row bound to no object
+that Logic shows as Not Assigned (`stack-convert-holding-folder-after-logic`); `stacks
+--convert` refuses such a folder. A member's stack index is not a
 reliable folder tell around summing stacks: Logic's Flatten then Create Summing leaves members at
 the old Sub number (`stack-summing-logic`), and top-level summing members on hand carry one more
 often than not. The project word at `+42` is 0 on Logic 12.3.1's saves and 3 on 12.4's, which
@@ -1231,16 +1312,26 @@ Logic 12.4's Convert Folder Stack to Summing Stack (`stack-converted-to-summing-
 `stack-folder-logic`) is that flatten and then its summing creation over the same members: a new
 header object (unnamed `Sum 1`) on the lowest free `Aux`, fed from the lowest free bus, the
 members routed to it with the new header as parent and their stack index set to 0; the folder's
-header object is gone while its flat row and table entry stay (the table re-laid), and its `Sub`
-strip is left out of use (`+24`/`+25` cleared). Two `UCuA` records appeared under the output
-channel, unread. The folder track's Volume lane moves byte for byte into the new header's
-automation folder, the old folder's left with its closing event (`stack-convert-lane-after-logic`);
+header object is gone while its flat row and table entry stay, the row moved up the
+mixer-order list to just before the first row of a live channel object — first on a blank-born
+project, after the rows of gone objects a tracking session's list already opens with
+(`tracking-convert-after-logic`) — and its `Sub`
+strip is left out of use (`+24`/`+25` cleared). The two `UCuA` records that save gained are
+not the convert's: they are the Click instrument channel's Smart Controls archives, which any
+Logic open-and-save adds to a project that lacked them (`stack-convert-lane-before-logic`,
+saved untouched, has them). The folder track's Volume lane moves byte for byte into the new header's
+automation folder, the old folder's left with its closing event (`stack-convert-lane-after-logic`),
+and so do its Mute and Solo lanes (`stack-convert-mutelane-after-logic`,
+`stack-convert-sololane-after-logic`);
 a folder level off unity stays on the out-of-use `Sub` strip and the aux comes up at 0 dB
-(`stack-convert-level-after-logic`). `stacks --convert`
-(`stack_convert.convert_to_summing`) composes the two writers, moves the lane and leaves the
-output channel alone; Logic 12.4 re-saved a written convert with every row, object, route and
-strip as written and the index table re-laid, the orphan entry dropped (`stack-convert-*`). It
-refuses another lane or an insert on the folder's strip. Inside another folder Logic's convert
+(`stack-convert-level-after-logic`), and a muted folder's mute stays there too, the aux
+playing (`stack-convert-muted-after-logic`). `stacks --convert`
+(`stack_convert.convert_to_summing`) composes the two writers, moves the lane and puts that
+row where Logic does; Logic 12.4 re-saved a written convert with every row, object, route,
+strip and table entry as written (`stack-convert-reuse-*`, `stack-convert-differ-*`,
+2026-10-03; a copy with the row last and its entries off their place came back with the table
+re-laid and the orphan entry dropped, `stack-convert-resave-logic`). It refuses a lane other
+than those three, or an insert, on the folder's strip. Inside another folder Logic's convert
 does the same: the new header's row and object sit under the outer folder, and the members and
 the new `Aux` go to stack index 0 whether the inner strip carried the outer stack's number
 (below) or 0 (`nest-convert-wrapped-after-logic`, `nest-convert-inner-after-logic`); ours
@@ -1263,6 +1354,43 @@ written stacks whose headers were fresh strips, showed the members under their h
 re-saved them with no channel record and neither header object changed (`stack-summing-ours`,
 `stack-summing-resave-logic`), and re-saved two stub-bound ones, and one inside a folder, with
 every row, route and stack as written (`stack-summing-stub-*`, `nest-inner-stub-*`, 2026-10-02).
+
+**Where a summing stack's aux outputs, and when Logic makes none (Logic 12.4, 2026-10-03).**
+Create Track Stack… (Summing) and Convert Folder Stack to Summing Stack read the members'
+outputs. Members that share one output get a new aux that outputs there
+(`stack-summing-shared-after-logic`: two of three tracks on Bus 1, `Aux 2` fed from Bus 2 and
+sent to Bus 1), inside a summing stack as at the top level
+(`nest-summing-in-summing-after-logic`); members on different outputs get one sent to Output
+1-2, inside a summing stack too (`stack-summing-differ-logic`, `stack-convert-differ-*`,
+`nest-summing-in-summing-differ-*`), so position never decides it. `stack_summing` writes both,
+each changed channel record as Logic's but for the minted ids. When the members are all that
+outputs to a bus and one aux is fed from it, Logic makes no aux: that bus's own aux becomes the
+main track, with no output changed, its track moved to the header's place when it had one and
+the folder's name gone (`stack-summing-reuse-logic`, `stack-summing-reuse-track-logic`,
+`stack-convert-reuse-*`). Against the save before, that is one arrange row for the aux's own
+object (a fresh row, the old one gone), the members' rows one deeper with that object as parent,
+the object's colour its members' (16 from 5 and from 40 over tracks coloured 16,
+`stack-summing-reuse-colour-*`; a tracking session's aux kept the colour it shared with its
+members), and no channel record changed.
+Its kind byte stays what it was — 0 on a blank-born aux, 128 on a tracking session's aux track
+(`tracking-convert-after-logic`) — so a summing header is told by the rows under it, not by
+being a grouping object; an aux in use has its object, its flat
+row and its index-table entry already (Mixer > Options > Create Tracks for Selected Channel
+Strips adds the row alone, `tracks-aux-track-logic`). `stack_reuse` writes it, at the top level
+with the aux's own row at the top level; elsewhere it is refused. The gnoS bytes `+137`, `+222`
+and `+232` and the song container's `+177` and `+218` also differ across these pairs and across
+unrelated saves alike: view state, left alone. A
+bus counts as shared only with a UUID of its own: Logic's output change to an unused bus gives
+it one and brings the lowest free `Aux` into use fed from it (`route-out-bus-logic`), and so do
+its sends (`send-bus-1-logic`, one aux per bus on `send-two-base-3-logic`). Over two members
+on a bus still on its placeholder Logic sent the new aux to Output 1-2
+(`stack-summing-placeholder-*`). `bus_return.use_bus` writes Logic's version: the bus's
+own UUID, every output, input and send that named the placeholder moved to it, and the aux
+through `add_track(arrange=False)` — the stub bound stereo, an object (unselected, stamp step
+0x42), a flat row, a sequence triple and its index-table entry, no arrange row. On the
+placeholder save it gives Logic's own (`route-out-bus-second-logic`): the same records by tag,
+both track lists, the table's objects, and the four changed channel records byte for byte but
+for the ids.
 
 ### Creating a stack (`logic stack-create`) — composed, not sampled
 
@@ -1307,6 +1435,7 @@ orchestrator can chain them in any order. The pieces a new track or stack is mad
 | `recbuild.py` | a record header over a new payload; owner/key/slot restamps; UUID minting |
 | `tracklist.py` | `karT` runs, the arrange and flat lists, a new row, renumbering |
 | `sequence.py` | the `qeSM`/marker/`qSvE` triple and the index table (`plan_sequence`) |
+| `table_index.py` | each table entry's index as its object's place in mixer order (`sync_indices`, `index_errors`) |
 | `registry.py` | the two `gnoS` entries and the selection fields |
 | `channel_alloc.py` | binding an `Audio N` stub; a new `Inst`/`Sub` channel; owner shifts; the count record |
 | `environment.py` | object cloning, the next object id, parent and colour |
@@ -1534,13 +1663,15 @@ dragged read 0 at `+38`, so the pointer confirms membership without establishing
 is far more than its two records: the flat-list row, the sequence triple, the index-table entry
 and the two `gnoS` registry entries all have to exist and agree.
 
-### Channel fader and pan — `OCuA`
+### Channel fader, pan, mute and solo — `OCuA`
 
 | offset | meaning |
 |---|---|
 | `+6` | the channel's own number (`0` is "Audio 1"); label at `+60`, NUL-padded |
 | `+116..119` | fader as u32, **8.24 fixed point**; `+85` and `+119` repeat its integer part (0-127) and all three must agree, and do on every record measured. `levels` copies the exact value |
 | `+89` | pan 0-127, 64 centre; Logic displays it as `byte - 64` |
+| `+90` | bit 0 mute (`mute-audio-1-logic`); bit 1 on every channel a solo elsewhere silences, a muted one included |
+| `+88` | bit 0 solo (`solo-audio-2-logic`); bit 2 on Master and Output 1-2 while a solo is on; bit 1 unread, set on two channels of a blank project |
 
 Verified against Logic's mixer, byte -> dB: 47 -> -11.3 · 60 -> -7.1 · 90 -> 0.0 · 92 -> 0.4 · 94 ->
 0.8 · 99 -> 1.8 · 110 -> +3.4. The taper is the send knob's law, `dB = 40 · log10(position / 90)` on

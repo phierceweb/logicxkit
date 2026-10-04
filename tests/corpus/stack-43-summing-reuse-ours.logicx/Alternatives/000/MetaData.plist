@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AudioFiles</key>
+	<array/>
+	<key>BeatsPerMinute</key>
+	<real>120.0</real>
+	<key>FrameRateIndex</key>
+	<integer>1</integer>
+	<key>HasARAPlugins</key>
+	<false/>
+	<key>HasGrid</key>
+	<false/>
+	<key>ImpulsResponsesFiles</key>
+	<array/>
+	<key>NumberOfTracks</key>
+	<integer>4</integer>
+	<key>PlaybackFiles</key>
+	<array/>
+	<key>QuicksamplerFiles</key>
+	<array/>
+	<key>SampleRate</key>
+	<integer>44100</integer>
+	<key>SamplerInstrumentsFiles</key>
+	<array/>
+	<key>SignatureKey</key>
+	<integer>7</integer>
+	<key>SongGenderKey</key>
+	<string>major</string>
+	<key>SongKey</key>
+	<string>C</string>
+	<key>SongSignatureDenominator</key>
+	<integer>4</integer>
+	<key>SongSignatureNumerator</key>
+	<integer>4</integer>
+	<key>SurroundFormatIndex</key>
+	<integer>5</integer>
+	<key>SurroundModeIndex</key>
+	<integer>0</integer>
+	<key>UltrabeatFiles</key>
+	<array/>
+	<key>UnusedAudioFiles</key>
+	<array/>
+	<key>Version</key>
+	<integer>3</integer>
+	<key>isTimeCodeBased</key>
+	<false/>
+</dict>
+</plist>

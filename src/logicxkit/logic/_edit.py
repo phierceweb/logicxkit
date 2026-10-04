@@ -12,6 +12,7 @@ from pf_core.utils.io import atomic_write_bytes
 from .services.stream.integrity import require_no_regression
 from .services.project.project import project_metadata
 from .services.arrange.retrack import copy_project, find_project, left_line, stale_alternatives
+from .services.mixer.routing_loops import new_loops
 from .services.mixer.transplant import owner_of
 from .services.stream.validate import tolerating
 
@@ -43,14 +44,18 @@ def edit_copy(project: Path, out: Path, step: Step, moved: Moved | None = None) 
             before = data_file.read_bytes()
             with tolerating(before):                 # a step answers for what it changes; the gate below for the rest
                 after = step(before, count, data_file)
+            now = project_metadata(data_file.parents[2], data_file.parent.name).get("tracks")     # a step may move it
             try:
-                require_no_regression(before, after, removed=moved(before, count, data_file) if moved else ())
+                require_no_regression(before, after, removed=moved(before, count, data_file) if moved else (),
+                                      track_counts=(count, now))
             except ValueError as e:
                 raise CommandError(f"{data_file.parent.name}: {e}") from None
             atomic_write_bytes(data_file, after)
             if data_file.read_bytes() != after:
                 raise CommandError(f"{data_file.parent.name}: the bytes on disk are not the bytes "
                                    "that passed the gate — the write did not land intact")
+            for loop in new_loops(before, after):
+                print(f"  {data_file.parent.name}: warning: this leaves a routing loop: {' -> '.join(loop)}")
     except BaseException:
         _discard(root)
         raise

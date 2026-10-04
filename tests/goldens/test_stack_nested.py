@@ -73,12 +73,17 @@ class InnerStackTest(unittest.TestCase):
         strip = max((r.raw for r in project_records(out) if r.tag == b"OCuA" and r.owner == report["owner"]), key=len)
         self.assertEqual({at: struct.unpack_from("<H", strip, HEADER + at)[0] for at in PROJECT_WORDS}, project_words(data))
 
-    def test_members_of_two_stacks_or_two_depths_and_a_header_are_refused(self):
+    def test_members_of_two_stacks_or_two_depths_are_refused(self):
         two = project_data(_goldens.path(TWO))                    # Sub 2 { Sub 1 { Audio 1, Audio 2 }, Audio 3 }
-        for names in (("Audio 1", "Audio 3"), ("Sub 1",), ("Sub 1", "Audio 3")):
-            for make in (create_stack, create_summing_stack):
-                with self.subTest(names, make=make.__name__), self.assertRaisesRegex(ValueError, "one stack|header"):
-                    make(two, name="X", members=members(two, *names))
+        for make in (create_stack, create_summing_stack):
+            with self.subTest(make=make.__name__), self.assertRaisesRegex(ValueError, "one stack"):
+                make(two, name="X", members=members(two, "Audio 1", "Audio 3"))
+
+    def test_a_header_inside_a_stack_is_refused_as_a_third_level(self):
+        two = project_data(_goldens.path(TWO))
+        for make in (create_stack, create_summing_stack):
+            with self.subTest(make=make.__name__), self.assertRaisesRegex(ValueError, "two deep"):
+                make(two, name="X", members=members(two, "Sub 1", "Audio 3"))
 
 
 OURS, RESAVE, SOURCE = "nest-inner-stub-ours", "nest-inner-stub-resave-logic", "markers-edits-resave-logic"

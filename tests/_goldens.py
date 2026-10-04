@@ -17,7 +17,8 @@ TESTS = Path(__file__).resolve().parent
 CORPUS = TESTS / "corpus"                                   # the public corpus, tracked
 PUBLIC = TESTS / "goldens" / "manifest.json"                # its manifest, paths under CORPUS
 MANIFEST = RESOURCES / "experiments" / "manifest.json"      # the owner's, paths under RESOURCES
-SESSION_DIRS = {"legacy": "legacy/", "mix": "mixes/"}       # the owner's sessions, by where their manifest paths sit
+# the owner's sessions, by where their manifest paths sit; `resave` is Logic 12.4's re-save of each
+SESSION_DIRS = {"legacy": "legacy/", "mix": "mixes/", "resave": "experiments/logic-12-4/"}
 REQUIRE = "LOGICXKIT_REQUIRE_GOLDENS"
 MISSING_SHOWN = 8
 
@@ -84,7 +85,8 @@ def _relative(key: str, raw: str) -> str:
 
 def session_keys(kind: str | None = None) -> tuple[str, ...]:
     """The owner's session keys, in manifest order: the owner's entries whose file sits under
-    `legacy/` (older-template projects) or `mixes/` (finished mixes), or ``kind``'s alone."""
+    `legacy/` (older-template projects), `mixes/` (finished mixes) or `experiments/logic-12-4/`
+    (the current Logic's re-saves of both), or ``kind``'s alone."""
     prefixes = tuple(SESSION_DIRS.values()) if kind is None else (SESSION_DIRS[kind],)
     return tuple(k for k, e in _read(MANIFEST).items()
                  if isinstance(e, dict) and str(e.get("path", "")).startswith(prefixes)

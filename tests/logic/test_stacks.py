@@ -129,6 +129,16 @@ class StackTest(unittest.TestCase):
         self.assertEqual([(s.name, s.kind, [n for _k, n in s.members]) for s in stacks],
                          [("Drums", FOLDER, ["Drum Verb", "Kick In"]), ("Vocals", SUMMING, ["Lead"])])
 
+    def test_a_summing_header_need_not_be_a_grouping_object(self):
+        """An aux track made a stack's main track keeps its object's kind (128 on a track): the
+        row under it, one level deeper, is what makes it a header."""
+        data = proj(
+            env_obj(220, "Bass"), env_obj(152, "Bass DI"), env_obj(96, "Keys"),
+            chan(70, "Aux 4", uuid=uuid(220)), chan(16, "Audio 17", uuid=uuid(152)), chan(2, "Audio 3", uuid=uuid(96)),
+            track(0, 220), track(1, 152, member=True), track(2, 96))
+        self.assertEqual([(s.name, s.kind, [n for _k, n in s.members]) for s in read_stacks(data, 2)],
+                         [("Bass", SUMMING, ["Bass DI"])])
+
     def test_rows_report_member_and_expanded(self):
         rows = read_tracks(session(), TRACKS)
         self.assertEqual([r["member"] for r in rows[:4]], [False, True, True, False])

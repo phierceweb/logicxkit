@@ -99,13 +99,29 @@ def cmd_stack_create(args) -> int:
         members = [object_by_name(data, name, count) for name in args.track]
         make = create_summing_stack if args.summing else create_stack
         data, report = make(data, name=args.name, members=members, track_count=count, colour=args.colour)
-        tracks = bump_track_count(data_file)
-        fed = f", fed from {report['bus']}" if args.summing else ""
-        print(f"  {data_file.parent.name}: {args.name!r}: {report['label']} (owner {report['owner']}){fed}, object "
-              f"{report['object_id']}, sequence {report['sequence']}, "
+        tracks = bump_track_count(data_file, report.get("tracks_added", 1))
+        fed = f", fed from {report['bus']}, output {report['output']}" if args.summing else ""
+        print(f"  {data_file.parent.name}: {report.get('name', args.name)!r}: {report['label']} (owner "
+              f"{report['owner']}){fed}, object {report['object_id']}, sequence {report['sequence']}, "
               f"{len(report['members'])} member(s); NumberOfTracks -> {tracks}")
+        if args.summing and report["reused"]:
+            print(reused_aux(report, f"; --name {args.name!r} is not applied"))
+        if args.summing and report["left"]:
+            print(left_outputs(report["left"]))
         return data
     return _run(args, step)
+
+
+def left_outputs(left: dict[str, str | None]) -> str:
+    """The line naming each member whose own output a summing stack replaced."""
+    return ("    their own outputs are replaced, as by Logic's own stack: "
+            + ", ".join(f"{name} (was {out or 'no output'})" for name, out in left.items()))
+
+
+def reused_aux(report: dict, tail: str = "") -> str:
+    """The line saying a summing stack took its bus's own aux as the main track."""
+    return (f"    its members are all {report['bus']} has, so {report['bus']}'s own {report['label']} is the main "
+            f"track, as Logic makes it: no new aux, no output changed, the track's name kept{tail}")
 
 
 def _run(args, step, note: str = "") -> int:
@@ -158,7 +174,8 @@ def register(sub) -> None:
     sc.add_argument("--track", action="append", required=True, metavar="NAME",
                     help="a track to put inside (repeatable): all at the top level, or all direct "
                          "members of one stack")
-    sc.add_argument("--colour", type=int, default=16, metavar="INDEX")
+    sc.add_argument("--colour", type=int, metavar="INDEX",
+                    help="the header's colour (default: 16 on a folder stack, the first member's on a summing one)")
     sc.add_argument("--summing", action="store_true",
                     help="a summing stack: an aux fed from a free bus, every member's output sent to it")
     sc.set_defaults(func=cmd_stack_create)

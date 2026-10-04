@@ -79,17 +79,20 @@ class MixTemplateStackTest(unittest.TestCase):
     def test_a_track_inside_a_stack_gets_a_stack_inside_it(self):
         """Both kinds, on the first member of the template's first stack that is a plain track."""
         from _invariants import assert_consistent
-        from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
+        from logicxkit.logic.services.arrange.stack_summing import create_summing_stack, own_aux
         headers = {s.object_id for s in read_stacks(self.data, self.count)}
         member = next(r for r in read_tracks(self.data, self.count)
                       if r["depth"] == 1 and r["name"] and r["object_id"] not in headers
                       and (r["label"] or "").startswith("Audio "))
         holder = next(s for s in read_stacks(self.data, self.count) if any(k == member["key"] for k, _n in s.members))
-        if output_labels(self.data).get(member["owner"]) != "Output 1-2":   # a summing aux's output is measured only there
+        went = output_labels(self.data).get(member["owner"]) or ""
+        # alone on its bus, Logic makes that bus's aux the main track: not measured inside a stack
+        alone = went.startswith("Bus ") and own_aux(self.data, went, {member["owner"]}) is not None
+        if alone:
             with self.assertRaisesRegex(ValueError, "not measured"):
                 create_summing_stack(self.data, name="Nested", members=[member["object_id"]], track_count=self.count)
         for make in (create_stack, create_summing_stack):
-            if make is create_summing_stack and output_labels(self.data).get(member["owner"]) != "Output 1-2":
+            if make is create_summing_stack and alone:
                 continue
             with self.subTest(make.__name__):
                 out, report = make(self.data, name="Nested", members=[member["object_id"]], track_count=self.count)

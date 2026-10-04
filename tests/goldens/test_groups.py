@@ -10,16 +10,20 @@ import _goldens
 import _paths  # noqa: F401
 from logicxkit.logic.services.arrange.environment import channel_objects
 from logicxkit.logic.services.arrange.groups import (
+    EVENT,
     FLAGS,
     assign,
     create_group,
     group_errors,
     group_of,
+    missing_group_events,
     read_groups,
     set_group,
     settings_of,
 )
-from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.stream.integrity import regressions
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
+from logicxkit.logic.services.stream.recbuild import rec
 from logicxkit.logic.services.stream.registry import group_entries
 from _data import needs
 
@@ -108,6 +112,20 @@ class TemplateGroupsTest(unittest.TestCase):
         oh = next(g for g in read_groups(data) if g.name == "OH")
         raw = project_records(data)[oh.start + 2].raw[HEADER:]
         self.assertEqual(_events_for(oh.flags, oh.members, _values(data)), raw[:-16])
+
+
+@_goldens.needs("group-drums-logic")
+class LostEventTest(unittest.TestCase):
+    def test_a_write_that_loses_a_members_event_is_held_by_the_gate(self):
+        data = _load(_goldens.path("group-drums-logic"))
+        records = project_records(data)
+        events = records[read_groups(data)[0].start + 2]
+        less = reassemble(data, [rec(r.raw[:4], r.raw, r.raw[HEADER + EVENT:]) if r is events else r.raw
+                                 for r in records])
+        self.assertEqual((missing_group_events(data), missing_group_events(less), group_errors(less)), (0, 1, []))
+        self.assertEqual(regressions(data, less), ["group member events missing 0 -> 1 — a member lost the event "
+                                                   "of a fader its group links"])
+        self.assertEqual(regressions(less, less), [])           # Logic's own saves lack some: no fault alone
 
 
 @_goldens.needs("stack-folder-flattened-logic")

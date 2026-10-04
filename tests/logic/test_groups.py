@@ -16,6 +16,7 @@ from logicxkit.logic.services.arrange.groups import (
     group_errors,
     group_of,
     member_events,
+    missing_group_events,
     read_groups,
     set_group,
     settings_of,
@@ -277,9 +278,28 @@ class ErrorsTest(unittest.TestCase):
                        registry=(0,))
         self.assertEqual(group_errors(data), ["object 88: in group 3, which does not exist"])
 
-    def test_events_that_do_not_match_the_members(self):
+    def test_a_group_with_no_events_is_no_error(self):
+        """Logic's own saves lack them on a switched-off group, and some of a live one's."""
         data = session(group_triple(0, 82), numbers={KICK: 1}, registry=(0,))
-        self.assertEqual(group_errors(data), ["group 1: 0 event(s) for 1 member(s), 2 expected"])
+        self.assertEqual(group_errors(data), [])
+
+    @needs("logic", "group-12.3.1.json")
+    def test_missing_events_are_counted_apart_from_the_errors(self):
+        both = member_events(DEFAULT_FLAGS, KICK) + member_events(DEFAULT_FLAGS, SNARE)
+        whole = session(group_triple(0, 82, events=both), numbers={KICK: 1, SNARE: 1}, registry=(0,))
+        less = session(group_triple(0, 82, events=member_events(DEFAULT_FLAGS, KICK)), numbers={KICK: 1, SNARE: 1},
+                       registry=(0,))
+        self.assertEqual((missing_group_events(whole), missing_group_events(less)), (0, 2))
+        self.assertEqual(group_errors(less), [])
+
+    @needs("logic", "group-12.3.1.json")
+    def test_an_event_for_a_track_the_group_does_not_hold_or_a_repeated_one(self):
+        both = member_events(DEFAULT_FLAGS, KICK) + member_events(DEFAULT_FLAGS, SNARE)
+        data = session(group_triple(0, 82, events=both), numbers={KICK: 1}, registry=(0,))
+        self.assertEqual(group_errors(data), ["group 1: 2 event(s) for a track or a fader it does not link, or repeated"])
+        twice = member_events(DEFAULT_FLAGS, KICK) * 2
+        data = session(group_triple(0, 82, events=twice), numbers={KICK: 1}, registry=(0,))
+        self.assertEqual(group_errors(data), ["group 1: 2 event(s) for a track or a fader it does not link, or repeated"])
 
     @needs("logic", "group-12.3.1.json")
     def test_a_slot_without_its_registry_pair(self):

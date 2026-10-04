@@ -26,9 +26,9 @@ WATCHED = ("Audio 1", "Audio 2", "Audio 3", "Aux 1", "Sub 1", "Bus 1")
 
 
 def shape(data: bytes) -> dict:
-    """What the convert leaves, less what Logic re-lays on save (table indices) and its own
-    channel stamp: the rows, the live objects and their parents, the strips' use and routing,
-    the flat rows that still name an object, the table's object ids."""
+    """What the convert leaves, less Logic's own channel stamp: the rows, the live objects and
+    their parents, the strips' use and routing, the mixer-order list (None for the removed
+    folder's row), each table entry's object and index."""
     records, chans, objs = project_records(data), channels(data), channel_objects(data)
     outs, ins = output_labels(data), input_labels(data)
     run = arrange_run(records)
@@ -38,8 +38,8 @@ def shape(data: bytes) -> dict:
                         for i, o in objs.items() if o.name.startswith(("Audio", "Sum"))},
             "strips": {c.label: (c.in_use, c.stack_index, outs.get(o), ins.get(o), c.words)
                        for o, c in chans.items() if c.label in WATCHED},
-            "flat": [objs[row_object(records[i].raw)].name for i in flat_run(records, run) if row_object(records[i].raw) in objs],
-            "table": sorted(e[1] for e in table_entries(records[index_table(records)].raw[HEADER:])),
+            "flat": [objs[o].name if (o := row_object(records[i].raw)) in objs else None for i in flat_run(records, run)],
+            "table": sorted((e[1], e[2]) for e in table_entries(records[index_table(records)].raw[HEADER:])),   # object, index
             "stacks": [(s.name, s.kind, s.strip, [n for _k, n in s.members]) for s in read_stacks(data)]}
 
 
@@ -57,6 +57,16 @@ class ConvertTest(unittest.TestCase):
         self.assertEqual(shape(logics)["stacks"], [(name, "summing", strip, _goldens.fact(CONVERTED, "members"))])
         self.assertEqual((self.report["bus"], shape(logics)["strips"]["Sub 1"][0]), (bus, _goldens.fact(CONVERTED, "sub_1_in_use")))
         self.assertEqual((validate_project(self.ours), regressions(self.base, self.ours)), ([], []))
+
+    def test_with_no_aux_stub_free_the_sub_strip_still_goes_out_of_use(self):
+        """A fresh aux strip moves every owner above it up one, the folder's `Sub` among them."""
+        from unittest import mock
+        (stack,) = read_stacks(self.base)
+        with mock.patch("logicxkit.logic.services.arrange.addtrack.free_aux_stub", side_effect=ValueError("none free")):
+            ours, report = convert_to_summing(self.base, stack.object_id)
+        self.assertNotEqual(report["label"], "Aux 1")
+        self.assertFalse(next(c for c in channels(ours).values() if c.label == "Sub 1").in_use)
+        self.assertEqual((validate_project(ours), regressions(self.base, ours)), ([], []))
 
     def test_the_report_names_the_new_header(self):
         self.assertEqual((self.report["label"], self.report["bus"], self.report["name"]), ("Aux 1", "Bus 1", "Sum 1"))
@@ -159,8 +169,9 @@ class LogicResavedConvertTest(unittest.TestCase):
         """Logic re-lays the index table on any save (the folder header's orphan entry gone, the
         Master's added), so that is left out; the rows, objects, routing and strips are held."""
         a, b = project_data(_goldens.path(OURS)), project_data(_goldens.path(RESAVE))
-        self.assertEqual({k: v for k, v in shape(b).items() if k != "table"},
-                         {k: v for k, v in shape(a).items() if k != "table"})
+        def held(data):                              # the gone folder's flat row and entry aside
+            return {k: [n for n in v if n] if k == "flat" else v for k, v in shape(data).items() if k != "table"}
+        self.assertEqual(held(b), held(a))
         self.assertEqual(shape(b)["stacks"], [(n, "summing", s, m) for n, s, _bus, m in _goldens.fact(RESAVE, "stacks")])
         self.assertEqual((validate_project(a), validate_project(b)), ([], []))
 

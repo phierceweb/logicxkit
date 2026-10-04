@@ -1,8 +1,12 @@
-"""A row that enters a summing stack, at any depth, outputs to that stack's bus: Logic's manual
-("Add a track to a track stack": its output routing changes to the bus assigned to the main
-track) and Logic's own drag into one (`stack-summing-dragged-in-logic`). A row already inside
-keeps whatever output it has, as Logic's own saves keep subtracks routed elsewhere. Which stack a
-row enters is the caller's (`stacks.summing_around`)."""
+"""A row that becomes a direct member of a summing stack outputs to that stack's bus: Logic's own
+drag into one (`stack-summing-dragged-in-logic`), and a summing stack dragged in, whose aux takes
+the outer bus while its members keep theirs (`stack-summing-into-summing-after-logic`). A row
+entering a folder inside a summing stack keeps its output (`stack-drag-into-folder-after-logic`),
+and so do the members of a folder moved in (`stack-folder-into-summing-after-logic`). A row
+that leaves an inner stack for a direct place in the summing stack around it takes the bus too
+(`stack-out-of-folder-after-logic`, `stack-out-of-inner-summing-after-logic`). A row already a
+direct member keeps whatever output it has, as Logic's own saves keep subtracks routed
+elsewhere."""
 
 from __future__ import annotations
 
