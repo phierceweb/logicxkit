@@ -125,7 +125,7 @@ def cmd_plugins(args) -> int:
         report.append({"project": str(project), "clean": v.clean,
                        "slots": [{"channel": r.channel, "key": r.key, "name": r.name, "native": r.native,
                                   "component": list(r.component) if r.component else None, "status": s,
-                                  "side_chain": r.side_chain}
+                                  "side_chain": r.side_chain, "midi": r.midi}
                                  for r, s in v.slots]})
         if args.json:
             continue
@@ -138,7 +138,7 @@ def cmd_plugins(args) -> int:
             for r, status in v.slots:
                 if len(projects) > 1 and status not in ("missing", "broken"):
                     continue
-                ident = " ".join(r.component) if r.component else "native"
+                ident = " ".join(r.component) if r.component else "native, MIDI FX" if r.midi else "native"
                 tail = f"  side chain: {r.side_chain}" if r.side_chain else ""
                 print(f"  {r.channel:16s} key {r.key:2d}  {r.name:28s} {ident:16s} {status}{tail}")
     if args.json:

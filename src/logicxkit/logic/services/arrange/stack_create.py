@@ -14,8 +14,11 @@ strip, its arrange row followed by its members' rows with `+14` set. What this w
   owner moved up by one (and the objects bound to them re-indexed), the channel count's
   Master+Sub class counted up
 * the rows: a header row where the first member sat, expanded and selected; the member rows
-  behind it in arrange order with `+14 = 1`, their objects' parent pointer and their
-  channels' stack index set as a drag sets them
+  behind it in arrange order with `+14 = 1` and their channels' stack index set as a drag sets
+  them. The members' parent pointers stay as they were and the header takes that pointer —
+  the summing stack they sit in, none inside a plain folder or at the top level — and Logic's
+  colour 20 for a new folder header (six of Logic's own creates, `stack-sub-level-after-logic`,
+  `nest-inner-folder-logic` and the rest, 2026-10-04/06)
 * the flat mixer-order row after the last Sub's, the sequence triple, the index-table entry
   and the `gnoS` registry entries, as a track add writes them
 
@@ -31,10 +34,8 @@ Stack is disabled wherever it would make one (`stacks.require_two_levels`).
 
 from __future__ import annotations
 
-import json
 import struct
 
-from ....utils.data import data_file
 from ..mixer.binding import IN_USE_AT, bound_channels, channels, set_stack_index, stamp_uuids
 from ..mixer.channel_alloc import (
     COUNT_CLASS_AT, NUMBER_AT, bump_channel_count, is_channel_record, is_mixer_record, mixer_record,
@@ -43,29 +44,25 @@ from ..mixer.channel_alloc import (
 from ..mixer.levels import FADER_AT, FADER_FIXED_AT, FIXED_ONE, MUTE_AT, PAN_CENTRE, UNITY, read_levels
 from ..mixer.mixer import is_channel_count
 from .environment import (
-    DEFAULT_COLOUR,
     ENV_TAG,
-    STAMP_AT,
     UUID_LEN,
     channel_objects,
     clone_object,
-    name_end,
-    next_object_id,
     object_id_of,
     object_record,
     object_stamp,
     set_parent,
     shifted_object,
 )
-from ..mixer.mixer import CHANNEL_BASE_AT
-from ..mixer.slots import slot_index_base
 from ..stream.stream import HEADER, NO_KEY, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
 from ..stream.recbuild import fresh_uuid, rec
 from ..stream.registry import GNOS_TAG, register_object
+from .stack_ids import FOLDER_COLOUR, free_object_id
+from .stack_pattern import first_stack
 from ..regions.regions import sync_region_tracks, sync_row_count
 from .selection import select_track
-from ..stream.sequence import index_table, plan_sequence, table_entries
+from ..stream.sequence import plan_sequence
 from ..stream.table_index import sync_indices
 from .stacks import read_stacks, read_tracks, require_two_levels, span_end
 from .tracklist import (
@@ -81,47 +78,6 @@ from .tracklist import (
 from ..stream.validate import require_full_walk, require_valid
 
 SUB_NUMBER_AT = NUMBER_AT
-_DATA, _SUMMING_DATA = "stack-folder-12.3.1.json", "stack-summing-12.3.1.json"
-_AFTER_NAME_AT = (10, 12)           # 2 and 250 on the packaged header; Logic saved a written one with 0
-
-
-def _packaged_pattern(name: str = _DATA) -> dict[str, bytes]:
-    """Logic's own first stack of a kind on a blank project: the strip, the header object, its
-    arrange row and its flat row (roles `strip`, `object`, `row`, `flat_row`)."""
-    t = json.loads(data_file("logic", name).read_text())
-    return {role: bytes.fromhex(r["header"]) + bytes.fromhex(r["payload"]) for role, r in t["records"].items()}
-
-
-def _stamped_last(obj: bytes, records) -> bytes:
-    """``obj`` stamped past every existing object."""
-    out = bytearray(obj)
-    top = max(object_stamp(r.raw) for r in records if r.tag == ENV_TAG and object_id_of(r) is not None)
-    struct.pack_into("<I", out, HEADER + STAMP_AT, top)
-    return bytes(out)
-
-
-def packaged_aux(records) -> dict[str, bytes]:
-    """The pattern for a session with no aux track: the header object, arrange row and flat row
-    of Logic's own summing stack on a blank project, with the two bytes it carries past the name
-    cleared: Logic cleared them when it saved a header written with them."""
-    packaged = _packaged_pattern(_SUMMING_DATA)
-    obj = bytearray(_stamped_last(packaged["object"], records))
-    end = HEADER + name_end(obj[HEADER:])
-    for at in _AFTER_NAME_AT:
-        obj[end + at] = 0
-    return {**packaged, "object": bytes(obj)}
-
-
-def _first_stack(data: bytes, records) -> tuple[int, bytes, bytes, bytes]:
-    """What a session with no folder stack patterns one on -> ``(like, object, strip, row)``:
-    Logic's own packaged pieces, the strip with the session's slot base, the object stamped past
-    every existing one, the sequence shaped like the highest-indexed object's."""
-    packaged = _packaged_pattern()
-    strip = bytearray(packaged["strip"])
-    strip[HEADER + CHANNEL_BASE_AT] = slot_index_base(data)
-    table = records[index_table(records)].raw[HEADER:]
-    like = max(table_entries(table), key=lambda e: e[2])[1]
-    return like, _stamped_last(packaged["object"], records), bytes(strip), packaged["row"]
 
 
 def _strip_for(data: bytes, chans) -> tuple[int, int, bool]:
@@ -201,10 +157,10 @@ def _flat_place(records, flat: list[int], owners_of: dict, chans: dict, number: 
 def create_stack(data: bytes, *, name: str, members: list[int], track_count: int | None = None,
                  colour: int | None = None) -> tuple[bytes, dict]:
     """A folder stack ``name`` holding the arrange rows of ``members`` (any order), coloured
-    ``colour`` (16 when not given)."""
+    ``colour`` (Logic's 20 for a new folder when not given)."""
     if not members:
         raise ValueError("a stack needs at least one member")
-    colour = DEFAULT_COLOUR if colour is None else colour
+    colour = FOLDER_COLOUR if colour is None else colour
     require_full_walk(data)
     records = project_records(data)
     objs = channel_objects(data)
@@ -222,16 +178,19 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
         strip_template = mixer_record(records, pattern.owner)
         row_template = next(raw for raw in run_rows if row_object(raw) == like)
     else:
-        like, pattern_obj, strip_template, row_template = _first_stack(data, records)
+        like, pattern_obj, strip_template, row_template = first_stack(data, records)
     number, owner, reused = _strip_for(data, chans)
     label = f"Sub {number}"
-    object_id = next_object_id(records)
+    object_id, reused_id = free_object_id(records, objs, track_count)   # a gone object's: its entries kept, its parked row dropped
     top = max(objs)
-    plan = plan_sequence(records, like=like, object_id=object_id)
+    plan = plan_sequence(records, like=like, object_id=object_id, reuse=reused_id)
 
     pattern_stamp = object_stamp(pattern_obj)
-    new_obj = clone_object(pattern_obj, object_id=object_id, name=name, owner=owner,
-                           colour=colour, icon=None, stack_number=number)
+    parents = {objs[m].parent for m in ordered if m in objs}
+    if len(parents) > 1:
+        raise ValueError(f"the members sit under different parents {sorted(parents)}; Logic's create would not offer this")
+    new_obj = set_parent(clone_object(pattern_obj, object_id=object_id, name=name, owner=owner,
+                                      colour=colour, icon=None, stack_number=number), parents.pop() if parents else 0)
     last_env = max(i for i, r in enumerate(records) if r.tag == ENV_TAG)
     # its own stack index stays 0 inside another stack too, as on Logic's own (`nest-inner-folder-logic`)
     new_chan = set_stack_index(new_sub_channel(strip_template, number=number, owner=owner, uuid=new_obj[-UUID_LEN:],
@@ -254,18 +213,21 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
 
     out: list[bytes] = []
     run_set = set(run)
+    flat_set = set(flat)
     for i, r in enumerate(records):
         if i in run_set:
             if i == run[0]:
                 out += new_rows
+            continue
+        if reused_id and i in flat_set and row_object(r.raw) == object_id:
+            if flat_pos >= 0 and i == flat[flat_pos]:
+                out.append(flat_row)
             continue
         if flat_pos < 0 and i == flat[0]:
             out.append(flat_row)
         raw = plan.rewrite(i, r)
         oid = object_id_of(r)
         if oid is not None:
-            if oid in member_set:
-                raw = set_parent(raw, object_id)
             bound = owners_of.get(oid)
             raw = shifted_object(raw, channel=not reused and bound is not None and bound >= owner,
                                  stamp=object_stamp(raw) > pattern_stamp)

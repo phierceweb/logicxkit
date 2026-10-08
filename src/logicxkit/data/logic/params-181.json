@@ -12,21 +12,27 @@
    "name": "Output Mix",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Flanger/Chorus",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Mod. Intensity",
    "unit": "%",
    "default": 25.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 4,
@@ -47,21 +53,27 @@
    "name": "LFO Mix",
    "unit": "%",
    "default": 48.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 7,
    "name": "Feedback",
    "unit": "%",
    "default": 15.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -99.0,
+   "max": 99.0
   },
   {
    "index": 8,
    "name": "Volume Modulation",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 9,
@@ -90,7 +102,9 @@
    "name": "LFO Phase",
    "unit": "\u00b0",
    "default": 180.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -180.0,
+   "max": 180.0
   },
   {
    "index": 15,
@@ -122,7 +136,8 @@
    "name": "D-Mode",
    "unit": "",
    "default": 0.0,
-   "evidence": "order",
+   "evidence": "row",
+   "scale": 0.01,
    "choices": [
     "Off",
     "On"
@@ -134,5 +149,5 @@
   "Low Cut",
   "High Cut"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 14 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-modulation-delay-*: 15 parameters named \u2014 14 matched by the number shown, 1 by one save per row. 1 carry a scale: the word moves by a multiple of what Logic shows. 3 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

@@ -67,6 +67,15 @@ class ChannelWidthTest(unittest.TestCase):
         moved = {i for i in range(len(src)) if src[i] != out[i]}
         self.assertEqual(moved, {36 + 78, 36 + 86, 36 + 123})
 
+    def test_an_instrument_channel_keeps_its_own_bits_at_78(self):
+        """An instrument channel reads 0xf3 mono and 0xf7 stereo at +78 where an audio one reads
+        0xd3 and 0xd7: the width is bit 0x04, the rest is the channel's kind."""
+        from logicxkit.logic import set_channel_format
+        mono, stereo = bytearray(self._chan(1)), bytearray(self._chan(2))
+        mono[36 + 78], stereo[36 + 78] = 0xF3, 0xF7
+        self.assertEqual(set_channel_format(bytes(mono), 2), bytes(stereo))
+        self.assertEqual(set_channel_format(bytes(stereo), 1), bytes(mono))
+
     def test_widen_channels_reports_what_it_changed(self):
         from logicxkit.logic import widen_channels, channel_formats
         data = proj(self._chan(1))
@@ -132,6 +141,24 @@ class SlotsFollowTheChannelTest(unittest.TestCase):
         self.assertEqual(changed, [76])
         slots = [r for r in walk(out) if r.tag == b"UCuA"]
         self.assertEqual([slot_format(r.raw) for r in slots], [2])
+
+    def test_widening_an_instrument_channel_leaves_its_instrument_and_input_byte_alone(self):
+        """`+86` on an instrument channel is the instrument's width and the instrument keeps the
+        width it was saved at (`instrument-*-logic`); only the chain's output follows."""
+        from logicxkit.logic import widen_channels
+        from logicxkit.logic.services.mixer.slot_width import slot_format
+        from logicxkit.logic.services.stream.stream import project_records as walk
+        inst = bytearray(self._slot(76, 4, 1))
+        struct.pack_into("<H", inst, 36 + 4, 1)
+        inst[36 + 132:36 + 136] = b"GAME"
+        struct.pack_into("<I", inst, 36 + 140, 201)                  # ES M, a mono instrument
+        inst[36 + 151] = 0x08
+        data = proj(self._chan(76, 1), bytes(inst), self._slot(76, 5, 1))
+        out, changed = widen_channels(data, {76: 2})
+        self.assertEqual(changed, [76])
+        chan = next(r.raw for r in walk(out) if r.tag == b"OCuA")
+        self.assertEqual((chan[36 + 78], chan[36 + 86], chan[36 + 123]), (215, 0, 2))
+        self.assertEqual([slot_format(r.raw) for r in walk(out) if r.tag == b"UCuA"], [1, 2])
 
     def test_widening_leaves_slots_on_other_channels_alone(self):
         from logicxkit.logic import widen_channels

@@ -3,6 +3,8 @@ real-file golden now holds the output to the invariants every Logic file obeys."
 
 import struct
 import unittest
+
+from logicxkit.logic.services.arrange import addtrack_pattern
 from logicxkit.logic.services.arrange.environment import clone_object
 from logicxkit.logic.services.stream.recbuild import fresh_uuid, time_fields
 
@@ -46,7 +48,7 @@ class TableEntryFallbackTest(unittest.TestCase):
         records = [SimpleNamespace(raw=b"")]
         with mock.patch("logicxkit.logic.services.stream.sequence.index_table", return_value=0), \
                 mock.patch("logicxkit.logic.services.stream.sequence.sequences", return_value=[]), \
-                mock.patch.object(addtrack, "_sound_entry", lambda r, t, s, oid: oid in sound):
+                mock.patch.object(addtrack_pattern, "_sound_entry", lambda r, t, s, oid: oid in sound):
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Audio ", 104), 100)
             self.assertEqual(addtrack._with_table_entry(records, objs, owners_of, chans, "Inst ", 104), 108)
 

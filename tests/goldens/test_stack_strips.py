@@ -66,12 +66,11 @@ class NewStackStripTest(unittest.TestCase):
                 level = read_levels(out)[sub]
                 self.assertEqual((report["label"], level["fader"], level["mute"]), ("Sub 1", UNITY, False))
                 self.assertEqual(channel_records(out, like=logic), channel_records(logic))
-                # Logic's header takes the gone header's object id, so that object's mixer-order row
-                # is gone from its save; ours takes a new id and the row stays, at the head
+                # the header takes the gone header's object id, as Logic's does, so that object's
+                # parked mixer-order row leaves the list in both saves
                 mine, theirs = view(out, count + 1), view(logic, logic_count)
-                self.assertEqual((mine["flat"][0], mine["table"][0][0]), (None, ""))
                 order = lambda seen: [name for name, _at in sorted(seen["table"], key=lambda e: e[1]) if name]   # noqa: E731
-                self.assertEqual((mine["flat"][1:], order(mine)), (theirs["flat"], order(theirs)))
+                self.assertEqual((mine["flat"], order(mine)), (theirs["flat"], order(theirs)))
                 self.assertEqual({k: mine[k] for k in ("rows", "stacks", "strips")},
                                  {k: theirs[k] for k in ("rows", "stacks", "strips")})
                 self.assertEqual((validate_project(out), regressions(data, out)), ([], []))

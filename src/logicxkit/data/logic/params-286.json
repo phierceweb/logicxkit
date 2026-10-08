@@ -8,46 +8,49 @@
  ],
  "params": [
   {
-   "index": 15,
-   "name": "High Gain",
-   "unit": "dB",
-   "default": 0.0,
-   "evidence": "value"
-  },
-  {
-   "index": 1,
+   "index": 2,
    "name": "Mid Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 3,
    "name": "Mid Freq",
    "unit": "kHz",
    "default": 3.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.36,
+   "max": 7.2
   },
   {
-   "index": 2,
+   "index": 4,
    "name": "Low Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 5,
    "name": "Low Freq",
    "unit": "Hz",
    "default": 110.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 35.0,
+   "max": 220.0
   },
   {
    "index": 6,
    "name": "Low Cut",
    "unit": "Hz",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 50.0,
+   "max": 300.0
   },
   {
    "index": 7,
@@ -98,7 +101,9 @@
    "name": "Drive",
    "unit": "",
    "default": 4.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 11.0
   },
   {
    "index": 14,
@@ -112,16 +117,19 @@
    ]
   },
   {
-   "index": 4,
+   "index": 15,
    "name": "Volume",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "min": -24.0,
+   "max": 24.0
   }
  ],
  "unmapped": [
   "Phase",
-  "Output Mode"
+  "Output Mode",
+  "High Gain"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 10 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 3 by order (2026-09-22). Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-vintage-console-eq-*: 12 parameters named \u2014 9 matched by the number shown, 3 by coded saves. 3 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

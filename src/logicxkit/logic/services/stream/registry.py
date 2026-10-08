@@ -151,13 +151,26 @@ def register_group(payload: bytes, *, slot: int, uuid: bytes) -> bytes:
     return g
 
 
+def gone_object_ids(payload: bytes, floor: int) -> list[int]:
+    """Object entries from ``floor`` up whose UUID is zero: the ids of objects Logic removed
+    (a converted folder's header) and gives to the next object it makes, lowest first."""
+    return sorted(i for at, i in run_entries(payload, OBJECT_TYPE, UUID_STRIDE)
+                  if i >= floor and payload[at + 8:at + 8 + 16] == bytes(16))
+
+
 def register_object(payload: bytes, *, object_id: int, top: int, uuid: bytes,
                     slot: int | None = None) -> bytes:
-    """Both object entries for a new object, the pair for its index-table ``slot`` (filled
-    in, or appended when the runs end below it), and the list stamps."""
+    """Both object entries for a new object — re-stamped when the id's entries are already
+    there (a gone object's, taken again), else inserted after the highest id's — the pair for
+    its index-table ``slot`` (filled in, or appended when the runs end below it), and the list
+    stamps."""
     head = struct.pack("<II", OBJECT_TYPE, object_id)
-    g = gnos_insert(payload, head + uuid, stride=UUID_STRIDE, top=top)
-    g = bytearray(gnos_insert(g, head + time_fields(uuid), stride=TIME_STRIDE, top=top))
+    g = bytearray(payload)
+    for stride, value in ((UUID_STRIDE, uuid), (TIME_STRIDE, time_fields(uuid))):
+        if entry_at(g, OBJECT_TYPE, object_id, stride) is not None:
+            _stamp(g, OBJECT_TYPE, object_id, value, stride)          # a gone object's entry, taken again
+        else:
+            g = bytearray(gnos_insert(bytes(g), head + value, stride=stride, top=top))
     if slot is not None:
         slot_uuid = fresh_uuid()
         for stride in (UUID_STRIDE, TIME_STRIDE):

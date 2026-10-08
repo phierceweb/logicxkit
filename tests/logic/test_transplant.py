@@ -1,7 +1,6 @@
-"""Cloning a channel's plugin slots from one project onto another.
-
-Records move verbatim (AU state is opaque) and are re-stamped for the target. Slot keys run
-from 4 up to the project's `.cst`-reference key, which differs per session (9/10/12/13)."""
+"""Cloning a channel's plugin slots from one project onto another: records move verbatim (AU
+state is opaque), re-stamped for the target; slot keys run from 4 up to the project's
+`.cst`-reference key, which differs per session (9/10/12/13)."""
 
 import struct
 import unittest

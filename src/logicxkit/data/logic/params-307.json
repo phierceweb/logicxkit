@@ -1,0 +1,88 @@
+{
+ "type": 307,
+ "variant": 2439,
+ "name": "Velocity Processor",
+ "floats": 19,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Note ON",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 2,
+   "name": "Note OFF",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 3,
+   "name": "Note Range Min",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 4,
+   "name": "Note Range Max",
+   "unit": "",
+   "default": 127.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 7,
+   "name": "Threshold",
+   "unit": "",
+   "default": 62.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 127.0
+  },
+  {
+   "index": 8,
+   "name": "Ratio",
+   "unit": "",
+   "default": 1.75,
+   "evidence": "value",
+   "min": 0.125,
+   "max": 8.0
+  },
+  {
+   "index": 9,
+   "name": "Auto Gain",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Mode",
+  "Make-Up"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-velocity-processor-*: 7 parameters named \u2014 4 matched by the number shown, 3 by coded saves. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

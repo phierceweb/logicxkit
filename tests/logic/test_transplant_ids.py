@@ -11,7 +11,7 @@ import unittest
 
 from _fixtures import chunk
 from _records import chan, proj, rec
-from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logic.services.mixer.transplant import channel_slots, transplant
 
 TAIL = 20
@@ -175,6 +175,48 @@ class WidthRefusalTest(unittest.TestCase):
         dst = proj(mono_chan(7, "Inst 3"), au(7, 4, 9), ref(7, 10))
         out, report = transplant(src, dst, src_owner=1, dst_owner=7)
         self.assertEqual(report["slots"], 1)
+
+
+def _instrument(owner: int, key: int, n: int, *, fmt: int) -> bytes:
+    """A third-party instrument as Logic writes its slot: the header's flag says instrument."""
+    raw = bytearray(au(owner, key, n, fmt=fmt))
+    struct.pack_into("<H", raw, HEADER + 4, 1)
+    raw[HEADER + 132:HEADER + 144] = b"xdrSumuaAln2"[:4] + b"umua" + b"2nlA"
+    raw[HEADER + 151] = 0x08
+    return bytes(raw)
+
+
+def _width(data: bytes, owner: int) -> int:
+    from logicxkit.logic.services.mixer.mixer import channel_formats
+    return channel_formats(data)[owner]
+
+
+class InstrumentChannelTest(unittest.TestCase):
+    """With its instrument among the slots moved, the destination channel takes the source
+    channel's width: the instrument is what the channel's width is for."""
+
+    def test_the_destination_takes_the_source_channels_width(self):
+        src = proj(mono_chan(1, "Inst 1", STEREO), _instrument(1, 4, 1, fmt=STEREO), ref(1, 10))
+        dst = proj(mono_chan(7, "Inst 3"), _instrument(7, 4, 9, fmt=MONO), ref(7, 10))
+        out, report = transplant(src, dst, src_owner=1, dst_owner=7)
+        self.assertEqual((_width(out, 7), report["width_mismatch"]), (STEREO, False))
+
+    def test_a_stereo_instrument_on_a_channel_that_reads_mono_comes_over_as_it_was(self):
+        """A mono chain under a stereo instrument: the channel reads mono with `+86` set."""
+        source = bytearray(mono_chan(1, "Inst 1", MONO))
+        source[HEADER + 86] = 1
+        src = proj(bytes(source), _instrument(1, 4, 1, fmt=STEREO), ref(1, 10))
+        dst = proj(mono_chan(7, "Inst 3", STEREO), _instrument(7, 4, 9, fmt=STEREO), ref(7, 10))
+        out, _ = transplant(src, dst, src_owner=1, dst_owner=7)
+        record = next(r.raw for r in project_records(out) if r.tag == b"OCuA" and r.owner == 7)
+        self.assertEqual((_width(out, 7), record[HEADER + 86]), (MONO, 1))
+        self.assertEqual(channel_slots(out, 7)[0].raw[HEADER + 84], STEREO)
+
+    def test_an_instrument_onto_an_audio_channel_is_refused(self):
+        src = proj(mono_chan(1, "Inst 1"), _instrument(1, 4, 1, fmt=MONO), ref(1, 10))
+        with self.assertRaises(ValueError) as e:
+            transplant(src, dst_project(), src_owner=1, dst_owner=3)
+        self.assertIn("instrument", str(e.exception))
 
 
 class StackTargetTest(unittest.TestCase):

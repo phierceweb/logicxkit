@@ -1,0 +1,856 @@
+{
+ "type": 216,
+ "variant": 1069,
+ "name": "Vintage B3",
+ "floats": 170,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 100,
+   "name": "2 UM 5\u2153'",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "value",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "index": 102,
+   "name": "4 UM 4'",
+   "unit": "",
+   "default": 6.0,
+   "evidence": "value",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "index": 103,
+   "name": "5 UM 2\u2154'",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "index": 105,
+   "name": "7 UM 1\u2157'",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "index": 106,
+   "name": "8 UM 1\u2153'",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "index": 107,
+   "name": "9 UM 1'",
+   "unit": "",
+   "default": 3.0,
+   "evidence": "value",
+   "kind": "int",
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1060,
+   "name": "1 LM 16'",
+   "unit": "",
+   "default": 8,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1220,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1064,
+   "name": "2 LM 5\u2153'",
+   "unit": "",
+   "default": 2,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1224,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1068,
+   "name": "3 LM 8'",
+   "unit": "",
+   "default": 8,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1228,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1072,
+   "name": "4 LM 4'",
+   "unit": "",
+   "default": 1,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1232,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1076,
+   "name": "5 LM 2\u2154'",
+   "unit": "",
+   "default": 0,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1236,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1080,
+   "name": "6 LM 2'",
+   "unit": "",
+   "default": 0,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1240,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1084,
+   "name": "7 LM 1\u2157'",
+   "unit": "",
+   "default": 0,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1244,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1088,
+   "name": "8 LM 1\u2153'",
+   "unit": "",
+   "default": 0,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1248,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1092,
+   "name": "9 LM 1'",
+   "unit": "",
+   "default": 0,
+   "evidence": "row",
+   "kind": "int",
+   "mirror": 1252,
+   "min": 0,
+   "max": 8
+  },
+  {
+   "offset": 1260,
+   "name": "1 Pedal 16'",
+   "unit": "",
+   "default": 8.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "offset": 1264,
+   "name": "2 Pedal 8'",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "offset": 1268,
+   "name": "Bass Filter",
+   "unit": "",
+   "default": 150.0,
+   "evidence": "code",
+   "min": 60.0,
+   "max": 600.0
+  },
+  {
+   "offset": 1276,
+   "name": "Vibrato Upper",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1280,
+   "name": "Vibrato Lower",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1288,
+   "name": "Chorus Int",
+   "unit": "",
+   "default": -0.5,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1292,
+   "name": "Vibrato Rate",
+   "unit": "",
+   "default": 6.85,
+   "evidence": "code",
+   "min": 1.0,
+   "max": 8.0
+  },
+  {
+   "offset": 1300,
+   "name": "UM Sustain",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "code",
+   "shown": "Click"
+  },
+  {
+   "offset": 1304,
+   "name": "LM Sustain",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "code",
+   "shown": "Click"
+  },
+  {
+   "offset": 1308,
+   "name": "Pedal Sustain",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1320,
+   "name": "Percussion",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1328,
+   "name": "UpperLevel",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -20.0,
+   "max": 0.0
+  },
+  {
+   "offset": 1336,
+   "name": "Perc Time",
+   "unit": "ms",
+   "default": 150.0,
+   "evidence": "row"
+  },
+  {
+   "offset": 1340,
+   "name": "Perc Level",
+   "unit": "",
+   "default": 1.01,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 5.0
+  },
+  {
+   "offset": 1344,
+   "name": "Perc Velocity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1352,
+   "name": "EQ Low",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "offset": 1356,
+   "name": "EQ Mid",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "offset": 1360,
+   "name": "EQ High",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "offset": 1364,
+   "name": "EQ Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "offset": 1376,
+   "name": "Wah Range",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.1,
+   "max": 4.0
+  },
+  {
+   "offset": 1380,
+   "name": "Bite",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1388,
+   "name": "Wah Pedal Angle",
+   "unit": "",
+   "default": 0.5002,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1400,
+   "name": "Dist Drive",
+   "unit": "",
+   "default": 0.11,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1404,
+   "name": "Dist Tone",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -10.0,
+   "max": 10.0
+  },
+  {
+   "offset": 1420,
+   "name": "Effects Reverb",
+   "unit": "%",
+   "default": 38.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 200.0
+  },
+  {
+   "offset": 1444,
+   "name": "Rotor Fast Rate",
+   "unit": "",
+   "default": 6.2,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "offset": 1448,
+   "name": "Acc/Dec Scale",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 4.0
+  },
+  {
+   "offset": 1472,
+   "name": "Drawbar Leak",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1476,
+   "name": "Leakage",
+   "unit": "",
+   "default": 0.29,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1480,
+   "name": "Crosstalk",
+   "unit": "",
+   "default": 0.0841,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1484,
+   "name": "Tonal Balance",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1488,
+   "name": "Filter Age",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1492,
+   "name": "Upper stretch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "offset": 1496,
+   "name": "Lower stretch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "offset": 1500,
+   "name": "Warmth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1504,
+   "name": "Shape",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1508,
+   "name": "RandomFM",
+   "unit": "",
+   "default": 0.32,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1512,
+   "name": "Click On",
+   "unit": "",
+   "default": 3.8,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 10.0
+  },
+  {
+   "offset": 1516,
+   "name": "Click Off",
+   "unit": "",
+   "default": 0.0961,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1520,
+   "name": "Click Min",
+   "unit": "ms",
+   "default": 13.4,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "offset": 1524,
+   "name": "Click Max",
+   "unit": "ms",
+   "default": 20.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "offset": 1528,
+   "name": "Click Color",
+   "unit": "Hz",
+   "default": 1800.0,
+   "evidence": "code",
+   "min": 600.0,
+   "max": 6000.0
+  },
+  {
+   "offset": 1532,
+   "name": "Pedal Click",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1540,
+   "name": "Basic/Upper MIDI Ch",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 1.0,
+   "max": 16.0
+  },
+  {
+   "offset": 1544,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "offset": 1548,
+   "name": "Max. Wheels",
+   "unit": "",
+   "default": 91.0,
+   "evidence": "code",
+   "min": 1.0,
+   "max": 91.0
+  },
+  {
+   "offset": 1552,
+   "name": "Expression",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1556,
+   "name": "Volume",
+   "unit": "dB",
+   "default": -5.0,
+   "evidence": "code",
+   "min": -100.0,
+   "max": 20.0
+  },
+  {
+   "offset": 1560,
+   "name": "Lower Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -20.0,
+   "max": 20.0
+  },
+  {
+   "offset": 1564,
+   "name": "Pedal Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -20.0,
+   "max": 20.0
+  },
+  {
+   "offset": 1568,
+   "name": "Pitchbend Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 12.0
+  },
+  {
+   "offset": 1628,
+   "name": "Transpose UM",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -2.0,
+   "max": 2.0
+  },
+  {
+   "offset": 1632,
+   "name": "Transpose LM",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": -2.0,
+   "max": 2.0
+  },
+  {
+   "offset": 1636,
+   "name": "Transpose Pedal",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -2.0,
+   "max": 2.0
+  },
+  {
+   "offset": 1648,
+   "name": "Rotor Cabinet",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1652,
+   "name": "Dry Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -10.0,
+   "max": 10.0
+  },
+  {
+   "offset": 1664,
+   "name": "Horn Brake Pos",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Free"
+  },
+  {
+   "offset": 1668,
+   "name": "Drum Brake Pos",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Free"
+  },
+  {
+   "offset": 1676,
+   "name": "Velo to Click",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1704,
+   "name": "Horn Width",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1712,
+   "name": "Drum Width",
+   "unit": "",
+   "default": 0.9,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "offset": 1716,
+   "name": "Balance",
+   "unit": "%",
+   "default": 40.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "offset": 1724,
+   "name": "Perc Fast",
+   "unit": "ms",
+   "default": 150.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1000.0
+  },
+  {
+   "offset": 1728,
+   "name": "Perc Slow",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1000.0
+  },
+  {
+   "offset": 1736,
+   "name": "Perc Soft",
+   "unit": "",
+   "default": 1.01,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 5.0
+  },
+  {
+   "offset": 1740,
+   "name": "Perc Normal",
+   "unit": "",
+   "default": 2.96,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 5.0
+  },
+  {
+   "offset": 1744,
+   "name": "Master FX",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1748,
+   "name": "Equalizer",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1752,
+   "name": "Distortion",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1756,
+   "name": "General Reverb (2)",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1760,
+   "name": "Wah Wah",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "offset": 1764,
+   "name": "Lower MIDI Ch",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "row",
+   "min": 1.0,
+   "max": 16.0
+  },
+  {
+   "offset": 1768,
+   "name": "Pedal MIDI Ch",
+   "unit": "",
+   "default": 3.0,
+   "evidence": "row",
+   "min": 1.0,
+   "max": 16.0
+  }
+ ],
+ "unmapped": [
+  "UM Cancel",
+  "UM Preset",
+  "LM Cancel",
+  "LM Preset",
+  "Morph Range",
+  "Morph #CC",
+  "Morph Mode",
+  "Save Morph To",
+  "Morph",
+  "1 UM 16'",
+  "3 UM 8'",
+  "6 UM 2'",
+  "Vibrato",
+  "Sustain Mode",
+  "Percussion Mode",
+  "Perc Harmonic",
+  "Wah Mode",
+  "Wah Controller",
+  "Dist Type",
+  "FX Chain",
+  "Effect Bypass",
+  "Reverb Mode",
+  "Cabinet",
+  "Rotor Speed",
+  "Speed Control",
+  "Horn Deflector",
+  "Mic Distance",
+  "Mic Angle",
+  "Motor Control",
+  "Pitchbend Down",
+  "Extended Bass",
+  "MIDI Mode",
+  "Keyboard Mode",
+  "Set Ped/LM Split",
+  "Set LM/UM Split",
+  "Split Point Pd/LM",
+  "Split Point LM/UM",
+  "MIDI to Preset Keys",
+  "Brake",
+  "General Reverb",
+  "Ultra Bass",
+  "Drawbar Affects",
+  "Percussion Polyphonic",
+  "Mic Position",
+  "Horn Mic",
+  "Drum Mic",
+  "Perc Decay",
+  "Perc Volume",
+  "Scanner Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-vintage-b3-*: 88 parameters named \u2014 3 matched by the number shown, 70 by coded saves, 15 by one save per row. 82 sit past the float block, named by payload offset. 49 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

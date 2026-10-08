@@ -23,10 +23,11 @@ ALL_NATIVE = "inserts-native-all-logic"
 PLAYER = "sessionplayer-track-logic"
 PATCH = "patch-built-loaded-logic"
 MARKERS = "markers-a21-created-logic"
+CLAV = "instrument-params-vintage-clav-defaults"
 LOGIC_PREFS = Path.home() / "Library/Preferences/com.apple.logic10.plist"
 
 
-@_goldens.needs(BASE, PAUSE, INSERTS, ALL_NATIVE, PLAYER, PATCH, MARKERS)
+@_goldens.needs(BASE, PAUSE, INSERTS, ALL_NATIVE, PLAYER, PATCH, MARKERS, CLAV)
 class ReaderCommandsTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
@@ -67,6 +68,15 @@ class ReaderCommandsTest(unittest.TestCase):
         code, text = run("project", source(ALL_NATIVE), "--json")
         self.assertEqual(code, 0, text)
         json.loads(text)
+
+    def test_project_marks_a_value_named_by_row_order_alone(self):
+        code, text = run("project", source(CLAV))
+        self.assertEqual(code, 0, text)
+        self.assertIn("'ModFx Rate*': 0.61", text)                    # by row order; a coded save names Tune
+        self.assertIn("'Tune': 0.0", text)
+        self.assertIn("* named by row order alone", text)
+        code, text = run("project", source(ALL_NATIVE))
+        self.assertNotIn("*", text)
 
     def test_capabilities(self):
         code, text = run("capabilities")

@@ -1,0 +1,71 @@
+{
+ "type": 158,
+ "variant": 453,
+ "name": "Klopfgeist",
+ "floats": 15,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  },
+  {
+   "index": 4,
+   "name": "Tonality",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 6,
+   "name": "Semitone",
+   "unit": "semi",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0 semi",
+   "min": -48.0,
+   "max": 48.0
+  },
+  {
+   "index": 7,
+   "name": "Detune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 cent",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 8,
+   "name": "NoteOff Damp",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 9,
+   "name": "Level Min Vel",
+   "unit": "dB",
+   "default": -84.0,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  }
+ ],
+ "unmapped": [
+  "Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-klopfgeist-*: 6 parameters named \u2014 4 matched by the number shown, 1 by row order among rows of one step, 1 by coded saves. 1 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

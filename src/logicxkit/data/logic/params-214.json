@@ -1,0 +1,817 @@
+{
+ "type": 214,
+ "variant": 1053,
+ "name": "ES2",
+ "floats": 190,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Macro Tuning",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 3,
+   "name": "Voices",
+   "unit": "",
+   "default": 8.0,
+   "evidence": "code",
+   "min": 1.0,
+   "max": 32.0
+  },
+  {
+   "index": 5,
+   "name": "Bender Range Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 36.0
+  },
+  {
+   "index": 6,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 8,
+   "name": "Osc1 Semitone",
+   "unit": "s",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -36.0,
+   "max": 36.0
+  },
+  {
+   "index": 9,
+   "name": "Osc1 Detune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 11,
+   "name": "Osc1 Waveform",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "Sawtooth"
+  },
+  {
+   "index": 13,
+   "name": "Osc2 Semitone",
+   "unit": "s",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -36.0,
+   "max": 36.0
+  },
+  {
+   "index": 14,
+   "name": "Osc2 Detune",
+   "unit": "",
+   "default": 3.0,
+   "evidence": "value",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 16,
+   "name": "Osc2 Waveform",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "code",
+   "shown": "Sawtooth"
+  },
+  {
+   "index": 17,
+   "name": "Osc2 Digiwave",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row"
+  },
+  {
+   "index": 18,
+   "name": "Osc3 Semitone",
+   "unit": "s",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -36.0,
+   "max": 36.0
+  },
+  {
+   "index": 19,
+   "name": "Osc3 Detune",
+   "unit": "",
+   "default": -3.0,
+   "evidence": "value",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 21,
+   "name": "Osc3 Waveform",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "code",
+   "shown": "Sawtooth"
+  },
+  {
+   "index": 23,
+   "name": "OscLevelX",
+   "unit": "",
+   "default": 0.665,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 24,
+   "name": "OscLevelY",
+   "unit": "",
+   "default": 0.577,
+   "evidence": "row",
+   "min": 0.196,
+   "max": 0.964
+  },
+  {
+   "index": 26,
+   "name": "Filter Blend",
+   "unit": "",
+   "default": -1.0,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 28,
+   "name": "Filter 1 Cutoff",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 29,
+   "name": "Filter 1 Resonance",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 30,
+   "name": "Drive",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 32,
+   "name": "Filter 2 Fatness",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 34,
+   "name": "Filter 2 Resonance",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 35,
+   "name": "Filter 2 FM",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 36,
+   "name": "Sine Level",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 37,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 6.0
+  },
+  {
+   "index": 41,
+   "name": "MM1 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 42,
+   "name": "MM1 Amount Via",
+   "unit": "",
+   "default": 0.2,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 46,
+   "name": "MM2 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    47
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 51,
+   "name": "MM3 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    52
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 56,
+   "name": "MM4 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    57
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 61,
+   "name": "MM5 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    62
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 66,
+   "name": "MM6 Amount",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "row",
+   "linked": [
+    67
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 70,
+   "name": "MM7 Via",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 71,
+   "name": "MM7 Amount",
+   "unit": "",
+   "default": 0.25,
+   "evidence": "row",
+   "linked": [
+    72
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 76,
+   "name": "MM8 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    77
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 81,
+   "name": "MM9 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    82
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 85,
+   "name": "MM10 Via",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 86,
+   "name": "MM10 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "linked": [
+    87
+   ],
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 88,
+   "name": "LFO1 EG",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 92,
+   "name": "LFO2 Rate",
+   "unit": "Hz",
+   "default": 5.97,
+   "evidence": "value"
+  },
+  {
+   "index": 94,
+   "name": "Env1 Attack @ Min Vel",
+   "unit": "ms",
+   "default": 0.92,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 98,
+   "name": "Env1 Attack @ Max Vel",
+   "unit": "ms",
+   "default": 0.92,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 99,
+   "name": "Env2 Attack @ Min Vel",
+   "unit": "ms",
+   "default": 0.92,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 100,
+   "name": "Env2 Decay",
+   "unit": "ms",
+   "default": 99.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 101,
+   "name": "Env2 SusTime",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 102,
+   "name": "Env2 Sustain",
+   "unit": "",
+   "default": 0.502,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 103,
+   "name": "Env2 Release",
+   "unit": "ms",
+   "default": 99.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 105,
+   "name": "Env2 Velocity Sens",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 106,
+   "name": "Env3 Attack @ Min Vel",
+   "unit": "ms",
+   "default": 0.92,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 107,
+   "name": "Env3 Decay",
+   "unit": "ms",
+   "default": 99.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 108,
+   "name": "Env3 SusTime",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 109,
+   "name": "Env3 Sustain",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 110,
+   "name": "Env3 Release",
+   "unit": "ms",
+   "default": 99.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 111,
+   "name": "Env3 Attack @ Max Vel",
+   "unit": "ms",
+   "default": 0.92,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 112,
+   "name": "Env3 Velocity Sens",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 113,
+   "name": "FX Dist Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "index": 114,
+   "name": "FX Dist Tone",
+   "unit": "Hz",
+   "default": 6000.0,
+   "evidence": "value",
+   "min": 2000.0,
+   "max": 20000.0
+  },
+  {
+   "index": 116,
+   "name": "FX Mod Rate",
+   "unit": "Hz",
+   "default": 0.69,
+   "evidence": "value",
+   "min": 0.1,
+   "max": 10.0
+  },
+  {
+   "index": 117,
+   "name": "FX Mod Intensity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 120,
+   "name": "Unison",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 121,
+   "name": "Osc1",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 122,
+   "name": "Osc2",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 123,
+   "name": "Osc3",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 129,
+   "name": "VecEnv Sustain Seg",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "index": 131,
+   "name": "VecEnv Loop Count",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Infinite"
+  },
+  {
+   "index": 132,
+   "name": "VecEnv Loop Seg",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "index": 136,
+   "name": "VecEnv Point Solo",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 137,
+   "name": "VecEnv Select Point",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "linked": [
+    23,
+    24,
+    138,
+    151
+   ],
+   "min": 0.0,
+   "max": 15.0
+  },
+  {
+   "index": 138,
+   "name": "VecEnv Time",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "row",
+   "linked": [
+    151
+   ],
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 139,
+   "name": "VecEnv Time Scale",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 143,
+   "name": "Vector X Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 148,
+   "name": "RND Intensity",
+   "unit": "%",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 1.0,
+   "max": 100.0
+  },
+  {
+   "index": 152,
+   "name": "VecEnv End Segment",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "min": 2.0,
+   "max": 15.0
+  },
+  {
+   "index": 153,
+   "name": "Filter Reset",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 156,
+   "name": "MM1 Via Invert",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 168,
+   "name": "MM7 Via Invert",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "shown": "Off"
+  }
+ ],
+ "unmapped": [
+  "Analog",
+  "Osc Start",
+  "Glide",
+  "Keyboard Mode",
+  "Constant Beat Detune",
+  "Osc1 Digiwave",
+  "Osc3 Digiwave",
+  "Filter Routing",
+  "Filter 1 Mode",
+  "Filter 2 Mode",
+  "MM1 Target",
+  "MM1 Source",
+  "MM1 Via",
+  "MM2 Target",
+  "MM2 Source",
+  "MM2 Via",
+  "MM2 Amount Via",
+  "MM3 Target",
+  "MM3 Source",
+  "MM3 Via",
+  "MM3 Amount Via",
+  "MM4 Target",
+  "MM4 Source",
+  "MM4 Via",
+  "MM4 Amount Via",
+  "MM5 Target",
+  "MM5 Source",
+  "MM5 Via",
+  "MM5 Amount Via",
+  "MM6 Target",
+  "MM6 Source",
+  "MM6 Via",
+  "MM6 Amount Via",
+  "MM7 Target",
+  "MM7 Source",
+  "MM7 Amount Via",
+  "MM8 Target",
+  "MM8 Source",
+  "MM8 Via",
+  "MM8 Amount Via",
+  "MM9 Target",
+  "MM9 Source",
+  "MM9 Via",
+  "MM9 Amount Via",
+  "MM10 Target",
+  "MM10 Source",
+  "MM10 Amount Via",
+  "LFO1 Waveform",
+  "LFO2 Waveform",
+  "Env1 Mode",
+  "Env1 Trigger",
+  "Env1 Dec/Rel",
+  "Env2 Attack @ Max Vel",
+  "Filter Activity",
+  "FX Dist Type",
+  "FX Mod Type",
+  "Mod Pad X",
+  "Mod Pad Y",
+  "Vector X Target",
+  "Vector Y Target",
+  "Vector Y Amount",
+  "VecEnv RelTime",
+  "VecEnv Loop Smooth",
+  "VecEnv Loop Rate",
+  "VecEnv Stop Mode",
+  "VecEnv Loop Mode",
+  "VecEnv Fix Time Scl",
+  "Vector Mode",
+  "RND Trigger",
+  "RND Group",
+  "Display",
+  "MM1 Status",
+  "MM2 Status",
+  "MM2 Via Invert",
+  "MM3 Status",
+  "MM3 Via Invert",
+  "MM4 Status",
+  "MM4 Via Invert",
+  "MM5 Status",
+  "MM5 Via Invert",
+  "MM6 Status",
+  "MM6 Via Invert",
+  "MM7 Status",
+  "MM8 Status",
+  "MM8 Via Invert",
+  "MM9 Status",
+  "MM9 Via Invert",
+  "MM10 Status",
+  "MM10 Via Invert",
+  "VecEnv Curve",
+  "Ctrl A Assign",
+  "Ctrl B Assign",
+  "Ctrl C Assign",
+  "Ctrl D Assign",
+  "Ctrl E Assign",
+  "Ctrl F Assign",
+  "Macro Resonance",
+  "Macro ModDepth",
+  "Macro Wave",
+  "Macro Attack",
+  "Macro Decay",
+  "Macro Sustain",
+  "Macro Release",
+  "MIDI Mono Mode",
+  "Mono Mode Bend Range",
+  "Vector Envelope Actions",
+  "Osc1 Level",
+  "Osc2 Level",
+  "Osc3 Level",
+  "Filter 2 Cutoff",
+  "Bender Range Down",
+  "LFO1 Rate",
+  "Macro Cutoff"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-es2-*: 76 parameters named \u2014 9 matched by the number shown, 32 by coded saves, 35 by one save per row. 113 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -22,11 +22,14 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes, atomic_write_json
 
 from ..._binary import find_blocks
+from .plugin_names import coded_name
+from .slot_identity import NATIVE, CODED, slot_header
 from .slot_width import plugin_variant, slot_format
 from ..stream.stream import HEADER, VER_OFF, project_records
 
 SUFFIX = ".slot"
 MANIFEST = "manifest.json"
+STATELESS = 192                      # a slot's header and tail with no state between them
 WIDTH_NAMES = {1: "mono", 2: "stereo"}
 
 
@@ -110,15 +113,15 @@ def harvest_donors(data: bytes, library: Path, names: dict | None = None,
     manifest = _read_manifest(library)
     written = []
     for record in project_records(data, start):
-        if record.tag != b"UCuA" or b"GAMETSPP" not in record.raw or (owners is not None and record.owner not in owners):
+        if record.tag != b"UCuA" or (owners is not None and record.owner not in owners):
             continue
+        filed = _filed_as(record.raw[HEADER:])
+        if filed is None:
+            continue
+        stem, type_id, variant, family = filed
         blocks = find_blocks(record.raw[HEADER:])
-        if not blocks:
-            continue
-        type_id, variant = blocks[0][1], plugin_variant(record.raw[HEADER:])
         width = slot_format(record.raw)
         size = len(record.raw) - HEADER
-        stem = str(type_id)
         first = manifest.get(f"{stem}-v{record.ver}")
         member = names.get((type_id, variant)) if names and variant is not None else None
         if member and names.get(type_id) not in (None, member):
@@ -146,18 +149,38 @@ def harvest_donors(data: bytes, library: Path, names: dict | None = None,
             continue
         atomic_write_bytes(path, record.raw)
         manifest[key] = {"type": type_id, "version": record.ver,
-                         "floats": blocks[0][2], "bytes": size, "width": width, "blocks": len(blocks)}
+                         "floats": blocks[0][2] if blocks else 0, "bytes": size, "width": width, "blocks": len(blocks)}
         if variant is not None:
             manifest[key]["variant"] = variant
         if first is not None and key != f"{stem}-v{record.ver}":
             manifest[key]["fixed_width"] = True
         label = names and (names.get((type_id, variant)) or names.get(type_id))
+        if family is not None:
+            manifest[key]["code"], manifest[key]["word"] = family
+            label = coded_name(*family)
         if label:
             manifest[key]["plugin"] = label
         written.append(key)
     if written:
         atomic_write_json(library / MANIFEST, manifest, sort_keys=True, ensure_ascii=True)
     return sorted(written)
+
+
+def _filed_as(payload: bytes) -> tuple[str, int | None, int | None, tuple[str, int] | None] | None:
+    """``(key stem, type id, variant base, (code, word))`` of a slot of Logic's own that has a
+    state to give, else None. The slot header names it (`slot_identity`): the type id, or its
+    four-letter code and word — a Studio instrument's state holds a float block of another
+    type. A record with no header is filed by its first block; a header and no state
+    (a plug-in never opened, 192 bytes) is no donor."""
+    head = slot_header(payload)
+    if head is None:
+        blocks = find_blocks(payload)
+        return (str(blocks[0][1]), blocks[0][1], plugin_variant(payload), None) if blocks else None
+    if len(payload) <= STATELESS or head.maker not in (NATIVE, CODED):
+        return None
+    if head.maker == CODED:
+        return f"{head.code}{head.word or ''}", None, None, (head.code, head.word)
+    return str(head.code), head.code, plugin_variant(payload), None
 
 
 def load_donor_library(libraries: list[Path] | Path) -> dict[str, tuple[bytes, int, int]]:

@@ -138,7 +138,38 @@ def _apply_chains(dest: Path, cfg, library: Path, *, strict: bool, left: dict[st
     return total
 
 
+def _verify(args, cfg: dict) -> int:
+    """Open the WRITTEN bundle in Logic, read each chained channel's Controls views and compare
+    them with what the tables decode from its bytes. Read-only: Logic saves nothing."""
+    from .orchestrators.chains_verify import default_tracks, verify, verify_problem
+    from .services.mixer.binding import channels
+    from .services.mixer.chains import channel_references
+
+    problem = verify_problem()
+    if problem:
+        raise PreconditionError(f"--verify cannot run here: {problem}")
+    bundle = find_project(Path(args.project))
+    data = next(iter(sorted(bundle.glob("Alternatives/*/ProjectData")))).read_bytes()
+    labels = {o: c.label for o, c in channels(data).items()}
+    by_reference = {labels[o] for o, ref in channel_references(data).items() if ref in cfg["chains"] and o in labels}
+    by_name = {key for key in cfg["chains"] if not key.endswith(".cst")}     # a chain keyed by a channel's name
+    tracks = getattr(args, "track", None) or default_tracks(data, by_reference | by_name)
+    if not tracks:
+        raise PreconditionError("no channel of the bundle carries a reference the config chains; name one with --track")
+    print(f"verify : {bundle}\n  tracks: {', '.join(tracks)}\n")
+    verdict = verify(bundle, tracks)
+    if verdict.problem:
+        raise PreconditionError(verdict.problem)
+    for line in verdict.lines:
+        print("  " + line)
+    print("\n" + ("Logic's Controls views match the file." if verdict.matched
+                   else f"{verdict.differences} difference(s) between the file and what Logic shows."))
+    return 0 if verdict.matched else 1
+
+
 def cmd_chains(args) -> int:
+    if getattr(args, "verify", False):
+        return _verify(args, load_chain_config(Path(args.config)))
     if not args.plan and not args.out:
         print("  --out is required unless you pass --plan")
         return 2
@@ -189,4 +220,8 @@ def register(sub) -> None:
     ap.add_argument("--plan", action="store_true", help="print what would change and stop")
     ap.add_argument("--strict", action="store_true",
                     help="refuse when a chain differs from its source strip")
+    ap.add_argument("--verify", action="store_true",
+                    help="PROJECT is a written copy: open it in Logic Pro, read each chained channel's "
+                         "Controls views and compare them with the file (macOS, a checkout's tools/driver)")
+    ap.add_argument("--track", action="append", help="with --verify: a track to read instead of the chained channels")
     ap.set_defaults(func=cmd_chains)

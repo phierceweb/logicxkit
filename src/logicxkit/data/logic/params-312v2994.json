@@ -1,0 +1,132 @@
+{
+ "type": 312,
+ "variant": 2994,
+ "name": "Studio Strings",
+ "floats": 5020,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 22,
+   "name": "Monophonic",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 28,
+   "name": "Dynamics via Ctrl",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 32,
+   "name": "Attack",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 33,
+   "name": "Release",
+   "unit": "%",
+   "default": 20.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 34,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 35,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 36,
+   "name": "Volume",
+   "unit": "dB",
+   "default": -10.0,
+   "evidence": "value",
+   "min": -60.0,
+   "max": 0.0
+  },
+  {
+   "index": 37,
+   "name": "Legato Transitions",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "Release Samples",
+   "unit": "%",
+   "default": 70.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 39,
+   "name": "Pitch Bend Range",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 12.0
+  },
+  {
+   "index": 54,
+   "name": "Extended Keyrange",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Instrument",
+  "Last Played Articulation",
+  "Vibrato Controller",
+  "Dynamic Controller",
+  "Dynamic Controller Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-studio-strings-*: 11 parameters named \u2014 5 matched by the number shown, 6 by coded saves. 5 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

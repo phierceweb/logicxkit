@@ -23,49 +23,63 @@
    "name": "Low Boost",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 4,
    "name": "Low Atten",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 5,
    "name": "Program EQ Low Freq",
    "unit": "Hz",
    "default": 60.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 100.0
   },
   {
    "index": 6,
    "name": "High Atten",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 8,
    "name": "High Boost",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 9,
    "name": "Program EQ High Freq",
    "unit": "kHz",
    "default": 6.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 16.0
   },
   {
    "index": 10,
    "name": "High Bandwidth",
    "unit": "",
    "default": 0.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 12,
@@ -83,63 +97,81 @@
    "name": "Low Peak",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 14,
    "name": "Mid-Range EQ Low Freq",
    "unit": "kHz",
    "default": 0.2,
-   "evidence": "order"
+   "evidence": "code",
+   "min": 0.2,
+   "max": 1.0
   },
   {
    "index": 15,
    "name": "Dip",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 16,
    "name": "Dip Freq",
    "unit": "kHz",
    "default": 0.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.2,
+   "max": 7.0
   },
   {
    "index": 17,
    "name": "Dip Q",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 18,
    "name": "High Peak",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 19,
    "name": "Mid-Range EQ High Freq",
    "unit": "kHz",
    "default": 1.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.5,
+   "max": 5.0
   },
   {
    "index": 22,
    "name": "Drive",
    "unit": "",
    "default": 4.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 11.0
   },
   {
    "index": 23,
    "name": "Volume",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   }
  ],
  "unmapped": [
@@ -149,5 +181,5 @@
   "Phase",
   "Output Mode"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 17 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 1 by order (2026-09-22). Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-vintage-tube-eq-*: 18 parameters named \u2014 17 matched by the number shown, 1 by coded saves. 5 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

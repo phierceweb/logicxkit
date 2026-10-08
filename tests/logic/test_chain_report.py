@@ -26,5 +26,28 @@ class ChainChangeTest(unittest.TestCase):
         self.assertEqual(c.line(), f"{'Kick.cst':26s} + Channel EQ -> Compressor")
 
 
+class SlotNameTest(unittest.TestCase):
+    """What a report calls a slot it is about to replace: Logic's own plug-in by its header."""
+
+    def slot(self, name: bytes, maker: bytes, code: bytes, preset: bytes = b"") -> bytes:
+        import struct
+        p = bytearray(192)
+        struct.pack_into("<H", p, 4, 1)
+        p[14:14 + len(preset)] = preset
+        p[120:120 + len(name)] = name
+        p[132:136], p[140:144] = maker, code
+        return bytes(p)
+
+    def test_an_instrument_with_no_float_block_is_named(self):
+        from logicxkit.logic.services.mixer.chain_report import _slot_name
+        self.assertEqual(_slot_name(self.slot(b"Drum Kit", b"MELC", b"LMNA")), "Drum Kit Designer")
+
+    def test_the_header_wins_over_a_plugin_name_in_the_preset_string(self):
+        import struct
+        from logicxkit.logic.services.mixer.chain_report import _slot_name
+        payload = self.slot(b"Compressor", b"GAME", struct.pack("<I", 154), preset=b"Gain Staging.pst")
+        self.assertEqual(_slot_name(payload), "Compressor")
+
+
 if __name__ == "__main__":
     unittest.main()

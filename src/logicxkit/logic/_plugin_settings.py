@@ -48,7 +48,8 @@ def dialled(donor, settings: dict[str, str], raw: bytes | None = None):
 def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
     """Table-name values for one of Logic's own as its sliders keep them: held to a measured
     slider's ends with a note, on the item's grid and the nearer sampled position — what
-    `settings --set` writes. A parameter no map measures goes as given."""
+    `settings --set` writes. A parameter no map measures goes as given here; `set_by_name` holds
+    it to its table range, where the table carries one."""
     from .services.mixer.slider import slider_curve, snap
     from .services.translate.translate import load_maps, map_for
     m = map_for(payload, load_maps())

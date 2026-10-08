@@ -5,12 +5,14 @@ either is read from its channel words. Skips without the public corpus."""
 import plistlib
 import struct
 import unittest
+from collections import Counter
 
 import _goldens
 from logicxkit.logic.services.arrange.addtrack import add_track
 from logicxkit.logic.services.arrange.stacks import read_tracks
 from logicxkit.logic.services.mixer.binding import channels
 from logicxkit.logic.services.mixer.mixer import is_mixer_record
+from logicxkit.logic.services.mixer.slot_identity import slot_header
 from logicxkit.logic.services.mixer.slots import archive_index, property_key_base
 from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logic.services.stream.validate import validate_project
@@ -53,6 +55,17 @@ class ChannelWordsTest(unittest.TestCase):
         data = project_data(_goldens.path(BLANK))
         self.assertEqual((_archives(data), _words(data)), ({}, {(2, 2)}))
         self.assertEqual(property_key_base(data), 5)
+
+    @_goldens.needs("instrument-fx-arpeggiator-logic", "instrument-fx-two-midi-logic")
+    def test_a_second_midi_effect_moves_the_place_up_a_key_with_or_without_an_archive(self):
+        from logicxkit.logic.services.stream.stream import reassemble
+        for key, place in (("instrument-fx-arpeggiator-logic", 5), ("instrument-fx-two-midi-logic", 6)):
+            with self.subTest(key):
+                data = project_data(_goldens.path(key))
+                self.assertEqual((_words(data), property_key_base(data)), ({(2, 2)}, place))
+                bare = reassemble(data, [r.raw for r in project_records(data)
+                                         if not (r.tag == b"UCuA" and archive_index(r.raw))])
+                self.assertEqual((_archives(bare), property_key_base(bare)), ({}, place))
 
     def test_our_instrument_add_keys_its_archive_where_logics_own_does(self):
         data = project_data(_goldens.path(BLANK))
@@ -112,7 +125,9 @@ class EveryLogicSaveTest(unittest.TestCase):
             if not bases or referenced or len(words) != 1:
                 continue
             (slot_base, shown), = words
-            if bases == {slot_base + shown + 1}:
+            # MIDI effects sit under the reference's place: one fits there, a second moves it a key
+            midi = Counter(r.owner for r in records if r.tag == b"UCuA" and (h := slot_header(r.raw[HEADER:])) and h.midi)
+            if bases == {slot_base + shown + 1 + max(0, max(midi.values(), default=0) - 1)}:
                 fits += 1
             else:
                 misfits.append((key, slot_base, shown, sorted(bases)))

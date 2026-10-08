@@ -11,6 +11,11 @@ scripting, which hangs it.
     diff.py              changed ProjectData records and DisplayState keys between two saves
     click.swift, dclick.swift, drag.swift, winids-all.swift
                          real mouse events and Logic's window list (ids, layers, frames)
+    axdump.swift, axact.swift
+                         the accessibility tree of a Logic window as one line per element, and
+                         press/pick/set on an element by that line's path
+    controls.py          `chains --verify`'s reader: opens a bundle, reads every plug-in's
+                         Controls view on the named tracks, closes without saving, prints JSON
     example-steps.json   the step shapes: `bar`, `menu`, `press`/`increment`/`choose`,
                          `popover`, `clickpop`, `sheet`, `dragslider`
 

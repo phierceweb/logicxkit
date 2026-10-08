@@ -1,0 +1,134 @@
+{
+ "type": 320,
+ "variant": 2510,
+ "name": "Mastering Assistant",
+ "floats": 105,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 4,
+   "name": "Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "Loudness Compensation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "Custom EQ",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "Low Freq",
+   "unit": "Hz",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 17,
+   "name": "Low Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.0 dB"
+  },
+  {
+   "index": 18,
+   "name": "Mid Freq",
+   "unit": "Hz",
+   "default": 998.9000244140625,
+   "evidence": "code",
+   "shown": "998.9 Hz"
+  },
+  {
+   "index": 19,
+   "name": "Mid Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.0 dB"
+  },
+  {
+   "index": 20,
+   "name": "High Freq",
+   "unit": "Hz",
+   "default": 8000.0,
+   "evidence": "code",
+   "shown": "8.0 kHz"
+  },
+  {
+   "index": 21,
+   "name": "High Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.0 dB"
+  },
+  {
+   "index": 25,
+   "name": "Width",
+   "unit": "",
+   "default": 0.25,
+   "evidence": "value"
+  },
+  {
+   "index": 26,
+   "name": "Auto EQ",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 27,
+   "name": "Excite",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 29,
+   "name": "Loudness",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value"
+  }
+ ],
+ "unmapped": [
+  "Reanalyze",
+  "Mode",
+  "Character",
+  "Start/Pause",
+  "Reset"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-mastering-assistant-*: 13 parameters named \u2014 5 matched by the number shown, 8 by coded saves. 5 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -1,0 +1,444 @@
+{
+ "type": 223,
+ "variant": 1084,
+ "name": "Vintage Clav",
+ "floats": 66,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 c",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 4,
+   "name": "Warmth",
+   "unit": "",
+   "default": 0.01,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 5,
+   "name": "Pitch Bend Range",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 24.0
+  },
+  {
+   "index": 6,
+   "name": "Stretch Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 7,
+   "name": "Aftertouch->Freq",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 8,
+   "name": "Damper",
+   "unit": "",
+   "default": 0.15,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 10,
+   "name": "Level",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  },
+  {
+   "index": 14,
+   "name": "Shape",
+   "unit": "",
+   "default": 0.1,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 15,
+   "name": "Brilliance",
+   "unit": "",
+   "default": -0.06,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 16,
+   "name": "Release Click Intensity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 17,
+   "name": "Release Click Velocity",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 19,
+   "name": "Release Click Random",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 21,
+   "name": "String Tension Mod",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 22,
+   "name": "String Damping",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 23,
+   "name": "String Decay",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 24,
+   "name": "String Stiffness",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 25,
+   "name": "String Inharmonicity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 26,
+   "name": "String Release",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 27,
+   "name": "String Pitch Fall",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 32,
+   "name": "Pickup Stereo",
+   "unit": "",
+   "default": 0.28,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 33,
+   "name": "Key Stereo",
+   "unit": "",
+   "default": 0.05,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 34,
+   "name": "Pickup L Pos Low",
+   "unit": "",
+   "default": 73.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 99.0
+  },
+  {
+   "index": 35,
+   "name": "Pickup L Pos High",
+   "unit": "",
+   "default": 79.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 99.0
+  },
+  {
+   "index": 39,
+   "name": "Brilliant",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 40,
+   "name": "Treble",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 41,
+   "name": "Medium",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 42,
+   "name": "Soft",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 46,
+   "name": "Wah Range",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.0",
+   "min": 0.1,
+   "max": 2.0
+  },
+  {
+   "index": 48,
+   "name": "Wah Pedal Pos",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 49,
+   "name": "Wah Env Depth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 50,
+   "name": "Comp Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.0 :1",
+   "min": 1.0,
+   "max": 20.0
+  },
+  {
+   "index": 51,
+   "name": "Dist Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "index": 52,
+   "name": "Dist Tone",
+   "unit": "Hz",
+   "default": 6000.0,
+   "evidence": "value",
+   "min": 200.0,
+   "max": 20000.0
+  },
+  {
+   "index": 54,
+   "name": "ModFx Intensity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 55,
+   "name": "ModFx Rate",
+   "unit": "Hz",
+   "default": 0.6100000143051147,
+   "evidence": "order",
+   "shown": "0.61 Hz",
+   "min": 0.1,
+   "max": 10.0
+  },
+  {
+   "index": 56,
+   "name": "FX Bypass",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 57,
+   "name": "Wah",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 58,
+   "name": "Distortion",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 59,
+   "name": "Compression",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 60,
+   "name": "ModFx",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 61,
+   "name": "ModFx Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Voices",
+  "Damper Control",
+  "Model",
+  "Velo Curve",
+  "Release Click Velocity Mode",
+  "Pickup Mode",
+  "Pickup AB",
+  "Pickup CD",
+  "Pickup U Pos Low",
+  "Pickup U Pos High",
+  "FX Order",
+  "Wah Ctrl Num",
+  "ModFx Mode",
+  "Wah Mode",
+  "MIDI Mono Mode",
+  "Mono Mode Bend Range"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-vintage-clav-*: 41 parameters named \u2014 14 matched by the number shown, 1 by row order among rows of one step, 26 by coded saves. 16 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

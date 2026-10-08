@@ -1,0 +1,73 @@
+{
+ "type": 308,
+ "variant": 2440,
+ "name": "Chord Trigger",
+ "floats": 10,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Range Low",
+   "unit": "",
+   "default": 21.0,
+   "evidence": "row",
+   "min": 21.0,
+   "max": 106.0
+  },
+  {
+   "index": 3,
+   "name": "Range High",
+   "unit": "",
+   "default": 108.0,
+   "evidence": "row",
+   "min": 23.0,
+   "max": 108.0
+  },
+  {
+   "index": 4,
+   "name": "Trigger Key",
+   "unit": "",
+   "default": 57.0,
+   "evidence": "value",
+   "min": 21.0,
+   "max": 108.0
+  },
+  {
+   "index": 5,
+   "name": "Learn",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 8,
+   "name": "Learn Remote",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Chord Transpose",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": -48.0,
+   "max": 48.0
+  }
+ ],
+ "unmapped": [
+  "Single/Multi",
+  "Clear",
+  "Clear All"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-chord-trigger-*: 6 parameters named \u2014 2 matched by the number shown, 2 by coded saves, 2 by one save per row. 3 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

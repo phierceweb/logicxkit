@@ -12,6 +12,7 @@ import struct
 
 from ..._binary import find_blocks
 from .mixer import CHANNEL_BASE_AT, CHANNEL_TAG
+from .slot_identity import KIND_AT, MIDI_KIND
 from ..stream.stream import HEADER, ProjRecord, project_records
 
 
@@ -89,13 +90,25 @@ def property_key_base(data: bytes) -> int:
 
 
 def _base_from_words(data: bytes) -> int | None:
-    """Slot base + shown slots + 1, when every channel record carries the same two words."""
-    words = {struct.unpack_from("<HH", r.raw, HEADER + CHANNEL_BASE_AT) for r in project_records(data)
+    """Slot base + shown slots + 1, when every channel record carries the same two words —
+    and one key more for each MIDI effect past the first on the channel with the most: they
+    sit under the reference's place, which holds one (`instrument-fx-two-midi-logic`)."""
+    records = project_records(data)
+    words = {struct.unpack_from("<HH", r.raw, HEADER + CHANNEL_BASE_AT) for r in records
              if r.tag == CHANNEL_TAG and len(r.raw) - HEADER >= SHOWN_AT + 2}
     if len(words) != 1:
         return None
     (base, shown), = words
-    return base + shown + 1 if base in (2, 3, 4) and shown >= 2 else None
+    midi: dict[int, int] = {}
+    for r in records:
+        if r.tag == b"UCuA" and len(r.raw) - HEADER > KIND_AT + 1 \
+                and struct.unpack_from("<H", r.raw, HEADER + KIND_AT)[0] == MIDI_KIND:
+            midi[r.owner] = midi.get(r.owner, 0) + 1
+    most = max(midi.values(), default=0)
+    if most > 2:                                  # one save measured a second MIDI effect; a third is unread
+        raise ValueError(f"a channel carries {most} MIDI effects; where their keys sit past two is not measured")
+    extra = max(0, most - 1)
+    return base + shown + 1 + extra if base in (2, 3, 4) and shown >= 2 else None
 
 
 def archive_index(raw: bytes) -> int | None:
@@ -107,7 +120,10 @@ def archive_index(raw: bytes) -> int | None:
 
 
 def is_plugin_slot(record: ProjRecord, base: int, index_base: int) -> bool:
-    """In the slot key range AND carrying its slot index at +6 — native and third-party alike."""
+    """In the slot key range AND carrying its slot index at +6 — native and third-party alike.
+    A MIDI effect's record (kind word 2) sits in that range under the reference with an index
+    of its own, and is not one."""
     payload = record.raw[HEADER:]
     return (record.tag == b"UCuA" and index_base <= record.key < base
-            and len(payload) > SLOT_INDEX_AT and payload[SLOT_INDEX_AT] == record.key - index_base)
+            and len(payload) > SLOT_INDEX_AT and payload[SLOT_INDEX_AT] == record.key - index_base
+            and struct.unpack_from("<H", payload, KIND_AT)[0] != MIDI_KIND)

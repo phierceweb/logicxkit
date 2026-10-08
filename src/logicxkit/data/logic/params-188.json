@@ -1,0 +1,306 @@
+{
+ "type": 188,
+ "variant": 901,
+ "name": "EVOC 20 TrackOscillator",
+ "floats": 144,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Bands",
+   "unit": "",
+   "default": 10.0,
+   "evidence": "value",
+   "min": 5.0,
+   "max": 20.0
+  },
+  {
+   "index": 4,
+   "name": "Low Frequency",
+   "unit": "Hz",
+   "default": 80.0,
+   "evidence": "value",
+   "min": 75.0,
+   "max": 750.0
+  },
+  {
+   "index": 5,
+   "name": "High Frequency",
+   "unit": "Hz",
+   "default": 8000.0,
+   "evidence": "value",
+   "min": 800.0,
+   "max": 8000.0
+  },
+  {
+   "index": 6,
+   "name": "Formant Shift",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 7,
+   "name": "Formant Stretch",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "row",
+   "min": 0.5,
+   "max": 2.0
+  },
+  {
+   "index": 8,
+   "name": "Resonance",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.5,
+   "max": 4.0
+  },
+  {
+   "index": 9,
+   "name": "Freeze",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 10,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 1.0,
+   "evidence": "value",
+   "min": 0.2,
+   "max": 200.0
+  },
+  {
+   "index": 11,
+   "name": "Release",
+   "unit": "ms",
+   "default": 30.0,
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
+  },
+  {
+   "index": 12,
+   "name": "Stereo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 5.0
+  },
+  {
+   "index": 14,
+   "name": "U/V Sensitivity",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 15,
+   "name": "U/V Level",
+   "unit": "%",
+   "default": 28.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 16,
+   "name": "Osc. Pitch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -24.0,
+   "max": 24.0
+  },
+  {
+   "index": 17,
+   "name": "Osc. Ratio",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "min": 0.5,
+   "max": 3.5
+  },
+  {
+   "index": 18,
+   "name": "FM Intensity",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 20,
+   "name": "Output Level",
+   "unit": "dB",
+   "default": -2.0,
+   "evidence": "value",
+   "min": -60.0,
+   "max": 60.0
+  },
+  {
+   "index": 42,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 0.99,
+   "evidence": "value"
+  },
+  {
+   "index": 44,
+   "name": "LFO -> Formant",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 67,
+   "name": "Max. Frequency",
+   "unit": "Hz",
+   "default": 200.0,
+   "evidence": "value",
+   "min": 40.0,
+   "max": 4000.0
+  },
+  {
+   "index": 69,
+   "name": "Qtz. Strength",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 70,
+   "name": "Quantize C",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 71,
+   "name": "Quantize C\u266f",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 72,
+   "name": "Quantize D",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 73,
+   "name": "Quantize D\u266f",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 74,
+   "name": "Quantize E",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 75,
+   "name": "Quantize F",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 76,
+   "name": "Quantize F\u266f",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 77,
+   "name": "Quantize G",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 78,
+   "name": "Quantize G\u266f",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 79,
+   "name": "Quantize A",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 80,
+   "name": "Quantize A\u266f",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 81,
+   "name": "Quantize B",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 82,
+   "name": "Tune",
+   "unit": "",
+   "default": 440.0,
+   "evidence": "value",
+   "min": 425.0,
+   "max": 455.0
+  },
+  {
+   "index": 120,
+   "name": "Oscillator Wave",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 102.0
+  }
+ ],
+ "unmapped": [
+  "Analysis In",
+  "Synthesis In",
+  "LFO Waveform",
+  "TO Vibrato",
+  "Low Band Mode",
+  "High Band Mode",
+  "U/V Source",
+  "Glide",
+  "Root Note",
+  "Scale/Chord Type",
+  "Out",
+  "Stereo Mode",
+  "Track Mode",
+  "Fixed Note"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-evoc-20-trackoscillator-*: 34 parameters named \u2014 13 matched by the number shown, 20 by coded saves, 1 by one save per row. 14 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

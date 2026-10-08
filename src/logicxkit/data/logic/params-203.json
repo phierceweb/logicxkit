@@ -1,0 +1,139 @@
+{
+ "type": 203,
+ "variant": 1050,
+ "name": "ES E",
+ "floats": 17,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Wave",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "slider",
+   "shown": "Saw"
+  },
+  {
+   "index": 3,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 35.433,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 4,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 6.299,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 5,
+   "name": "Filter Env Depth",
+   "unit": "%",
+   "default": 24.0,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 6,
+   "name": "Filter Vel",
+   "unit": "%",
+   "default": 53.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 7,
+   "name": "Volume Vel",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 8,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 240.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 9,
+   "name": "Release",
+   "unit": "ms",
+   "default": 1280.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 11,
+   "name": "Volume",
+   "unit": "dB",
+   "default": -0.8,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 0.0
+  },
+  {
+   "index": 12,
+   "name": "LFO Speed",
+   "unit": "Hz",
+   "default": 1.0,
+   "evidence": "value",
+   "min": 0.02,
+   "max": 20.0
+  },
+  {
+   "index": 13,
+   "name": "Vib / PWM",
+   "unit": "%",
+   "default": 6.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 14,
+   "name": "Bend Up",
+   "unit": "",
+   "default": 12.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
+  },
+  {
+   "index": 15,
+   "name": "Bend Down",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 16,
+   "name": "Tune",
+   "unit": "ct",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
+  }
+ ],
+ "unmapped": [
+  "Octave",
+  "Modulation"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-es-e-*: 14 parameters named \u2014 13 matched by the number shown, 1 by slider position. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

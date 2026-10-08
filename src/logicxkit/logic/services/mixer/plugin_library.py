@@ -16,8 +16,9 @@ from pathlib import Path
 from pf_core.utils.io import atomic_write_bytes, atomic_write_json
 
 from ..._binary import find_blocks
-from .plugin_names import native_name
+from .plugin_names import native_name, own_name
 from .donors import MANIFEST, SUFFIX, WIDTH_NAMES, retarget_version
+from .slot_identity import NATIVE, CODED, slot_header
 from .slot_width import plugin_variant, slot_format
 from .slots import slot_index_base
 from ..stream.stream import HEADER, VER_OFF, project_records
@@ -165,11 +166,17 @@ def _donor(key: str, raw: bytes, entry: dict) -> Donor | None:
     if entry.get("kind") == "au":
         return Donor(key, raw, "au", version, entry.get("plugin"), None, tuple(entry["component"]),
                      entry.get("width"), tuple(entry.get("id_offsets", ())))
-    blocks = find_blocks(raw[HEADER:])
-    if not blocks:
-        return None
-    type_id = blocks[0][1]
-    name = entry.get("plugin") or plugin_name(raw[HEADER:]) or native_name(type_id, plugin_variant(raw[HEADER:]))
+    payload = raw[HEADER:]
+    head = slot_header(payload)
+    if head is not None and head.maker in (NATIVE, CODED):     # the slot names itself, block or no block
+        type_id = head.code if head.maker == NATIVE else None
+        name = entry.get("plugin") or own_name(payload)
+    else:
+        blocks = find_blocks(payload)
+        if not blocks:
+            return None
+        type_id = blocks[0][1]
+        name = entry.get("plugin") or plugin_name(payload) or native_name(type_id, plugin_variant(payload))
     # a native donor is re-stamped to any width unless its record differs in length by width
     width = entry.get("width") if entry.get("fixed_width") else None
     return Donor(key, raw, "native", version, name, type_id, width=width, id_offsets=tuple(entry.get("id_offsets", ())))

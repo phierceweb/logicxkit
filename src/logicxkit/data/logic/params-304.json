@@ -1,0 +1,74 @@
+{
+ "type": 304,
+ "variant": 2437,
+ "name": "Randomizer",
+ "floats": 10,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Input Range Low",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 4,
+   "name": "Input Range High",
+   "unit": "",
+   "default": 127.0,
+   "evidence": "code",
+   "shown": "127",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 5,
+   "name": "Random Amount",
+   "unit": "",
+   "default": 127.0,
+   "evidence": "code",
+   "shown": "127",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 6,
+   "name": "Weight",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 7,
+   "name": "Output Offset",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": -127.0,
+   "max": 127.0
+  },
+  {
+   "index": 9,
+   "name": "Probability",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  }
+ ],
+ "unmapped": [
+  "Event Type",
+  "Seed"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-randomizer-*: 6 parameters named \u2014 1 matched by the number shown, 5 by coded saves. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -9,10 +9,10 @@ For one new track placed after a reference row, Logic writes:
   keys renumbered — `tracklist`
 * one sequence triple in slot order and an index-table entry, every later entry's index
   moved up — `sequence.plan_sequence`
-* the channel: an audio track binds a free `Audio N` stub, or with none free (or on request)
-  gets a fresh channel after the last `Audio`, as Logic does; an instrument or aux track gets
-  a new channel record; every insert shifts every later owner, and every object bound above
-  it — `channel_alloc`. A track placed after a row inside a stack joins that stack, and
+* the channel: an audio track binds the strip a deleted track left free, else gets a fresh
+  channel at the first stub no track has used (before the Preview strip when none is left), as
+  Logic does; an instrument or aux track gets a new channel record; every insert shifts every
+  later owner, and every object bound above it — `channel_alloc`, `addtrack_pattern`. A track placed after a row inside a stack joins that stack, and
   inside a summing stack outputs to its bus (`stack_place`).
 * the `gnoS` registry entries — `registry.register_object`
 * the selection, moved onto the new track — `selection.select_track`
@@ -26,10 +26,8 @@ import re
 
 from ..mixer.binding import bound_channels, channels
 from ..mixer.channel_alloc import (
-    BARE_STUB, COUNT_CLASS_AT, bind_audio_stub, free_aux_stub, new_audio_channel, new_aux_channel,
-    bump_channel_count, channel_run_end, default_inst_records, free_audio_stub, is_channel_record,
-    is_mixer_record, mixer_record, new_inst_channel, project_words, require_packaged_class,
-    shifted_channel,
+    COUNT_CLASS_AT, bind_audio_stub, bump_channel_count, free_audio_stub, free_aux_stub, is_channel_record,
+    is_mixer_record, require_packaged_class, shifted_channel,
 )
 from ..mixer.mixer import is_channel_count
 from .environment import (
@@ -40,7 +38,6 @@ from .environment import (
     UUID_LEN,
     channel_objects,
     clone_object,
-    next_object_id,
     object_id_of,
     object_record,
     object_stamp,
@@ -48,7 +45,6 @@ from .environment import (
     shifted_object,
 )
 from ..mixer.add_plugin import show_slots, shown_slots
-from ..mixer.slots import slot_index_base
 from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
 from ..stream.recbuild import fresh_uuid, rec
@@ -57,8 +53,10 @@ from ..regions.regions import sync_region_tracks, sync_row_count
 from .selection import select_track
 from ..stream.sequence import QESM_FRESH, plan_sequence
 from ..stream.table_index import sync_indices
-from ..mixer.slots import property_key_base
-from .stack_create import packaged_aux
+from .environment import next_object_id
+from .stack_ids import free_object_id, gone_triple_kind
+from .addtrack_pattern import _by_label, _flat_anchor, _pattern, _with_table_entry, channel_records_for, fresh_audio_owner
+from .stack_pattern import packaged_aux
 from .tracklist import (
     MEMBER_AT,
     ROW_TYPE,
@@ -75,76 +73,7 @@ from ..stream.validate import require_full_walk, require_valid
 _PREFIX = {"audio": "Audio ", "instrument": "Inst ", "aux": "Aux "}
 AUX_ICON, AUX_COLOUR = 0x1224, 5
 AUX_FRESH_WORD, AUX_KIND_BYTE = 360, 5
-
-
-def _pattern(objs: dict, chans: dict, owners_of: dict, prefix: str, by_owner: bool = False) -> tuple[int, int]:
-    """The track to clone the structures from -> ``(object id, owner)``: the highest object
-    id of the kind, or with ``by_owner`` the one on the highest-numbered strip (an inserted
-    channel goes right after that strip)."""
-    same_kind = [oid for oid, own in owners_of.items()
-                 if chans[own].label.startswith(prefix) and oid in objs]
-    if not same_kind:
-        raise ValueError(f"no {prefix.strip().lower()} track to clone the structures from")
-    like = max(same_kind, key=(lambda oid: owners_of[oid]) if by_owner else (lambda oid: oid))
-    return like, owners_of[like]
-
-
-def _sound_entry(records, table: bytes, seqs, oid: int) -> bool:
-    """Whether ``oid``'s index-table entry leads to a track triple that carries ``oid`` —
-    Logic's own files keep a few stale entries whose triple is a group's carrying object 0,
-    and a track cloned from one of those reads back as a group."""
-    import struct
-    from ..stream.sequence import QESM_OBJECT_AT, is_group, table_entry, triple_by_slot
-    found = table_entry(table, oid)
-    if found is None:
-        return False
-    t = triple_by_slot(seqs, found[1])
-    if t is None:
-        return False
-    q = records[t.start].raw
-    if is_group(q) or len(q) < HEADER + QESM_OBJECT_AT + 2:
-        return False
-    return struct.unpack_from("<H", q, HEADER + QESM_OBJECT_AT)[0] == oid
-
-
-def _with_table_entry(records, objs: dict, owners_of: dict, chans: dict, prefix: str, like: int) -> int:
-    """``like`` if it has a sound index-table entry, else the highest same-kind object that
-    has one, else any track object with one — the entry and triple are cloned from it."""
-    from ..stream.sequence import index_table, sequences
-    table = records[index_table(records)].raw[HEADER:]
-    seqs = sequences(records)
-    if _sound_entry(records, table, seqs, like):
-        return like
-    same_kind = sorted((oid for oid, own in owners_of.items()
-                        if oid in objs and chans[own].label.startswith(prefix)), reverse=True)
-    for oid in same_kind:
-        if _sound_entry(records, table, seqs, oid):
-            return oid
-    for oid in sorted(objs, reverse=True):
-        if _sound_entry(records, table, seqs, oid):
-            return oid
-    raise ValueError("no track object with an index-table entry to clone")
-
-
-def _by_label(chans: dict, label: str):
-    return next((c for c in chans.values() if c.label == label), None)
-
-
-def _flat_anchor(records, flat: list[int], *, owner: int, prefix: str, owners_of: dict,
-                 chans: dict, like: int | None) -> int:
-    """Position in the flat list after which the new row goes: the last row of the same
-    strip type with a lower owner, else the pattern's; with no pattern (a session's first aux)
-    the last instrument or audio row, where Logic's own first aux went."""
-    below, sources = [], []
-    for k, i in enumerate(flat):
-        own = owners_of.get(row_object(records[i].raw))
-        if own is not None and own < owner and chans[own].label.startswith(prefix):
-            below.append(k)
-        if own is not None and chans[own].label.startswith(("Audio ", "Inst ")):
-            sources.append(k)
-    if below:
-        return max(below)
-    return row_position(records, flat, like) if like is not None else max(sources)
+TRACK_KIND_BYTE = 9                      # `qeSM +39` on a track's triple
 
 
 def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_number: int = 1,
@@ -183,21 +112,24 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
             raise
         like, like_owner, packaged = max(objs), None, packaged_aux(records)
     like = _with_table_entry(records, objs, owners_of, chans, prefix, like)
-    object_id = next_object_id(records)
+    object_id, reused = free_object_id(records, objs, track_count)
+    if reused and (kind != "audio" or gone_triple_kind(records, object_id) != TRACK_KIND_BYTE):
+        # measured: an audio track on a deleted audio or instrument track's id (`gone-d3-logic`, `gone-i2-logic`)
+        object_id, reused = next_object_id(records), False
     top = max(objs)
     stereo_out = _by_label(chans, "Output 1-2")
     output_uuid = stereo_out.uuid if stereo_out is not None else None
     created_audio = bound_aux = False
     if kind == "audio":
         try:
+            # a stereo track binds the lowest free strip a track has used whatever its width, and
+            # makes it stereo: a deleted stereo track's (`gone-d3-logic`), a deleted mono track's
+            # (`gone-m2-logic`), a shaped mono strip left free (`mix-04-12-4-newtrack-logic`)
             owner = None if new_channel else free_audio_stub(chans)
         except ValueError:
             owner = None
-        if owner is None:                                 # where Logic puts a fresh one: at the
-            audio = sorted(o for o, c in chans.items() if c.label.startswith(prefix))
-            bare = [o for o in audio if chans[o].size <= BARE_STUB]   # first bare stub, else the end
-            owner = bare[0] if bare else audio[-1] + 1
-            created_audio = True
+        if owner is None:
+            owner, created_audio = fresh_audio_owner(chans, objs, owners_of), True
         if stereo:                                        # a stereo track takes the pair channel, Input N-(N+1)
             if input_number % 2 == 0:
                 raise ValueError(f"a stereo input pair starts on an odd input, not Input {input_number}")
@@ -223,7 +155,7 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     run = arrange_run(records, track_count)
     plan = plan_sequence(records, like=like, object_id=object_id,
                          fresh_word=AUX_FRESH_WORD if kind == "aux" else QESM_FRESH,
-                         kind_byte=AUX_KIND_BYTE if kind == "aux" else None)
+                         kind_byte=AUX_KIND_BYTE if kind == "aux" else None, reuse=reused)
 
     pattern_obj = pattern_object or (packaged["object"] if packaged else object_record(records, like))
     pattern_stamp = object_stamp(pattern_obj)
@@ -282,39 +214,20 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
                             chans=chans, like=None if packaged else like)
     flat_row = clone_flat_row(packaged["flat_row"] if packaged else records[flat[flat_pos]].raw, object_id)
 
-    inst_records: list[bytes] = []
-    number = None
     creating = kind == "instrument" or created_audio or (kind == "aux" and not bound_aux)
-    last_like_record = None
-    if creating:
-        # the fresh record takes `owner` and every channel from it moves up one, so it goes after
-        # the highest owner below it: Logic keeps the channel records in owner order
-        anchor_owner = max(r.owner for r in records if is_mixer_record(r) and r.owner < owner)
-        last_like_record = channel_run_end(records, anchor_owner)
-    if created_audio:
-        number = 1 + sum(1 for o, c in chans.items() if c.label.startswith(prefix) and o < owner)
-        inst_records = [new_audio_channel(number=number, owner=owner, object_uuid=obj_uuid,
-                                          output_uuid=output_uuid, input_uuid=source.uuid,
-                                          words=project_words(data), stereo=stereo,
-                                          stack_index=stack_index)]
-    elif kind == "instrument":
-        chan_rec, number = new_inst_channel(mixer_record(records, like_owner), owner=owner,
-                                            object_uuid=obj_uuid, output_uuid=output_uuid,
-                                            stack_index=stack_index, stereo=stereo)
-        inst_records = [chan_rec] + default_inst_records(owner, slot_base=slot_index_base(data),
-                                                          property_base=property_key_base(data),
-                                                          stereo=stereo)
-    elif kind == "aux" and not bound_aux:
-        highest = max(int(c.label.split(" ", 1)[1]) for c in chans.values() if c.label.startswith(prefix))
-        inst_records = [new_aux_channel(number=highest, owner=owner, object_uuid=obj_uuid,
-                                        output_uuid=output_uuid,
-                                        input_uuid=source.uuid if source else None,
-                                        words=project_words(data), stack_index=stack_index)]
-        number = highest + 1
+    inst_records, _number, last_like_record = channel_records_for(
+        data, records, kind=kind, created_audio=created_audio, bound_aux=bound_aux, chans=chans, owner=owner,
+        prefix=prefix, obj_uuid=obj_uuid, output_uuid=output_uuid, source=source, stereo=stereo,
+        stack_index=stack_index, like_owner=like_owner)
     gnos_uuid = fresh_uuid()
 
     out: list[bytes] = []
+    flat_set = set(flat)
     for i, r in enumerate(records):
+        if reused and i in flat_set and row_object(r.raw) == object_id:     # the gone object's parked row leaves
+            if i == flat[flat_pos]:
+                out.append(flat_row)
+            continue
         raw = plan.rewrite(i, r)
         oid = object_id_of(r)
         if ((kind == "audio" and not created_audio) or bound_aux) and is_mixer_record(r) and r.owner == owner:
@@ -365,7 +278,7 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
     # the new entry's index is its row's place in mixer order, not its pattern's plus one
     result = reassemble(result, sync_indices(project_records(result), track_count + arrange if track_count is not None else None))
     require_valid(result)
-    label = chans[owner].label if kind == "audio" or bound_aux else f"{prefix}{number}"
+    label = channels(result)[owner].label
     return result, {"object_id": object_id, "owner": owner, "label": label,
                     "sequence": plan.index, "slot": plan.slot,
                     "input": source.label if source else None}

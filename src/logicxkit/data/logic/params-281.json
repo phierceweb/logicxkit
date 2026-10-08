@@ -1,0 +1,78 @@
+{
+ "type": 281,
+ "variant": 2229,
+ "name": "Drum Synth",
+ "floats": 1400,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1108,
+   "name": "Pitch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": -24.0,
+   "max": 24.0
+  },
+  {
+   "index": 1143,
+   "name": "Tone",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 1213,
+   "name": "Saturation",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 1248,
+   "name": "Shape",
+   "unit": "%",
+   "default": 30.199999,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 1283,
+   "name": "Sweep",
+   "unit": "%",
+   "default": 74.1,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 1318,
+   "name": "Decay",
+   "unit": "%",
+   "default": 53.7,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 1353,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 dB",
+   "min": -18.0,
+   "max": 6.0
+  }
+ ],
+ "unmapped": [
+  "Sound Category",
+  "Sound Module",
+  "Key Tracking",
+  "Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-drum-synth-*: 7 parameters named \u2014 7 by coded saves. 5 carry a scale: the word moves by a multiple of what Logic shows. 4 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

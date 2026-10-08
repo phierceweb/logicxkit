@@ -28,7 +28,7 @@ from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.validate import require_valid
 from .environment import COLOUR_AT, channel_objects, object_id_of, set_parent
 from .selection import select_track
-from .stack_create import packaged_aux
+from .stack_pattern import packaged_aux
 from .tracklist import MEMBER_AT, arrange_run, new_row, row_object, with_member
 
 

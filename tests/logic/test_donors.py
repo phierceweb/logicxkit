@@ -132,6 +132,52 @@ class HarvestTest(unittest.TestCase):
         self.assertEqual(load_donor_library(self.root / "nope"), {})
 
 
+def headed(maker: bytes, word: int, code: bytes, *, name: bytes = b"", state: bytes = b"", flags: int = 0x08) -> bytes:
+    """A slot with Logic's header (kind word 1, the name, the three words, the flags) and a state."""
+    p = bytearray(176)
+    struct.pack_into("<H", p, 4, 1)
+    p[120:120 + len(name)] = name
+    p[132:136], p[140:144] = maker, code
+    struct.pack_into("<I", p, 136, word)
+    p[151] = flags
+    return rec(b"UCuA", 0, 2, bytes(p) + state + bytes(16), 5)
+
+
+class HarvestByHeaderTest(unittest.TestCase):
+    """An instrument need not carry a float block of its own type: the slot header files it."""
+
+    def setUp(self):
+        self.tmp = __import__("tempfile").TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.addCleanup(self.tmp.cleanup)
+
+    def manifest(self) -> dict:
+        return json.loads((self.root / MANIFEST).read_text())
+
+    def test_a_sampler_family_instrument_is_filed_by_its_code(self):
+        kit = headed(b"MELC", 0, b"LMNA", name=b"Drum Kit", state=b"MELCPMASLMNA" + bytes(40))
+        self.assertEqual(harvest_donors(proj(kit), self.root), ["ANML-v5"])
+        entry = self.manifest()["ANML-v5"]
+        self.assertEqual((entry["code"], entry["word"], entry["plugin"], entry["type"]), ("ANML", 0, "Drum Kit Designer", None))
+
+    def test_the_word_tells_the_studio_instruments_apart_not_their_shared_block(self):
+        engine = struct.pack("<II", 1, 8) + b"GAMETSPP" + struct.pack("<I", 312) + bytes(32)
+        piano = headed(b"MELC", 4, b"rWnI", name=b"Piano", state=bytes(40) + engine)
+        bass = headed(b"MELC", 5, b"rWnI", name=b"Studio Bass", state=bytes(40) + engine)
+        self.assertEqual(harvest_donors(proj(piano, bass), self.root), ["InWr4-v5", "InWr5-v5"])
+        self.assertEqual([self.manifest()[k]["plugin"] for k in ("InWr4-v5", "InWr5-v5")], ["Studio Piano", "Studio Bass"])
+
+    def test_an_instrument_whose_state_is_text_is_filed_by_its_type(self):
+        alchemy = headed(b"GAME", 0, struct.pack("<I", 313), name=b"Alchemy", state=b"46ia\x00\x00<alchemypreset>" + bytes(60))
+        self.assertEqual(harvest_donors(proj(alchemy), self.root, {313: "Alchemy"}), ["313-v5"])
+        self.assertEqual(self.manifest()["313-v5"]["plugin"], "Alchemy")
+
+    def test_a_slot_with_a_header_and_no_state_is_not_a_donor(self):
+        unopened = headed(b"GAME", 0, struct.pack("<I", 314), name=b"Remix FX", flags=0)
+        self.assertEqual(len(unopened) - HDR, 192)
+        self.assertEqual(harvest_donors(proj(unopened), self.root), [])
+
+
 class HarvestFromStripTest(unittest.TestCase):
     """Some plugins only exist in saved .cst strips (Enveloper, Gain, Limiter). A .cst has no
     24-byte file header, so the record stream starts at 0."""

@@ -12,28 +12,35 @@
    "name": "Mix",
    "unit": "%",
    "default": 30.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Intensity",
    "unit": "%",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Rate",
    "unit": "Hz",
    "default": 0.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 4,
    "name": "D-Mode",
    "unit": "",
    "default": 0.0,
-   "evidence": "order",
+   "evidence": "row",
+   "scale": 0.01,
    "choices": [
     "Off",
     "On"
@@ -41,5 +48,5 @@
   }
  ],
  "unmapped": [],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-chorus-*: 4 parameters named \u2014 3 matched by the number shown, 1 by one save per row. 1 carry a scale: the word moves by a multiple of what Logic shows."
 }

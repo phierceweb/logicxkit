@@ -1,0 +1,2113 @@
+{
+ "type": 222,
+ "variant": 1076,
+ "name": "Sculpture",
+ "floats": 580,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Voices",
+   "unit": "",
+   "default": 8.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 16.0
+  },
+  {
+   "index": 5,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 cent",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 6,
+   "name": "Warmth",
+   "unit": "",
+   "default": 0.01,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 7,
+   "name": "Bender Range Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2",
+   "min": 0.0,
+   "max": 12.0
+  },
+  {
+   "index": 8,
+   "name": "Bender Range Down",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Level",
+   "unit": "dB",
+   "default": -2.0,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  },
+  {
+   "index": 18,
+   "name": "Ctrl B Assign",
+   "unit": "",
+   "default": 4.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 19,
+   "name": "EnvCtrl 1 Assign",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 29,
+   "name": "Vibrato Rate",
+   "unit": "Hz",
+   "default": 6.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "index": 30,
+   "name": "Vibrato Min Depth",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 31,
+   "name": "Vibrato Max Depth",
+   "unit": "",
+   "default": 0.2,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 32,
+   "name": "Vibrato Phase Vari",
+   "unit": "",
+   "default": -0.8,
+   "evidence": "value"
+  },
+  {
+   "index": 34,
+   "name": "Vibrato Curve",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 36,
+   "name": "String Resolution",
+   "unit": "",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 1000.0
+  },
+  {
+   "index": 37,
+   "name": "String TensMod",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 38,
+   "name": "String Stiffness",
+   "unit": "",
+   "default": 0.2199999988079071,
+   "evidence": "order",
+   "shown": "0.22",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 39,
+   "name": "String InnerLoss",
+   "unit": "",
+   "default": 0.2199999988079071,
+   "evidence": "order",
+   "shown": "0.22",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 40,
+   "name": "String MediaLoss",
+   "unit": "",
+   "default": 0.01,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 58,
+   "name": "Object1 On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 61,
+   "name": "Object1 Position",
+   "unit": "",
+   "default": 0.42,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 62,
+   "name": "Object1 Strength",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "order",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 63,
+   "name": "Object1 Timbre",
+   "unit": "",
+   "default": 0.51,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 64,
+   "name": "Object1 Variation",
+   "unit": "",
+   "default": 0.65,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 66,
+   "name": "Object1 VeloSens",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 70,
+   "name": "Object2 On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 73,
+   "name": "Object2 Position",
+   "unit": "",
+   "default": 0.33,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 74,
+   "name": "Object2 Strength",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 75,
+   "name": "Object2 Timbre",
+   "unit": "",
+   "default": 0.4,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 76,
+   "name": "Object2 Variation",
+   "unit": "",
+   "default": 0.07000000029802322,
+   "evidence": "order",
+   "shown": "0.07",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 78,
+   "name": "Object2 VeloSens",
+   "unit": "",
+   "default": 0.03999999910593033,
+   "evidence": "code",
+   "shown": "0.04",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 82,
+   "name": "Object3 On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 85,
+   "name": "Object3 Position",
+   "unit": "",
+   "default": 0.36,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 86,
+   "name": "Object3 Strength",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 87,
+   "name": "Object3 Timbre",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 88,
+   "name": "Object3 Variation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 93,
+   "name": "PickupA Position",
+   "unit": "",
+   "default": 0.6899999976158142,
+   "evidence": "order",
+   "shown": "0.69",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 94,
+   "name": "PickupB Position",
+   "unit": "",
+   "default": 0.29,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 96,
+   "name": "Pickup Stereo",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 97,
+   "name": "Key Stereo",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 101,
+   "name": "WaveShape On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 103,
+   "name": "WaveShape InScale",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 104,
+   "name": "WaveShape Variation",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 107,
+   "name": "Filter On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 109,
+   "name": "Filter Cutoff",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "order",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 110,
+   "name": "Filter Resonance",
+   "unit": "",
+   "default": 0.09,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 111,
+   "name": "Filter KeyTrack",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 112,
+   "name": "Filter VeloSens",
+   "unit": "",
+   "default": 0.52,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 116,
+   "name": "AmplEnv Attack Soft",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "retrigger"
+  },
+  {
+   "index": 117,
+   "name": "AmplEnv Attack Hard",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 118,
+   "name": "AmplEnv Decay",
+   "unit": "ms",
+   "default": 6300.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 120,
+   "name": "AmplEnv Release",
+   "unit": "ms",
+   "default": 1800.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 124,
+   "name": "Velo Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 126,
+   "name": "Velo Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 128,
+   "name": "Velo Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 130,
+   "name": "Velo Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 134,
+   "name": "LFO1 Rate",
+   "unit": "Hz",
+   "default": 2.1,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 136,
+   "name": "LFO1 Rate Mod Amount",
+   "unit": "",
+   "default": -0.14,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 137,
+   "name": "LFO1 Phase Vari",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 138,
+   "name": "LFO1 EG",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 139,
+   "name": "LFO1 Curve",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 141,
+   "name": "LFO1 Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 144,
+   "name": "LFO1 Amount 1",
+   "unit": "",
+   "default": 0.03,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 145,
+   "name": "LFO1 Via Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 146,
+   "name": "LFO1 Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 149,
+   "name": "LFO1 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 150,
+   "name": "LFO1 Via Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 152,
+   "name": "LFO2 Rate",
+   "unit": "Hz",
+   "default": 1.7,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 154,
+   "name": "LFO2 Rate Mod Amount",
+   "unit": "",
+   "default": -0.58,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 155,
+   "name": "LFO2 Phase Vari",
+   "unit": "",
+   "default": 0.08,
+   "evidence": "value"
+  },
+  {
+   "index": 156,
+   "name": "LFO2 EG",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "Off"
+  },
+  {
+   "index": 157,
+   "name": "LFO2 Curve",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 159,
+   "name": "LFO2 Target 1 Enable",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 162,
+   "name": "LFO2 Amount 1",
+   "unit": "",
+   "default": 0.44999998807907104,
+   "evidence": "code",
+   "shown": "0.45",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 163,
+   "name": "LFO2 Via Amount 1",
+   "unit": "",
+   "default": 0.44999998807907104,
+   "evidence": "code",
+   "shown": "0.45",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 164,
+   "name": "LFO2 Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 167,
+   "name": "LFO2 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 168,
+   "name": "LFO2 Via Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 175,
+   "name": "Jitter 1 Bandwidth",
+   "unit": "Hz",
+   "default": 10.0,
+   "evidence": "code",
+   "shown": "10.00 Hz",
+   "min": 0.1,
+   "max": 100.0
+  },
+  {
+   "index": 182,
+   "name": "Jitter 1 Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 185,
+   "name": "Jitter1 Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 187,
+   "name": "Jitter 1 Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 190,
+   "name": "Jitter1 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 193,
+   "name": "Jitter 2 Bandwidth",
+   "unit": "Hz",
+   "default": 10.0,
+   "evidence": "code",
+   "shown": "10.00 Hz",
+   "min": 0.1,
+   "max": 100.0
+  },
+  {
+   "index": 200,
+   "name": "Jitter 2 Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 203,
+   "name": "Jitter2 Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 205,
+   "name": "Jitter 2 Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 208,
+   "name": "Jitter2 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 210,
+   "name": "NoteOnRnd 1 Target Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 212,
+   "name": "NoteOnRnd 1 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 213,
+   "name": "NoteOnRnd 2 Target Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 215,
+   "name": "NoteOnRnd 2 Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 222,
+   "name": "Env1 Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 225,
+   "name": "Env1 Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 226,
+   "name": "Env1 Via Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 227,
+   "name": "Env1 Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 230,
+   "name": "Env1 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 231,
+   "name": "Env1 Via Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 240,
+   "name": "Env1 Point 2 (Loop)",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "row",
+   "shown": ".0f"
+  },
+  {
+   "index": 241,
+   "name": "Env1 Point 3 (Sus)",
+   "unit": "",
+   "default": 3.0,
+   "evidence": "row",
+   "shown": ".0f"
+  },
+  {
+   "index": 242,
+   "name": "Env1 Point 4 (End)",
+   "unit": "",
+   "default": 4.0,
+   "evidence": "row",
+   "shown": ".0f"
+  },
+  {
+   "index": 243,
+   "name": "Env1 Level 0",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 244,
+   "name": "Env1 Time 1",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "row",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 245,
+   "name": "Env1 Curve 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 246,
+   "name": "Env1 Vari 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 247,
+   "name": "Env1 Level 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 248,
+   "name": "Env1 Time 2",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "row",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 249,
+   "name": "Env1 Curve 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 250,
+   "name": "Env1 Vari 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 251,
+   "name": "Env1 Level 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 252,
+   "name": "Env1 Time 3",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "row",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 253,
+   "name": "Env1 Curve 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 254,
+   "name": "Env1 Vari 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 255,
+   "name": "Env1 Level 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 256,
+   "name": "Env1 Time 4",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "row",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 257,
+   "name": "Env1 Curve 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 258,
+   "name": "Env1 Vari 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 259,
+   "name": "Env1 Level 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 261,
+   "name": "Env1 Sustain Point",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 4.0
+  },
+  {
+   "index": 263,
+   "name": "Env1 Vari Mod Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 264,
+   "name": "Env1 Loop Point",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 4.0
+  },
+  {
+   "index": 265,
+   "name": "Env1 TimeScale",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "row",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 268,
+   "name": "Env1 Attack VeloSens",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 272,
+   "name": "Env2 Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row"
+  },
+  {
+   "index": 275,
+   "name": "Env2 Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 276,
+   "name": "Env2 Via Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 280,
+   "name": "Env2 Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 281,
+   "name": "Env2 Via Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 293,
+   "name": "Env2 Level 0",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 294,
+   "name": "Env2 Time 1",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "code",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 295,
+   "name": "Env2 Curve 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 296,
+   "name": "Env2 Vari 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 297,
+   "name": "Env2 Level 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 298,
+   "name": "Env2 Time 2",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "code",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 299,
+   "name": "Env2 Curve 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 300,
+   "name": "Env2 Vari 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 301,
+   "name": "Env2 Level 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 302,
+   "name": "Env2 Time 3",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "code",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 303,
+   "name": "Env2 Curve 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 304,
+   "name": "Env2 Vari 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 305,
+   "name": "Env2 Level 3",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 306,
+   "name": "Env2 Time 4",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "code",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 307,
+   "name": "Env2 Curve 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 308,
+   "name": "Env2 Vari 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 309,
+   "name": "Env2 Level 4",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 311,
+   "name": "Env2 Sustain Point",
+   "unit": "",
+   "default": 3.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 4.0
+  },
+  {
+   "index": 313,
+   "name": "Env2 Vari Mod Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 314,
+   "name": "Env2 Loop Point",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2",
+   "min": 0.0,
+   "max": 4.0
+  },
+  {
+   "index": 315,
+   "name": "Env2 TimeScale",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "100 %",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 318,
+   "name": "Env2 Attack VeloSens",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 322,
+   "name": "Auto Select",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 323,
+   "name": "MorphX",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 324,
+   "name": "MorphY",
+   "unit": "",
+   "default": 0.07000000029802322,
+   "evidence": "code",
+   "shown": "0.07",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 326,
+   "name": "Random Group",
+   "unit": "",
+   "default": 16.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 328,
+   "name": "Random Intensity",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "slider",
+   "shown": "10 %",
+   "min": 1.0,
+   "max": 100.0
+  },
+  {
+   "index": 336,
+   "name": "MorphEnv Seletced Point",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "index": 352,
+   "name": "MorphEnv LevelX 0",
+   "unit": "",
+   "default": 0.1,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 353,
+   "name": "MorphEnv LevelY 0",
+   "unit": "",
+   "default": -0.12,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 354,
+   "name": "MorphEnv Time 1",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 355,
+   "name": "MorphEnv LevelX 1",
+   "unit": "",
+   "default": 0.56,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 356,
+   "name": "MorphEnv LevelY 1",
+   "unit": "",
+   "default": -0.17,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 357,
+   "name": "MorphEnv Time 2",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 358,
+   "name": "MorphEnv LevelX 2",
+   "unit": "",
+   "default": 0.16,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 359,
+   "name": "MorphEnv LevelY 2",
+   "unit": "",
+   "default": -0.48,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 360,
+   "name": "MorphEnv Time 3",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 361,
+   "name": "MorphEnv LevelX 3",
+   "unit": "",
+   "default": -0.98,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 362,
+   "name": "MorphEnv LevelY 3",
+   "unit": "",
+   "default": 0.85,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 363,
+   "name": "MorphEnv Time 4",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 364,
+   "name": "MorphEnv LevelX 4",
+   "unit": "",
+   "default": 0.84,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 365,
+   "name": "MorphEnv LevelY 4",
+   "unit": "",
+   "default": -0.66,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 366,
+   "name": "MorphEnv Time 5",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 367,
+   "name": "MorphEnv LevelX 5",
+   "unit": "",
+   "default": 0.03999999910593033,
+   "evidence": "code",
+   "shown": "0.04",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 368,
+   "name": "MorphEnv LevelY 5",
+   "unit": "",
+   "default": 0.06,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 369,
+   "name": "MorphEnv Time 6",
+   "unit": "ms",
+   "default": 1300.0,
+   "evidence": "code",
+   "shown": "1300 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 370,
+   "name": "MorphEnv LevelX 6",
+   "unit": "",
+   "default": -0.009999999776482582,
+   "evidence": "code",
+   "shown": "-0.01",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 371,
+   "name": "MorphEnv LevelY 6",
+   "unit": "",
+   "default": -0.03999999910593033,
+   "evidence": "code",
+   "shown": "-0.04",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 372,
+   "name": "MorphEnv Time 7",
+   "unit": "ms",
+   "default": 730.0,
+   "evidence": "code",
+   "shown": "730 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 373,
+   "name": "MorphEnv LevelX 7",
+   "unit": "",
+   "default": -0.009999999776482582,
+   "evidence": "code",
+   "shown": "-0.01",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 374,
+   "name": "MorphEnv LevelY 7",
+   "unit": "",
+   "default": -0.03999999910593033,
+   "evidence": "code",
+   "shown": "-0.04",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 375,
+   "name": "MorphEnv Time 8",
+   "unit": "ms",
+   "default": 730.0,
+   "evidence": "code",
+   "shown": "730 ms",
+   "min": 0.1,
+   "max": 10000.0
+  },
+  {
+   "index": 376,
+   "name": "MorphEnv LevelX 8",
+   "unit": "",
+   "default": -0.009999999776482582,
+   "evidence": "code",
+   "shown": "-0.01",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 377,
+   "name": "MorphEnv LevelY 8",
+   "unit": "",
+   "default": -0.03999999910593033,
+   "evidence": "code",
+   "shown": "-0.04",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 379,
+   "name": "MorphEnv Sustain Point",
+   "unit": "",
+   "default": 6.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "index": 380,
+   "name": "MorphEnv Loop Point",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 8.0
+  },
+  {
+   "index": 381,
+   "name": "MorphEnv Depth",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1000.0
+  },
+  {
+   "index": 383,
+   "name": "MorphEnv Depth Mod Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 385,
+   "name": "MorphEnv TimeScale",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 388,
+   "name": "MorphEnv Trans Shape",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "linear"
+  },
+  {
+   "index": 394,
+   "name": "EQ On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code"
+  },
+  {
+   "index": 396,
+   "name": "EQ Low / Fmnt Int",
+   "unit": "",
+   "default": 0.39,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 397,
+   "name": "EQ Mid / Fmnt Shift",
+   "unit": "",
+   "default": 0.24,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 398,
+   "name": "EQ High / Fmnt Stretch",
+   "unit": "",
+   "default": 0.35,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 399,
+   "name": "EQ Mid Freq / Finestructure",
+   "unit": "",
+   "default": 0.6899999976158142,
+   "evidence": "code",
+   "shown": "0.69",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 402,
+   "name": "Delay On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 403,
+   "name": "Delay Wet Level",
+   "unit": "%",
+   "default": 22.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 406,
+   "name": "Delay Input Balance",
+   "unit": "",
+   "default": -1.0,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 407,
+   "name": "Delay LR Spread",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 408,
+   "name": "Delay LR Groove",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -75.0,
+   "max": 75.0
+  },
+  {
+   "index": 409,
+   "name": "Delay Feedback",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 410,
+   "name": "Delay CrossFeed",
+   "unit": "%",
+   "default": 31.0,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 411,
+   "name": "Delay Hf Damp",
+   "unit": "Hz",
+   "default": 10000.0,
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
+  },
+  {
+   "index": 412,
+   "name": "Delay Lf Damp",
+   "unit": "Hz",
+   "default": 200.0,
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
+  },
+  {
+   "index": 413,
+   "name": "Delay Output Width",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 416,
+   "name": "CtrlA Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 418,
+   "name": "CtrlA Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 420,
+   "name": "CtrlA Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 422,
+   "name": "CtrlA Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 424,
+   "name": "CtrlB Target 1 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 426,
+   "name": "CtrlB Amount 1",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 428,
+   "name": "CtrlB Target 2 Enable",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 430,
+   "name": "CtrlB Amount 2",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -1.0,
+   "max": 1.0
+  }
+ ],
+ "unmapped": [
+  "KYBD Mode",
+  "Glide Time",
+  "Limiter Mode",
+  "Transpose",
+  "MIDI Mono Mode",
+  "Mono Mode Bend Range",
+  "Render Mode",
+  "Vibrato Ctrl",
+  "Ctrl A Assign",
+  "EnvCtrl 2 Assign",
+  "MorphX Assign",
+  "MorphY Assign",
+  "Ctrl Assign handling",
+  "Vibrato Waveform",
+  "Vibrato Sync Mode",
+  "String Scaling",
+  "Object1 Type",
+  "Object1 Gate Mode",
+  "Object2 Type",
+  "Object2 Gate Mode",
+  "Object3 Type",
+  "Object3 Gate Mode",
+  "PickupB Phase",
+  "WaveShape Type",
+  "Filter Type",
+  "AmplEnv Sustain",
+  "Velo Target 1",
+  "Velo Curve1",
+  "Velo Target 2",
+  "Velo Curve2",
+  "LFO1 Waveform",
+  "LFO1 Rate Mod Src",
+  "LFO1 Sync Mode",
+  "LFO1 Target 1",
+  "LFO1 Via 1",
+  "LFO1 Target 2",
+  "LFO1 Via 2",
+  "LFO2 Waveform",
+  "LFO2 Rate Mod Src",
+  "LFO2 Sync Mode",
+  "LFO2 Target 1",
+  "LFO2 Via 1",
+  "LFO2 Target 2",
+  "LFO2 Via 2",
+  "Jitter 1 Target 1",
+  "Jitter 1 Target 2",
+  "Jitter 2 Target 1",
+  "Jitter 2 Target 2",
+  "NoteOnRnd 1 Target",
+  "NoteOnRnd 2 Target",
+  "Env1 Run Mode",
+  "Env1 Target 1",
+  "Env1 Via 1",
+  "Env1 Target 2",
+  "Env1 Via 2",
+  "Env1 Record Trigger",
+  "Env1 Time Mode",
+  "Env1 Data Mode",
+  "Env1 Point 0 (Start)",
+  "Env1 Point 1 (Attack)",
+  "Env1 Sustain Mode",
+  "Env1 Vari Mod Src",
+  "Env2 Run Mode",
+  "Env2 Target 1",
+  "Env2 Via 1",
+  "Env2 Target 2",
+  "Env2 Via 2",
+  "Env2 Record Enable",
+  "Env2 Record Trigger",
+  "Env2 Time Mode",
+  "Env2 Data Mode",
+  "Env2 Point 0 (Start)",
+  "Env2 Point 1 (Attack)",
+  "Env2 Point 2 (Loop)",
+  "Env2 Point 3 (Sus)",
+  "Env2 Point 4 (End)",
+  "Env2 Sustain Mode",
+  "Env2 Vari Mod Src",
+  "Select Morph Scene",
+  "Point Copy/Paste",
+  "Random Point",
+  "Random Trigger",
+  "MorphEnv Run Mode",
+  "Morph Record Enable",
+  "MorphEnv Record Trigger",
+  "MorphEnv Time Mode",
+  "MorphEnv Sustain Mode",
+  "MorphEnv Depth Mod Src",
+  "MorphEnv Time Scan",
+  "EQ Model",
+  "Delay Time Mode",
+  "Delay Base Time",
+  "CtrlA Target 1",
+  "CtrlA Mode 1",
+  "CtrlA Target 2",
+  "CtrlA Mode2",
+  "CtrlB Target 1",
+  "CtrlB Mode 1",
+  "CtrlB Target 2",
+  "CtrlB Mode2",
+  "MorphControl Pad",
+  "MorphControl Env",
+  "MorphControl Pad Mode",
+  "Env1 Ctrl",
+  "Env1 Env",
+  "Env2 Ctrl",
+  "Env2 Env",
+  "Env2 Target 2 Enable",
+  "Env1 Record Enable"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-sculpture-*: 210 parameters named \u2014 49 matched by the number shown, 1 by slider position, 12 by row order among rows of one step, 124 by coded saves, 24 by one save per row. 109 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

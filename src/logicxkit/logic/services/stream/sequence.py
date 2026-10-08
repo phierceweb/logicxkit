@@ -161,12 +161,15 @@ QESM_KIND_AT = 39
 
 
 def plan_sequence(records: list[ProjRecord], *, like: int, object_id: int,
-                  fresh_word: int = QESM_FRESH, kind_byte: int | None = None) -> SequencePlan:
+                  fresh_word: int = QESM_FRESH, kind_byte: int | None = None, reuse: bool = False) -> SequencePlan:
     """The triple and table entry for ``object_id``, in the shape of object ``like``'s,
     indexed right after it. ``fresh_word`` is what Logic puts at `+300` (382 on a track,
     360 on an aux); ``kind_byte`` overrides `+39` (5 on a fresh aux, 9 on a track). The
     `qSvE` keeps only its closing event: ``like``'s points are its own, and every automation
-    folder on hand ends in the same one."""
+    folder on hand ends in the same one. With ``reuse``, ``object_id`` is a gone object's
+    whose entry and triple are still there (parked at index 1 by Logic's convert): no record is
+    added, the entry moves to its place after ``like``'s and its triple is renumbered, as Logic
+    does when it gives the id to a new object (`stackid-c2-logic`, `stackid-s3-logic`)."""
     seqs = sequences(records)
     table_at = index_table(records)
     table = bytearray(records[table_at].raw[HEADER:])
@@ -178,6 +181,8 @@ def plan_sequence(records: list[ProjRecord], *, like: int, object_id: int,
     if ref is None:
         raise ValueError(f"object {like}'s sequence triple (slot {ref_slot}) is missing")
     index = ref_index + 1
+    if reuse:
+        return _plan_reuse(records, seqs, table_at, table, object_id, index)
     slot = free_table_slot(table, seqs)
     seq_id = free_seq_id(seqs)
 
@@ -227,6 +232,36 @@ def plan_sequence(records: list[ProjRecord], *, like: int, object_id: int,
     return SequencePlan(index=index, slot=slot, insert_after=insert_after,
                         new=[bytes(qesm), marker, qsve], table_at=table_at,
                         table=bytes(table), decremented=decremented)
+
+
+def _plan_reuse(records, seqs, table_at: int, table: bytearray, object_id: int, index: int) -> SequencePlan:
+    """The gone object's entry moved from its parked index to ``index``, the entries between
+    shifted the other way, and every shifted triple's `+242` to match."""
+    own = table_entry(table, object_id)
+    if own is None:
+        raise ValueError(f"object {object_id} has no index-table entry to take again")
+    old_index, slot, _entry = own
+    triple = triple_by_slot(seqs, slot)
+    if triple is None:
+        raise ValueError(f"object {object_id}'s sequence triple (slot {slot}) is missing")
+    if old_index < index:                        # parked low: the entries it passes move down one
+        index -= 1
+    renumbered: dict[int, int] = {}
+    for at, oid, entry_index, entry_slot in table_entries(table):
+        if oid == object_id:
+            new_index = index
+        elif old_index < entry_index <= index:
+            new_index = entry_index - 1
+        elif index <= entry_index < old_index:
+            new_index = entry_index + 1
+        else:
+            continue
+        table[at + TABLE_INDEX_AT] = new_index
+        t = triple_by_slot(seqs, entry_slot)
+        if t is not None and len(records[t.start].raw) >= HEADER + QESM_INDEX_AT + 2:
+            renumbered[t.start] = -new_index
+    return SequencePlan(index=index, slot=slot, insert_after=-1, new=[], table_at=table_at,
+                        table=bytes(table), decremented=renumbered)
 
 
 def link_errors(records: list[ProjRecord]) -> list[str]:

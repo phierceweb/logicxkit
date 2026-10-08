@@ -1,0 +1,63 @@
+{
+ "type": 312,
+ "variant": 2997,
+ "name": "Studio Piano",
+ "floats": 5020,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 390,
+   "name": "Main Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -60.0,
+   "max": 6.0
+  },
+  {
+   "index": 521,
+   "name": "Pedal Noise",
+   "unit": "%",
+   "default": 60.0,
+   "evidence": "code",
+   "shown": "60 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 524,
+   "name": "Key Noise",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 525,
+   "name": "Release Samples",
+   "unit": "%",
+   "default": 60.0,
+   "evidence": "code",
+   "shown": "60 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 526,
+   "name": "Sympathetic Resonances",
+   "unit": "%",
+   "default": 60.0,
+   "evidence": "code",
+   "shown": "60 %",
+   "min": 0.0,
+   "max": 100.0
+  }
+ ],
+ "unmapped": [
+  "Instrument"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-studio-piano-*: 5 parameters named \u2014 2 matched by the number shown, 3 by coded saves. 1 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

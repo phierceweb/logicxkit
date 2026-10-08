@@ -1,0 +1,193 @@
+{
+ "type": 300,
+ "variant": 2418,
+ "name": "Arpeggiator",
+ "floats": 65,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Silent Capture",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 8,
+   "name": "Note Order Variation",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "min": 1.0,
+   "max": 4.0
+  },
+  {
+   "index": 10,
+   "name": "Octave Range",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "min": 1.0,
+   "max": 4.0
+  },
+  {
+   "index": 12,
+   "name": "Grid Control",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "Note Length",
+   "unit": "%",
+   "default": 90.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 150.0
+  },
+  {
+   "index": 17,
+   "name": "Note Length Random",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 19,
+   "name": "Swing",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value",
+   "min": 50.0,
+   "max": 99.0
+  },
+  {
+   "index": 20,
+   "name": "Velocity Base",
+   "unit": "",
+   "default": 80.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 127.0
+  },
+  {
+   "index": 21,
+   "name": "Velocity Range",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Velocity Random",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 38,
+   "name": "Keyboard Split",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 39,
+   "name": "Arpeggio Range Start",
+   "unit": "",
+   "default": 41.0,
+   "evidence": "value",
+   "min": 21.0,
+   "max": 108.0
+  },
+  {
+   "index": 40,
+   "name": "Arpeggio Range End",
+   "unit": "",
+   "default": 108.0,
+   "evidence": "value",
+   "min": 21.0,
+   "max": 108.0
+  },
+  {
+   "index": 41,
+   "name": "Remote Range Start",
+   "unit": "",
+   "default": 36.0,
+   "evidence": "value",
+   "min": 21.0,
+   "max": 108.0
+  },
+  {
+   "index": 42,
+   "name": "Remote Range End",
+   "unit": "",
+   "default": 40.0,
+   "evidence": "value",
+   "min": 21.0,
+   "max": 108.0
+  }
+ ],
+ "unmapped": [
+  "Playback",
+  "Latch",
+  "Latch Mode",
+  "Rate",
+  "Input Snap",
+  "Note Order",
+  "Lock As Played Order",
+  "Octaving Mode",
+  "Grid Capture",
+  "Grid Length",
+  "Cycle Length",
+  "Velocity Alteration",
+  "Root Note",
+  "Scale Type",
+  "Add Tie",
+  "Add Rest",
+  "Add Chord Step",
+  "Delete Last",
+  "Clear",
+  "Pattern Save",
+  "Patterns",
+  "MIDI Controller A",
+  "Controller Destination A",
+  "MIDI Controller B",
+  "Controller Destination B",
+  "MIDI Controller C",
+  "Controller Destination C",
+  "MIDI Controller D",
+  "Controller Destination D",
+  "Double Rate",
+  "Halve Rate",
+  "Next Pattern",
+  "Previous Pattern"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-arpeggiator-*: 15 parameters named \u2014 8 matched by the number shown, 1 by row order among rows of one step, 6 by coded saves. 33 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

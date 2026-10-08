@@ -29,6 +29,14 @@ def _main_block(tree: ast.Module) -> ast.If | None:
     return None
 
 
+def _needs_on_functions(tree: ast.Module) -> list[str]:
+    """Top-level functions decorated with a ``needs(...)`` call (`_goldens.needs`, `_data.needs`)."""
+    def is_needs(d):
+        f = d.func if isinstance(d, ast.Call) else None
+        return (isinstance(f, ast.Name) and f.id == "needs") or (isinstance(f, ast.Attribute) and f.attr == "needs")
+    return [n.name for n in tree.body if isinstance(n, ast.FunctionDef) and any(map(is_needs, n.decorator_list))]
+
+
 class MainBlockTest(unittest.TestCase):
     def test_no_test_is_defined_after_the_main_block(self):
         late = {}
@@ -58,6 +66,12 @@ class MainBlockTest(unittest.TestCase):
                 wrong.append(f"{path.relative_to(TESTS)}: {len(bare)} bare function(s)")
         self.assertEqual(wrong, [])
 
+    def test_a_skip_unless_present_decorator_sits_on_a_class(self):
+        """`needs(...)` on a helper function guards nothing: the class below it runs, and errors,
+        on a machine without the files."""
+        wrong = [f"{path.relative_to(TESTS)}: {name}" for path in _files() for name in _needs_on_functions(_tree(path))]
+        self.assertEqual(wrong, [])
+
     def test_the_gate_reads_every_test_file_and_finds_the_shapes_it_screens_for(self):
         """A gate that silently matched nothing would pass for the wrong reason."""
         files = _files()
@@ -81,6 +95,12 @@ class DetectorTest(unittest.TestCase):
         self.assertEqual(self._late(block + klass), ["LateTest"])
         self.assertEqual(self._late(klass + block), [])
         self.assertEqual(self._late(klass), [])
+
+    def test_needs_on_a_helper_is_caught_and_on_a_class_is_not(self):
+        helper = "@_goldens.needs('k')\ndef _channel(d):\n    return d\n"
+        klass = "@needs('logic')\nclass T(unittest.TestCase):\n    pass\n"
+        self.assertEqual(_needs_on_functions(ast.parse(helper + klass)), ["_channel"])
+        self.assertEqual(_needs_on_functions(ast.parse(klass)), [])
 
 
 if __name__ == "__main__":

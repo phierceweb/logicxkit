@@ -175,7 +175,7 @@ def register(sub) -> None:
                     help="a track to put inside (repeatable): all at the top level, or all direct "
                          "members of one stack")
     sc.add_argument("--colour", type=int, metavar="INDEX",
-                    help="the header's colour (default: 16 on a folder stack, the first member's on a summing one)")
+                    help="the header's colour (default: 20 on a folder stack, as Logic's own, the first member's on a summing one)")
     sc.add_argument("--summing", action="store_true",
                     help="a summing stack: an aux fed from a free bus, every member's output sent to it")
     sc.set_defaults(func=cmd_stack_create)

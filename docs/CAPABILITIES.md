@@ -40,18 +40,20 @@ you started from is never touched. Open the copy in Logic to use it.
   agent such as Claude Code can run them for you from a plain description of the change.
 - **Third-party plug-ins come from a project that already has them.** To put a third-party
   plug-in on a channel, logicxkit copies it from a project where it is loaded: run
-  `logicxkit logic donors` on such a project once. Logic's own plug-ins come with logicxkit.
+  `logicxkit logic donors` on such a project once. Logic's own effects come with logicxkit; its
+  instruments are copied the same way, from a project that has the instrument loaded.
 
 ## Look inside a project
 
 These only read. Point them at any project.
 
-- **What's in it.** Every track and channel, the plug-ins on each and their preset names
-  (`project`); `manifest` is the short form.
+- **What's in it.** Every track and channel, the plug-ins on each and their preset names, and
+  the settings of Logic's own plug-ins by name where measured — most of its effects, instruments
+  and MIDI effects (`project`); `manifest` is the short form.
 - **What changed.** Compare two projects, or a project against your saved channel strips to find
   a channel that no longer matches the strip it names (`diff`).
-- **Plug-ins.** Every plug-in in the project, and which third-party ones are not installed on
-  this Mac (`plugins`). A compressor's, gate's, EQ's or multiband's settings in plain units —
+- **Plug-ins.** Every plug-in in the project — Logic's own instruments, MIDI effects and
+  Pedalboard's pedals by name too — and which third-party ones are not installed on this Mac (`plugins`). A compressor's, gate's, EQ's or multiband's settings in plain units —
   threshold, ratio, EQ bands (`settings`) — for Logic's Compressor, Noise Gate, Channel EQ and
   Multipressor, FabFilter Pro-C 2, Pro-Q 4 and Pro-MB, sonible smart:comp 2 and smart:gate, and
   iZotope Neutron 5.
@@ -105,6 +107,11 @@ routed into the other, is still written, with a warning that names the loop.
 - Put a plug-in in any insert slot, take one out, or replace one, with its settings dialled in on
   the way (`add-plugin`, `remove-plugin`, `replace-plugin`). Automation and Smart Controls stay
   with the plug-ins they belong to.
+- Put one of Logic's own instruments on a software instrument track, or swap the one that is
+  there (`add-plugin`, `replace-plugin --at 1`): any of the 27 in the instrument slot's menu, from
+  ES2 and Alchemy to Sampler and Drum Kit Designer. The track becomes stereo or mono as the
+  instrument is. Its Smart Controls are not set up for most of them the way Logic sets them up
+  when you load the instrument yourself. MIDI effects are listed but not added.
 - Change the settings of a plug-in already on a channel by name — threshold, ratio, an EQ band
   (`settings --set`) — on Logic's Compressor, Noise Gate, Channel EQ and Multipressor and on
   FabFilter Pro-C 2, Pro-Q 4 and Pro-MB.

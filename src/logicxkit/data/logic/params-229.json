@@ -12,7 +12,9 @@
    "name": "Depth",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 3,
@@ -32,12 +34,18 @@
    "index": 5,
    "name": "Stereo Phase",
    "unit": "",
-   "default": null,
-   "evidence": "order"
+   "default": -10.0,
+   "evidence": "row",
+   "shown": "Free",
+   "named": {
+    "Free": -10.0
+   },
+   "min": -10.0,
+   "max": 360.0
   }
  ],
  "unmapped": [
   "Type"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 3 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-scanner-vibrato-*: 4 parameters named \u2014 3 matched by the number shown, 1 by one save per row. 1 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

@@ -1,0 +1,96 @@
+{
+ "type": 312,
+ "variant": 2990,
+ "name": "Vintage Mellotron",
+ "floats": 5020,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 22,
+   "name": "Layer Blend",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 25,
+   "name": "Tape Speed",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": -6.0,
+   "max": 6.0
+  },
+  {
+   "index": 26,
+   "name": "Tone",
+   "unit": "",
+   "default": 44.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 27,
+   "name": "Volume",
+   "unit": "dB",
+   "default": -12.0,
+   "evidence": "value",
+   "min": -60.0,
+   "max": 0.0
+  },
+  {
+   "index": 28,
+   "name": "Attack",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 29,
+   "name": "Release",
+   "unit": "",
+   "default": 20.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 127.0
+  },
+  {
+   "index": 30,
+   "name": "Pitch Bend Range",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 12.0
+  },
+  {
+   "index": 44,
+   "name": "Fixed Velocity",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Layer 1",
+  "Layer 2",
+  "Transpose Layer 1",
+  "Transpose Layer 2"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-vintage-mellotron-*: 8 parameters named \u2014 4 matched by the number shown, 4 by coded saves. 4 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

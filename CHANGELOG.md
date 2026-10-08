@@ -3,6 +3,118 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.11.0 — 2026-10-08
+
+### Added
+
+- `plugins`, `project` and `manifest` name every one of Logic's own plug-ins from the slot itself:
+  its 27 instruments, including the ones with no float block (Sampler, Quick Sampler, Drum Kit
+  Designer, Alchemy, Sample Alchemy, the Studio instruments, External Instrument), ChromaGlow,
+  EVOC 20 TrackOscillator, Auto Sampler, I/O and Mastering Assistant.
+- `plugins` lists a channel's MIDI effects, marked `MIDI FX`; `--json` carries `midi`.
+- `chains --verify` opens a written copy in Logic Pro, reads each chained channel's plug-ins in
+  their Controls views and compares every row with what the tables decode from the file; one
+  line per slot, matched or the rows that differ. macOS, from a checkout; it saves nothing.
+- Pedalboard's 35 stompboxes are named as pedals when one sits alone in a slot (Auto-Funk, Blue
+  Echo, …), by `plugins`, `project`, `manifest` and `donors`, which files each as a donor of its own.
+- `donors` harvests Logic's instruments, and `add-plugin --at 1` and `replace-plugin --at 1` put
+  one on a software instrument channel. The instrument keeps the width it was saved at: the
+  channel's input follows it, and its width too when no effect comes after.
+- `transplant` moves a channel's instrument with its chain and gives the destination the source
+  channel's width.
+- Parameter tables for 33 more of Logic's own plug-ins: 20 instruments (ES1, ES2, ES E, ES M,
+  ES P, EFM1, EVOC 20 PolySynth, Retro Synth, Sculpture, Ultrabeat, Drum Synth, Klopfgeist,
+  Vintage B3, Vintage Clav, Vintage Electric Piano, Vintage Mellotron and the four Studio
+  instruments), eight MIDI
+  effects (every one but Scripter), ChromaGlow, EVOC 20 TrackOscillator, Alchemy, Sample
+  Alchemy and Mastering Assistant. `project` reads them; `add-plugin --set` and
+  `replace-plugin --set` dial them. A
+  table can mark a word an integer (Vintage B3's drawbars), name a word past the float block by
+  its payload offset (Vintage B3's lower manual, pedals and effects), and read a text state by
+  key (Alchemy, Sample Alchemy — read-only; `--set` refuses them).
+
+### Changed
+
+- `project` and chain reports name one of Logic's own plug-ins by its slot, not by a plug-in name
+  found in its preset string.
+- `stack-create` makes a folder header as Logic does: it takes the members' parent pointer (the
+  members keep theirs), Logic's colour for a new folder, and the object id a converted folder
+  left behind when it sits where Logic's convert parks it — re-using its registry entry,
+  index-table entry and sequence triple and dropping its parked mixer-order row — else the next
+  id past the highest.
+- `project` and `manifest` list Klopfgeist chosen on an instrument track; only the metronome
+  channel's is hidden.
+- The writers' validation checks an instrument channel's input byte against its instrument's
+  width and a channel's MIDI effects for duplicate keys and indices; a channel with more than
+  two MIDI effects and no archive to read its key base from refuses every slot write as
+  unmeasured.
+- `width` on an instrument channel leaves its input byte and its instrument alone.
+- `add-plugin` refuses a MIDI effect, and `transplant` refuses an instrument onto a channel that
+  is not an instrument's (`--force` writes it).
+- `--set` refuses a parameter whose word is named by row order alone; `project` marks such a
+  value `*`.
+- `add-track` puts a new audio track where Logic's New Audio Track does: on the lowest free strip
+  a track has used, mono or stereo, made stereo for a stereo track, else on a fresh strip at the
+  first stub no track has used, so the unused stubs and the Preview strip stay after it. It no
+  longer binds an unused stub, and it reports the strip it wrote.
+- Ultrabeat's seven rows a later coded series had re-placed are confirmed by one save each; six of
+  them move a second word far down the block, listed as linked, so `--set` refuses them as unmeasured.
+- Chorus's and Modulation Delay's D-Mode read and write as Off and On (a checkbox over a word of 0
+  and 100); Scanner Vibrato's Stereo Phase reads Free at its low end, is written by that name, and
+  refuses a value past 360, its slider's ends on a stereo strip.
+
+### Fixed
+
+- Two rows showing one and the same step are told apart by a coded save, not by their order.
+  Vintage Graphic EQ's bands are words 2 to 10 and Volume word 16; Vintage Console EQ's Mid
+  Gain, Low Gain and Volume are words 2, 4 and 15; Channel EQ's EQ Scale Shift is word 49;
+  Multipressor's Band 1 Solo is word 57. Rows no word moves alone with are not named: Vintage
+  Graphic EQ's 16.0K, Vintage Console EQ's High Gain, Channel EQ's Oversampling,
+  Multipressor's Band 2 Solo, Tru-Tape Delay's Time.
+- ES2, EVOC 20 PolySynth and EVOC 20 TrackOscillator, whose blocks do not follow their rows,
+  carry only rows a value, coded or one-row save names; a one-row save that moves one word alone
+  names it (ES2's Macro Tuning is word 2, Sculpture's Env2 Target 1 Enable 272), a word two rows
+  move alone stays unnamed. ES M's Filter Decay rows are in ms and Mastering Assistant's High
+  Freq in Hz, as their words are.
+- `--set` writes Vintage B3's lower-manual drawbars with the float Logic keeps beside each
+  (`mirror`), refuses a row that moves other words too (`linked`) and refuses NaN and infinity.
+- `add-plugin` appends after an effect Logic saved two keys under the reference (an instrument
+  channel with one effect) without writing that effect twice.
+- `chains --verify` pairs each slot with Logic's strip by the short name the slot header
+  carries (`AdLimit`, `Multipr`), reports a slot Logic shows that the file's slots do not pair
+  and a named track with no native slot, resolves a track header through the arrange row bound
+  to it (a renamed track, a header bound to another channel), opens a scratch copy of the bundle
+  so Logic's autosave never touches it, and refuses up front when any of the driver's four tools
+  is missing.
+- `project` and `manifest` find the metronome's channel through the Environment's Click object
+  and the project's track count, so a save whose mixer-order list is the guess without one still
+  hides the metronome's Klopfgeist alone.
+- `stack-create` takes the lowest object id a converted or deleted track left behind, wherever
+  Logic parked its entries, as Logic's own create does; `add-track` takes a deleted audio or
+  instrument track's id for a new audio track, as Logic's New Audio Track does.
+- `--set` writes an ES2 MM Amount, whose move in Logic also moves the next word: Logic derives it
+  on load. A linked row of any other shape is still refused.
+- A second coded series over the rows ES2, the two EVOC 20s and Sculpture could not place, or had
+  placed by order alone, names or confirms 112 more rows; coded series over every table's rows
+  placed by order alone confirm or move all but 25 of them; one-row saves name 12 rows no coded
+  series could and the three an effect shows on a stereo strip alone. A coded row is named only
+  where Logic's Controls view showed the row's own move, and never at a word Logic derives from
+  another row's. 1781 parameters named over every table.
+- The instrument, MIDI-effect and re-measured effect tables carry each slider's measured ends
+  as the parameter's range (877 parameters); `--set` refuses a number outside them.
+- A row an instrument's Controls view repeats with no section header between the copies is
+  named by its block (Ultrabeat's `Env2 Attack X1`, `Lfo1 Mode`) or numbered (`Filter Decay (2)`).
+- The Vintage Graphic EQ's bands read and write through the measured curve of their display
+  (word 4.0 is 2.7 dB, not 2.0): `curve` points on a table parameter, from Logic's saves of
+  one band at twelve slider positions.
+- A parameter name keeps its sharp or flat: "Quantize C" and "Quantize C♯" are two parameters.
+- `--set` writes every copy of a plug-in's state a save carries, not the first alone.
+- A placement whose word disagrees with the number Logic showed at its default is not named.
+- A project with a MIDI effect, or with a stereo instrument on a channel whose chain is mono, is
+  no longer refused by the writers' validation.
+- `width` on an instrument channel keeps the channel's own bits beside the width.
+- `project` no longer lists a MIDI effect as an insert on a project whose slots start at key 2.
+
 ## 0.10.0 — 2026-10-04
 
 ### Added

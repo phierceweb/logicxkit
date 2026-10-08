@@ -1,0 +1,262 @@
+{
+ "type": 189,
+ "variant": 903,
+ "name": "ES1",
+ "floats": 40,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Tune",
+   "unit": "ct",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
+  },
+  {
+   "index": 2,
+   "name": "Glide",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 5000.0
+  },
+  {
+   "index": 3,
+   "name": "Osc Mix",
+   "unit": "%",
+   "default": 47.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 4,
+   "name": "Drive",
+   "unit": "%",
+   "default": 34.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 5,
+   "name": "Mod Env Time",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 6,
+   "name": "Mod Env Vel. Min",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 7,
+   "name": "Mod Env Vel. Max",
+   "unit": "%",
+   "default": 15.079,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 8,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 37.007,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 9,
+   "name": "Release",
+   "unit": "ms",
+   "default": 4.04,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 10,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 0.797,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 11,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 37.795,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 12,
+   "name": "Decay",
+   "unit": "ms",
+   "default": 645.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 13,
+   "name": "Sustain",
+   "unit": "%",
+   "default": 37.7,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 15,
+   "name": "ADSR Vel. Min",
+   "unit": "%",
+   "default": 3.174,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 16,
+   "name": "ADSR Vel. Max",
+   "unit": "%",
+   "default": 50.793,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 17,
+   "name": "Waveform",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "slider",
+   "shown": "Sawtooth"
+  },
+  {
+   "index": 21,
+   "name": "Key Follow",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 23,
+   "name": "Amp Vel. Min",
+   "unit": "%",
+   "default": 22.047,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 24,
+   "name": "Amp Vel. Max",
+   "unit": "%",
+   "default": 61.417,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 28,
+   "name": "LFO Wheel Min",
+   "unit": "%",
+   "default": 2.362,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 29,
+   "name": "LFO Wheel Max",
+   "unit": "%",
+   "default": 25.196,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 30,
+   "name": "Analog",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 31,
+   "name": "PB Range Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
+  },
+  {
+   "index": 32,
+   "name": "Out Level",
+   "unit": "dB",
+   "default": -3.0,
+   "evidence": "value",
+   "min": -40.0,
+   "max": 10.0
+  },
+  {
+   "index": 35,
+   "name": "Rate",
+   "unit": "Hz",
+   "default": 7.01,
+   "evidence": "value"
+  },
+  {
+   "index": 36,
+   "name": "PB Range Down",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 38,
+   "name": "Filter Boost",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Sub Osc Wave",
+  "Octave",
+  "Filter Mode",
+  "Amp Mode",
+  "Mod Env Destination",
+  "LFO Destination",
+  "LFO Wave",
+  "Voices",
+  "Chorus",
+  "MIDI Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-es1-*: 27 parameters named \u2014 26 matched by the number shown, 1 by slider position. 10 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

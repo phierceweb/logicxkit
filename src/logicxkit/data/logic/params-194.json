@@ -12,14 +12,18 @@
    "name": "Lookahead",
    "unit": "ms",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 3,
    "name": "Band 4 Xover Frequency 3/4",
    "unit": "Hz",
    "default": 7500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 4,
@@ -47,42 +51,54 @@
    "name": "Band 4 Exp. Ratio",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10.1
   },
   {
    "index": 8,
    "name": "Band 4 Comp. Threshold",
    "unit": "dB",
    "default": -12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 9,
    "name": "Band 4 Comp. Ratio",
    "unit": "",
    "default": 2.022,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 10,
    "name": "Band 4 Make Up",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 11,
    "name": "Band 4 Attack",
    "unit": "ms",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 12,
    "name": "Band 4 Release",
    "unit": "ms",
    "default": 49.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 13,
@@ -100,7 +116,9 @@
    "name": "Band 3 Xover Frequency 2/3",
    "unit": "Hz",
    "default": 1100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 15,
@@ -128,42 +146,54 @@
    "name": "Band 3 Exp. Ratio",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10.1
   },
   {
    "index": 19,
    "name": "Band 3 Comp. Threshold",
    "unit": "dB",
    "default": -15.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 20,
    "name": "Band 3 Comp. Ratio",
    "unit": "",
    "default": 2.022,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 21,
    "name": "Band 3 Make Up",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 22,
    "name": "Band 3 Attack",
    "unit": "ms",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 23,
    "name": "Band 3 Release",
    "unit": "ms",
    "default": 49.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 24,
@@ -181,7 +211,9 @@
    "name": "Band 2 Xover Frequency 1/2",
    "unit": "Hz",
    "default": 160.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 26,
@@ -209,42 +241,54 @@
    "name": "Band 2 Exp. Ratio",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10.1
   },
   {
    "index": 30,
    "name": "Band 2 Comp. Threshold",
    "unit": "dB",
    "default": -15.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 31,
    "name": "Band 2 Comp. Ratio",
    "unit": "",
    "default": 2.022,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 32,
    "name": "Band 2 Make Up",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 33,
    "name": "Band 2 Attack",
    "unit": "ms",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 34,
    "name": "Band 2 Release",
    "unit": "ms",
    "default": 49.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 35,
@@ -283,42 +327,54 @@
    "name": "Band 1 Exp. Ratio",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10.1
   },
   {
    "index": 41,
    "name": "Band 1 Comp. Threshold",
    "unit": "dB",
    "default": -18.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 42,
    "name": "Band 1 Comp. Ratio",
    "unit": "",
    "default": 2.511,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 43,
    "name": "Band 1 Make Up",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 44,
    "name": "Band 1 Attack",
    "unit": "ms",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 45,
    "name": "Band 1 Release",
    "unit": "ms",
    "default": 61.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 46,
@@ -336,7 +392,9 @@
    "name": "Master Gain",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 50,
@@ -417,25 +475,10 @@
   },
   {
    "index": 57,
-   "name": "Band 2 Solo",
-   "unit": "",
-   "default": 0.0,
-   "evidence": "value",
-   "choices": [
-    "Off",
-    "On"
-   ]
-  },
-  {
-   "index": 49,
    "name": "Band 1 Solo",
    "unit": "",
    "default": 0.0,
-   "evidence": "order",
-   "choices": [
-    "Off",
-    "On"
-   ]
+   "evidence": "code"
   }
  ],
  "unmapped": [
@@ -443,7 +486,8 @@
   "Band 1 Gain Reduction",
   "Band 2 Gain Reduction",
   "Band 3 Gain Reduction",
-  "Band 4 Gain Reduction"
+  "Band 4 Gain Reduction",
+  "Band 2 Solo"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 53 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 1 by order (2026-09-22). Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-multipressor-*: 53 parameters named \u2014 52 matched by the number shown, 1 by coded saves. 6 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

@@ -1,0 +1,202 @@
+{
+ "type": 309,
+ "variant": 2441,
+ "name": "Modulator",
+ "floats": 29,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "LFO On/Off",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 2,
+   "name": "ENV On/Off",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 3,
+   "name": "LFO Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "LFO Symmetry",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 6,
+   "name": "LFO Rate",
+   "unit": "",
+   "default": 0.25,
+   "evidence": "value"
+  },
+  {
+   "index": 7,
+   "name": "ENV to LFO Rate",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 8,
+   "name": "ENV to LFO Amp",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 9,
+   "name": "Steps per LFO Cycle",
+   "unit": "",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "\u221e"
+  },
+  {
+   "index": 13,
+   "name": "ENV Delay",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "row",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 14,
+   "name": "ENV Attack",
+   "unit": "ms",
+   "default": 1000.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 15,
+   "name": "ENV Hold",
+   "unit": "ms",
+   "default": 1000.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 16,
+   "name": "ENV Release",
+   "unit": "ms",
+   "default": 1000.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 17,
+   "name": "Steps per ENV pass",
+   "unit": "",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 18,
+   "name": "LFO Output Level",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 20,
+   "name": "ENV Output Level",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "code",
+   "scale": 100.0
+  },
+  {
+   "index": 24,
+   "name": "LFO Output Offset",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 25,
+   "name": "ENV Output Offset",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 27,
+   "name": "ENV Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 28,
+   "name": "LFO Trigger Phase",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  }
+ ],
+ "unmapped": [
+  "LFO Shape",
+  "LFO Trigger",
+  "ENV Trigger",
+  "LFO To",
+  "ENV To",
+  "MIDI Channel"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-modulator-*: 19 parameters named \u2014 2 matched by the number shown, 16 by coded saves, 1 by one save per row. 2 carry a scale: the word moves by a multiple of what Logic shows. 6 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

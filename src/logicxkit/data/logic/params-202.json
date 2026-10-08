@@ -1,0 +1,221 @@
+{
+ "type": 202,
+ "variant": 1049,
+ "name": "ES P",
+ "floats": 27,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Triangle",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 3,
+   "name": "Sawtooth",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 4,
+   "name": "Square",
+   "unit": "%",
+   "default": 28.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 5,
+   "name": "-1 Octave",
+   "unit": "%",
+   "default": 32.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 6,
+   "name": "-2 Octaves",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "100 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 7,
+   "name": "Noise",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 8,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 22.047,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 9,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 33.07,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 11,
+   "name": "Filter Env Depth",
+   "unit": "%",
+   "default": 76.0,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 12,
+   "name": "Filter Vel",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "100 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 13,
+   "name": "Volume Vel",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 16,
+   "name": "Decay",
+   "unit": "ms",
+   "default": 568.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 17,
+   "name": "Sustain",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 18,
+   "name": "Release",
+   "unit": "ms",
+   "default": 40.299,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 19,
+   "name": "Overdrive",
+   "unit": "%",
+   "default": 36.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 20,
+   "name": "Chorus",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 21,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 0.0
+  },
+  {
+   "index": 22,
+   "name": "LFO Speed",
+   "unit": "Hz",
+   "default": 0.02,
+   "evidence": "value",
+   "min": 0.02,
+   "max": 20.0
+  },
+  {
+   "index": 23,
+   "name": "Vibrato/Wah",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
+  },
+  {
+   "index": 24,
+   "name": "Bend Up",
+   "unit": "",
+   "default": 12.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
+  },
+  {
+   "index": 25,
+   "name": "Bend Down",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 26,
+   "name": "Tune",
+   "unit": "ct",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
+  }
+ ],
+ "unmapped": [
+  "Octave",
+  "Keytrack",
+  "VCA Mode",
+  "Attack"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-es-p-*: 22 parameters named \u2014 15 matched by the number shown, 7 by coded saves. 4 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import plistlib
 import re
+import struct
 from pathlib import Path
 
 from logicxkit.logicx import channel_blocks, channel_label, first_alternative
@@ -15,7 +16,7 @@ from ..mixer.eq import decode_eq
 from ..mixer.slot_width import plugin_variant
 from ..stream.stream import HEADER, project_records
 from ..mixer.slots import is_plugin_slot
-from ..mixer.plugin_names import NATIVE_INSTRUMENTS, native_name, plugin_name
+from ..mixer.plugin_names import NATIVE_INSTRUMENTS, native_name, own_name, plugin_name
 
 
 # channel-object version word: 06 = pre-2026 saves, 07 = Logic saves since 2026-06
@@ -30,8 +31,11 @@ _GENERIC_PRESETS = {"Untitled", "#default", "Default Setting"}
 
 
 def _slot_name(payload: bytes) -> str | None:
-    """The name string in the slot's window, else the native block's type id as `plugins`
-    names it (a native slot need not carry a name string at all)."""
+    """Logic's own plug-in by its slot header, as `plugins` names it; else the name string in
+    the slot's window, else a headerless native block's type id."""
+    own = own_name(payload)
+    if own is not None:
+        return own
     name = plugin_name(payload[:_SLOT_WINDOW])
     if name is not None:
         return name
@@ -66,13 +70,35 @@ def strip_chain(data: bytes) -> list[tuple[str, str | None]]:
     return channel_chain(data)
 
 
-def channel_chain(seg: bytes) -> list[tuple[str, str | None]]:
+METRONOME_OBJECT = "Click"
+
+
+def metronome_channel(data: bytes, track_count: int | None = None) -> str | None:
+    """The label of the channel the Environment's own Click object is bound to — the metronome's
+    Klopfgeist sits there (`Inst 2` in Logic's new projects, object 76 in every corpus save). That
+    object is the `ivnE` named Click that no arrange row carries; a track the user named Click
+    has a row. ``track_count`` (MetaData's NumberOfTracks) tells the arrange rows from the
+    mixer-order list, which carries the Click too; without it the rows are guessed."""
+    from ..arrange.environment import channel_objects
+    from ..arrange.stacks import read_tracks
+    from ..mixer.binding import bound_channels, channels
+    rows = {r["object_id"] for r in read_tracks(data, track_count)}
+    owners, strips = bound_channels(data), channels(data)
+    for obj in channel_objects(data).values():
+        if obj.name == METRONOME_OBJECT and obj.object_id not in rows and owners.get(obj.object_id) in strips:
+            return strips[owners[obj.object_id]].label
+    return None
+
+
+def channel_chain(seg: bytes, metronome: bool = False) -> list[tuple[str, str | None]]:
     """Ordered (plugin, preset) inserts: the plugin-slot records of a segment that walks as records
-    (a plugin name in a property record is not an insert), else the tag-window scan."""
+    (a plugin name in a property record is not an insert), else the tag-window scan. On the
+    metronome's channel its Klopfgeist is no insert of the user's and is left out."""
     records = project_records(seg, start=0)
-    if records and sum(len(r.raw) for r in records) == len(seg):
-        return _chain_from_records(records)
-    return _chain_from_windows(seg)
+    chain = _chain_from_records(records) if records and sum(len(r.raw) for r in records) == len(seg) else _chain_from_windows(seg)
+    if metronome:
+        chain = [(name, preset) for name, preset in chain if name != native_name(158)]
+    return chain
 
 
 def _chain_from_records(records) -> list[tuple[str, str | None]]:
@@ -106,12 +132,13 @@ def _chain_from_windows(seg: bytes) -> list[tuple[str, str | None]]:
     return chain
 
 
-def channel_natives(seg: bytes) -> list[tuple[str, dict]]:
+def channel_natives(seg: bytes, tables: dict | None = None) -> list[tuple[str, dict]]:
     """Decoded native GAMETSPP params in a channel: Channel EQ and Compressor by their own
-    decoders, any other plug-in by its measured table (`plugin_params`)."""
-    from ..mixer.plugin_params import decode, load_tables, table_for
+    decoders, any other plug-in by its measured table (`plugin_params`), words past the block
+    included."""
+    from ..mixer.plugin_params import decode_payload, load_tables, table_for
     out: list[tuple[str, dict]] = []
-    tables = load_tables()
+    tables = load_tables() if tables is None else tables
     last: tuple | None = None                           # (record start, type, count) of the block before
     for idx, type_id, n in find_blocks(seg):
         record = seg.rfind(b"UCuA", 0, idx)
@@ -127,7 +154,9 @@ def channel_natives(seg: bytes) -> list[tuple[str, dict]]:
             start = seg.rfind(b"UCuA", 0, idx)             # the block's own slot record, for its variant
             table = table_for(tables, type_id, plugin_variant(seg[start + HEADER:idx]) if start >= 0 else None)
             if table is not None:
-                out.append((table.name, decode(table, read_block_floats(seg, idx, n))))
+                size = struct.unpack_from("<I", seg, start + 28)[0] if start >= 0 else len(seg) - idx
+                payload = seg[start + HEADER:start + HEADER + size] if start >= 0 else seg[idx - 12:]
+                out.append((table.name, decode_payload(table, payload)))
     return out
 
 
@@ -142,14 +171,18 @@ def track_names(data: bytes) -> list[tuple[str, str]]:
     return out
 
 
-def analyze(project_data: bytes) -> dict:
-    """Parse raw ``ProjectData`` bytes into channels + track names."""
+def analyze(project_data: bytes, track_count: int | None = None) -> dict:
+    """Parse raw ``ProjectData`` bytes into channels + track names; ``track_count`` is
+    MetaData's NumberOfTracks when the caller has the bundle."""
+    from ..mixer.plugin_params import load_tables
     channels = []
+    click = metronome_channel(project_data, track_count)
+    tables = load_tables()
     for a, b in channel_blocks(project_data):
         seg = project_data[a:b]
         if b - a < 40:
             continue
-        chain = channel_chain(seg)
+        chain = channel_chain(seg, metronome=channel_label(seg) == click)
         refs = channel_cst_refs(seg)
         # a channel earns a row by embedding a chain OR referencing a saved strip —
         # clean-save templates (e.g. the Recording template) carry refs with no embedded state
@@ -158,7 +191,7 @@ def analyze(project_data: bytes) -> dict:
         entry = {"label": channel_label(seg), "chain": chain}
         if refs:
             entry["cst"] = refs
-        natives = channel_natives(seg)
+        natives = channel_natives(seg, tables)
         if natives:
             entry["native"] = natives
         channels.append(entry)
@@ -201,7 +234,8 @@ def read_project(logicx: Path) -> dict:
     logicx = Path(logicx)
     alt = first_alternative(logicx)
     data = (logicx / "Alternatives" / alt / "ProjectData").read_bytes()
-    report = analyze(data)
+    metadata = project_metadata(logicx, alt)
+    report = analyze(data, metadata.get("tracks"))
     report["name"] = logicx.stem
-    report["metadata"] = project_metadata(logicx, alt)
+    report["metadata"] = metadata
     return report

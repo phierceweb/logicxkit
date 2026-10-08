@@ -8,74 +8,571 @@
  ],
  "params": [
   {
-   "index": 16,
-   "name": "16.0K",
-   "unit": "dB",
-   "default": 0.0,
-   "evidence": "value"
-  },
-  {
-   "index": 1,
+   "index": 2,
    "name": "8.0K",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
-  },
-  {
-   "index": 2,
-   "name": "4.0K",
-   "unit": "dB",
-   "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 3,
-   "name": "2.0K",
+   "name": "4.0K",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 4,
-   "name": "1.0K",
+   "name": "2.0K",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 5,
-   "name": "500",
+   "name": "1.0K",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 6,
-   "name": "250",
+   "name": "500",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 7,
-   "name": "125",
+   "name": "250",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 8,
-   "name": "63",
+   "name": "125",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 9,
+   "name": "63",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
+  },
+  {
+   "index": 10,
    "name": "31",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "curve": [
+    [
+     -12.0,
+     -12.0
+    ],
+    [
+     -10.0,
+     -9.3
+    ],
+    [
+     -8.0,
+     -6.3
+    ],
+    [
+     -6.0,
+     -3.0
+    ],
+    [
+     -4.0,
+     -2.0
+    ],
+    [
+     -2.0,
+     -1.0
+    ],
+    [
+     0.0,
+     0.0
+    ],
+    [
+     2.0,
+     1.3
+    ],
+    [
+     4.0,
+     2.7
+    ],
+    [
+     6.0,
+     4.0
+    ],
+    [
+     8.0,
+     8.0
+    ],
+    [
+     10.0,
+     10.7
+    ],
+    [
+     12.0,
+     12.0
+    ]
+   ],
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 12,
@@ -89,7 +586,9 @@
    "name": "Drive",
    "unit": "",
    "default": 5.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 11.0
   },
   {
    "index": 15,
@@ -103,16 +602,19 @@
    ]
   },
   {
-   "index": 10,
+   "index": 16,
    "name": "Volume",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "min": -24.0,
+   "max": 24.0
   }
  ],
  "unmapped": [
+  "16.0K",
   "Phase",
   "Output Mode"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 10 by order (2026-09-22). Popup rows unmapped."
+ "evidence": "Logic 12.4 Controls view over instrument-params-vintage-graphic-eq-*: 13 parameters named \u2014 3 matched by the number shown, 10 by coded saves. 9 read through a display curve of 13 (word, shown) points from Logic's saves of one band at measured slider positions; a read interpolates, a write inverts, the ends are the range. 3 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

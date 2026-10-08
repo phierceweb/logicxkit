@@ -4,8 +4,10 @@ A slot is its mixer position, from 1 with empty slots counted: key minus the slo
 one — payload +6 holds the index, and automation names the insert by the same number. Keys run
 up to the channel's `.cst` reference key (`transplant`'s capacity rule). A moved slot keeps
 every other byte, and its Smart Control mappings and automation lanes move with it. An
-instrument channel's slot 1 is its instrument. The donor goes through `insert._stamp`: owner,
-key, index, width for Logic's own plug-ins, an instance id at measured offsets, bypass.
+instrument channel's slot 1 is its instrument, which keeps the width it was saved at: the channel's
+input byte follows it, and its width too when no effect comes after. The donor goes through
+`insert._stamp`: owner, key, index, width for Logic's own effects, an instance id at measured
+offsets, bypass.
 """
 
 from __future__ import annotations
@@ -13,8 +15,11 @@ from __future__ import annotations
 import struct
 
 from .binding import channels
+from .channel_width import with_channel_io
 from .insert import _stamp, insert_slots
 from .mixer import CHANNEL_TAG, channel_formats
+from .slot_identity import slot_header
+from .slot_width import MONO, STEREO, slot_format
 from .slots import SLOT_INDEX_AT, slot_index_base
 from ..stream.stream import HEADER, VER_OFF, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
@@ -52,6 +57,13 @@ def add_plugin(data: bytes, owner: int, donor: bytes, *, at: int | None = None,
     key = _key_for(data, owner, donor, existing, at, first)
     position = key - first + 1
     width = channel_formats(data).get(owner)
+    own = slot_format(donor)
+    if is_instrument_plugin(donor[HEADER:]) and own in (MONO, STEREO):
+        # as Logic's own load from the slot menu: the channel's input is the instrument's, and
+        # with no effect after it so is its width; a chain keeps its own
+        alone = not any(r.key != key for r in existing)
+        data = with_channel_io(data, owner, stereo_input=own == STEREO, output=own if alone else None)
+        existing, width = channel_slots(data, owner), own if alone else None
     # an empty slot takes the plug-in as it is; an occupied one moves down with everything after it
     moved = [(r.key, r.key + 1) for r in existing if r.key >= key] if any(r.key == key for r in existing) else []
     if not force:
@@ -61,7 +73,7 @@ def add_plugin(data: bytes, owner: int, donor: bytes, *, at: int | None = None,
     last = max([key] + [new for _old, new in moved])
     grown = max(0, last + headroom(data, first, base) - base)
     if grown:
-        data = grow_range(data, base, grown)
+        data = grow_range(data, base, grown, first)
         base += grown
     data = show_slots(data, last - first + 2)
     report = {"key": key, "position": position, "moved": moved, "width": width, "grown": grown,
@@ -101,6 +113,10 @@ def _key_for(data: bytes, owner: int, donor: bytes, existing, at: int | None, fi
     slot 1 is its instrument's, and an instrument goes nowhere else."""
     inst_channel = is_instrument_channel(data, owner)
     instrument = is_instrument_plugin(donor[HEADER:])
+    head = slot_header(donor[HEADER:])
+    if head is not None and head.midi:
+        raise ValueError("a MIDI effect goes into a channel's MIDI FX slots, which are not audio effect slots; "
+                         "this command writes instruments and audio effects")
     if instrument and not inst_channel:
         raise ValueError("an instrument goes into an instrument channel's slot 1, not into an audio effect slot")
     if instrument:
@@ -128,12 +144,14 @@ def headroom(data: bytes, first: int, base: int) -> int:
     return max(3, base - max(keys)) if keys else 3
 
 
-def grow_range(data: bytes, base: int, by: int) -> bytes:
+def grow_range(data: bytes, base: int, by: int, index_base: int) -> bytes:
     """Every channel satellite from two keys under the reference at ``base`` moved up ``by``
-    keys, on every channel: the records under the reference, the reference, the archives."""
+    keys, on every channel: the records under the reference, the reference, the archives. A
+    plug-in slot there stays: Logic's own save of an instrument with one effect puts the effect
+    two keys under the reference (`instrument-es2-over-chromaglow-logic`)."""
     owners = set(channels(data))
     out = [with_key(r.raw, r.key + by) if r.tag == b"UCuA" and r.owner in owners and r.key >= base - 2
-           else r.raw for r in project_records(data)]
+           and not is_plugin_slot(r, base, index_base) else r.raw for r in project_records(data)]
     return reassemble(data, out)
 
 

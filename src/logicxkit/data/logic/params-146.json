@@ -12,28 +12,36 @@
    "name": "Mix",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Intensity",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Rate",
    "unit": "Hz",
    "default": 0.133,
-   "evidence": "order"
+   "evidence": "code",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 4,
    "name": "Feedback",
    "unit": "%",
    "default": 67.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -99.0,
+   "max": 99.0
   },
   {
    "index": 5,
@@ -48,5 +56,5 @@
   }
  ],
  "unmapped": [],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 4 indices matched by value between stockfx-mod-defaults and stockfx-mod-spots, 1 by order. Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-flanger-*: 5 parameters named \u2014 4 matched by the number shown, 1 by coded saves."
 }

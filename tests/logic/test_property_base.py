@@ -51,6 +51,19 @@ class PropertyBaseTest(unittest.TestCase):
         self.assertEqual(property_key_base(_with_words(_project(), {OWNER: (2, 2), 5: (2, 3)})), 10)
         self.assertEqual(property_key_base(_with_words(_project(), {OWNER: (7, 2), 5: (7, 2)})), 10)
 
+    def test_a_third_midi_effect_on_a_channel_is_refused_as_unmeasured(self):
+        """Two MIDI effects are measured (`instrument-fx-two-midi-logic`); where a third's key sits is not."""
+        from _records import rec
+        def midi(key: int) -> bytes:
+            payload = bytearray(192)
+            struct.pack_into("<H", payload, 4, 2)
+            return rec(b"UCuA", OWNER, key, bytes(payload), 5)
+        two = _with_words(_project(midi(6), midi(7)), {OWNER: (2, 2), 5: (2, 2)})
+        self.assertEqual(property_key_base(two), 6)
+        three = _with_words(_project(midi(6), midi(7), midi(8)), {OWNER: (2, 2), 5: (2, 2)})
+        with self.assertRaises(ValueError):
+            property_key_base(three)
+
 
 if __name__ == "__main__":
     unittest.main()

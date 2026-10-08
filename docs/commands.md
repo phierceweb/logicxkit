@@ -121,12 +121,18 @@ the later ones up, and `replace-plugin --at N --plugin NAME` puts another plug-i
 three take `--channel LABEL` or `--stack NAME` (every member of a folder stack), and keep the
 channel's Smart Control mappings and automation lanes on the plug-ins they were made for, dropping a
 removed slot's. An instrument channel's slot 1 is its instrument: an effect is refused there, an
-append lands at slot 2, and removing the instrument leaves slot 1 empty. `transplant` replaces a
-channel's whole chain from another channel; `--stack NAME=SRC_LABEL` gives every member of a folder
+append lands at slot 2, and removing the instrument leaves slot 1 empty. One of Logic's own
+instruments from the library goes into an empty slot 1 (`add-plugin --at 1`, or `replace-plugin
+--at 1` over the one there) at the width it was saved at: the channel's input follows it, and the
+channel's width too when no effect comes after it. The track's Smart Controls stay as they were. A
+MIDI effect is refused; MIDI FX slots are read, not written. `transplant` replaces a
+channel's whole chain from another channel, the destination taking the source channel's width when
+the chain has its instrument; `--stack NAME=SRC_LABEL` gives every member of a folder
 stack SRC_LABEL's slots, each copy with its own instance id when one source fans out to several
 channels (refused when the source holds no second instance to measure the id from). The library
-holds Logic's own plug-ins as packaged and whatever `logic donors PROJECT [--as NAME]` has
-harvested, third-party ones per width and class version, so a plug-in needs a donor project once;
+holds Logic's own effects as packaged and whatever `logic donors PROJECT [--as NAME]` has
+harvested — Logic's instruments, and third-party plug-ins per width and class version — so one of
+those needs a donor project once;
 `--refresh` replaces donors the library holds after a plug-in update. Where the package and the data
 root hold a donor of one name, the package's is used, and `logic donors` into the data root leaves
 those plug-ins to the package. `transplant`, `chains` and `clear-slots` leave the destination's
@@ -203,9 +209,18 @@ on an EQ, by band (`"band 2=bell 250 Hz -4 dB Q 2.4"`, `"band 1=low cut 80 Hz 24
 `… off`): only the bands named change, a band given no slope keeps its own, one of Logic's own
 keeps its slot's shape, and Pro-Q 4 takes a new band past its last.
 `add-plugin --set` and `replace-plugin --set` dial the same way on the way in — a table name
-for one of Logic's own, held to its slider's measured ends with a note and put on the slider's
-grid, a vocabulary item for a third-party, a band on any EQ — and after `--translate` they
-override what was carried.
+for one of Logic's own (held to its slider's measured ends with a note and put on the slider's
+grid where the plug-in has a translation map; the instrument, MIDI-effect and re-measured effect
+tables carry each slider's measured ends as the parameter's range, and a number outside is
+refused — within it a finite number goes as given: Logic's load puts a value between slider
+positions on one, and derives the next word from an ES2 MM Amount written alone, the one linked
+shape measured; the other effect tables carry no ranges), a vocabulary item for a third-party, a
+band on any EQ — and after `--translate` they override what was carried. A table name that lives past the float block (Vintage B3's lower
+manual and pedals) is written at its payload offset like any other; a plug-in whose state is
+text (Alchemy, Sample Alchemy) is read by `project` and refused by `--set`, since writing it
+would resize the record. A table name whose word is placed by row order alone (25 rows over 8
+tables, Sculpture's 12 the most) is refused by `--set` too, and `project` marks its value `*`:
+coded series moved 13 of the 411 such placements they re-tested.
 
 **Open every output in Logic before trusting it.** A green run is not confirmation; a file that
 opens is not confirmation either. The way to check a writer is Save As in Logic and diff the
@@ -234,7 +249,12 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   same parent. A stack header moves with its members.
 - `stack-create --name NAME --track NAME` makes a folder stack from tracks; `--track` repeats.
   Its header takes the lowest `Sub` strip that is out of use (a converted stack leaves one), as
-  Logic's own does, and a new strip after the highest otherwise. A strip the convert left with
+  Logic's own does, and a new strip after the highest otherwise; it is coloured 20 unless
+  `--colour` names an index, takes the members' parent (the summing stack they sit in), and
+  takes the lowest object id a converted or deleted track left behind, else the next id past
+  the highest, as Logic's Create Track Stack does; `add-track` takes a deleted track's id the
+  same way for a new audio track, whether an audio or an instrument track left it (the adds
+  measured), the next id otherwise. A strip the convert left with
   the folder's level or mute comes back at 0 dB and not muted, as in Logic; one carrying a pan,
   a solo, an insert or a send is refused.
   `--summing` makes a summing stack instead: a stereo aux on the lowest free `Aux` stub (a
@@ -328,9 +348,12 @@ give an absolute `output_dir`.
 first and the package's native ones second. `config/example-chains.json` and
 `config/example-strips.json` run as shipped from a checkout against the strips under
 `tests/corpus/strips/` with `LOGICXKIT_STRIP_ROOT=tests/corpus/strips` (a wheel ships no
-corpus), the chains one on a project whose channels carry its reference names. `retrack` repoints
-strip references after a
-library rename — it changes a label, never a chain.
+corpus), the chains one on a project whose channels carry its reference names. `chains
+--verify WRITTEN --config CFG` opens the written copy in Logic Pro, reads each chained channel's
+plug-ins in their Controls views and compares every row with what the tables decode from the
+file, saving nothing; it runs on macOS from a checkout (`tools/driver/`) and prints one line per
+slot, matched or the rows that differ with both values. `retrack` repoints strip references after
+a library rename — it changes a label, never a chain.
 
 ## Decoding plugin state
 

@@ -51,7 +51,8 @@ from ..stream.recbuild import fresh_uuid, with_key
 from ..regions.regions import sync_region_tracks
 from .selection import select_track
 from ..mixer.sends import read_sends
-from .stack_create import _members_in_order, moved_in, packaged_aux
+from .stack_create import _members_in_order, moved_in
+from .stack_pattern import packaged_aux
 from .stacks import FOLDER, read_stacks, read_tracks
 from ..stream.stream import HEADER, project_records, reassemble
 from .tracklist import EXPANDED_AT, EXPANDED_BIT, arrange_run, row_object

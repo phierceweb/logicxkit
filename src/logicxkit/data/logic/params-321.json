@@ -1,0 +1,124 @@
+{
+ "type": 321,
+ "variant": 2511,
+ "name": "ChromaGlow",
+ "floats": 26,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 10,
+   "name": "Mix",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 11,
+   "name": "Drive",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 13,
+   "name": "High Cut Filter On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "High Cut Frequency",
+   "unit": "Hz",
+   "default": 4000.0,
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
+  },
+  {
+   "index": 17,
+   "name": "High Cut Resonance",
+   "unit": "",
+   "default": 0.7099999785423279,
+   "evidence": "code",
+   "shown": "0.71",
+   "min": 0.1,
+   "max": 100.0
+  },
+  {
+   "index": 18,
+   "name": "Low Cut Filter On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 21,
+   "name": "Low Cut Frequency",
+   "unit": "Hz",
+   "default": 500.0,
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
+  },
+  {
+   "index": 22,
+   "name": "Low Cut Resonance",
+   "unit": "",
+   "default": 0.7099999785423279,
+   "evidence": "code",
+   "shown": "0.71",
+   "min": 0.1,
+   "max": 100.0
+  },
+  {
+   "index": 23,
+   "name": "Bypass Below On",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 24,
+   "name": "Bypass Below",
+   "unit": "Hz",
+   "default": 120.0,
+   "evidence": "value",
+   "min": 20.0,
+   "max": 10000.0
+  }
+ ],
+ "unmapped": [
+  "Model",
+  "Style",
+  "Level In",
+  "Level Out",
+  "High Cut Slope",
+  "High Cut Position",
+  "Low Cut Slope",
+  "Low Cut Position"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-chromaglow-*: 10 parameters named \u2014 4 matched by the number shown, 6 by coded saves. 8 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -1,0 +1,139 @@
+{
+ "type": 312,
+ "variant": 2998,
+ "name": "Studio Bass",
+ "floats": 5020,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 35,
+   "name": "Mute",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 36,
+   "name": "Definition",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
+  },
+  {
+   "index": 120,
+   "name": "Volume",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "100 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 123,
+   "name": "Tone",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "code",
+   "shown": "100 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 170,
+   "name": "Main Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 dB",
+   "min": -60.0,
+   "max": 6.0
+  },
+  {
+   "index": 220,
+   "name": "Portamento",
+   "unit": "ms",
+   "default": 150.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2000.0
+  },
+  {
+   "index": 221,
+   "name": "Tempo Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 224,
+   "name": "String Noise",
+   "unit": "%",
+   "default": 80.0,
+   "evidence": "code",
+   "shown": "80 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 225,
+   "name": "Hum & Hiss",
+   "unit": "%",
+   "default": 50.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 226,
+   "name": "Release Noise",
+   "unit": "%",
+   "default": 80.0,
+   "evidence": "code",
+   "shown": "80 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 227,
+   "name": "Pitchbend Range Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2",
+   "min": 0.0,
+   "max": 12.0
+  },
+  {
+   "index": 228,
+   "name": "Pitchbend Range Down",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2",
+   "min": 0.0,
+   "max": 12.0
+  }
+ ],
+ "unmapped": [
+  "Inst + Style",
+  "Instrument",
+  "Playing Style",
+  "Last Played",
+  "Voice Mode",
+  "Open Strings",
+  "Mute Controller"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-studio-bass-*: 12 parameters named \u2014 4 matched by the number shown, 1 by row order among rows of one step, 7 by coded saves. 7 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

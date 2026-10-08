@@ -24,6 +24,12 @@ def _shown(value):
     return 0.0 if abs(value) < 1e-9 else float(f"{value:.6g}")
 
 
+def _by_order() -> dict[str, set[str]]:
+    """Each table's parameter names whose word is placed by row order alone."""
+    from .services.mixer.plugin_params import load_tables
+    return {t.name: {p.name for p in t.params if p.evidence == "order"} for t in load_tables().values()}
+
+
 def cmd_project(args) -> int:
     """Read-only inventory of a .logicx project: per-channel chains, presets, track names."""
     report = read_project(Path(args.logicx))
@@ -35,13 +41,19 @@ def cmd_project(args) -> int:
     print(f"  {md.get('tracks')} tracks · {md.get('bpm')} BPM · {md.get('key')} · "
           f"{md.get('sig')} · {md.get('logic_version', '?')}")
     print(f"\n  channels with inserts: {len(report['channels'])}")
+    by_order = _by_order()
+    marked = False
     for c in report["channels"]:
         chain = " → ".join(p + (f" [{pre}]" if pre else "") for p, pre in c["chain"])
         cst = f"   ⟨loads {', '.join(c['cst'])}⟩" if c.get("cst") else ""
         print(f"    {c['label']:10s} {chain}{cst}")
         for plug, params in c.get("native", []):
-            shown = {k: _shown(v) for k, v in params.items()}
+            order = by_order.get(plug, set())
+            shown = {k + ("*" if k in order else ""): _shown(v) for k, v in params.items()}
+            marked = marked or bool(order & params.keys())
             print(f"        {plug}: {shown}")
+    if marked:
+        print("\n  * named by row order alone: read, never written by `--set`")
     names = report["track_names"]
     if names:
         print(f"\n  track names ({len(names)}): " + ", ".join(n for n, _ in names))

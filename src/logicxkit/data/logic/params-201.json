@@ -1,0 +1,139 @@
+{
+ "type": 201,
+ "variant": 1048,
+ "name": "ES M",
+ "floats": 16,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Glide",
+   "unit": "ms",
+   "default": 22.6,
+   "evidence": "value"
+  },
+  {
+   "index": 3,
+   "name": "Saw/Square Mix",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 4,
+   "name": "Cutoff",
+   "unit": "%",
+   "default": 34.645,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 5,
+   "name": "Resonance",
+   "unit": "%",
+   "default": 50.393,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 6,
+   "name": "Filter Decay",
+   "unit": "ms",
+   "default": 2400.0,
+   "evidence": "code",
+   "shown": "2.40 s"
+  },
+  {
+   "index": 7,
+   "name": "Filter Env Depth",
+   "unit": "%",
+   "default": 27.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 8,
+   "name": "Filter Env Velo",
+   "unit": "%",
+   "default": 65.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 9,
+   "name": "Filter Decay (2)",
+   "unit": "ms",
+   "default": 6050.0,
+   "evidence": "code",
+   "shown": "6.05 s",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 10,
+   "name": "Filter Velo",
+   "unit": "%",
+   "default": 9.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 11,
+   "name": "Overdrive",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 12,
+   "name": "Volume",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 0.0
+  },
+  {
+   "index": 13,
+   "name": "Pitch Bend Up",
+   "unit": "",
+   "default": 12.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
+  },
+  {
+   "index": 14,
+   "name": "Pitch Bend Down",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Tune",
+   "unit": "ct",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
+  }
+ ],
+ "unmapped": [
+  "Octave"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-es-m-*: 14 parameters named \u2014 10 matched by the number shown, 4 by coded saves. 1 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

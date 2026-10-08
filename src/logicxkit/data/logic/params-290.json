@@ -1,0 +1,183 @@
+{
+ "type": 290,
+ "variant": 2330,
+ "name": "Transposer",
+ "floats": 20,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Transpose",
+   "unit": "semi",
+   "default": 0.0,
+   "evidence": "order",
+   "shown": "0 semi",
+   "min": -24.0,
+   "max": 24.0
+  },
+  {
+   "index": 6,
+   "name": "C",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 7,
+   "name": "C#",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 8,
+   "name": "D",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 9,
+   "name": "D#",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 10,
+   "name": "E",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 11,
+   "name": "F",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 12,
+   "name": "F#",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 13,
+   "name": "G",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 14,
+   "name": "G#",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 15,
+   "name": "A",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 16,
+   "name": "A#",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 17,
+   "name": "B",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 18,
+   "name": "Retrigger Held Notes",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Note",
+  "Scale Type",
+  "Processing Order"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-transposer-*: 14 parameters named \u2014 1 by row order among rows of one step, 13 by coded saves. 3 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -23,14 +23,18 @@
    "name": "Low Cut Frequency",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 4,
    "name": "Low Cut Q-Factor",
    "unit": "",
    "default": 0.71,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 5,
@@ -48,21 +52,27 @@
    "name": "Low Shelf Frequency",
    "unit": "Hz",
    "default": 75.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 7,
    "name": "Low Shelf Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 8,
    "name": "Low Shelf Q-Factor",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 9,
@@ -80,21 +90,27 @@
    "name": "Peak 1 Frequency",
    "unit": "Hz",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 11,
    "name": "Peak 1 Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 12,
    "name": "Peak 1 Q-Factor",
    "unit": "",
    "default": 0.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 13,
@@ -112,21 +128,27 @@
    "name": "Peak 2 Frequency",
    "unit": "Hz",
    "default": 250.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 15,
    "name": "Peak 2 Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 16,
    "name": "Peak 2 Q-Factor",
    "unit": "",
    "default": 0.3,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 17,
@@ -144,21 +166,27 @@
    "name": "Peak 3 Frequency",
    "unit": "Hz",
    "default": 1040.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 19,
    "name": "Peak 3 Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 20,
    "name": "Peak 3 Q-Factor",
    "unit": "",
    "default": 0.41,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 21,
@@ -176,21 +204,27 @@
    "name": "Peak 4 Frequency",
    "unit": "Hz",
    "default": 2500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 23,
    "name": "Peak 4 Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 24,
    "name": "Peak 4 Q-Factor",
    "unit": "",
    "default": 0.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 25,
@@ -208,21 +242,27 @@
    "name": "High Shelf Frequency",
    "unit": "Hz",
    "default": 7500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 27,
    "name": "High Shelf Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 28,
    "name": "High Shelf Q-Factor",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 29,
@@ -240,14 +280,18 @@
    "name": "High Cut Frequency",
    "unit": "Hz",
    "default": 20000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 32,
    "name": "High Cut Q-Factor",
    "unit": "",
    "default": 0.71,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 33,
@@ -272,31 +316,24 @@
    "name": "Analyzer Top",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -40.0,
+   "max": 20.0
   },
   {
    "index": 41,
    "name": "Analyzer Decay",
    "unit": "dB/s",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 30.0
   },
   {
    "index": 42,
    "name": "Gain-Q Coupling",
    "unit": "",
    "default": 1.0,
-   "evidence": "value",
-   "choices": [
-    "Off",
-    "On"
-   ]
-  },
-  {
-   "index": 49,
-   "name": "Oversampling",
-   "unit": "",
-   "default": 0.0,
    "evidence": "value",
    "choices": [
     "Off",
@@ -315,11 +352,13 @@
    ]
   },
   {
-   "index": 45,
+   "index": 49,
    "name": "EQ Scale Shift",
    "unit": "",
    "default": 0.0,
-   "evidence": "order"
+   "evidence": "code",
+   "min": -5.0,
+   "max": 5.0
   }
  ],
  "unmapped": [
@@ -331,7 +370,8 @@
   "Gain-Q Couple Mode",
   "Channel Processing",
   "EQ dB Scale Mode",
-  "Analyzer Range"
+  "Analyzer Range",
+  "Oversampling"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 37 indices matched by value between stockfx-eq-defaults and stockfx-eq-spots, 1 by order (2026-09-22). Popup rows unmapped."
+ "evidence": "Logic 12.3.1 stockfx pair (2026-09-22) for the value matches, Logic 12.4 Controls view over effectcheck-channel-eq-*: 37 parameters named \u2014 36 matched by the number shown, 1 by coded saves. 10 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
 }

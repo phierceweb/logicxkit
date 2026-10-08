@@ -1,0 +1,398 @@
+{
+ "type": 279,
+ "variant": 2228,
+ "name": "Retro Synth",
+ "floats": 904,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 5,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 c",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 6,
+   "name": "Output Volume",
+   "unit": "dB",
+   "default": -6.5,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  },
+  {
+   "index": 12,
+   "name": "Stereo Spread",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 13,
+   "name": "Voice Detune",
+   "unit": "",
+   "default": 0.22,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 104,
+   "name": "Velocity Mod Amount",
+   "unit": "",
+   "default": 0.019999999552965164,
+   "evidence": "code",
+   "shown": "0.02",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 106,
+   "name": "Mod Wheel Mod Amount",
+   "unit": "",
+   "default": 0.13,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 108,
+   "name": "Aftertouch Mod Amount",
+   "unit": "",
+   "default": 0.28,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 112,
+   "name": "Ctrl X Mod Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 203,
+   "name": "Vibrato Depth",
+   "unit": "semi",
+   "default": 0.62,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 36.0
+  },
+  {
+   "index": 204,
+   "name": "Glide/Autobend",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 208,
+   "name": "Glide/AB Time",
+   "unit": "ms",
+   "default": 10.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 5000.0
+  },
+  {
+   "index": 209,
+   "name": "Oscillator Shape by LFO/Env",
+   "unit": "",
+   "default": -0.012,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 210,
+   "name": "Oscillator Mix",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "shown": "0.50",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 211,
+   "name": "Sine Level",
+   "unit": "",
+   "default": 0.019999999552965164,
+   "evidence": "code",
+   "shown": "0.02",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 308,
+   "name": "Oscillator 2 Semitone",
+   "unit": "s",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 s",
+   "min": -24.0,
+   "max": 24.0
+  },
+  {
+   "index": 309,
+   "name": "Oscillator 2 Detune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 c",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 404,
+   "name": "Cutoff",
+   "unit": "",
+   "default": 0.484,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 405,
+   "name": "Resonance",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 407,
+   "name": "Cutoff by LFO",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 408,
+   "name": "Cutoff by Env",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "shown": "0.50",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 409,
+   "name": "Filter FM/Drive",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 505,
+   "name": "Effect Intensity",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "code",
+   "shown": "0.50",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 604,
+   "name": "LFO Sync",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 605,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 6.4,
+   "evidence": "value",
+   "min": 0.01,
+   "max": 200.0
+  },
+  {
+   "index": 607,
+   "name": "LFO Via Amount",
+   "unit": "",
+   "default": 0.94,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 654,
+   "name": "Vibrato Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 655,
+   "name": "Vibrato Rate",
+   "unit": "",
+   "default": 0.0625,
+   "evidence": "value"
+  },
+  {
+   "index": 657,
+   "name": "Vibrato Via Amount",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 703,
+   "name": "Filter Env Attack",
+   "unit": "ms",
+   "default": 0.3999999761581421,
+   "evidence": "code",
+   "shown": "0.40 ms"
+  },
+  {
+   "index": 704,
+   "name": "Filter Env Decay",
+   "unit": "ms",
+   "default": 520.0,
+   "evidence": "code",
+   "shown": "520 ms"
+  },
+  {
+   "index": 705,
+   "name": "Filter Env Sustain",
+   "unit": "",
+   "default": 0.7639999389648438,
+   "evidence": "code",
+   "shown": "0.76",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 706,
+   "name": "Filter Env Release",
+   "unit": "ms",
+   "default": 270.0,
+   "evidence": "value"
+  },
+  {
+   "index": 707,
+   "name": "Filter Env Velocity",
+   "unit": "",
+   "default": 0.71,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 803,
+   "name": "Amp Env Attack",
+   "unit": "ms",
+   "default": 0.3999999761581421,
+   "evidence": "code",
+   "shown": "0.40 ms"
+  },
+  {
+   "index": 804,
+   "name": "Amp Env Decay",
+   "unit": "ms",
+   "default": 520.0,
+   "evidence": "code",
+   "shown": "520 ms"
+  },
+  {
+   "index": 805,
+   "name": "Amp Env Sustain",
+   "unit": "",
+   "default": 0.7639999389648438,
+   "evidence": "code",
+   "shown": "0.76",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 806,
+   "name": "Amp Env Release",
+   "unit": "ms",
+   "default": 38.0,
+   "evidence": "value"
+  },
+  {
+   "index": 807,
+   "name": "Amp Env Velocity",
+   "unit": "",
+   "default": 0.51,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  }
+ ],
+ "unmapped": [
+  "Polyphony",
+  "Unison",
+  "Transpose",
+  "MIDI Mono Mode",
+  "Pitch Bend Range",
+  "Mono Mode Bend Range",
+  "Velocity To",
+  "Mod Wheel To",
+  "Aftertouch To",
+  "Ctrl X Source",
+  "Ctrl X To",
+  "Oscillator Type",
+  "Glide/AB Type",
+  "Glide/AB Mode",
+  "Oscillator 1 Waveform",
+  "Oscillator 1 Pulse Width",
+  "Oscillator 2 Waveform",
+  "Oscillator 2 Pulse Width",
+  "Filter State",
+  "Filter Type",
+  "Filter Keyscale",
+  "Effect State",
+  "Effect Type",
+  "Effect Rate",
+  "LFO Waveform",
+  "LFO Via Source",
+  "Vibrato Waveform",
+  "Vibrato Via Source"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-retro-synth-*: 38 parameters named \u2014 16 matched by the number shown, 22 by coded saves. 28 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

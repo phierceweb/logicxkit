@@ -5,7 +5,9 @@ import plistlib
 import struct
 import unittest
 import _paths  # noqa: F401
-from logicxkit.logic.services.mixer.plugins import PluginRef, installed_from_auval, project_plugins, validate_components, verdict
+from logicxkit.logic.services.mixer.plugins import (
+    PluginRef, installed_from_auval, is_instrument_plugin, project_plugins, validate_components, verdict,
+)
 
 HDR = 36
 
@@ -38,6 +40,22 @@ def third_party_slot(owner: int, key: int, *, type_="aufx", subtype="FC2p", manu
     return rec(b"UCuA", owner, key, bytes(64) + pl + bytes(16))
 
 
+def headed_slot(owner: int, key: int, name: bytes, maker: bytes, word: int, code: bytes, *, flags: int = 0,
+                state: bytes = b"") -> bytes:
+    """A slot with Logic's header (kind word 1, the short name, the three identity words) and any state."""
+    p = bytearray(176)
+    struct.pack_into("<H", p, 4, 1)
+    p[120:120 + len(name)] = name
+    p[132:136], p[140:144] = maker, code
+    struct.pack_into("<I", p, 136, word)
+    p[151] = flags
+    return rec(b"UCuA", owner, key, bytes(p) + state)
+
+
+def float_block(type_id: int, n: int = 8) -> bytes:
+    return struct.pack("<II", 1, n) + b"GAMETSPP" + struct.pack("<I", type_id) + bytes(n * 4)
+
+
 def chan(owner: int, label: str) -> bytes:
     p = bytearray(257)
     p[24] = p[25] = 1
@@ -59,6 +77,71 @@ class ProjectPluginsTest(unittest.TestCase):
         self.assertEqual([(r.channel, r.key, r.name, r.native, r.component) for r in refs],
                          [("Audio 1", 2, "Channel EQ", True, None),
                           ("Audio 1", 3, "FabF/FC2p", False, ("aufx", "FC2p", "FabF"))])
+
+
+class HeaderNamedSlotsTest(unittest.TestCase):
+    def names(self, *slots: bytes) -> list[tuple]:
+        return [(r.key, r.name, r.native, r.component) for r in project_plugins(proj(chan(0, "Inst 1"), *slots))]
+
+    def test_a_sampler_family_instrument_with_no_float_block_is_listed(self):
+        slot = headed_slot(0, 2, b"Drum Kit", b"MELC", 0, b"LMNA", flags=8, state=b"MELCPMASLMNA" + bytes(40))
+        self.assertEqual(self.names(slot), [(2, "Drum Kit Designer", True, None)])
+
+    def test_a_slot_with_no_state_is_listed_by_its_type_id(self):
+        slot = headed_slot(0, 4, b"Remix FX", b"GAME", 0, struct.pack("<I", 314))
+        self.assertEqual(self.names(slot), [(4, "Remix FX", True, None)])
+
+    def test_the_header_names_a_slot_whose_state_holds_another_types_block(self):
+        slot = headed_slot(0, 2, b"Piano", b"MELC", 4, b"rWnI", flags=8, state=bytes(64) + float_block(312))
+        self.assertEqual(self.names(slot), [(2, "Studio Piano", True, None)])
+
+    def test_a_slot_of_logics_own_that_no_table_names_takes_the_headers_short_name(self):
+        native = headed_slot(0, 3, b"Later Synth", b"GAME", 0, struct.pack("<I", 9999), state=float_block(9999))
+        family = headed_slot(0, 4, b"Later Kit", b"MELC", 0, b"ZZZZ")
+        self.assertEqual(self.names(native, family), [(3, "Later Synth", True, None), (4, "Later Kit", True, None)])
+
+    def test_a_shared_type_is_still_told_apart_by_its_variant_base(self):
+        slot = bytearray(headed_slot(0, 2, b"Echo", b"GAME", 33, struct.pack("<I", 147), state=float_block(147)))
+        struct.pack_into("<H", slot, HDR + 116, 216 + 1)
+        slot[HDR + 81] = 1
+        self.assertEqual(self.names(bytes(slot)), [(2, "Echo", True, None)])
+
+    def test_a_pedalboard_stompbox_is_named_by_its_variant_base(self):
+        """Pedalboard's 35 pedals share its type 273; each has a variant base of its own."""
+        from logicxkit.logic.services.mixer.plugin_names import PLUGIN_VARIANTS, native_name
+        self.assertEqual(len(PLUGIN_VARIANTS[273]), 36)
+        self.assertEqual((native_name(273, 1623), native_name(273, 1739), native_name(273, 1755)),
+                         ("Pedalboard", "Auto-Funk", "Blue Echo"))
+        slot = bytearray(headed_slot(0, 2, b"Auto-Funk", b"GAME", 7, struct.pack("<I", 273), state=float_block(273)))
+        struct.pack_into("<H", slot, HDR + 116, 1739 + 1)
+        slot[HDR + 81] = 1
+        self.assertEqual(self.names(bytes(slot)), [(2, "Auto-Funk", True, None)])
+
+
+class MidiEffectSlotTest(unittest.TestCase):
+    def test_a_midi_effect_is_listed_and_marked(self):
+        arp = bytearray(headed_slot(0, 4, b"Arpeggiator", b"GAME", 0, struct.pack("<I", 300), flags=0x02, state=float_block(300)))
+        struct.pack_into("<H", arp, HDR + 4, 2)
+        eq = headed_slot(0, 3, b"Channel EQ", b"GAME", 0, struct.pack("<I", 236), state=float_block(236))
+        refs = project_plugins(proj(chan(0, "Inst 1"), eq, bytes(arp)))
+        self.assertEqual([(r.key, r.name, r.native, r.midi) for r in refs],
+                         [(3, "Channel EQ", True, False), (4, "Arpeggiator", True, True)])
+
+
+class InstrumentSlotTest(unittest.TestCase):
+    def test_the_header_flag_says_a_slot_holds_the_channels_instrument(self):
+        kit = headed_slot(0, 2, b"Drum Kit", b"MELC", 0, b"LMNA", flags=0x08)
+        synth = headed_slot(0, 2, b"ES2", b"GAME", 0, struct.pack("<I", 214), flags=0x18, state=float_block(214))
+        self.assertTrue(is_instrument_plugin(kit[HDR:]))
+        self.assertTrue(is_instrument_plugin(synth[HDR:]))
+
+    def test_an_effect_whose_window_has_been_open_is_not_an_instrument(self):
+        eq = headed_slot(0, 3, b"Channel EQ", b"GAME", 0, struct.pack("<I", 236), flags=0x10, state=float_block(236))
+        self.assertFalse(is_instrument_plugin(eq[HDR:]))
+
+    def test_a_block_with_no_slot_header_is_judged_by_its_type(self):
+        self.assertTrue(is_instrument_plugin(native_slot(0, 2, 158)[HDR:]))
+        self.assertFalse(is_instrument_plugin(native_slot(0, 2, 236)[HDR:]))
 
 
 class VerdictTest(unittest.TestCase):

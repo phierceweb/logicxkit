@@ -206,30 +206,30 @@ class NativeParamsTest(unittest.TestCase):
         self.assertEqual(natives[0][1]["threshold"], -20.0)
 
 
-class NativeTypeIdTest(unittest.TestCase):
-    """A native slot with no plug-in name string in its window is named from its GAMETSPP type
-    id, as `plugins` names it (ChromaVerb, SilverVerb, EnVerb and Echo on a built patch)."""
-
-    def _channel(self, type_ids):
+class PastTheBlockParamsTest(unittest.TestCase):
+    def test_channel_natives_reads_a_tables_offset_words(self):
+        """A table may name words past the block by payload offset (Vintage B3): the project
+        report reads them beside the block's."""
+        import json
+        import tempfile
         from _records import chan, rec
-        out = chan(282, "Audio 2")
-        for k, type_id in enumerate(type_ids):
-            slot = bytearray(432)
-            slot[6] = k
-            slot[184:192] = b"GAMETSPP"
-            struct.pack_into("<I", slot, 192, type_id)
-            out += rec(b"UCuA", 282, 4 + k, bytes(slot), 5)
-        return out
-
-    def test_a_nameless_native_slot_is_named_from_its_type_id(self):
-        self.assertEqual(channel_chain(self._channel([287, 150, 166, 147])),
-                         [("ChromaVerb", None), ("SilverVerb", None), ("EnVerb", None), ("Echo", None)])
-
-    def test_an_unknown_type_id_is_still_an_insert(self):
-        self.assertEqual(channel_chain(self._channel([236, 999])), [("Channel EQ", None), ("type 999", None)])
-
-    def test_a_native_instrument_is_not_an_insert(self):
-        self.assertEqual(channel_chain(self._channel([158, 236])), [("Channel EQ", None)])
+        from logicxkit.logic.services.mixer.plugin_params import load_tables
+        slot = bytearray(432)
+        struct.pack_into("<H", slot, 4, 1)
+        slot[132:136] = b"GAME"
+        struct.pack_into("<I", slot, 140, 998)
+        slot[184:192] = b"GAMETSPP"
+        struct.pack_into("<III", slot, 172, 24 + 8, 1, 2)
+        struct.pack_into("<I", slot, 192, 998)
+        struct.pack_into("<ff", slot, 196, 0.5, 0.25)
+        struct.pack_into("<fi", slot, 300, 7.0, 3)
+        table = {"type": 998, "name": "Test Organ", "floats": 2, "params": [
+            {"index": 1, "name": "Level"}, {"offset": 300, "name": "Pedal"}, {"offset": 304, "name": "Perc", "kind": "int"}]}
+        with tempfile.TemporaryDirectory() as td:
+            (Path(td) / "params-998.json").write_text(json.dumps(table))
+            seg = chan(282, "Inst 2") + rec(b"UCuA", 282, 2, bytes(slot), 5)
+            self.assertEqual(channel_natives(seg, tables=load_tables([Path(td)])),
+                             [("Test Organ", {"Level": 0.25, "Pedal": 7.0, "Perc": 3})])
 
 
 if __name__ == "__main__":

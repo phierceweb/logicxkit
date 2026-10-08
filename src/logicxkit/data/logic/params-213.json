@@ -1,0 +1,328 @@
+{
+ "type": 213,
+ "variant": 1051,
+ "name": "Vintage Electric Piano",
+ "floats": 42,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 2,
+   "name": "Decay",
+   "unit": "%",
+   "default": 130.0,
+   "evidence": "value",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 3,
+   "name": "Release",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 10.0,
+   "max": 1000.0
+  },
+  {
+   "index": 4,
+   "name": "Bell Volume",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00"
+  },
+  {
+   "index": 5,
+   "name": "Damper Volume",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1.00"
+  },
+  {
+   "index": 6,
+   "name": "Lower stretch",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "index": 7,
+   "name": "Upper stretch",
+   "unit": "",
+   "default": 0.4,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2.0
+  },
+  {
+   "index": 8,
+   "name": "Stereo",
+   "unit": "",
+   "default": 100.0,
+   "evidence": "value"
+  },
+  {
+   "index": 9,
+   "name": "Voices",
+   "unit": "",
+   "default": 88.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 88.0
+  },
+  {
+   "index": 10,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 11,
+   "name": "Warmth",
+   "unit": "",
+   "default": 0.6,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 12,
+   "name": "Treble",
+   "unit": "dB",
+   "default": 4.0,
+   "evidence": "value",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "index": 13,
+   "name": "Bass",
+   "unit": "dB",
+   "default": 3.0,
+   "evidence": "value",
+   "min": -18.0,
+   "max": 18.0
+  },
+  {
+   "index": 14,
+   "name": "Drive Gain",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value"
+  },
+  {
+   "index": 15,
+   "name": "Drive Tone",
+   "unit": "Hz",
+   "default": 10000.0,
+   "evidence": "value",
+   "min": 100.0,
+   "max": 10000.0
+  },
+  {
+   "index": 17,
+   "name": "Phaser Color",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 %",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 18,
+   "name": "Phaser Stereo",
+   "unit": "\u00b0",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 180.0
+  },
+  {
+   "index": 20,
+   "name": "Tremolo Depth",
+   "unit": "%",
+   "default": 10.0,
+   "evidence": "value"
+  },
+  {
+   "index": 21,
+   "name": "Tremolo Stereo",
+   "unit": "\u00b0",
+   "default": 180.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 180.0
+  },
+  {
+   "index": 22,
+   "name": "Chorus Intensity",
+   "unit": "",
+   "default": null,
+   "evidence": "value"
+  },
+  {
+   "index": 24,
+   "name": "Volume",
+   "unit": "dB",
+   "default": -2.0,
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
+  },
+  {
+   "index": 25,
+   "name": "Bend Range Down",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2"
+  },
+  {
+   "index": 26,
+   "name": "Bend Range Up",
+   "unit": "",
+   "default": 2.0,
+   "evidence": "code",
+   "shown": "2"
+  },
+  {
+   "index": 27,
+   "name": "Chorus Rate",
+   "unit": "Hz",
+   "default": 0.69,
+   "evidence": "value",
+   "min": 0.1,
+   "max": 10.0
+  },
+  {
+   "index": 28,
+   "name": "Delay Pianissimo",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 ms",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 29,
+   "name": "Delay Fortissimo",
+   "unit": "ms",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
+  },
+  {
+   "index": 31,
+   "name": "EQ",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 32,
+   "name": "Drive Drive",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 33,
+   "name": "Phaser Phaser",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 34,
+   "name": "Tremolo Tremolo",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 35,
+   "name": "Chorus Chorus",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "code",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 36,
+   "name": "Bass Boost",
+   "unit": "%",
+   "default": 75.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 37,
+   "name": "Phaser Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "order",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "Tremolo Sync",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "order",
+   "shown": "1",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Model",
+  "Phaser Rate",
+  "Tremolo Rate",
+  "MIDI Mode",
+  "Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-vintage-electric-piano-*: 33 parameters named \u2014 19 matched by the number shown, 2 by row order among rows of one step, 12 by coded saves. 5 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -35,6 +35,15 @@ def slot(key: int, index: int, fmt: int = 1, type_id: int = 236) -> bytes:
     return rec(b"UCuA", 0, key, bytes(p))
 
 
+def headed(raw: bytes, *, kind: int = 1, flags: int = 0) -> bytes:
+    """``raw`` with Logic's slot header: the kind word (1 a slot, 2 a MIDI effect) and the flags."""
+    buf = bytearray(raw)
+    struct.pack_into("<H", buf, HDR + 4, kind)
+    buf[HDR + 132:HDR + 136] = b"GAME"
+    buf[HDR + 151] = flags
+    return bytes(buf)
+
+
 def third_party_slot(key: int, index: int, fmt: int = 1, size: int = 500) -> bytes:
     """An AU state record: index at +6 and the width bytes, but no `GAMETSPP` chunk."""
     p = bytearray(size)
@@ -108,6 +117,37 @@ class ValidateProjectTest(unittest.TestCase):
     def test_a_stray_record_in_the_key_range_is_not_a_slot(self):
         """The 200-byte 'Audio Recording' record sits among the slot keys with +6 = 0."""
         self.assertEqual(validate_project(proj(channel(0, fmt=2), slot(4, 0, fmt=2), stray(5))), [])
+
+    def test_a_midi_effect_is_not_one_of_the_channels_audio_slots(self):
+        """Logic keys a MIDI effect past the audio slots with an index of its own, counted from
+        0 again (`instrument-fx-two-midi-logic`)."""
+        midi = [headed(slot(6 + n, n, fmt=0), kind=2, flags=0x02) for n in (0, 1)]
+        self.assertEqual(validate_project(proj(channel(0), slot(4, 0), slot(5, 1), *midi)), [])
+
+    def test_the_instruments_width_is_not_judged_against_the_channels(self):
+        """The channel's width is its chain's output: Logic keeps a mono channel under a stereo
+        instrument that a mono effect follows (`instrument-es2-over-chromaglow-logic`)."""
+        instrument = headed(slot(4, 0, fmt=2, type_id=214), flags=0x08)
+        chan = bytearray(channel(0, fmt=1))
+        chan[36 + 86] = 1                                                             # a stereo instrument feeds it
+        self.assertEqual(validate_project(proj(bytes(chan), instrument, slot(5, 1, fmt=1))), [])
+        effect = headed(slot(4, 0, fmt=2))
+        self.assertIn("plugin width 2 on a mono channel", " ".join(validate_project(proj(channel(0, fmt=1), effect))))
+
+    def test_an_instruments_width_must_match_the_channels_input_byte(self):
+        """`+86` on an instrument channel says the instrument is stereo (`instrument-*-logic`)."""
+        stereo_inst = headed(slot(4, 0, fmt=2, type_id=214), flags=0x08)
+        chan = bytearray(channel(0, fmt=1))
+        chan[36 + 86] = 1
+        self.assertEqual(validate_project(proj(bytes(chan), stereo_inst, slot(5, 1, fmt=1))), [])
+        self.assertIn("stereo instrument over a channel whose input byte reads 0",
+                      " ".join(validate_project(proj(channel(0, fmt=1), stereo_inst, slot(5, 1, fmt=1)))))
+
+    def test_midi_effects_keep_their_own_keys_and_indices_apart(self):
+        midi = [headed(slot(6, n, fmt=0), kind=2, flags=0x02) for n in (0, 1)]       # one key twice
+        self.assertIn("duplicate MIDI effect key(s) [6, 6]", " ".join(validate_project(proj(channel(0), slot(4, 0), *midi))))
+        midi = [headed(slot(6 + n, 0, fmt=0), kind=2, flags=0x02) for n in (0, 1)]   # one index twice
+        self.assertIn("colliding MIDI effect index [0, 0]", " ".join(validate_project(proj(channel(0), slot(4, 0), *midi))))
 
     def test_reports_every_problem_not_just_the_first(self):
         problems = validate_project(proj(channel(0, fmt=2), slot(4, 0, fmt=1), slot(5, 0, fmt=1)))

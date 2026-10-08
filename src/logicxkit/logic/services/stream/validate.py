@@ -17,7 +17,9 @@ carrying its own index at +6 (`slots.is_plugin_slot`) — so third-party states 
 duplicate keys and index collisions too. Their width bytes are not judged: Logic's own saves
 carry third-party records whose +84/+118/+119 disagree with the channel (29 across the golden
 corpus), so the width check stays native-only. A plug-in record whose index disagrees with its
-key is no slot to those checks; the key check reports it.
+key is no slot to those checks; the key check reports it. Two of Logic's own are left out: a
+MIDI effect's record, keyed past the audio slots with an index of its own, and the width of a
+channel's instrument, which is the chain's input where the channel's width is its output.
 """
 
 from __future__ import annotations
@@ -28,11 +30,20 @@ from contextvars import ContextVar
 
 from ..._binary import find_blocks
 from ..mixer.mixer import CHANNEL_FMT_AT, CHANNEL_TAG, channel_formats, is_mixer_record
+from ..mixer.slot_identity import slot_header
 from ..mixer.slot_width import slot_format
 from ..mixer.slots import SLOT_INDEX_AT, _PLUGIN_MARKS, slot_index_base
 from .stream import BODY_START, HEADER, NO_KEY, TOTAL_AT, project_records
 from ..mixer.slot_width import one_build
 from ..mixer.slots import archive_index, is_plugin_slot, property_key_base
+
+STEREO_INPUT_AT = 86                 # the channel's input is stereo: an instrument channel's instrument (`channel_width`)
+
+
+def _is_midi_effect(raw: bytes) -> bool:
+    """A MIDI effect's record: keyed past the audio slots, its index counted among its own."""
+    head = slot_header(raw[HEADER:])
+    return head is not None and head.midi
 
 
 def validate_project(data: bytes) -> list[str]:
@@ -55,12 +66,26 @@ def validate_project(data: bytes) -> list[str]:
     prop = property_key_base(data)
     slots: dict[int, list] = {}
     for record in records:
-        if record.tag != b"UCuA":
+        if record.tag != b"UCuA" or _is_midi_effect(record.raw):
             continue
         native = b"GAMETSPP" in record.raw and bool(find_blocks(record.raw[HEADER:]))
         if native or is_plugin_slot(record, prop, base):
             slots.setdefault(record.owner, []).append(record)
 
+    midi: dict[int, list] = {}
+    for record in records:
+        if record.tag == b"UCuA" and _is_midi_effect(record.raw):
+            midi.setdefault(record.owner, []).append(record)
+    for owner, found in sorted(midi.items()):
+        keys = [r.key for r in found]
+        if len(set(keys)) != len(keys):
+            problems.append(f"channel {owner}: duplicate MIDI effect key(s) {sorted(keys)}")
+        indices = [r.raw[HEADER + SLOT_INDEX_AT] for r in found]
+        if len(set(indices)) != len(indices):
+            problems.append(f"channel {owner}: colliding MIDI effect index {sorted(indices)}")
+
+    inputs = {r.owner: r.raw[HEADER + STEREO_INPUT_AT] for r in records
+              if r.tag == CHANNEL_TAG and r.key == NO_KEY and len(r.raw) - HEADER > STEREO_INPUT_AT}
     for owner, found in sorted(slots.items()):
         keys = [r.key for r in found]
         if len(set(keys)) != len(keys):
@@ -75,6 +100,12 @@ def validate_project(data: bytes) -> list[str]:
         want = None if any(one_build(r.raw) for r in found) else formats.get(owner)
         for record in found:
             got = slot_format(record.raw) if b"GAMETSPP" in record.raw else None
+            head = slot_header(record.raw[HEADER:])
+            if head is not None and head.instrument:      # the chain's input: `+86` is its width, not this
+                if got and owner in inputs and inputs[owner] != (1 if got == 2 else 0):
+                    problems.append(f"channel {owner} key {record.key}: a {'stereo' if got == 2 else 'mono'} instrument "
+                                    f"over a channel whose input byte reads {inputs[owner]}")
+                continue
             if want and got and got != want:
                 problems.append(
                     f"channel {owner} key {record.key}: plugin width {got} on a "
@@ -87,7 +118,7 @@ def validate_project(data: bytes) -> list[str]:
         if archive is not None and record.key != prop + 1 + archive:
             problems.append(f"channel {record.owner} key {record.key}: keyed archive {archive}, "
                             f"expected at key {prop + 1 + archive}")
-        elif archive is None and record.key < prop and len(payload) > SLOT_INDEX_AT \
+        elif archive is None and record.key < prop and len(payload) > SLOT_INDEX_AT and not _is_midi_effect(record.raw) \
                 and any(m in record.raw for m in _PLUGIN_MARKS) and payload[SLOT_INDEX_AT] != record.key - base:
             problems.append(f"channel {record.owner} key {record.key}: slot index {payload[SLOT_INDEX_AT]}, "
                             f"expected {record.key - base} for this project's numbering")

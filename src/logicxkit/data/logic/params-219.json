@@ -1,0 +1,296 @@
+{
+ "type": 219,
+ "variant": 1072,
+ "name": "EFM1",
+ "floats": 70,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Unison",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 5,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 c",
+   "min": -50.0,
+   "max": 50.0
+  },
+  {
+   "index": 6,
+   "name": "Main Level",
+   "unit": "dB",
+   "default": 2.5,
+   "evidence": "value",
+   "min": -84.0,
+   "max": 12.0
+  },
+  {
+   "index": 7,
+   "name": "Velocity Sensivity",
+   "unit": "",
+   "default": 0.64,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 11,
+   "name": "Carrier Harmonic",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0",
+   "min": 0.0,
+   "max": 36.0
+  },
+  {
+   "index": 12,
+   "name": "Carrier Fine",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.000",
+   "min": -0.5,
+   "max": 0.5
+  },
+  {
+   "index": 13,
+   "name": "Carrier FM Intensity",
+   "unit": "",
+   "default": 0.113,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 14,
+   "name": "Carrier Stereo Detune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0 c",
+   "min": 0.0,
+   "max": 50.0
+  },
+  {
+   "index": 16,
+   "name": "Carrier Fixed Freq",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 19,
+   "name": "Modulator Harmonic",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 36.0
+  },
+  {
+   "index": 20,
+   "name": "Modulator Fine",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.000",
+   "min": -0.5,
+   "max": 0.5
+  },
+  {
+   "index": 21,
+   "name": "Modulator Wave",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 9.0
+  },
+  {
+   "index": 25,
+   "name": "Sub Osc Level",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 30,
+   "name": "Mod Env Attack",
+   "unit": "ms",
+   "default": 0.03,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 32,
+   "name": "Mod Env Decay",
+   "unit": "ms",
+   "default": 240.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 33,
+   "name": "Mod Env Sustain",
+   "unit": "",
+   "default": 0.246,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 34,
+   "name": "Mod Env Release",
+   "unit": "ms",
+   "default": 58.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 35,
+   "name": "Mod Env FM Amount",
+   "unit": "",
+   "default": 0.63,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 36,
+   "name": "Mod Env Modulator Pitch Amount",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 41,
+   "name": "Vol Env Attack",
+   "unit": "ms",
+   "default": 0.48,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 43,
+   "name": "Vol Env Decay",
+   "unit": "ms",
+   "default": 500.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 44,
+   "name": "Vol Env Sustain",
+   "unit": "",
+   "default": 0.427,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 45,
+   "name": "Vol Env Release",
+   "unit": "ms",
+   "default": 72.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 49,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 0.26,
+   "evidence": "value",
+   "min": 0.01,
+   "max": 100.0
+  },
+  {
+   "index": 54,
+   "name": "LFO Amount Vib/FM",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "shown": "0.00",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 58,
+   "name": "Randomize Intensity",
+   "unit": "%",
+   "default": 7.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 100.0
+  },
+  {
+   "index": 64,
+   "name": "Ctrl FM Amount",
+   "unit": "",
+   "default": 0.28,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 66,
+   "name": "Ctrl Vibrato Amount",
+   "unit": "",
+   "default": 0.2,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 69,
+   "name": "Main Pitch Bend Range",
+   "unit": "semi",
+   "default": 2.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
+  }
+ ],
+ "unmapped": [
+  "Voices",
+  "Transpose",
+  "Glide",
+  "Randomize Trigger",
+  "Ctrl FM",
+  "Ctrl Vibrato",
+  "MIDI Mono Mode",
+  "Mono Mode Bend Range"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-efm1-*: 29 parameters named \u2014 20 matched by the number shown, 9 by coded saves. 8 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -12,19 +12,20 @@ from .chains import channel_references
 from .chains_channels import channel_name
 from .slot_width import plugin_variant
 from ..stream.stream import HEADER
-from .plugin_names import native_name, plugin_name
+from .plugin_names import native_name, own_name, plugin_name
 from .transplant import channel_slots
 
 
 def _slot_name(payload: bytes, type_id: int | None = None) -> str:
     """What to call a plugin slot when reporting what a chain replaces.
 
-    The name string first — it is the only thing a third-party slot carries — then the native
-    type id, then the bare id, so a report never says "?" about work someone is about to lose.
+    Logic's own plug-in by its slot header; else the name string — the only thing a third-party
+    slot carries — then a headerless block's type id, then the bare id, so a report never says
+    "?" about work someone is about to lose.
     """
     from ..._binary import find_blocks
 
-    name = plugin_name(payload)
+    name = own_name(payload) or plugin_name(payload)
     if name:
         return name
     if type_id is None:

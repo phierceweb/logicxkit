@@ -1,0 +1,78 @@
+{
+ "type": 313,
+ "variant": 2465,
+ "name": "Sample Alchemy",
+ "floats": 0,
+ "state": "text",
+ "opaque": [],
+ "params": [
+  {
+   "key": "source[1].SOn",
+   "name": "Source On A",
+   "unit": "",
+   "scale": 1.0,
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "key": "quickalchemy[1].QAShowZoom",
+   "name": "Mod 2 On",
+   "unit": "",
+   "scale": 1.0,
+   "default": 0.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Position A",
+  "Position B",
+  "Position C",
+  "Position D",
+  "Expression A",
+  "Expression B",
+  "Expression C",
+  "Expression D",
+  "Playback Speed A",
+  "Playback Speed B",
+  "Playback Speed C",
+  "Playback Speed D",
+  "Sustain",
+  "Pan A",
+  "Tune Fine A",
+  "Filter Cutoff",
+  "Filter Res",
+  "Glide",
+  "Sustain (2)",
+  "Source On B",
+  "Source On C",
+  "Source On D",
+  "Mod 3 On",
+  "Mod 3 Depth",
+  "Mod 4 On",
+  "Mod 4 Depth",
+  "Pitch Bend Range",
+  "Output Limiter",
+  "Granular Size A",
+  "Granular Density A",
+  "Granular Random Pan A",
+  "Granular Random Time A",
+  "Filter Global Mode",
+  "Record Enabled",
+  "Loop Start",
+  "Loop End",
+  "Duration",
+  "Edit Source A",
+  "SampleLock",
+  "Reverse",
+  "Zoom"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-sample-alchemy-*: a text state read by key; 2 parameters matched by the number shown; coded saves named none more (a row's move changes many keys). 41 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

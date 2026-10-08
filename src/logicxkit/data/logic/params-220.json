@@ -1,0 +1,300 @@
+{
+ "type": 220,
+ "variant": 1073,
+ "name": "EVOC 20 PolySynth",
+ "floats": 144,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Bands",
+   "unit": "",
+   "default": 10.0,
+   "evidence": "value",
+   "min": 5.0,
+   "max": 20.0
+  },
+  {
+   "index": 4,
+   "name": "Low Frequency",
+   "unit": "Hz",
+   "default": 80.0,
+   "evidence": "value",
+   "min": 75.0,
+   "max": 750.0
+  },
+  {
+   "index": 5,
+   "name": "High Frequency",
+   "unit": "Hz",
+   "default": 8000.0,
+   "evidence": "value",
+   "min": 800.0,
+   "max": 8000.0
+  },
+  {
+   "index": 6,
+   "name": "Formant Shift",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 7,
+   "name": "Formant Stretch",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "min": 0.5,
+   "max": 2.0
+  },
+  {
+   "index": 8,
+   "name": "Resonance",
+   "unit": "",
+   "default": 0.5,
+   "evidence": "value",
+   "min": 0.5,
+   "max": 4.0
+  },
+  {
+   "index": 9,
+   "name": "Freeze",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 10,
+   "name": "Attack",
+   "unit": "ms",
+   "default": 0.2,
+   "evidence": "value",
+   "min": 0.2,
+   "max": 200.0
+  },
+  {
+   "index": 11,
+   "name": "Release",
+   "unit": "ms",
+   "default": 63.0,
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
+  },
+  {
+   "index": 14,
+   "name": "U/V Sensivity",
+   "unit": "%",
+   "default": 100.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 15,
+   "name": "U/V Level",
+   "unit": "%",
+   "default": 30.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
+   "index": 20,
+   "name": "Output Level",
+   "unit": "dB",
+   "default": -8.0,
+   "evidence": "value",
+   "min": -60.0,
+   "max": 60.0
+  },
+  {
+   "index": 42,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 0.99,
+   "evidence": "value"
+  },
+  {
+   "index": 43,
+   "name": "LFO Waveform",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "row",
+   "shown": ""
+  },
+  {
+   "index": 44,
+   "name": "LFO -> Formant",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 83,
+   "name": "Max. Vibrato",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 88,
+   "name": "Voices",
+   "unit": "",
+   "default": 16.0,
+   "evidence": "row",
+   "min": 1.0,
+   "max": 16.0
+  },
+  {
+   "index": 90,
+   "name": "Bender Range",
+   "unit": "",
+   "default": 5.0,
+   "evidence": "value",
+   "min": 1.0,
+   "max": 12.0
+  },
+  {
+   "index": 94,
+   "name": "Ratio Fine",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 99.0
+  },
+  {
+   "index": 97,
+   "name": "Osc 1 Wave",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 49.0
+  },
+  {
+   "index": 98,
+   "name": "Osc 2 Wave",
+   "unit": "",
+   "default": 36.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 49.0
+  },
+  {
+   "index": 99,
+   "name": "Cutoff",
+   "unit": "",
+   "default": 0.87,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 100,
+   "name": "Resonance (2)",
+   "unit": "",
+   "default": 0.7,
+   "evidence": "value",
+   "min": 0.7,
+   "max": 10.0
+  },
+  {
+   "index": 101,
+   "name": "Noise Color",
+   "unit": "Hz",
+   "default": 80.0,
+   "evidence": "value",
+   "min": 80.0,
+   "max": 8000.0
+  },
+  {
+   "index": 102,
+   "name": "Noise Volume",
+   "unit": "",
+   "default": 0.16,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 103,
+   "name": "Osc Mix / Fmint",
+   "unit": "",
+   "default": 0.32,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 105,
+   "name": "ENV Attack",
+   "unit": "ms",
+   "default": 2200.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 106,
+   "name": "ENV Release",
+   "unit": "ms",
+   "default": 1150.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
+  },
+  {
+   "index": 107,
+   "name": "Unison",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code"
+  },
+  {
+   "index": 114,
+   "name": "Min. Vibrato",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": 0.0,
+   "max": 1.0
+  },
+  {
+   "index": 117,
+   "name": "Tune",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "code",
+   "min": -50.0,
+   "max": 50.0
+  }
+ ],
+ "unmapped": [
+  "LowBand Mode",
+  "HiBand Mode",
+  "Stereo",
+  "U/V Source",
+  "Analog",
+  "Glide",
+  "Synthesis",
+  "Kybd Mode",
+  "Osc1 Octave",
+  "LFO2 Rate",
+  "LFO2 Waveform",
+  "Out",
+  "Ensemble",
+  "Ratio Coarse"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-evoc-20-polysynth-*: 31 parameters named \u2014 21 matched by the number shown, 8 by coded saves, 2 by one save per row. 14 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -1,8 +1,8 @@
 """Which plug-ins a project references, and whether this Mac has them.
 
-A native slot carries Logic's `GAMETSPP` block with the plug-in's type id (`_binary.find_blocks`);
-a third-party slot embeds an AU preset plist whose `type`, `subtype` and `manufacturer` are the
-component identity (`au.services.embed`). The installed set is what `auval -a` lists — a
+A slot of Logic's own names itself in its header (`slot_identity`), with or without a state
+block; a third-party slot embeds an AU preset plist whose `type`, `subtype` and `manufacturer`
+are the component identity (`au.services.embed`). The installed set is what `auval -a` lists — a
 registry that keeps a component whose bundle has gone bad, as Logic's own launch does, so
 ``validate_components`` opens each one with `auval -v` when asked. Apple's own components are
 counted present without asking: Logic ships them.
@@ -19,7 +19,8 @@ from ....au.services.aupreset import parse_au_state
 from ....au.services.embed import find_au_plists
 from ..._binary import find_blocks
 from .binding import channels
-from .plugin_names import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name
+from .plugin_names import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name, own_name
+from .slot_identity import slot_header
 from .slot_width import plugin_variant
 from ..stream.stream import HEADER, project_records
 from .plugin_names import plugin_name
@@ -38,6 +39,7 @@ class PluginRef:
     native: bool
     component: tuple[str, str, str] | None     # (type, subtype, manufacturer) of a third-party AU
     side_chain: str | None = None              # what the project calls the slot's side-chain source
+    midi: bool = False                         # a MIDI effect, in the channel's MIDI FX slots
 
 
 @dataclass(frozen=True)
@@ -51,6 +53,9 @@ class Verdict:
 
 
 def _ref(label: str, key: int, payload: bytes) -> PluginRef | None:
+    own = own_name(payload)
+    if own is not None:
+        return PluginRef(label, key, own, True, None, midi=slot_header(payload).midi)
     blocks = find_blocks(payload)
     if blocks:
         type_id = blocks[0][1]
@@ -76,7 +81,11 @@ def plugin_identity(payload: bytes) -> tuple | None:
 
 
 def is_instrument_plugin(payload: bytes) -> bool:
-    """An instrument or generator — what an instrument channel's slot 1 holds."""
+    """An instrument or generator — what an instrument channel's slot 1 holds: the slot
+    header's own flag, else (a block with no header) the type."""
+    head = slot_header(payload)
+    if head is not None:
+        return head.instrument
     identity = plugin_identity(payload)
     if identity is None:
         return False

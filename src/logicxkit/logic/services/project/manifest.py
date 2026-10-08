@@ -36,7 +36,7 @@ def manifest_from_bytes(data: bytes, *, track_count: int | None = None) -> dict:
     widths = channel_formats(data)
     levels = read_levels(data)
     sends = read_sends(data)
-    chains = {c["label"]: c["chain"] for c in analyze(data)["channels"]}
+    chains = {c["label"]: c["chain"] for c in analyze(data, track_count)["channels"]}
     bus_labels = {c.label: c.label for c in chans.values() if c.label.startswith("Bus ")}
 
     stacks = read_stacks(data, track_count)

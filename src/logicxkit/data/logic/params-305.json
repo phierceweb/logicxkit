@@ -1,0 +1,45 @@
+{
+ "type": 305,
+ "variant": 2438,
+ "name": "Modifier",
+ "floats": 8,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 3,
+   "name": "Input Through",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  },
+  {
+   "index": 4,
+   "name": "Add",
+   "unit": "",
+   "default": 0.0,
+   "evidence": "value",
+   "min": -126.0,
+   "max": 126.0
+  },
+  {
+   "index": 5,
+   "name": "Scale",
+   "unit": "%",
+   "default": 200.0,
+   "evidence": "value",
+   "min": -200.0,
+   "max": 200.0
+  }
+ ],
+ "unmapped": [
+  "Input Event",
+  "Output Event"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-modifier-*: 3 parameters named \u2014 3 matched by the number shown. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

@@ -21,7 +21,8 @@ from .mixer import channel_formats, is_mixer_record
 from .slot_width import MONO, STEREO, slot_format
 from .slots import set_slot_bypass, slot_index_base
 from ..stream.stream import HEADER, ProjRecord, project_records, reassemble
-from .plugins import plugin_identity
+from .channel_width import STEREO_INPUT_AT, with_channel_io
+from .plugins import is_instrument_plugin, plugin_identity
 from .sidechain import carry
 from .slots import is_plugin_slot, property_key_base
 from ..stream.validate import require_full_walk, require_valid
@@ -70,9 +71,10 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
     since), whatever keys ``src`` used. A one-to-one move copies each slot byte for byte, id
     included. ``fan_out`` says the same source goes onto more than one channel: then each copy
     gets its own instance id, measured from a second instance of that plug-in in ``src``, and a
-    plug-in with no second instance is refused. Refuses a move that would overrun the key range,
-    cross a class version or change a third-party slot's width on an audio channel; ``force``
-    writes anyway.
+    plug-in with no second instance is refused. With the source's instrument among the slots,
+    the destination channel takes the source channel's width. Refuses a move that would overrun
+    the key range, cross a class version, change a third-party slot's width on an audio channel
+    or put an instrument on a channel that is not an instrument's; ``force`` writes anyway.
     """
     require_full_walk(dst)
     slots = channel_slots(src, src_owner)
@@ -82,6 +84,14 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
     first = slot_index_base(dst)
     base = property_key_base(dst)
     src_width, dst_width = channel_formats(src).get(src_owner), channel_formats(dst).get(dst_owner)
+    instrument = any(is_instrument_plugin(r.raw[HEADER:]) for r in slots)
+    if instrument and not force and not is_instrument_channel(dst, dst_owner):
+        raise ValueError("the source's slot 1 is its instrument, which goes onto an instrument channel, "
+                         "not an audio effect slot. Pass --force to write it anyway.")
+    if instrument and src_width in (MONO, STEREO) and is_instrument_channel(dst, dst_owner):
+        # the whole chain comes over, so the destination takes the source channel's width and input
+        dst = with_channel_io(dst, dst_owner, stereo_input=_stereo_input(src, src_owner), output=src_width)
+        dst_width = src_width
     offsets = [id_offsets(src, r.raw) if fan_out else () for r in slots]
     if not force:
         _refuse_unsafe(slots, first=first, base=base, dst_version=slot_class_version(dst))
@@ -105,6 +115,11 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
                  "width_mismatch": bool(src_width and dst_width and src_width != dst_width),
                  "ids": ids, "ref": channel_references(src).get(src_owner),
                  "side_chains": [note for _raw, note in carried if note]}
+
+
+def _stereo_input(data: bytes, owner: int) -> bool:
+    record = next(r.raw for r in project_records(data) if is_mixer_record(r) and r.owner == owner)
+    return record[HEADER + STEREO_INPUT_AT] == 1
 
 
 def id_offsets(data: bytes, raw: bytes) -> tuple[int, ...] | None:
