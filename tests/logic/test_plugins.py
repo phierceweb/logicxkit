@@ -6,7 +6,8 @@ import struct
 import unittest
 import _paths  # noqa: F401
 from logicxkit.logic.services.mixer.plugins import (
-    PluginRef, installed_from_auval, is_instrument_plugin, project_plugins, validate_components, verdict,
+    PluginRef, installed_from_auval, is_instrument_plugin, is_own, plugin_identity, project_plugins, validate_components,
+    verdict,
 )
 
 HDR = 36
@@ -227,6 +228,61 @@ class AuvalTest(unittest.TestCase):
                 "aufx Aln2 Srdx  -  Sound Radix: Auto-Align 2\n"
                 "aumu Nave Wald  -  Waldorf: Nave\n")
         self.assertEqual(installed_from_auval(text), {("aufx", "Aln2", "Srdx"), ("aumu", "Nave", "Wald")})
+
+
+class PluginIdentityTest(unittest.TestCase):
+    """The header first, so a slot with no float block is still one of Logic's own."""
+
+    def test_a_coded_slot_is_its_code_and_word_whatever_block_it_holds(self):
+        kit = headed_slot(0, 2, b"Drum Kit", b"MELC", 0, b"LMNA", flags=8)
+        piano = headed_slot(0, 2, b"Piano", b"MELC", 4, b"rWnI", flags=8, state=bytes(64) + float_block(312))
+        self.assertEqual(plugin_identity(kit[HDR:]), ("coded", "ANML", 0))
+        self.assertEqual(plugin_identity(piano[HDR:]), ("coded", "InWr", 4))
+
+    def test_a_native_slot_is_its_header_with_or_without_a_block(self):
+        remix = headed_slot(0, 4, b"Remix FX", b"GAME", 0, struct.pack("<I", 314))
+        eq = headed_slot(0, 3, b"Channel EQ", b"GAME", 0, struct.pack("<I", 236), state=float_block(236))
+        self.assertEqual(plugin_identity(remix[HDR:]), ("native", 314))
+        self.assertEqual(plugin_identity(eq[HDR:]), ("native", 236))
+
+    def test_a_shared_type_carries_its_variant_base(self):
+        slot = bytearray(headed_slot(0, 2, b"Echo", b"GAME", 33, struct.pack("<I", 147), state=float_block(147)))
+        struct.pack_into("<H", slot, HDR + 116, 216 + 1)
+        slot[HDR + 81] = 1
+        self.assertEqual(plugin_identity(bytes(slot)[HDR:]), ("native", 147, 216))
+
+    def test_the_table_follows_the_block_whatever_the_header_says(self):
+        from logicxkit.logic.services.mixer.plugin_params import load_tables, table_of
+        from logicxkit.logic.services.mixer.transplant import _describe
+        tables = load_tables()
+        eq = headed_slot(0, 3, b"Channel EQ", b"GAME", 0, struct.pack("<I", 236), state=float_block(236))
+        piano = headed_slot(0, 2, b"Piano", b"MELC", 4, b"rWnI", flags=8, state=bytes(64) + float_block(312))
+        kit = headed_slot(0, 2, b"Drum Kit", b"MELC", 0, b"LMNA", flags=8)
+        self.assertEqual(table_of(tables, eq[HDR:]).name, "Channel EQ")
+        self.assertEqual(table_of(tables, native_slot(0, 2, 236)[HDR:]).name, "Channel EQ")
+        self.assertIsNone(table_of(tables, kit[HDR:]))
+        self.assertEqual((_describe(piano), _describe(kit), _describe(third_party_slot(0, 3))),
+                         ("Studio Piano", "Drum Kit Designer", "FabF/FC2p"))
+
+    def test_an_automation_lane_on_a_coded_slot_is_named_through_its_block(self):
+        from logicxkit.logic.services.mixer.plugin_params import load_tables
+        from logicxkit.logic.services.regions.automation_names import _native
+        from logicxkit.logic.services.translate.translate import load_maps
+        tables, maps = load_tables(), load_maps()
+        piano = bytearray(headed_slot(0, 2, b"Piano", b"MELC", 4, b"rWnI", flags=8, state=bytes(64) + float_block(312, 600)))
+        struct.pack_into("<H", piano, HDR + 116, 2997 + 1)
+        piano[HDR + 81] = 1
+        volume = _native(bytes(piano)[HDR:], ("coded", "InWr", 4), 389, tables, maps)     # Main Volume is word 390
+        self.assertEqual((volume.plugin, volume.name), ("Studio Piano", "Main Volume"))
+        kit = headed_slot(0, 2, b"Drum Kit", b"MELC", 0, b"LMNA", flags=8)
+        self.assertEqual((_native(kit[HDR:], ("coded", "ANML", 0), 0, tables, maps).plugin,
+                          _native(kit[HDR:], ("coded", "ANML", 0), 0, tables, maps).name), ("Drum Kit Designer", None))
+
+    def test_a_block_with_no_header_and_a_third_party_slot_read_as_before(self):
+        self.assertEqual(plugin_identity(native_slot(0, 2, 236)[HDR:]), ("native", 236))
+        self.assertEqual(plugin_identity(third_party_slot(0, 3)[HDR:]), ("au", "aufx", "FC2p", "FabF"))
+        self.assertEqual([is_own(i) for i in (("coded", "SAM1", 0), ("native", 236), ("au", "aufx", "FC2p", "FabF"), None)],
+                         [True, True, False, False])
 
 
 if __name__ == "__main__":

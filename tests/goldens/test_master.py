@@ -107,7 +107,8 @@ class WriteOnTheBlankTest(unittest.TestCase):
     def test_the_example_config_places_the_chain(self):
         from pathlib import Path
         from logicxkit.logic import chain_plan
-        from logicxkit.logic.services.mixer.chains import load_chain_config, load_extra_donors
+        from logicxkit.logic.services.mixer.chain_donors import load_extra_donors
+        from logicxkit.logic.services.mixer.chains import load_chain_config
         from logicxkit.logic.services.mixer.insert import insert_slots
         from logicxkit.utils.data import data_dirs
         data = project_data(_goldens.path("blank-base"))
@@ -130,7 +131,9 @@ class WriteOnTheBlankTest(unittest.TestCase):
         import struct
         from pathlib import Path
         from logicxkit.logic import chain_plan
-        from logicxkit.logic.services.mixer.chains import load_chain_config, load_extra_donors, verify_channel_values
+        from logicxkit.logic.services.mixer.chain_checks import verify_channel_values
+        from logicxkit.logic.services.mixer.chain_donors import load_extra_donors
+        from logicxkit.logic.services.mixer.chains import load_chain_config
         from logicxkit.logic.services.mixer.insert import insert_slots
         from logicxkit.utils.data import data_dirs
         data = project_data(_goldens.path("blank-base"))
@@ -148,9 +151,9 @@ class WriteOnTheBlankTest(unittest.TestCase):
 
 @_goldens.needs("master-ours-resave-logic", "blank-base")
 class ResaveTest(unittest.TestCase):
-    """Logic opened the chain the example config wrote onto the blank, showed every configured
-    value in the plug-in windows and re-saved it; the re-save keeps the chain and the floats,
-    the Multipressor ratio snapped to Logic's own step."""
+    """Logic's re-save of the example chain written with ratio 2.5 and Q 0.8 (2026-09-16): it keeps
+    the chain and the floats, those two on Logic's own slider positions, 2.511 and 0.79, which the
+    config and the chain's grid now put there."""
 
     def test_the_resave_keeps_the_chain_and_its_parameters(self):
         from pathlib import Path
@@ -162,8 +165,12 @@ class ResaveTest(unittest.TestCase):
         for type_id, floats in inserts:
             for name, value in wanted[by_type[type_id]].items():
                 with self.subTest(NAMES[type_id], parameter=name):
-                    places = 1 if name in ("band1_ratio", "peak3_q") else 3   # Logic snaps both to its steps
+                    places = 1 if name == "band1_ratio" else 3
                     self.assertAlmostEqual(floats[PARAMS[type_id][name]], float(value), places=places)
+            if type_id == 194:
+                self.assertAlmostEqual(floats[PARAMS[194]["band1_ratio"]], 2.511, places=3)     # Logic's position for a written 2.5
+            if type_id == 243:
+                self.assertAlmostEqual(floats[PARAMS[243]["peak3_q"]], 0.79, places=4)            # Logic's position for a written 0.8
 
 
 if __name__ == "__main__":

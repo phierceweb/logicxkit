@@ -12,63 +12,81 @@
    "name": "LFO Mix",
    "unit": "%",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 4,
    "name": "Feedback",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 5,
    "name": "Sweep Floor",
    "unit": "Hz",
    "default": 550.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 6,
    "name": "Sweep Ceiling",
    "unit": "Hz",
    "default": 13200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 7,
    "name": "Stages",
    "unit": "",
    "default": 12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 4.0,
+   "max": 12.0
   },
   {
    "index": 8,
    "name": "LFO Env Follow",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 9,
    "name": "Phase",
    "unit": "\u00b0",
    "default": 180.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -180.0,
+   "max": 180.0
   },
   {
    "index": 10,
    "name": "Output Mix",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 11,
    "name": "Env Follow",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 12,
@@ -97,14 +115,18 @@
    "name": "LP Cutoff",
    "unit": "Hz",
    "default": 20000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 15,
    "name": "HP Cutoff",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 2000.0
   },
   {
    "index": 19,

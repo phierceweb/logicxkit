@@ -71,9 +71,8 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
     number the lane carries."""
     from .services.mixer.binding import bound_channels
     from .services.stream.stream import HEADER
-    from .services.mixer.plugin_params import load_tables, table_for
-    from .services.mixer.plugins import plugin_identity
-    from .services.mixer.slot_width import plugin_variant
+    from .services.mixer.plugin_params import load_tables, table_of
+    from .services.mixer.plugins import is_own, plugin_identity
     from .services.mixer.transplant import channel_slots, slot_at, slot_position
     from .services.translate.translate import load_maps, map_for
     owner = bound_channels(data).get(obj)
@@ -85,9 +84,9 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
         raise CommandError(f"{track}: slot {slot} holds no plug-in (plug-ins in slot(s) {held})")
     payload = record.raw[HEADER:]
     identity = plugin_identity(payload)
-    if identity and identity[0] == "native":
+    if is_own(identity):
         from .services.mixer.slider import point_for, slider_by_name
-        table = table_for(load_tables(), identity[1], plugin_variant(payload))
+        table = table_of(load_tables(), payload)
         m = map_for(payload, load_maps())
         param = next((p for p in (table.params if table else []) if p.name.lower() == name.lower()), None)
         if table is None or param is None:

@@ -26,7 +26,7 @@ class RangesTest(unittest.TestCase):
                     if isinstance(default, (int, float)):
                         word = int_word(default) if p.get("kind") == "int" and p.get("offset") is None and abs(default) < 1e-30 else default
                         self.assertTrue(p["min"] - 1e-6 <= word * p.get("scale", 1.0) <= p["max"] + 1e-6, (word, p["min"], p["max"]))
-        self.assertEqual((ranged, tables_with), (877, 41))          # a fold that drops ranges shows here
+        self.assertEqual((ranged, tables_with), (1346, 97))          # a fold that drops ranges shows here
 
     def test_a_number_outside_the_range_is_refused(self):
         from _fixtures import chunk

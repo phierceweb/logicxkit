@@ -52,7 +52,9 @@
    "name": "Gain",
    "unit": "",
    "default": 3.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 12,
@@ -70,35 +72,45 @@
    "name": "Bass",
    "unit": "",
    "default": 3.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 15,
    "name": "Mids",
    "unit": "",
    "default": 6.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 16,
    "name": "Mid Range",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2.0
   },
   {
    "index": 17,
    "name": "Treble",
    "unit": "",
    "default": 6.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 21,
    "name": "Master",
    "unit": "",
    "default": 4.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 25,
@@ -116,14 +128,18 @@
    "name": "Comp Amount",
    "unit": "",
    "default": 4.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 28,
    "name": "Comp Gain",
    "unit": "",
    "default": 5.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 30,
@@ -141,70 +157,90 @@
    "name": "40 Hz",
    "unit": "dB",
    "default": 5.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 34,
    "name": "100 Hz",
    "unit": "dB",
    "default": 3.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 35,
    "name": "250 Hz",
    "unit": "dB",
    "default": 0.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 36,
    "name": "625 Hz",
    "unit": "dB",
    "default": 3.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 37,
    "name": "1560 Hz",
    "unit": "dB",
    "default": 5.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 38,
    "name": "3900 Hz",
    "unit": "dB",
    "default": 5.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 39,
    "name": "6600 Hz",
    "unit": "dB",
    "default": 6.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -12.0,
+   "max": 12.0
   },
   {
    "index": 51,
    "name": "Microphone Pos X",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 53,
    "name": "Microphone Pos Z",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 64,
    "name": "Amp/DI Mix",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 65,

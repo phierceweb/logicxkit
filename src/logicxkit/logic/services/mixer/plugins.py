@@ -20,7 +20,7 @@ from ....au.services.embed import find_au_plists
 from ..._binary import find_blocks
 from .binding import channels
 from .plugin_names import NATIVE_INSTRUMENTS, PLUGIN_VARIANTS, native_name, own_name
-from .slot_identity import slot_header
+from .slot_identity import CODED, NATIVE, slot_header
 from .slot_width import plugin_variant
 from ..stream.stream import HEADER, project_records
 from .plugin_names import plugin_name
@@ -70,14 +70,37 @@ def _ref(label: str, key: int, payload: bytes) -> PluginRef | None:
 
 
 def plugin_identity(payload: bytes) -> tuple | None:
-    """``("native", type_id)`` — ``("native", type_id, variant)`` where the type is shared
-    (`PLUGIN_VARIANTS`) — or ``("au", type, subtype, manufacturer)`` for a slot payload."""
+    """What a slot holds, its header first (`slot_identity`), so a slot with no float block — a
+    sampler's, Alchemy's, a stateless Remix FX — is known too: ``("native", type_id)``, or ``("native",
+    type_id, variant)`` where the type is shared (`PLUGIN_VARIANTS`); ``("coded", code, word)``
+    for one Logic names by a four-letter code (`CODED_NAMES`); ``("au", type, subtype,
+    manufacturer)`` for a third-party slot. A record with no header goes by its block."""
+    head = slot_header(payload)
+    if head is not None and head.maker == NATIVE and isinstance(head.code, int) and head.code:
+        return _native_identity(head.code, payload)
+    if head is not None and head.maker == CODED:
+        return ("coded", head.code, head.word)
     blocks = find_blocks(payload)
     if blocks:
-        type_id = blocks[0][1]
-        return ("native", type_id, plugin_variant(payload)) if type_id in PLUGIN_VARIANTS else ("native", type_id)
+        return _native_identity(blocks[0][1], payload)
     ref = _ref("", 0, payload)
     return ("au", *ref.component) if ref is not None and ref.component else None
+
+
+def _native_identity(type_id: int, payload: bytes) -> tuple:
+    return ("native", type_id, plugin_variant(payload)) if type_id in PLUGIN_VARIANTS else ("native", type_id)
+
+
+def is_own(identity: tuple | None) -> bool:
+    """One of Logic's own, with a type id or a four-letter code."""
+    return identity is not None and identity[0] in ("native", "coded")
+
+
+def header_only(payload: bytes) -> bool:
+    """One of Logic's own known by its header alone, with no float block (a sampler, Alchemy, a
+    stateless Remix FX; the Studio instruments carry a 312 block): its instance-id bytes are
+    unmeasured, so nothing stamps them."""
+    return is_own(plugin_identity(payload)) and not find_blocks(payload)
 
 
 def is_instrument_plugin(payload: bytes) -> bool:

@@ -12,63 +12,81 @@
    "name": "Dry",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Freq Mix",
    "unit": "",
    "default": 57.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Ratio High",
    "unit": "",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 8.0
   },
   {
    "index": 4,
    "name": "Ratio Low",
    "unit": "",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 8.0
   },
   {
    "index": 5,
    "name": "Center High",
    "unit": "Hz",
    "default": 130.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 40.0,
+   "max": 2000.0
   },
   {
    "index": 6,
    "name": "Bandwidth High",
    "unit": "",
    "default": 0.26,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.2,
+   "max": 2.0
   },
   {
    "index": 7,
    "name": "Center Low",
    "unit": "Hz",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 40.0,
+   "max": 2000.0
   },
   {
    "index": 8,
    "name": "Bandwidth Low",
    "unit": "",
    "default": 0.33,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.2,
+   "max": 2.0
   },
   {
    "index": 9,
    "name": "Wet",
    "unit": "%",
    "default": 110.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 500.0
   }
  ],
  "unmapped": [],

@@ -21,14 +21,18 @@
    "name": "Left Rate",
    "unit": "",
    "default": 6.85,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 8.0
   },
   {
    "index": 4,
    "name": "Right Rate",
    "unit": "",
    "default": 6.85,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 8.0
   },
   {
    "index": 5,

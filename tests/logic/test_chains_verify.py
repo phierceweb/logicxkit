@@ -242,5 +242,33 @@ class TrackResolutionTest(unittest.TestCase):
         self.assertEqual(default_tracks(data, {"Audio 1"}), ["Audio 1"])
 
 
+class DefaultTracksTest(unittest.TestCase):
+    """The tracks the driver reads: a channel by the header of the row bound to it; the output by
+    its own row when one is shown, else as Stereo Out, the header Logic names it by — never by the
+    file's label (Output 1-2), which no header carries."""
+
+    @staticmethod
+    def _project(master_row: bool):
+        from _records import chan, env_obj, marker, proj, track, uuid
+        rows = [track(0, 88)] + ([track(1, 80, flag=3)] if master_row else [])
+        return proj(env_obj(88, "Kick In"), env_obj(80, "Master", grouping=True),
+                    chan(0, "Audio 1", uuid=uuid(88)), chan(402, "Output 1-2", uuid=uuid(80), size=201), *rows, marker())
+
+    def test_the_output_without_a_row_is_read_as_stereo_out(self):
+        from logicxkit.logic.orchestrators.chains_verify import default_tracks
+        data = self._project(master_row=False)
+        self.assertEqual(default_tracks(data, {"Stereo Out"}), ["Stereo Out"])
+        self.assertEqual(default_tracks(data, {"Output 1-2"}), ["Stereo Out"])
+        self.assertEqual(default_tracks(data, {"Audio 1", "Stereo Out"}), ["Kick In", "Stereo Out"])
+
+    def test_a_shown_master_row_names_the_output_and_an_unbound_label_stands(self):
+        from logicxkit.logic.orchestrators.chains_verify import channel_label, default_tracks
+        data = self._project(master_row=True)
+        self.assertEqual(default_tracks(data, {"Output 1-2"}), ["Master"])
+        self.assertEqual(default_tracks(data, {"Stereo Out"}), ["Master"])       # what `chains --verify` passes
+        self.assertEqual(default_tracks(data, {"Bus 7"}), ["Bus 7"])
+        self.assertEqual((channel_label(data, "Stereo Out"), channel_label(data, "Kick In")), ("Output 1-2", "Audio 1"))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -285,7 +285,9 @@
    "unit": "ms",
    "default": 0.3999999761581421,
    "evidence": "code",
-   "shown": "0.40 ms"
+   "shown": "0.40 ms",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 704,
@@ -293,7 +295,9 @@
    "unit": "ms",
    "default": 520.0,
    "evidence": "code",
-   "shown": "520 ms"
+   "shown": "520 ms",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 705,
@@ -310,7 +314,9 @@
    "name": "Filter Env Release",
    "unit": "ms",
    "default": 270.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10000.0
   },
   {
    "index": 707,
@@ -327,7 +333,9 @@
    "unit": "ms",
    "default": 0.3999999761581421,
    "evidence": "code",
-   "shown": "0.40 ms"
+   "shown": "0.40 ms",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 804,
@@ -335,7 +343,9 @@
    "unit": "ms",
    "default": 520.0,
    "evidence": "code",
-   "shown": "520 ms"
+   "shown": "520 ms",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 805,
@@ -352,7 +362,9 @@
    "name": "Amp Env Release",
    "unit": "ms",
    "default": 38.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10000.0
   },
   {
    "index": 807,

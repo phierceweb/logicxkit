@@ -12,49 +12,63 @@
    "name": "Attack Time",
    "unit": "ms",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 2,
    "name": "Attack Gain",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Release Time",
    "unit": "ms",
    "default": 200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 4,
    "name": "Release Gain",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 5,
    "name": "Threshold",
    "unit": "dB",
    "default": -100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 0.0
   },
   {
    "index": 6,
    "name": "Lookahead",
    "unit": "ms",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 7,
    "name": "Out Level",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   }
  ],
  "unmapped": [],

@@ -12,7 +12,9 @@
    "name": "Reference",
    "unit": "Hz",
    "default": 440.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 410.0,
+   "max": 470.0
   },
   {
    "index": 4,

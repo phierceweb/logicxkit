@@ -12,63 +12,81 @@
    "name": "Threshold",
    "unit": "dB",
    "default": -50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 0.0
   },
   {
    "index": 2,
    "name": "Hysteresis",
    "unit": "dB",
    "default": -3.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 0.0
   },
   {
    "index": 3,
    "name": "Reduction",
    "unit": "dB",
    "default": -100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 0.0
   },
   {
    "index": 4,
    "name": "Attack",
    "unit": "ms",
    "default": 3.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 5,
    "name": "Hold",
    "unit": "ms",
    "default": 40.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1000.0
   },
   {
    "index": 6,
    "name": "Release",
    "unit": "ms",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 7,
    "name": "High Cutoff",
    "unit": "Hz",
    "default": 20000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 200.0,
+   "max": 20000.0
   },
   {
    "index": 8,
    "name": "Low Cutoff",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 10000.0
   },
   {
    "index": 9,
    "name": "Lookahead",
    "unit": "ms",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 10,

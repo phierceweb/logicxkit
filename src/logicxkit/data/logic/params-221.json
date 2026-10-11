@@ -12,224 +12,288 @@
    "name": "Level 1 A",
    "unit": "%",
    "default": 28.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 47,
    "name": "Level 2 A",
    "unit": "%",
    "default": 62.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 52,
    "name": "Level 6 A",
    "unit": "%",
    "default": 52.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 27,
    "name": "Level 7 A",
    "unit": "%",
    "default": 68.099,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 62,
    "name": "Level 8 A",
    "unit": "%",
    "default": 66.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 61,
    "name": "Level 10 A",
    "unit": "%",
    "default": 55.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 63,
    "name": "Level 15 A",
    "unit": "%",
    "default": 78.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 51,
    "name": "Level 18 A",
    "unit": "%",
    "default": 69.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 40,
    "name": "Level 20 A",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 108,
    "name": "Boost A",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 3,
    "name": "Bands",
    "unit": "",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 5.0,
+   "max": 20.0
   },
   {
    "index": 12,
    "name": "Stereo",
    "unit": "",
    "default": 5.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 5.0
   },
   {
    "index": 4,
    "name": "Low Frequency",
    "unit": "Hz",
    "default": 80.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 75.0,
+   "max": 750.0
   },
   {
    "index": 5,
    "name": "High Frequency",
    "unit": "Hz",
    "default": 8000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 800.0,
+   "max": 8000.0
   },
   {
    "index": 6,
    "name": "Formant Shift",
    "unit": "",
    "default": -0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -2.0,
+   "max": 2.0
   },
   {
    "index": 8,
    "name": "Resonance",
    "unit": "",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.5,
+   "max": 16.0
   },
   {
    "index": 46,
    "name": "Level 1 B",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 48,
    "name": "Level 3 B",
    "unit": "%",
    "default": 46.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 49,
    "name": "Level 4 B",
    "unit": "%",
    "default": 53.799,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 50,
    "name": "Level 5 B",
    "unit": "%",
    "default": 91.8,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 53,
    "name": "Level 7 B",
    "unit": "%",
    "default": 52.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 54,
    "name": "Level 9 B",
    "unit": "%",
    "default": 84.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 55,
    "name": "Level 10 B",
    "unit": "%",
    "default": 70.8,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 56,
    "name": "Level 11 B",
    "unit": "%",
    "default": 51.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 57,
    "name": "Level 12 B",
    "unit": "%",
    "default": 39.1,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 58,
    "name": "Level 13 B",
    "unit": "%",
    "default": 76.599,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 59,
    "name": "Level 14 B",
    "unit": "%",
    "default": 81.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 60,
    "name": "Level 15 B",
    "unit": "%",
    "default": 70.8,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 64,
    "name": "Level 19 B",
    "unit": "%",
    "default": 79.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 65,
    "name": "Level 20 B",
    "unit": "%",
    "default": 61.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 109,
    "name": "Boost B",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 66,
    "name": "Level A<>B",
    "unit": "%",
    "default": 48.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 110,
@@ -247,14 +311,18 @@
    "name": "LFO -> Xfade",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 20,
    "name": "Output Level",
    "unit": "dB",
    "default": 7.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 60.0
   }
  ],
  "unmapped": [

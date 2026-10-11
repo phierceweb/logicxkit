@@ -12,56 +12,72 @@
    "name": "Feedback",
    "unit": "%",
    "default": 61.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 600.0
   },
   {
    "index": 5,
    "name": "High Cut",
    "unit": "Hz",
    "default": 1500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 6,
    "name": "Low Cut",
    "unit": "Hz",
    "default": 520.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 10,
    "name": "Smoothing",
    "unit": "ms",
    "default": 40.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1000.0
   },
   {
    "index": 11,
    "name": "Flutter Rate",
    "unit": "Hz",
    "default": 1.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 12,
    "name": "Flutter Intensity",
    "unit": "%",
    "default": 13.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 13,
    "name": "LFO Rate",
    "unit": "Hz",
    "default": 0.38,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 14,
    "name": "LFO Intensity",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 15,
@@ -79,21 +95,27 @@
    "name": "Dry",
    "unit": "%",
    "default": 90.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 21,
    "name": "Wet",
    "unit": "%",
    "default": 30.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 22,
    "name": "Clip Threshold",
    "unit": "dB",
    "default": -5.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   },
   {
    "index": 24,
@@ -101,10 +123,8 @@
    "unit": "",
    "default": 0.0,
    "evidence": "value",
-   "choices": [
-    "Off",
-    "On"
-   ]
+   "min": -100.0,
+   "max": 100.0
   }
  ],
  "unmapped": [

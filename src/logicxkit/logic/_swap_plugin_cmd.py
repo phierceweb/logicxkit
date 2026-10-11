@@ -7,14 +7,14 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._add_plugin_cmd import _channels, _offsets, _pick
-from ._edit import CommandError, edit_copy, owner_by_label, plan_alternatives, written_alternatives
-from ._plugin_settings import replace_slot, set_specs, translation
+from ._edit import CommandError, edit_copy, owner_by_label, plan_step, written_alternatives
+from ._plugin_settings import replace_slot, set_specs
 
 
 def slot_names(payload: bytes, maps) -> set[str]:
     """Every name a slot answers to, lowercased: Logic's name for one of its own, its type id,
     a third-party's `Manufacturer/Subtype` code, and the plug-in's name in its translation map."""
-    from .services.mixer.plugin_names import native_name
+    from .services.mixer.plugin_names import native_name, own_name
     from .services.mixer.plugins import plugin_identity
     from .services.translate.translate import map_for
     identity = plugin_identity(payload)
@@ -22,6 +22,10 @@ def slot_names(payload: bytes, maps) -> set[str]:
     if identity and identity[0] == "native":
         names.add(str(identity[1]))
         if (name := native_name(identity[1], identity[2] if len(identity) > 2 else None)):
+            names.add(name)
+    elif identity and identity[0] == "coded":                      # a sampler, a Studio instrument
+        names.add(str(identity[1]))
+        if (name := own_name(payload)):
             names.add(name)
     elif identity:
         names.add(f"{identity[3]}/{identity[2]}")
@@ -46,12 +50,26 @@ def _labels(args, data: bytes, count) -> list[str]:
     return list(dict.fromkeys(ref.channel for ref, _p in slot_payloads(data)))
 
 
+def shared_names(source: str) -> list[str]:
+    """The plug-ins a type id or four-letter code names when several share it (`147`: Tape Delay
+    and Echo; `InWr`: the Studio instruments), else none."""
+    from .services.mixer.plugin_names import CODED_NAMES, PLUGIN_VARIANTS
+    key = source.strip().lower()
+    names = [name for (code, _word), name in CODED_NAMES.items() if code.lower() == key]
+    names += [name for type_id, variants in PLUGIN_VARIANTS.items() if str(type_id) == key for name in variants.values()]
+    return sorted(names) if len(names) > 1 else []
+
+
 def _refusal(project: Path, args, donors, maps) -> str | None:
-    """Why nothing would be swapped, read before any copy is made: ``--to`` names the plug-in
-    ``--from`` does, or no slot of any alternative holds ``--from``."""
+    """Why nothing would be swapped, read before any copy is made: ``--from`` is an id several
+    plug-ins share, ``--to`` names the plug-in ``--from`` does, or no slot of any alternative
+    holds ``--from``."""
     from .services.stream.stream import HEADER
     from .services.mixer.plugins import slot_payloads
     from .services.project.project import project_metadata
+    if (several := shared_names(args.source)):
+        shown = ", ".join(several[:6]) + (", …" if len(several) > 6 else "")
+        return f"--from {args.source} names {len(several)} plug-ins ({shown}); name the one to replace"
     target = _pick(donors, args.target, None, None)
     if args.source.strip().lower() in slot_names(target.raw[HEADER:], maps):
         return f"--from {args.source} and --to {args.target} name the same plug-in ({target.label})"
@@ -64,18 +82,6 @@ def _refusal(project: Path, args, donors, maps) -> str | None:
         held |= {ref.name for ref, _p in slot_payloads(data)}
     where = " on the channels named" if args.channel or args.stack else ""
     return f"no slot holds {args.source!r}{where}; the project holds: {', '.join(sorted(held)) or 'no plug-in'}"
-
-
-def _plan_lines(data: bytes, owner: int, at: int, donor, translate: bool) -> list[str]:
-    """What the slot would become; a settings crossing that would be refused raises as the write would."""
-    if not translate:
-        return [f"slot {at}: {donor.label} in, at its defaults"]
-    carried = translation(data, owner, at, donor)
-    lines = [f"slot {at}: {donor.label} in"]
-    lines += [f"    {name} = {value}" for name, value in carried.values.items()]
-    lines += [f"    band {band.number}: {band.label()}" for band in carried.bands]
-    lines += [f"    {note}" for note in carried.notes]
-    return lines
 
 
 def cmd_swap_plugin(args) -> int:
@@ -104,14 +110,11 @@ def cmd_swap_plugin(args) -> int:
         for label in _labels(args, data, count):
             owner = owner_by_label(data, label)
             for at in matching_slots(data, owner, args.source, maps):
-                try:
+                try:                                    # a plan runs the same write in memory and drops it
                     donor = _pick(donors, args.target, formats.get(owner), version)
-                    if args.plan:
-                        lines = _plan_lines(data, owner, at, donor, not args.no_translate)
-                    else:
-                        data, lines = replace_slot(data, owner, at, donor, id_offsets=_offsets(data, donor, libraries),
-                                                   settings=settings, translate=not args.no_translate,
-                                                   keep_automation=args.keep_automation, force=args.force)
+                    data, lines = replace_slot(data, owner, at, donor, id_offsets=_offsets(data, donor, libraries),
+                                               settings=settings, translate=not args.no_translate,
+                                               keep_automation=args.keep_automation, force=args.force)
                 except LookupError as e:
                     raise CommandError(f"{alt}: {label}: {e}") from None
                 except ValueError as e:
@@ -130,8 +133,7 @@ def cmd_swap_plugin(args) -> int:
         if (why := _refusal(project, args, donors, maps)):
             raise CommandError(why)
         if args.plan:
-            first = plan_alternatives(project)[0]
-            step(first.read_bytes(), None, first)
+            plan_step(project, step)
         else:
             edit_copy(project, Path(args.out), step)
     except (CommandError, LookupError) as e:
@@ -147,7 +149,8 @@ def register(sub) -> None:
     ap = sub.add_parser("swap-plugin", help="every slot holding one plug-in replaced by another, settings and lanes carried (writes a copy)")
     ap.add_argument("project")
     ap.add_argument("--from", required=True, dest="source", metavar="NAME",
-                    help="the plug-in to replace: Logic's name, a `Manufacturer/Subtype` code, a native type id or its map's name")
+                    help="the plug-in to replace: Logic's name, a `Manufacturer/Subtype` code, a native type id, a coded "
+                         "plug-in's four-letter code or its map's name; an id several plug-ins share is refused")
     ap.add_argument("--to", required=True, dest="target", metavar="NAME", help="the library plug-in to put in its place")
     ap.add_argument("--out", help="output directory (a copy)")
     ap.add_argument("--plan", action="store_true", help="say what would change and how each slot's settings would cross; writes nothing")

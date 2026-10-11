@@ -22,7 +22,7 @@ from .slot_identity import NATIVE, CODED, slot_header
 from .slot_width import plugin_variant, slot_format
 from .slots import slot_index_base
 from ..stream.stream import HEADER, VER_OFF, project_records
-from .plugins import plugin_identity
+from .plugins import header_only, plugin_identity
 from .plugin_names import plugin_name
 from .slots import is_plugin_slot, property_key_base
 from .transplant import id_offsets, window_offsets
@@ -107,6 +107,8 @@ def library_offsets(donor: Donor, libraries: list[Path]) -> tuple[int, ...]:
     are two real instances to measure between."""
     payload = donor.raw[HEADER:]
     identity = plugin_identity(payload)
+    if header_only(payload):
+        return ()
     others = []
     for library in libraries:
         for path in sorted(Path(library).glob(f"*{SUFFIX}")) if Path(library).is_dir() else ():

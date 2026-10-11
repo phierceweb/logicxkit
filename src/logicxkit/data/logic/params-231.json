@@ -125,56 +125,72 @@
    "name": "Filter Attack X1",
    "unit": "",
    "default": 0.025,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 44,
    "name": "Filter Attack Y1",
    "unit": "",
    "default": 0.71,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 45,
    "name": "Filter Attack X2",
    "unit": "",
    "default": 0.075,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 46,
    "name": "Filter Attack Y2",
    "unit": "",
    "default": 0.64,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 49,
    "name": "Filter Decay X1",
    "unit": "",
    "default": 0.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 50,
    "name": "Filter Decay Y1",
    "unit": "",
    "default": 0.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 51,
    "name": "Filter Decay X2",
    "unit": "",
    "default": 0.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 52,
    "name": "Filter Decay Y2",
    "unit": "",
    "default": 0.35,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 54,
@@ -192,28 +208,36 @@
    "name": "Filter Resonance",
    "unit": "",
    "default": 0.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.6,
+   "max": 60.0
   },
   {
    "index": 58,
    "name": "Low Shelf Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 59,
    "name": "Low Shelf Freq",
    "unit": "Hz",
    "default": 200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 60,
    "name": "X-Over Freq",
    "unit": "Hz",
    "default": 230.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 200.0,
+   "max": 16000.0
   },
   {
    "index": 63,
@@ -231,7 +255,9 @@
    "name": "Stereo Spread High",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   }
  ],
  "unmapped": [

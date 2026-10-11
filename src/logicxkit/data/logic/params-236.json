@@ -295,10 +295,12 @@
   },
   {
    "index": 33,
-   "name": "Master",
-   "unit": "Gain:dB",
+   "name": "Master Gain",
+   "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 34,

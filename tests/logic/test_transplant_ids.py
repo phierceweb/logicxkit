@@ -47,6 +47,16 @@ def au(owner: int, key: int, n: int, *, fmt: int = MONO, subtype: str = "Aln2") 
     return rec(b"UCuA", owner, key, bytes(p[:200 + len(state) + 8]) + _tail(n), 5)
 
 
+def coded(owner: int, key: int, n: int) -> bytes:
+    """One of Logic's own with no float block (I/O: a MELC header, code `_IO_`), an id-like tail."""
+    p = bytearray(400)
+    p[6] = key - 4
+    struct.pack_into("<H", p, 4, 1)
+    p[120:123], p[132:136], p[140:144] = b"I/O", b"MELC", b"_OI_"
+    _widths(p, MONO)
+    return rec(b"UCuA", owner, key, bytes(p) + _tail(n), 5)
+
+
 def ref(owner: int, key: int) -> bytes:
     p = bytearray(192)
     p[16:25] = b"Strip.cst"
@@ -68,6 +78,15 @@ def dst_project() -> bytes:
 
 
 class InstanceIdTest(unittest.TestCase):
+    def test_a_slot_with_no_float_block_has_no_measured_id_so_a_fan_out_is_refused(self):
+        """Two I/O slots differ in their tails, but which bytes are the id is unmeasured for a slot
+        with no block; the header names it, the fan-out still refuses."""
+        from logicxkit.logic.services.mixer.transplant import id_offsets
+        src = proj(mono_chan(1, "Audio 1"), coded(1, 4, 1), coded(1, 5, 2), ref(1, 10))
+        self.assertIsNone(id_offsets(src, channel_slots(src, 1)[0].raw))
+        with self.assertRaisesRegex(ValueError, "I/O goes onto more than one channel, and the source holds no second instance"):
+            transplant(src, dst_project(), src_owner=1, dst_owner=3, fan_out=True)
+
     def _fan(self, src: bytes, force: bool = False) -> bytes:
         data = dst_project()
         for o in (3, 4, 5):

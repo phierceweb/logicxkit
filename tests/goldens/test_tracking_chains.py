@@ -102,6 +102,21 @@ class MadeLatentTest(unittest.TestCase):
         self.assertIn("slot 4: Multipressor bypassed: it carries lookahead", out.split("Audio 3", 1)[1])
 
 
+@_goldens.needs("sonible-mono", "stockfx-dr-mono")
+class PlanAsWrittenTest(unittest.TestCase):
+    def test_a_plan_prints_the_lines_its_write_prints(self):
+        """The plan runs the write in memory: swaps, bypasses, and a removal's dropped points alike."""
+        def slot_lines(text: str) -> list[str]:
+            return [line for line in text.splitlines() if line.startswith("  ")]
+        for key in ("sonible-mono", "stockfx-dr-mono"):
+            with self.subTest(key), tempfile.TemporaryDirectory() as tmp:
+                (code, plan), (wrote, write) = _run(key, None), _run(key, tmp)
+                self.assertEqual((code, wrote), (0, 0), plan + write)
+                self.assertTrue(slot_lines(plan))
+                self.assertEqual(slot_lines(plan), slot_lines(write))
+        self.assertIn("automation point(s) with it", plan)
+
+
 @_goldens.needs("trk-neutron-ours", "trk-neutron-resave-logic", "trk-sonible-ours", "trk-sonible-resave-logic")
 class LogicShowedTest(unittest.TestCase):
     def test_the_derived_eq_and_compressor_read_as_written_and_the_bypasses_were_kept(self):

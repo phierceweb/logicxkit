@@ -204,7 +204,7 @@ def _refuse_nested_output(root: Path, dest_dir: Path) -> None:
 def stale_alternatives(project: Path) -> dict[str, int]:
     """The alternatives an earlier Logic saved, by name -> format word. They are left as they
     are when a current one sits beside them, as Logic keeps such bundles itself; with no current
-    alternative, or one saved by a later Logic, nothing is copied."""
+    alternative (none at all included), or one saved by a later Logic, nothing is copied."""
     stale: dict[str, int] = {}
     current = 0
     for data_file in sorted(project.glob("Alternatives/*/ProjectData")):
@@ -219,7 +219,9 @@ def stale_alternatives(project: Path) -> dict[str, int]:
         except ValueError as e:
             raise ValueError(f"Alternatives/{data_file.parent.name}: {e}") from None
         current += 1
-    if stale and not current:
+    if not stale and not current:
+        raise ValueError(f"{project.name}: no Alternatives/*/ProjectData — not a project Logic has saved")
+    if not current:
         name, word = next(iter(stale.items()))
         raise ValueError(f"Alternatives/{name}: saved by an earlier Logic (file format {word}; the "
                          f"writers are measured on {MEASURED_FORMAT}, Logic 12.3.1's) — open and "

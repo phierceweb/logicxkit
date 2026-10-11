@@ -1,7 +1,7 @@
 """Chains keyed by a channel name rather than a strip reference — the Stereo Out's mastering
 chain: its plug-ins in slot order from declared donors, each parameter named as
-`output_params` names it or given by float index, checked against the donor's own block, and
-read back from the written project afterwards."""
+`output_params` names it or given by float index, checked against the donor's own block, put on
+its slider's grid as `--set` puts it, and read back from the written project afterwards."""
 
 from __future__ import annotations
 
@@ -10,6 +10,9 @@ from .binding import channels
 from .slots import slot_index_base
 from ..stream.stream import HEADER, project_records
 from .output_params import NAMES, PARAMS, set_params
+from .plugin_params import load_tables, shown_of, table_of, word_of
+from .slider import grid_value
+from ..translate.translate import load_maps, map_for
 
 # The inspector's name for a channel the mixer labels otherwise.
 CHANNEL_NAMES = {"Stereo Out": "Output 1-2"}
@@ -59,6 +62,39 @@ def resolve_params(type_id: int, params: dict, where: str, donor: bytes) -> dict
             if not 0 <= i < n:
                 raise ValueError(f"{where}: float index {i} is outside the {plugin} block of {n}")
             out[i] = float(v)
+    return on_grid(out, donor, where)
+
+
+def on_grid(values: dict[int, float], donor: bytes, where: str) -> dict[int, float]:
+    """Each value as `--set` writes it: held to the table's measured range (`set_by_name` refuses
+    the same), then on its slider's nearer sampled position where the plug-in's map measures the
+    slider (`slider.grid_value`); outside either, refused. The range and the slider are in what
+    Logic shows, so a scaled word is checked and gridded as shown. A word no table names goes as given."""
+    payload = donor[HEADER:]
+    table = table_of(load_tables(), payload)
+    if table is None:
+        return values
+    m = map_for(payload, load_maps())
+    params = {p.index: p for p in table.params}
+    out = dict(values)
+    for i, v in values.items():
+        p = params.get(i)
+        if p is None:
+            continue
+        shown = v if p.kind == "int" else shown_of(p, v)
+        if p.curve:                                     # held to its curve's word ends: a curve clamps past them
+            lo, hi, at = min(w for w, _s in p.curve), max(w for w, _s in p.curve), v
+        else:
+            lo, hi, at = p.min, p.max, shown
+        if lo is not None and at < lo or hi is not None and at > hi:
+            ends = ("" if lo is None else f"{lo:g}") + ".." + ("" if hi is None else f"{hi:g}")
+            raise ValueError(f"{where}: {p.name} {at:g} is outside {table.name}'s measured {ends}" + ("" if p.curve else f" {p.unit}".rstrip()))
+        if m is None:
+            continue
+        gridded, outside = grid_value(m, p.name, shown)
+        if outside:
+            raise ValueError(f"{where}: {p.name} {shown:g} is outside {m.plugin}'s slider, {outside[0]:g}..{outside[1]:g}")
+        out[i] = gridded if p.kind == "int" else word_of(p, gridded)
     return out
 
 

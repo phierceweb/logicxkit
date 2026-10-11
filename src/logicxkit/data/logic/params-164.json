@@ -12,21 +12,27 @@
    "name": "Drive",
    "unit": "dB",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 50.0
   },
   {
    "index": 2,
    "name": "Tone",
    "unit": "Hz",
    "default": 1100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 3,
    "name": "Output",
    "unit": "dB",
    "default": -0.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -40.0,
+   "max": 20.0
   },
   {
    "index": 4,

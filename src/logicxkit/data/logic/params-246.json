@@ -23,7 +23,9 @@
    "name": "Analyzer Top",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -40.0,
+   "max": 20.0
   },
   {
    "index": 3,
@@ -41,14 +43,18 @@
    "name": "Apply Amount",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 200.0
   },
   {
    "index": 9,
    "name": "Smoothing",
    "unit": "",
    "default": 4.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 24.0
   },
   {
    "index": 6,

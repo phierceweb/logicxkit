@@ -12,77 +12,99 @@
    "name": "Threshold",
    "unit": "dB",
    "default": -30.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 0.0
   },
   {
    "index": 3,
    "name": "Sub Energy",
    "unit": "dB",
    "default": -20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 20.0
   },
   {
    "index": 4,
    "name": "Super Energy",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 20.0
   },
   {
    "index": 5,
    "name": "Speed",
    "unit": "Hz",
    "default": 0.499,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 6,
    "name": "Center Frequency",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 7,
    "name": "Bandwidth",
    "unit": "Hz",
    "default": 20000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 8,
    "name": "CF Modulation",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 9,
    "name": "BW Modulation",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 10,
    "name": "Low Level",
    "unit": "dB",
    "default": -100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 20.0
   },
   {
    "index": 11,
    "name": "High Level",
    "unit": "dB",
    "default": -100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 20.0
   },
   {
    "index": 12,
    "name": "Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -20.0,
+   "max": 20.0
   }
  ],
  "unmapped": [],

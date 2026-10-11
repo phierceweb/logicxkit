@@ -13,11 +13,10 @@ from dataclasses import dataclass
 from logicxkit.au.services.tables import load_table
 
 from ..translate.automation_remap import item_raw
-from ..mixer.plugin_names import plugin_name
-from ..mixer.plugin_params import load_tables, table_for
+from ..mixer.plugin_names import own_name, plugin_name
+from ..mixer.plugin_params import load_tables, table_of
 from ..mixer.plugins import plugin_identity
 from ..mixer.slider import SWITCH_PER, along, slider_by_name, units_at
-from ..mixer.slot_width import plugin_variant
 from ..stream.stream import HEADER
 from ..translate.translate import load_maps, map_for
 from ..mixer.transplant import slot_at
@@ -38,8 +37,8 @@ class LaneTarget:
 
 
 def _native(payload: bytes, identity: tuple, index: int, tables, maps) -> LaneTarget:
-    table = table_for(tables, identity[1], plugin_variant(payload))
-    plugin = table.name if table else plugin_name(payload) or f"type {identity[1]}"
+    table = table_of(tables, payload)
+    plugin = table.name if table else own_name(payload) or plugin_name(payload) or f"type {identity[1]}"
     param = next((p for p in (table.params if table else ()) if p.index == index + 1), None)
     if param is None:
         return LaneTarget(plugin, None)
@@ -86,6 +85,6 @@ def lane_target(data: bytes, owner: int, slot: int, index: int, *, tables=None, 
         return None
     payload = record.raw[HEADER:]
     maps = load_maps() if maps is None else maps
-    if identity[0] == "native":
+    if identity[0] in ("native", "coded"):
         return _native(payload, identity, index, load_tables() if tables is None else tables, maps)
     return _third_party(payload, identity, index, maps)

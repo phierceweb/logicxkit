@@ -12,35 +12,45 @@
    "name": "Rotor Fast Rate",
    "unit": "",
    "default": 6.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 8.0
   },
   {
    "index": 6,
    "name": "Acc/Dec Scale",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 4.0
   },
   {
    "index": 11,
    "name": "Horn Stereo Width",
    "unit": "",
    "default": 1.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2.0
   },
   {
    "index": 13,
    "name": "Drum Stereo Width",
    "unit": "",
    "default": 1.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 2.0
   },
   {
    "index": 14,
    "name": "Balance",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   }
  ],
  "unmapped": [

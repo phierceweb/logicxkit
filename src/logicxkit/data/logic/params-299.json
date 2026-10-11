@@ -26,7 +26,9 @@
    "name": "Reverb Delay",
    "unit": "ms",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 200.0
   },
   {
    "index": 4,
@@ -62,14 +64,18 @@
    "name": "1st Reflection Delay",
    "unit": "ms",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 200.0
   },
   {
    "index": 14,
    "name": "1st Reflection Spread",
    "unit": "ms",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 50.0
   },
   {
    "index": 26,

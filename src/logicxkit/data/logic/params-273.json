@@ -12,56 +12,72 @@
    "name": "Macro A Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 54,
    "name": "Macro B Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 56,
    "name": "Macro C Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 58,
    "name": "Macro D Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 60,
    "name": "Macro E Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 62,
    "name": "Macro F Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 64,
    "name": "Macro G Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 66,
    "name": "Macro H Value",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   }
  ],
  "unmapped": [

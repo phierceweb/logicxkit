@@ -133,5 +133,72 @@ class StampOrderTest(unittest.TestCase):
             _stamp(donor(93, 199, 13), 0, 4, None, 0, "seed", overrides={13: 1.0})
 
 
+class GridTest(unittest.TestCase):
+    """A measured value goes where `--set` puts it: Multipressor's ratio slider holds 2.466 and 2.511
+    around 2.5, its threshold -20 exactly; one outside the slider is refused."""
+
+    def setUp(self):
+        self.data = proj(channel(0, "Audio 1"), channel(OUT, "Output 1-2"))
+        self.extra = {"mp": (donor(91, 194, 62), 194), "lpeq": (donor(90, 243, 52), 243)}
+
+    def _plan(self, params):
+        cfg = {"chains": {"Stereo Out": {"plugins": [{"donor": "mp", "params": params}]}}}
+        return chain_plan(self.data, cfg, None, None, extra=self.extra)[0][OUT][0][8]
+
+    def test_a_measured_parameter_lands_on_the_nearer_sampled_position(self):
+        self.assertEqual(self._plan({"band1_ratio": 2.5, "band1_threshold": -20}),
+                         {PARAMS[194]["band1_ratio"]: 2.511, PARAMS[194]["band1_threshold"]: -20.0})
+
+    def test_a_value_outside_the_slider_is_refused(self):
+        with self.assertRaises(ValueError) as e:
+            self._plan({"band1_ratio": 99})
+        self.assertIn("Band 1 Comp. Ratio 99 is outside Multipressor's", str(e.exception))
+
+    def test_a_plug_in_with_no_map_takes_the_value_as_given(self):
+        cfg = {"chains": {"Stereo Out": {"plugins": [{"donor": "lpeq", "params": {"peak3_q": 0.8}}]}}}
+        self.assertEqual(chain_plan(self.data, cfg, None, None, extra=self.extra)[0][OUT][0][8], {PARAMS[243]["peak3_q"]: 0.8})
+
+    def test_a_value_outside_the_tables_range_is_refused_with_or_without_a_map(self):
+        """The Limiter has a table (Gain -20..20 dB) and no map; `--set` refuses the same value."""
+        extra = {"lim": (donor(93, 199, 13), 199)}
+        ok = {"chains": {"Stereo Out": {"plugins": [{"donor": "lim", "params": {"gain": 0, "output_level": -0.1}}]}}}
+        self.assertEqual(chain_plan(self.data, ok, None, None, extra=extra)[0][OUT][0][8], {PARAMS[199]["gain"]: 0.0, PARAMS[199]["output_level"]: -0.1})
+        with self.assertRaises(ValueError) as e:
+            chain_plan(self.data, {"chains": {"Stereo Out": {"plugins": [{"donor": "lim", "params": {"gain": 99}}]}}}, None, None, extra=extra)
+        self.assertIn("Gain 99 is outside Limiter's measured -20..20 dB", str(e.exception))
+        at_end = {"chains": {"Stereo Out": {"plugins": [{"donor": "lim", "params": {"5": -10}}]}}}      # by index, at the range's end
+        self.assertEqual(chain_plan(self.data, at_end, None, None, extra=extra)[0][OUT][0][8], {5: -10.0})
+        with self.assertRaisesRegex(ValueError, "Output Level -10.5 is outside Limiter's measured -10..1 dB"):
+            chain_plan(self.data, {"chains": {"Stereo Out": {"plugins": [{"donor": "lim", "params": {"5": -10.5}}]}}}, None, None, extra=extra)
+
+    def test_a_curve_rows_word_is_held_to_its_curves_ends(self):
+        """Vintage Graphic EQ's bands read through a curve; the chain writes the word, so the word's ends hold it."""
+        extra = {"vgeq": (donor(95, 285, 17), 285)}
+        plan, _ = chain_plan(self.data, {"chains": {"Stereo Out": {"plugins": [{"donor": "vgeq", "params": {"2": 6.5}}]}}}, None, None, extra=extra)
+        self.assertEqual(plan[OUT][0][8], {2: 6.5})
+        with self.assertRaisesRegex(ValueError, "8.0K 99 is outside Vintage Graphic EQ's measured -12..12"):
+            chain_plan(self.data, {"chains": {"Stereo Out": {"plugins": [{"donor": "vgeq", "params": {"2": 99}}]}}}, None, None, extra=extra)
+
+    def test_a_scaled_rows_word_is_checked_and_gridded_as_shown(self):
+        """A range and a slider are what Logic shows. No shipped effect row is scaled, so the
+        Compressor's Threshold is given a scale of 0.01: word -4970 shows -49.7, the slider keeps
+        -49.5, and the word written is -4950; word -6000 shows -60, outside -50..0."""
+        import dataclasses
+        from unittest import mock
+        from logicxkit.logic.services.mixer.plugin_params import load_tables
+        real = load_tables()[154]
+        scaled = dataclasses.replace(real, params=tuple(dataclasses.replace(p, scale=0.01) if p.name == "Threshold" else p
+                                                        for p in real.params))
+        extra = {"comp": (donor(96, 154, 31), 154)}
+
+        def plan(word):
+            cfg = {"chains": {"Stereo Out": {"plugins": [{"donor": "comp", "params": {"1": word}}]}}}
+            return chain_plan(self.data, cfg, None, None, extra=extra)[0][OUT][0][8]
+        with mock.patch("logicxkit.logic.services.mixer.chains_channels.load_tables", return_value={154: scaled}):
+            self.assertAlmostEqual(plan(-4970)[1], -4950.0, places=6)
+            with self.assertRaisesRegex(ValueError, "Threshold -60 is outside Compressor's measured -50..0 dB"):
+                plan(-6000)
+
+
 if __name__ == "__main__":
     unittest.main()

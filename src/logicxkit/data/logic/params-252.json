@@ -12,49 +12,63 @@
    "name": "Env->Osc Modulation",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 6,
    "name": "LFO->Osc Modulation",
    "unit": "",
    "default": 0.244,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 9,
    "name": "Feedback",
    "unit": "",
    "default": 0.63,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 10,
    "name": "Stereo Width",
    "unit": "",
    "default": 0.8,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 12,
    "name": "Dry/Wet",
    "unit": "",
    "default": 0.62,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 13,
    "name": "Env->Dry/Wet Modulation",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 14,
    "name": "LFO->Dry/Wet Modulation",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 16,
@@ -72,21 +86,27 @@
    "name": "Envelope Follower Sensitivity",
    "unit": "dB",
    "default": -0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -10.0,
+   "max": 20.0
   },
   {
    "index": 18,
    "name": "Envelope Follower Attack",
    "unit": "ms",
    "default": 0.1,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 1000.0
   },
   {
    "index": 19,
    "name": "Envelope Follower Release",
    "unit": "ms",
    "default": 0.1,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 1000.0
   },
   {
    "index": 21,
@@ -122,21 +142,27 @@
    "name": "LFO Symmetry",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 25,
    "name": "LFO Smooth",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 27,
    "name": "Delay Amount",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 28,
@@ -154,14 +180,18 @@
    "name": "Delay Low Cut",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 31,
    "name": "Delay High Cut",
    "unit": "Hz",
    "default": 10000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   }
  ],
  "unmapped": [

@@ -11,17 +11,9 @@ from pathlib import Path
 from pf_core.exceptions import PreconditionError
 from pf_core.utils.io import atomic_write_bytes
 
-from .services.mixer.chains import (
-    base_donors,
-    chain_plan,
-    describe_duplicates,
-    duplicate_chain_slots,
-    load_chain_config,
-    load_extra_donors,
-    verify_channel_values,
-    verify_strip_values,
-    width_plan,
-)
+from .services.mixer.chain_checks import describe_duplicates, duplicate_chain_slots, verify_channel_values, verify_strip_values
+from .services.mixer.chain_donors import base_donors, load_extra_donors
+from .services.mixer.chains import chain_plan, load_chain_config, width_plan
 from ._edit import _discard, plan_alternatives
 from .services.mixer.chain_report import chain_changes
 from .services.mixer.donors import load_donor_library

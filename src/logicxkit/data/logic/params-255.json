@@ -12,7 +12,9 @@
    "name": "Target Level",
    "unit": "dB",
    "default": -12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -30.0,
+   "max": 0.0
   }
  ],
  "unmapped": [

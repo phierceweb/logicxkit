@@ -102,14 +102,27 @@ def written_alternatives(bundle: Path) -> list[Path]:
 
 
 def plan_alternatives(bundle: Path) -> list[Path]:
-    """`written_alternatives`, after printing the run's line for each alternative it leaves."""
-    try:
-        left = stale_alternatives(bundle)
-    except ValueError:
-        left = {}
-    for name, word in left.items():
+    """`written_alternatives`, after printing the run's line for each alternative it leaves; a
+    bundle the write refuses (`stale_alternatives`) is refused here too."""
+    for name, word in stale_alternatives(bundle).items():
         print(f"  {left_line(name, word)}")
     return written_alternatives(bundle)
+
+
+def plan_step(project: Path, step: Step) -> None:
+    """`edit_copy` with nothing copied or written: ``step`` over every alternative a write would
+    edit, each with the input's own flaws tolerated and the same gate after."""
+    for data_file in plan_alternatives(project):
+        count = project_metadata(data_file.parents[2], data_file.parent.name).get("tracks")
+        before = data_file.read_bytes()
+        with tolerating(before):
+            after = step(before, count, data_file)
+        try:
+            require_no_regression(before, after, track_counts=(count, count))
+        except ValueError as e:
+            raise CommandError(f"{data_file.parent.name}: {e}") from None
+        for loop in new_loops(before, after):
+            print(f"  {data_file.parent.name}: warning: this leaves a routing loop: {' -> '.join(loop)}")
 
 
 def display_source(bundle: Path) -> Path | None:

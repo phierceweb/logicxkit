@@ -11,37 +11,49 @@
    "index": 1,
    "name": "Threshold",
    "unit": "dB",
-   "default": -20.0
+   "default": -20.0,
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 2,
    "name": "Ratio",
    "unit": ":1",
-   "default": 0.8
+   "default": 0.8,
+   "min": 0.5,
+   "max": 1.0
   },
   {
    "index": 3,
    "name": "Attack",
    "unit": "ms",
-   "default": 0.0
+   "default": 0.0,
+   "min": 0.0,
+   "max": 2000.0
   },
   {
    "index": 4,
    "name": "Release",
    "unit": "ms",
-   "default": 98.0
+   "default": 98.0,
+   "min": 2.0,
+   "max": 2000.0
   },
   {
    "index": 5,
    "name": "Gain",
    "unit": "dB",
-   "default": 0.0
+   "default": 0.0,
+   "min": -50.0,
+   "max": 20.0
   },
   {
    "index": 6,
    "name": "Knee",
    "unit": "",
-   "default": 1.0
+   "default": 1.0,
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 8,

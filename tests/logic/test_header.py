@@ -60,11 +60,13 @@ class ClampedWidthTest(unittest.TestCase):
         from argparse import Namespace
         from pathlib import Path
         from unittest import mock
+        from _records import proj
         from logicxkit.logic._header import cmd_header
         from logicxkit.logic.services.stream.header import BLOB_KEY
         with tempfile.TemporaryDirectory() as tmp:
             alt = Path(tmp) / "Song.logicx" / "Alternatives" / "000"
             alt.mkdir(parents=True)
+            (alt / "ProjectData").write_bytes(proj())             # a writer takes only a project Logic saved
             (alt / "DisplayState.plist").write_bytes(plistlib.dumps({BLOB_KEY: blob}, fmt=plistlib.FMT_BINARY))
             with mock.patch("builtins.print") as printed:
                 rc = cmd_header(Namespace(project=str(alt.parents[1]), out=str(Path(tmp) / "out"),

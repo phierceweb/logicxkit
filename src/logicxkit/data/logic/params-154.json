@@ -11,43 +11,57 @@
    "index": 1,
    "name": "Threshold",
    "unit": "dB",
-   "default": -20.0
+   "default": -20.0,
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 2,
    "name": "Ratio",
    "unit": ":1",
-   "default": 2.1
+   "default": 2.1,
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 3,
    "name": "Attack",
    "unit": "ms",
-   "default": 15.0
+   "default": 15.0,
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 4,
    "name": "Release",
    "unit": "ms",
-   "default": 51.0
+   "default": 51.0,
+   "min": 5.0,
+   "max": 5000.0
   },
   {
    "index": 5,
    "name": "Make Up",
    "unit": "dB",
-   "default": 0.0
+   "default": 0.0,
+   "min": -20.0,
+   "max": 50.0
   },
   {
    "index": 6,
    "name": "Knee",
    "unit": "",
-   "default": 0.7
+   "default": 0.7,
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 12,
    "name": "Limiter Threshold",
    "unit": "dB",
-   "default": 0.0
+   "default": 0.0,
+   "min": -10.0,
+   "max": 0.0
   },
   {
    "index": 13,
@@ -73,31 +87,41 @@
    "index": 18,
    "name": "Frequency",
    "unit": "Hz",
-   "default": 7040.0
+   "default": 7040.0,
+   "min": 16.352,
+   "max": 19912.0
   },
   {
    "index": 19,
    "name": "Q",
    "unit": "",
-   "default": 1.0
+   "default": 1.0,
+   "min": 0.5,
+   "max": 5.0
   },
   {
    "index": 25,
    "name": "Mix",
    "unit": "%",
-   "default": 100.0
+   "default": 100.0,
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 27,
    "name": "Input Gain",
    "unit": "dB",
-   "default": 0.0
+   "default": 0.0,
+   "min": -30.0,
+   "max": 30.0
   },
   {
    "index": 28,
    "name": "Output Gain",
    "unit": "dB",
-   "default": 0.0
+   "default": 0.0,
+   "min": -30.0,
+   "max": 30.0
   }
  ],
  "unmapped": [

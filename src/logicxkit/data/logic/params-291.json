@@ -11,19 +11,25 @@
    "index": 1,
    "name": "Max Reduction",
    "unit": "dB",
-   "default": 20.0
+   "default": 20.0,
+   "min": 0.0,
+   "max": 25.0
   },
   {
    "index": 2,
    "name": "Threshold",
    "unit": "dB",
-   "default": -9.5
+   "default": -9.5,
+   "min": -60.0,
+   "max": 0.0
   },
   {
    "index": 4,
    "name": "Detector Frequency",
    "unit": "Hz",
-   "default": 7001.0
+   "default": 7001.0,
+   "min": 1200.0,
+   "max": 12000.0
   },
   {
    "index": 6,

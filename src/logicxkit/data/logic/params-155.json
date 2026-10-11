@@ -12,49 +12,63 @@
    "name": "Wah Level",
    "unit": "dB",
    "default": -2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 10.0
   },
   {
    "index": 3,
    "name": "Pedal Position",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 4,
    "name": "Pedal Range Start",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -0.5,
+   "max": 1.5
   },
   {
    "index": 5,
    "name": "Pedal Range End",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -0.5,
+   "max": 1.5
   },
   {
    "index": 6,
    "name": "Relative Q",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 8,
    "name": "Auto Wah Attack",
    "unit": "ms",
    "default": 49.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 10.0,
+   "max": 10000.0
   },
   {
    "index": 9,
    "name": "Auto Wah Release",
    "unit": "ms",
    "default": 150.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 10.0,
+   "max": 10000.0
   },
   {
    "index": 16,
@@ -72,21 +86,27 @@
    "name": "Comp Ratio",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 12,
    "name": "Fuzz Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 13,
    "name": "Fuzz Tone",
    "unit": "Hz",
    "default": 6000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 200.0,
+   "max": 20000.0
   },
   {
    "index": 17,

@@ -96,7 +96,8 @@ def default_tracks(data: bytes, labels: set[str]) -> list[str]:
     """The header names the driver matches, for the channels labelled ``labels``: each bound
     arrange row's name in row order, Stereo Out for the output, else the label itself."""
     from ..services.arrange.stacks import read_tracks
-    headers = {label: name for label, name in FILE_LABELS.items()}
+    headers = {label: name for name, label in FILE_LABELS.items()}        # the file's label -> the header Logic shows
+    labels = {FILE_LABELS.get(label, label) for label in labels}        # a config names the output Stereo Out
     out, seen = [], set()
     for row in read_tracks(data, None):
         if row.get("label") in labels and row["label"] not in seen:

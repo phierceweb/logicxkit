@@ -475,7 +475,7 @@ own Sample Delay is type 259 and sits under Apple's AUSampleDelay in the menu's 
 Chorus 4/4, Ensemble 14/14, Flanger 5/5, Microphaser 3/4, Modulation Delay 15/18, Phaser
 15/18, Ringshifter 20/30, Scanner Vibrato 4/5, Spreader 4/4, Tremolo 6/7 (`stockfx-mod-*`),
 Bitcrusher 5/6, Clip Distortion 10/10, Distortion 4/4, Distortion II 6/7, Overdrive 4/4, Phase
-Distortion 7/7, AutoFilter 23/30, EVOC 20 Filterbank 35/61, Fuzz-Wah 13/17, Spectral Gate
+Distortion 7/7, AutoFilter 22/30, EVOC 20 Filterbank 35/61, Fuzz-Wah 13/17, Spectral Gate
 11/11, Rotor Cabinet 5/14 (`stockfx-dist-*`), Amp Designer 13/25, Bass Amp Designer 27/46,
 Pedalboard 8/63 (its 2001 floats hold every pedal's parameters), Pitch Correction 7/36, Pitch
 Shifter 4/8, Vocal Transformer 7/10, Exciter 3/4, SubBass 9/9 (`stockfx-amp-*`; Denoiser and
@@ -533,7 +533,10 @@ keys; the others file by variant.
 The same two saves per plug-in, each on a fresh blank instrument project with the plug-in
 alone on Inst 1 (`instrument-params-<name>-defaults` and `-spots`), gave tables for 33 more
 of Logic's own: 20 instruments, eight MIDI effects, ChromaGlow, EVOC 20 TrackOscillator,
-Alchemy and Sample Alchemy (text states), and Mastering Assistant from the output strip. The
+Alchemy and Sample Alchemy (text states), and Mastering Assistant from the output strip, and
+(2026-10-09) the Limiter, the one output plug-in no group had measured — its pair placed three
+rows and left Gain and Output Level, which both moved 0.0 to 0.1 dB, to one-row saves
+(`instrument-params-limiter-row*`). The
 five Studio instruments (Vintage Mellotron among them) share one engine block typed 312 and
 file by variant (`params-312v<variant>.json`), the block being the largest in a slot that
 also carries a Channel EQ's and a Gain's. Where the two saves left rows unplaced, coded saves
@@ -574,16 +577,30 @@ evidence that placed them. What the instruments added to the method:
 - **Each slider's ends** (Logic 12.4, no saves): every Controls row's slider set to its
   AXMinValue and AXMaxValue through accessibility and the display read at each end, the slider
   put back; the displays at the ends are the defaults save's `slider_ends` fact, which
-  `test_instrument_range_facts.py` holds every range to. A table parameter carries them as `min`
-  and `max` in its own unit, and `--set` refuses a number outside: 877 of 1781 parameters over
-  41 tables. A row
-  gets none where an end is tempo-synced ("32 Bars" at an LFO rate's low end), where the
-  display at the default is not the word (EVOC 20 PolySynth's Resonance shows 0.700 for 0.5),
-  where the row is a choice, or where the band reads through a `curve`. The ends were read on
-  the plug-ins measured on the instrument base — the instruments, the MIDI effects, the nine
-  effects measured again there — but not Mastering Assistant (the output strip's slot) nor the
-  2026-09-22 effect tables measured in groups; Alchemy's and Sample Alchemy's text states carry
-  none, and some of Alchemy's and Quick Sampler's rows sit outside the view's slider cells.
+  `test_instrument_range_facts.py` holds every range to (a named end's, Scanner Vibrato's Stereo
+  Phase, to `test_stereo_rows.py`), and the save's own word at each ranged row to the table's
+  default. A table parameter carries them as `min` and `max` in its own unit, and `--set` refuses
+  a number outside (or, where the plug-in's slider is mapped, holds it to the slider's ends with
+  a note): 1346 of 1785 parameters over 97 tables. A row gets none where an end is a word ("32
+  Bars" at a tempo-synced LFO rate, "Mute" at a dB slider's bottom, "Auto", "off"), where the
+  display at the default is not the word the save holds (EVOC 20 PolySynth's Resonance shows
+  0.700 for 0.5; Logic truncates a display, so the word may sit one step past it), or where the
+  row is a choice; a curve row's range is its curve's (Vintage Graphic EQ's bands, −12..12), and
+  a display in s or kHz over a ms or Hz word is the word's own unit. The ends
+  were read on the plug-ins measured on the instrument base — the instruments, the MIDI effects,
+  the nine effects measured again there — on Mastering Assistant on the output strip, and on the
+  2026-09-22 effect groups on copies of their Logic 12.4 defaults twins (`stockfx-<group>-
+  defaults-12-4`, whose `slider_ends` is keyed by plug-in name first; `dynamics2` was saved after
+  the dynamics spots had moved its first three plug-ins a unit off their defaults, so its read
+  covers Adaptive Limiter and Noise Gate alone and the three keep the `dynamics` read; the
+  default check holds the display at the default to half its last decimal). A range is the read
+  instance's: a mono instance keeps 0 on a stereo-only row (MultiMeter's Gonio Decay, Scanner
+  Vibrato's Right Rate), outside it. Delay
+  Designer's three dB rows end on "Mute" and its two others are toggles, so it carries none;
+  Alchemy's and Sample Alchemy's text states carry none; the Controls rows past a multi-FX's
+  slider cells (Step FX, Beat Breaker) and some of Alchemy's and Quick Sampler's are not read.
+  A row the one-unit move had taken for a toggle (0 to 1) and the slider shows otherwise (Pitch
+  Shifter's Cents −50..50, Tape Delay's Stereo Spread −100..100) is a slider again.
 - **An indexed row's float sits a step from its slider.** ES E's Wave reads slider 0, float 1
   ("Saw"); its Bend Down "Linked" is −1. A row whose number is shown on one side only
   ("Linked" → "0") matches by that side (evidence `slider`).
@@ -712,6 +729,7 @@ sliders hold, not a display grid.
 | Vintage Graphic EQ | 285 | 17 | 16 | 13 | 3 / 0 / 0 / 10 / 0 |
 | External Instrument | — | — | 9 | 0 | no table |
 | Mastering Assistant | 320 | 105 | 18 | 13 | 5 / 0 / 0 / 8 / 0 |
+| Limiter | 199 | 13 | 7 | 5 | 3 / 0 / 0 / 0 / 2 |
 
 **Mastering Assistant** (`instrument-fx-mastering-assistant-logic`; its pair
 `instrument-params-mastering-assistant-*`, 2026-10-06) is not in any Audio FX menu: the output

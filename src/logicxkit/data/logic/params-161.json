@@ -12,77 +12,99 @@
    "name": "Mix",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Effect Volume",
    "unit": "dB",
    "default": 0.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -10.0,
+   "max": 10.0
   },
   {
    "index": 3,
    "name": "Voices",
    "unit": "",
    "default": 3.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 8.0
   },
   {
    "index": 4,
    "name": "Rate LFO 1",
    "unit": "Hz",
    "default": 0.9,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 5,
    "name": "Intensity LFO 1",
    "unit": "%",
    "default": 16.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 6,
    "name": "Rate LFO 2",
    "unit": "Hz",
    "default": 3.8,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 20.0
   },
   {
    "index": 7,
    "name": "Intensity LFO 2",
    "unit": "%",
    "default": 8.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 8,
    "name": "Random Rate",
    "unit": "Hz",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 10.0
   },
   {
    "index": 9,
    "name": "Random Intensity",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 10,
    "name": "Phase",
    "unit": "%",
    "default": -30.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -90.0,
+   "max": 100.0
   },
   {
    "index": 11,
    "name": "Spread",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 12,

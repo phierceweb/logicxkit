@@ -12,35 +12,45 @@
    "name": "Mix",
    "unit": "%",
    "default": 40.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Intensity",
    "unit": "%",
    "default": 60.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 3,
    "name": "Delay",
    "unit": "%",
    "default": 30.3,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 4,
    "name": "Cutoff",
    "unit": "Hz",
    "default": 4200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 5,
    "name": "Resonance",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 6,

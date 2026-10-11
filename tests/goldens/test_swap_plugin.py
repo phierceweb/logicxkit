@@ -155,11 +155,94 @@ class RefusedSwapTest(unittest.TestCase):
             self.assertIn("the same plug-in", out)
             self.assertEqual(list(Path(tmp).iterdir()), [])
 
+    @_goldens.needs("instrument-studio-bass-logic")
+    def test_an_id_several_plug_ins_share_is_refused(self):
+        for source, named in (("InWr", "5 plug-ins (Studio Bass, Studio Horns, Studio Piano, Studio Strings, Vintage Mellotron)"),
+                              ("147", "2 plug-ins (Echo, Tape Delay)")):
+            with self.subTest(source), tempfile.TemporaryDirectory() as tmp:
+                code, out = _swap("instrument-studio-bass-logic", source, "Studio Piano", tmp, no_translate=True)
+                self.assertEqual(code, 1, out)
+                self.assertIn(f"--from {source} names {named}; name the one to replace", out)
+                self.assertEqual(list(Path(tmp).iterdir()), [])
+
     def test_without_translation_a_dropped_side_chain_is_named(self):
         with tempfile.TemporaryDirectory() as tmp:
             code, out = _swap("snap-ours", "Noise Gate", "Compressor", tmp, no_translate=True)
             self.assertEqual(code, 0, out)
             self.assertIn("side chain Bus 1 dropped with the old plug-in", out)
+
+
+@_goldens.needs("inserts-native-logic", "instrument-fx-io-logic", "instrument-quick-sampler-logic", "addtrack-order-mine",
+                "auto-lanes-resave-logic")
+class PlanAsWrittenTest(unittest.TestCase):
+    """A plan leaves a slot as it is wherever the write would: an instrument into an effect slot,
+    an effect into an instrument channel's slot 1; it swaps what the write swaps on an input with a
+    flaw of its own and in every current alternative, and refuses a bundle the write refuses."""
+
+    def test_every_current_alternative_is_planned_as_it_is_written(self):
+        """Two Compressors on Audio 2, the alternative copied: four slots, plan and write."""
+        import shutil
+        with tempfile.TemporaryDirectory() as tmp:
+            project = Path(tmp) / "two.logicx"
+            shutil.copytree(_goldens.path("auto-lanes-resave-logic"), project)
+            shutil.copytree(project / "Alternatives" / "000", project / "Alternatives" / "001")
+            for plan in (True, False):
+                with self.subTest(plan=plan):
+                    code, out = _swap("auto-lanes-resave-logic", "Compressor", "Noise Gate", None if plan else str(Path(tmp) / "out"),
+                                      no_translate=True, project=str(project))
+                    self.assertEqual(code, 0, out)
+                    self.assertIn("000: Audio 2", out)
+                    self.assertIn("001: Audio 2", out)
+                    self.assertIn(f"{'Would swap' if plan else 'Swapped'} 4 slot(s) on 1 channel(s).", out)
+
+    def test_an_inputs_own_flaw_is_tolerated_by_the_plan_as_by_the_write(self):
+        from logicxkit.logic.services.stream.validate import validate_project
+        self.assertTrue(validate_project(project_data(_goldens.path("addtrack-order-mine"))))
+        for plan in (True, False):
+            with self.subTest(plan=plan), tempfile.TemporaryDirectory() as tmp:
+                code, out = _swap("addtrack-order-mine", "Multipressor", "Compressor", None if plan else tmp, no_translate=True)
+                self.assertEqual(code, 0, out)
+                self.assertIn(f"{'Would swap' if plan else 'Swapped'} 2 slot(s) on 2 channel(s).", out)
+
+    def test_a_bundle_the_write_refuses_is_refused_by_the_plan(self):
+        import shutil
+        import struct
+        from _cli import wrapped
+        config = Path(__file__).resolve().parents[2] / "config" / "example-mastering.json"
+        with tempfile.TemporaryDirectory() as tmp:
+            older = Path(tmp) / "older.logicx"
+            shutil.copytree(_goldens.path("inserts-native-logic"), older)
+            data = older / "Alternatives" / "000" / "ProjectData"
+            raw = bytearray(data.read_bytes())
+            struct.pack_into("<H", raw, 4, 2000)                  # an earlier Logic's file format
+            data.write_bytes(bytes(raw))
+            for command in (("swap-plugin", older, "--from", "Compressor", "--to", "Noise Gate", "--no-translate"),
+                            ("tracking-chains", older), ("chains", older, "--config", config),
+                            ("apply-template", _goldens.path("inserts-native-logic"), older)):
+                for run in (("--plan",), ("--out", Path(tmp) / "out")):
+                    with self.subTest(command[0], plan=run == ("--plan",)):
+                        code, out = wrapped(*command, *run)
+                        self.assertEqual(code, 1, out)
+                        self.assertIn("saved by an earlier Logic", out)
+                        self.assertFalse((Path(tmp) / "out").exists())
+
+    def test_the_plan_and_the_write_refuse_the_same_slots(self):
+        from logicxkit.logic.services.mixer.donors import harvest_donors
+        with tempfile.TemporaryDirectory() as library:
+            harvest_donors(project_data(_goldens.path("instrument-quick-sampler-logic")), Path(library))
+            for key, source, target, lib, why in (
+                    ("inserts-native-logic", "Compressor", "Quick Sampler", library,
+                     "an instrument goes into an instrument channel's slot 1, not into an audio effect slot"),
+                    ("instrument-fx-io-logic", "I/O", "Quick Sampler", library,
+                     "an instrument goes into slot 1 of an instrument channel, not slot 2"),
+                    ("instrument-quick-sampler-logic", "Quick Sampler", "Compressor", str(PACKAGED / "donors"),
+                     "slot 1 of an instrument channel is its instrument")):
+                for plan in (True, False):
+                    with self.subTest(key, plan=plan), tempfile.TemporaryDirectory() as tmp:
+                        code, out = _swap(key, source, target, None if plan else tmp, no_translate=True, library=lib)
+                        self.assertEqual(code, 0, out)
+                        self.assertIn(f"left as it is — {why}", out)
+                        self.assertIn(f"{'Would swap' if plan else 'Swapped'} 0 slot(s) on 0 channel(s), 1 left as they are", out)
 
 
 if __name__ == "__main__":

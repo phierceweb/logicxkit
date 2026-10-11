@@ -5,7 +5,7 @@
     "Stereo Out": {
       "label": "Master",
       "plugins": [
-        {"donor": "linear_phase_eq", "params": {"low_cut_enable": 1, "low_cut_freq": 30, "peak3_freq": 800, "peak3_gain": 1.5, "peak3_q": 0.8}},
+        {"donor": "linear_phase_eq", "params": {"low_cut_enable": 1, "low_cut_freq": 30, "peak3_freq": 800, "peak3_gain": 1.5, "peak3_q": 0.79}},
         {"donor": "multipressor", "params": {"band1_threshold": -20, "band1_ratio": 2.5, "band1_makeup": 1}},
         {"donor": "adaptive_limiter", "params": {"gain": 2, "out_ceiling": -0.3, "lookahead": 50, "remove_dc": 1}},
         {"donor": "limiter", "params": {"gain": 0, "output_level": -0.1, "release": 250, "lookahead": 5}}

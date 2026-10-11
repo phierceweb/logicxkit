@@ -47,7 +47,9 @@
    "name": "Low Freq",
    "unit": "Hz",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 200.0
   },
   {
    "index": 17,
@@ -55,7 +57,9 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "code",
-   "shown": "0.0 dB"
+   "shown": "0.0 dB",
+   "min": -6.0,
+   "max": 6.0
   },
   {
    "index": 18,
@@ -63,7 +67,9 @@
    "unit": "Hz",
    "default": 998.9000244140625,
    "evidence": "code",
-   "shown": "998.9 Hz"
+   "shown": "998.9 Hz",
+   "min": 200.0,
+   "max": 8000.0
   },
   {
    "index": 19,
@@ -71,7 +77,9 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "code",
-   "shown": "0.0 dB"
+   "shown": "0.0 dB",
+   "min": -6.0,
+   "max": 6.0
   },
   {
    "index": 20,
@@ -79,7 +87,9 @@
    "unit": "Hz",
    "default": 8000.0,
    "evidence": "code",
-   "shown": "8.0 kHz"
+   "shown": "8.0 kHz",
+   "min": 8000.0,
+   "max": 20000.0
   },
   {
    "index": 21,
@@ -87,21 +97,27 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "code",
-   "shown": "0.0 dB"
+   "shown": "0.0 dB",
+   "min": -6.0,
+   "max": 6.0
   },
   {
    "index": 25,
    "name": "Width",
    "unit": "",
    "default": 0.25,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   },
   {
    "index": 26,
    "name": "Auto EQ",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 27,
@@ -120,7 +136,9 @@
    "name": "Loudness",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
   }
  ],
  "unmapped": [

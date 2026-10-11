@@ -113,6 +113,17 @@ class ConfigDeclaredDonorTest(unittest.TestCase):
         self.assertEqual([s[1] for s in plan[0]], [4])
         self.assertIn("Snare Down.cst", report["degraded"])
 
+    def test_an_extra_donors_values_are_held_to_its_table_and_slider(self):
+        """The same grid as the channel-keyed chain: Multipressor's ratio 2.5 lands on 2.511; 99 is refused."""
+        from logicxkit.logic import chain_plan
+        mp = rec(b"UCuA", 94, 4, b"\x00" * 14 + b"D.pst".ljust(62, b"\x00") + chunk(194, [0.5] * 62))
+        cfg = {"chains": {"Snare Down.cst": {"label": "S", "pre": ["mp"], "params": {"mp": {"band1_ratio": 2.5}}}}}
+        plan, _ = chain_plan(self.data, cfg, self.eq, self.cp, extra={"mp": (mp, 194)})
+        self.assertEqual(plan[0][0][8], {42: 2.511})
+        cfg["chains"]["Snare Down.cst"]["params"]["mp"] = {"band1_ratio": 99}
+        with self.assertRaisesRegex(ValueError, "Band 1 Comp. Ratio 99 is outside Multipressor"):
+            chain_plan(self.data, cfg, self.eq, self.cp, extra={"mp": (mp, 194)})
+
     def test_post_slot_follows_the_compressor(self):
         from logicxkit.logic import chain_plan
         verb = rec(b"UCuA", 93, 4, b"\x00" * 14 + b"D.pst".ljust(62, b"\x00") + chunk(287, [0.0] * 40))

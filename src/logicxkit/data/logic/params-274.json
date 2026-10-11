@@ -12,42 +12,54 @@
    "name": "Gain",
    "unit": "",
    "default": 4.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 3,
    "name": "Bass",
    "unit": "",
    "default": 6.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 4,
    "name": "Mids",
    "unit": "",
    "default": 3.1,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 5,
    "name": "Treble",
    "unit": "",
    "default": 7.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 6,
    "name": "Presence",
    "unit": "",
    "default": 8.3,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 7,
    "name": "Master",
    "unit": "",
    "default": 9.4,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 8,
@@ -61,14 +73,18 @@
    "name": "Mic Position X",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 17,
    "name": "Mic Position Z",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 24,
@@ -86,7 +102,9 @@
    "name": "FX Depth",
    "unit": "",
    "default": 7.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   },
   {
    "index": 31,
@@ -104,7 +122,9 @@
    "name": "Reverb Level",
    "unit": "",
    "default": 2.2,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
   }
  ],
  "unmapped": [

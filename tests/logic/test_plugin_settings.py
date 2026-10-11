@@ -21,6 +21,15 @@ class GriddedTest(unittest.TestCase):
         self.assertEqual(notes, ["Threshold 500: Compressor's slider runs -50..0; set to 0",
                                  "Ratio -3: Compressor's slider runs 1..30; set to 1"])
 
+    def test_a_value_between_steps_goes_to_the_items_step_then_the_slider(self):
+        """Compressor's ratio item steps by 0.1: 2.04 is 2.0 before the snap; the slider's ends come back when crossed."""
+        from logicxkit.logic.services.mixer.slider import grid_value
+        from logicxkit.logic.services.translate.translate import load_maps, map_for
+        m = map_for(_payload("Compressor"), load_maps())
+        self.assertEqual(grid_value(m, "Ratio", 2.04), (2.0, None))
+        self.assertEqual(grid_value(m, "Ratio", 99), (30.0, (1.0, 30.0)))
+        self.assertEqual(grid_value(m, "No Such Row", 7.0), (7.0, None))
+
     def test_a_choice_by_name_and_an_unmapped_plug_in_pass_through(self):
         self.assertEqual(gridded(_payload("Compressor"), {"Auto Release": "On"})[0], {"Auto Release": "On"})
 

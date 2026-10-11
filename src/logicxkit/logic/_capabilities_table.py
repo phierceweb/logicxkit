@@ -117,11 +117,14 @@ CAPABILITIES = (
                "take off; `--strict` refuses on shape drift. The real tracking chains written "
                "onto the tracking template came back from Logic's re-save with all 46 "
                "channels' chains identical (2026-09-12). A chain keyed by a channel name puts declared "
-               "donors on the Stereo Out with parameters named as measured; the example mastering chain "
-               "opened in Logic with every value shown as written and re-saved intact "
-               "(2026-09-16, `master-ours-resave-logic`). `--verify` reads a written copy back through "
-               "Logic's own Controls views (`tools/driver/controls.py`, macOS, a checkout) and names every "
-               "row that differs from the file"),
+               "donors on the Stereo Out with parameters named as measured, each held to its table's range and, "
+               "where the plug-in's map measures the slider (Multipressor), put on its grid: ratio 2.5 is written "
+               "2.511, the value Logic's re-save of the example holds (`master-ours-resave-logic`, 2026-09-16). "
+               "Linear Phase EQ has no map, so a Q is written as given; the example carries 0.79, the value that "
+               "re-save holds for a written 0.8. `--verify` reads a written copy back through Logic's own Controls views "
+               "(`tools/driver/controls.py`, macOS, a checkout) and names every row that differs from the "
+               "file; on the example written onto a copy of `inserts-native-logic`, Logic 12.4 showed every "
+               "slot as the file holds it (2026-10-09)"),
     Capability(("retrack",), "CONFIRMED", "yes",
                "Changes a label, never a chain; basename-only library match. `--channel` repoints one "
                "channel at a time, so channels sharing a name can part ways: seven repointed on a "

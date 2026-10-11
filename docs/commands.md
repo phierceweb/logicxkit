@@ -64,9 +64,9 @@ Logic saved is left as it is, byte for byte, and named in the output, when a cur
 beside it — Logic keeps such bundles itself. A bundle with no current alternative, or one holding
 an alternative a later Logic saved, is refused before anything is copied, naming the alternative
 and the format it found: open the project in the current Logic and save it, then run the
-command. A writer's pre-read (`--plan`, a preview), the listing it prints after the write and
+command. A bundle with no ProjectData at all is refused the same way. A writer's pre-read (`--plan`, a preview), the listing it prints after the write and
 a `--src` or `--from` project it copies from take the current alternatives only, `--plan` naming
-the others as the run does. The readers take any save as they find it.
+the others and refusing the bundles the run refuses. The readers take any save as they find it.
 
 Most editors route through `_edit.edit_copy`, which holds the result against its input using
 `logic/services/stream/integrity.py` (region, file and marker checks in `integrity_regions.py`, marker
@@ -147,13 +147,17 @@ channel of that name exists; `chains` clears a library donor's. `plugins` lists 
 every slot that has one.
 
 `swap-plugin --from NAME --to NAME --out DIR` does that for every slot in the project holding
-one plug-in — Logic's name, a `Manufacturer/Subtype` code, a native type id or the name in its
-translation map — on a copy: each slot goes through the same replace, settings carried through
-the family vocabulary, side chain and automation lanes with them, and gets its own report
-lines. A slot whose settings cannot cross (a compressor into a gate, a plug-in without a map)
-is left as it is with the reason. `--channel` and `--stack` narrow it, `--plan` says what would
-change without writing, `--no-translate` puts the replacement in at its defaults, `--set` dials
-a value into every replacement. A `--from` no slot holds, or one naming the `--to` plug-in, is
+one plug-in — Logic's name (the samplers, Drum Kit Designer, External Instrument, the Studio
+instruments and I/O included), a `Manufacturer/Subtype` code, a native type id, a coded plug-in's
+four-letter code (`PRRT` for Quick Sampler) or the name in its translation map — on a copy: each
+slot goes through the same replace, settings carried through the family vocabulary, side chain
+and automation lanes with them, and gets its own report lines. A slot whose settings cannot
+cross (a compressor into a gate, a plug-in without a map) or that cannot take the plug-in (an
+instrument into an effect slot) is left as it is with the reason. `--channel` and `--stack`
+narrow it, `--plan` runs the same swap in memory over every alternative the write edits and
+writes nothing, `--no-translate` puts the replacement in at its defaults, `--set` dials a value
+into every replacement. A `--from` no slot holds, one naming the `--to` plug-in, or a type id or
+code several plug-ins share (`InWr`, the Studio instruments'; `147`, Tape Delay's and Echo's) is
 refused before a copy is made.
 
 `tracking-chains PROJECT --out DIR` makes a project's chains low-latency and native on a copy,
@@ -164,7 +168,8 @@ plug-in carrying several families, Neutron 5, becomes one native per live elemen
 the first), a third-party without a native analogue is removed (`--keep-unmapped` leaves it),
 and natives that carry lookahead — Linear Phase EQ, Multipressor, Adaptive Limiter, Limiter,
 Enveloper — are bypassed, the ones it made from a third-party too (`--keep-lookahead` leaves
-them). `--plan` says what each slot would become; `--channel` and `--stack` narrow it.
+them). `--plan` runs the same edit in memory and prints the lines the write would; `--channel`
+and `--stack` narrow it.
 
 `settings` reads every slot's settings in its family's vocabulary — a compressor's threshold,
 ratio, attack, release, knee, make-up, mix, auto release, input and output gain whichever
@@ -444,7 +449,10 @@ BAR[:BARS]:NAME`, `--rename N=NAME`, `--move N=BAR`, `--delete N`. Logic's re-sa
 carrying every region edit and every marker edit kept all of them. `logic chains` also takes a chain
 keyed by a channel name instead of a strip reference — `Stereo Out` for the main output — listing
 its plug-ins in slot order as declared donors with parameters named as `services/mixer/output_params.py`
-names them, or by an index inside the donor's block; `config/example-mastering.json` is the shape. A
+names them, or by an index inside the donor's block; every configured value, a strip-referenced chain's
+`pre`/`post` donors' too, is held to the table's measured range and, where the plug-in's map measures
+the slider, goes to the nearer sampled position, as `--set` writes it; outside either it is refused.
+`config/example-mastering.json` is the shape. A
 label two channels carry, a channel keyed both by strip and by name, or an index past the block is
 refused before anything is written, and every configured value is read back afterwards. `logic
 plugins --validate` opens each listed third-party component with `auval -v`, since the registry

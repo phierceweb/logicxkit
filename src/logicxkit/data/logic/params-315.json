@@ -12,7 +12,9 @@
    "name": "Target Level",
    "unit": "",
    "default": -14.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -30.0,
+   "max": 0.0
   }
  ],
  "unmapped": [

@@ -12,14 +12,18 @@
    "name": "Balance",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 5,
    "name": "Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -96.0,
+   "max": 24.0
   }
  ],
  "unmapped": [

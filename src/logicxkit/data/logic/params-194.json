@@ -30,21 +30,27 @@
    "name": "Band 4 Response",
    "unit": "ms",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 5,
    "name": "Band 4 Reduction",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 6,
    "name": "Band 4 Exp. Threshold",
    "unit": "dB",
    "default": -50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 7,
@@ -125,21 +131,27 @@
    "name": "Band 3 Response",
    "unit": "ms",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 16,
    "name": "Band 3 Reduction",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 17,
    "name": "Band 3 Exp. Threshold",
    "unit": "dB",
    "default": -50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 18,
@@ -220,21 +232,27 @@
    "name": "Band 2 Response",
    "unit": "ms",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 27,
    "name": "Band 2 Reduction",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 28,
    "name": "Band 2 Exp. Threshold",
    "unit": "dB",
    "default": -50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 29,
@@ -306,21 +324,27 @@
    "name": "Band 1 Response",
    "unit": "ms",
    "default": 200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
   },
   {
    "index": 38,
    "name": "Band 1 Reduction",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 0.0
   },
   {
    "index": 39,
    "name": "Band 1 Exp. Threshold",
    "unit": "dB",
    "default": -50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -60.0,
+   "max": 10.0
   },
   {
    "index": 40,

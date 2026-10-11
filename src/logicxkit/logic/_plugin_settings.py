@@ -50,7 +50,7 @@ def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
     slider's ends with a note, on the item's grid and the nearer sampled position — what
     `settings --set` writes. A parameter no map measures goes as given here; `set_by_name` holds
     it to its table range, where the table carries one."""
-    from .services.mixer.slider import slider_curve, snap
+    from .services.mixer.slider import grid_value
     from .services.translate.translate import load_maps, map_for
     m = map_for(payload, load_maps())
     if m is None:
@@ -58,21 +58,14 @@ def gridded(payload: bytes, values: dict[str, str]) -> tuple[dict, list[str]]:
     out, notes = {}, []
     for name, raw in values.items():
         param = next((k for k in m.raw.get("automation", {}) if k.lower() == name.lower()), name)   # the table's spelling
-        curve = slider_curve(m, param)
-        item = next((i for i in m.items.values() if i.param.lower() == name.lower()), None)
         try:
             value = float(raw)
         except ValueError:
             out[name] = raw                                       # a choice by name
             continue
-        if curve:
-            lo, hi = min(v for _u, v in curve), max(v for _u, v in curve)
-            if not lo <= value <= hi:
-                notes.append(f"{name} {value:g}: {m.plugin}'s slider runs {lo:g}..{hi:g}; set to {min(max(value, lo), hi):g}")
-                value = min(max(value, lo), hi)
-        if item is not None and item.step and not item.switch:
-            value = round(round(value / item.step) * item.step, 6)
-        out[name] = snap(m, param, value) if curve else value
+        out[name], outside = grid_value(m, param, value)
+        if outside:
+            notes.append(f"{name} {value:g}: {m.plugin}'s slider runs {outside[0]:g}..{outside[1]:g}; set to {out[name]:g}")
     return out, notes
 
 

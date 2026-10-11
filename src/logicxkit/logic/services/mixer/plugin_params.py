@@ -16,6 +16,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from ..._binary import find_blocks, patch_block_floats, read_block_floats
+from .plugin_text import text_state
+from .slot_width import plugin_variant
 from ....utils.data import data_dirs
 
 
@@ -114,6 +116,12 @@ def table_for(tables: dict, type_id: int, variant: int | None = None) -> Table |
     return tables.get(type_id)
 
 
+def table_of(tables: dict, payload: bytes) -> Table | None:
+    """The table for a slot payload: its largest block's type with the slot's variant base."""
+    blocks = find_blocks(payload)
+    return table_for(tables, max(blocks, key=lambda b: b[2])[1], plugin_variant(payload)) if blocks else None
+
+
 def load_table(type_id: int, dirs: list[Path] | None = None) -> Table:
     tables = load_tables(dirs)
     if type_id not in tables:
@@ -128,11 +136,11 @@ def decode(table: Table, floats: list[float]) -> dict[str, float | str]:
     for p in table.params:
         if p.offset is not None or p.index >= len(floats):
             continue
-        out[p.name] = _shown(p, int_word(floats[p.index]) if p.kind == "int" else _scaled(p, floats[p.index]))
+        out[p.name] = _shown(p, int_word(floats[p.index]) if p.kind == "int" else shown_of(p, floats[p.index]))
     return out
 
 
-def _scaled(p: Param, word: float) -> float:
+def shown_of(p: Param, word: float) -> float:
     """What Logic shows for a float word: through its ``curve`` where the display is not linear
     in the word, else the word times the table's ``scale`` (Drum Synth's Tone shows 100 per 1)."""
     if p.curve:
@@ -140,32 +148,11 @@ def _scaled(p: Param, word: float) -> float:
     return round(word * p.scale, 6) if p.scale != 1.0 else word
 
 
-TEXT_MARK = b"46ia"                  # the state is text from 6 bytes past it: Alchemy's `.acp` lines
-
-
-def text_state(payload: bytes) -> dict[str, str]:
-    """A text state's `Key = value…` lines as `section[n].key` -> value text: a `<tag>` line opens
-    a section, numbered by how often its tag has appeared (Alchemy's four `<source>`s repeat
-    every key). A re-save's appended second copy counts on from there."""
-    at = payload.find(TEXT_MARK)
-    if at < 0:
-        return {}
-    out: dict[str, str] = {}
-    seen: dict[bytes, int] = {}
-    section = ""
-    for line in payload[at + 6:].split(b"\r\n"):
-        if line.startswith(b"<") and line.endswith(b">"):
-            tag = line[1:-1]
-            seen[tag] = seen.get(tag, 0) + 1
-            section = f"{tag.decode('latin-1')}[{seen[tag]}]."
-            continue
-        key, sep, value = line.partition(b" = ")
-        if sep:
-            name = section + key.decode("latin-1")
-            while name in out:
-                name += "'"
-            out[name] = value.decode("latin-1")
-    return out
+def word_of(p: Param, shown: float) -> float:
+    """The float word for a shown value: `shown_of` inverted."""
+    if p.curve:
+        return round(_along(p.curve, shown, inverse=True), 6)
+    return shown / p.scale if p.scale != 1.0 else shown
 
 
 def decode_payload(table: Table, payload: bytes) -> dict[str, float | str]:
@@ -187,7 +174,7 @@ def decode_payload(table: Table, payload: bytes) -> dict[str, float | str]:
     for p in table.params:
         if p.offset is not None and p.offset + 4 <= len(payload):
             word = struct.unpack_from("<i" if p.kind == "int" else "<f", payload, p.offset)[0]
-            out[p.name] = _shown(p, word if p.kind == "int" else _scaled(p, word))
+            out[p.name] = _shown(p, word if p.kind == "int" else shown_of(p, word))
     return out
 
 
@@ -286,9 +273,7 @@ def _coerce(table: Table, p: Param, value: float | str) -> float:
         if not number.is_integer():
             raise ValueError(f"{table.name} {p.name}: {value!r} is not a whole number")
         return int(number) if p.offset is not None else _as_word(int(number))
-    if p.curve:
-        return round(_along(p.curve, number, inverse=True), 6)
-    return number / p.scale if p.scale != 1.0 else number
+    return word_of(p, number)
 
 
 def _number(text: str) -> bool:

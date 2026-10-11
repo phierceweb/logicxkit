@@ -170,5 +170,29 @@ class LookupTest(unittest.TestCase):
         self.assertEqual(donor.component, COMPONENT)
 
 
+class HeaderOnlyDonorsTest(unittest.TestCase):
+    def test_two_blockless_donors_of_one_plug_in_measure_no_instance_id(self):
+        """Two Quick Sampler donors of one length differ in their tails, but no save says which bytes
+        are the id of a slot with no float block: nothing is measured, so nothing is stamped."""
+        import struct
+        import tempfile
+        from pathlib import Path
+        from logicxkit.logic.services.mixer.plugin_library import SUFFIX, library_offsets, load_library
+        from logicxkit.logic.services.stream.stream import HEADER
+
+        def slot(tail: int) -> bytes:
+            p = bytearray(400)
+            struct.pack_into("<H", p, 4, 1)
+            p[120:129], p[132:136], p[140:144], p[151] = b"Q-Sampler", b"MELC", b"TRRP", 8
+            p[-8:] = bytes([tail] * 8)
+            return bytes(HEADER) + bytes(p)
+        with tempfile.TemporaryDirectory() as tmp:
+            for name, tail in (("PRRT-v5", 1), ("PRRT-b-v5", 2)):
+                (Path(tmp) / f"{name}{SUFFIX}").write_bytes(slot(tail))
+            donors = load_library([Path(tmp)])
+            self.assertEqual(len(donors), 2)
+            self.assertEqual(library_offsets(donors[0], [Path(tmp)]), ())
+
+
 if __name__ == "__main__":
     unittest.main()

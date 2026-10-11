@@ -12,14 +12,18 @@
    "name": "Feedback",
    "unit": "%",
    "default": 37.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 16,
    "name": "Intensity",
    "unit": "%",
    "default": 41.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 19,

@@ -13470,10 +13470,6 @@
       "before": 0.71,
       "after": 0.75
      },
-     "Master": {
-      "before": 0.0,
-      "after": 0.1
-     },
      "Analyzer On/Off": {
       "before": 1.0,
       "after": 0.0
@@ -13501,6 +13497,10 @@
      "EQ Scale Shift": {
       "before": 0.0,
       "after": 1.0
+     },
+     "Master Gain": {
+      "before": 0.0,
+      "after": 0.1
      }
     },
     "Linear EQ": {
@@ -13624,10 +13624,6 @@
       "before": 0.71,
       "after": 0.75
      },
-     "Master": {
-      "before": 0.0,
-      "after": 0.1
-     },
      "Analyzer On/Off": {
       "before": 1.0,
       "after": 0.0
@@ -13651,6 +13647,10 @@
      "EQ Scale Shift": {
       "before": 0.0,
       "after": 1.0
+     },
+     "Master Gain": {
+      "before": 0.0,
+      "after": 0.1
      }
     },
     "Single EQ": {
@@ -27074,7 +27074,7 @@
  },
  "stockfx-amp-defaults-12-4": {
   "path": "stockfx-a01-amp-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-amp-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-amp-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -27096,6 +27096,276 @@
     "Vocal Transformer": 1348,
     "Exciter": 1002,
     "SubBass": 885
+   },
+   "slider_ends": {
+    "Amp Designer": {
+     "Gain": [
+      "0.0",
+      "10.0"
+     ],
+     "Bass": [
+      "0.0",
+      "10.0"
+     ],
+     "Mids": [
+      "0.0",
+      "10.0"
+     ],
+     "Treble": [
+      "0.0",
+      "10.0"
+     ],
+     "Presence": [
+      "0.0",
+      "10.0"
+     ],
+     "Master": [
+      "0.0",
+      "10.0"
+     ],
+     "Output Level": [
+      "Mute",
+      "+15.0 dB"
+     ],
+     "Mic Position X": [
+      "0.00",
+      "1.00"
+     ],
+     "Mic Position Z": [
+      "0.00",
+      "1.00"
+     ],
+     "FX Depth": [
+      "0.0",
+      "10.0"
+     ],
+     "FX Speed": [
+      "1 Bar",
+      "1/64t"
+     ],
+     "Reverb Level": [
+      "0.0",
+      "10.0"
+     ]
+    },
+    "Bass Amp Designer": {
+     "DI Gain": [
+      "Mute",
+      "+15.0 dB"
+     ],
+     "Gain": [
+      "0.0",
+      "10.0"
+     ],
+     "Bass": [
+      "0.0",
+      "10.0"
+     ],
+     "Mids": [
+      "0.0",
+      "10.0"
+     ],
+     "Mid Range": [
+      "0",
+      "2"
+     ],
+     "Treble": [
+      "0.0",
+      "10.0"
+     ],
+     "Master": [
+      "0.0",
+      "10.0"
+     ],
+     "Comp Amount": [
+      "0.0",
+      "10.0"
+     ],
+     "Comp Gain": [
+      "0.0",
+      "10.0"
+     ],
+     "40 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "100 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "250 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "625 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "1560 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "3900 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "6600 Hz": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "Microphone Pos X": [
+      "0.00",
+      "1.00"
+     ],
+     "Microphone Pos Z": [
+      "0.00",
+      "1.00"
+     ],
+     "Amp/DI Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Output Gain": [
+      "Mute",
+      "+15.0 dB"
+     ]
+    },
+    "Pedalboard": {
+     "Macro A Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro B Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro C Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro D Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro E Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro F Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro G Value": [
+      "0.000",
+      "1.000"
+     ],
+     "Macro H Value": [
+      "0.000",
+      "1.000"
+     ]
+    },
+    "Pitch Correction": {
+     "Detune": [
+      "-50 ct",
+      "50 ct"
+     ],
+     "Response": [
+      "0.00 ms",
+      "999 ms"
+     ],
+     "Tolerance": [
+      "0 Cent",
+      "50 Cent"
+     ]
+    },
+    "Pitch Shifter": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Semitones": [
+      "-12",
+      "12"
+     ],
+     "Cents": [
+      "-50",
+      "50"
+     ]
+    },
+    "Vocal Transformer": {
+     "Pitch": [
+      "-24",
+      "+24"
+     ],
+     "Formant": [
+      "-24",
+      "+24"
+     ],
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Glide": [
+      "0.000 ms",
+      "1000.000 ms"
+     ],
+     "Grain Size": [
+      "Auto",
+      "20 ms"
+     ],
+     "Fine Pitch": [
+      "-100 ct",
+      "100 ct"
+     ]
+    },
+    "Exciter": {
+     "Frequency": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Harmonics": [
+      "0.00 %",
+      "+200 %"
+     ]
+    },
+    "SubBass": {
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Freq Mix": [
+      "0",
+      "100"
+     ],
+     "Ratio High": [
+      "1",
+      "8"
+     ],
+     "Ratio Low": [
+      "1",
+      "8"
+     ],
+     "Center High": [
+      "40 Hz",
+      "2000 Hz"
+     ],
+     "Bandwidth High": [
+      "0.20 Oct",
+      "2.00 Oct"
+     ],
+     "Center Low": [
+      "40 Hz",
+      "2000 Hz"
+     ],
+     "Bandwidth Low": [
+      "0.20 Oct",
+      "2.00 Oct"
+     ],
+     "Wet": [
+      "0.0 %",
+      "500.0 %"
+     ]
+    }
    }
   }
  },
@@ -27453,7 +27723,7 @@
  },
  "stockfx-dist-defaults-12-4": {
   "path": "stockfx-i01-dist-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dist-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dist-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -27481,6 +27751,558 @@
     "Fuzz-Wah": 405,
     "Spectral Gate": 615,
     "Rotor Cabinet": 1121
+   },
+   "slider_ends": {
+    "Bitcrusher": {
+     "Drive": [
+      "0.0 dB",
+      "50.0 dB"
+     ],
+     "Clip Level": [
+      "-10.0 dB",
+      "0.0 dB"
+     ],
+     "Resolution": [
+      "1 bit",
+      "24 bit"
+     ],
+     "Downsampling": [
+      "1 x",
+      "40 x"
+     ],
+     "Mix": [
+      "0.00 %",
+      "100.00 %"
+     ]
+    },
+    "Clip Distortion": {
+     "Clip Drive": [
+      "0.0 dB",
+      "50.0 dB"
+     ],
+     "Clip Tone": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Clip Symmetry": [
+      "-100 %",
+      "+100 %"
+     ],
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Clip Filter": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "LP Filter": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "High Shelf Gain": [
+      "-30.0 dB",
+      "+30.0 dB"
+     ],
+     "High Shelf Freqency": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Input Gain": [
+      "-30.0 dB",
+      "+30.0 dB"
+     ],
+     "Output Gain": [
+      "-30.0 dB",
+      "+30.0 dB"
+     ]
+    },
+    "Distortion": {
+     "Drive": [
+      "0.0 dB",
+      "50.0 dB"
+     ],
+     "Tone": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Output": [
+      "-40.0 dB",
+      "+20.0 dB"
+     ]
+    },
+    "Distortion II": {
+     "Pre Gain": [
+      "-10.0 dB",
+      "20.0 dB"
+     ],
+     "Drive": [
+      "0.00",
+      "1.00"
+     ],
+     "Tone": [
+      "-10.00 dB",
+      "10.00 dB"
+     ],
+     "Distortion Output Level": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Mix": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "Overdrive": {
+     "Drive": [
+      "0.00 dB",
+      "24.00 dB"
+     ],
+     "Tone": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Output": [
+      "-40.0 dB",
+      "+20.0 dB"
+     ]
+    },
+    "Phase Distortion": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Delay": [
+      "0.00 %",
+      "100 %"
+     ],
+     "Cutoff": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Resonance": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "AutoFilter": {
+     "Pre Filter Distortion": [
+      "0 %",
+      "400 %"
+     ],
+     "Post Filter Distortion": [
+      "0 %",
+      "400 %"
+     ],
+     "Cutoff": [
+      "0 %",
+      "100 %"
+     ],
+     "Resonance": [
+      "0 %",
+      "100 %"
+     ],
+     "Fatness": [
+      "0 %",
+      "100 %"
+     ],
+     "Stereo Phase": [
+      "-180 \u00b0",
+      "+180 \u00b0"
+     ],
+     "Pulsewidth": [
+      "0 %",
+      "100 %"
+     ],
+     "LFO Cutoff Mod": [
+      "0 %",
+      "100 %"
+     ],
+     "Threshold": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Attack": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Decay": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Sustain": [
+      "0 %",
+      "100 %"
+     ],
+     "Release": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Env Cutoff Mod": [
+      "0 %",
+      "100 %"
+     ],
+     "Env Dynamic": [
+      "0 %",
+      "100 %"
+     ],
+     "Main Out": [
+      "-50.0 dB",
+      "6.0 dB"
+     ],
+     "Rate": [
+      "32 Bars",
+      "DC"
+     ],
+     "Sync Phase": [
+      "-180.00 \u00b0",
+      "180.00 \u00b0"
+     ],
+     "Dry Signal": [
+      "0.000 %",
+      "200.0 %"
+     ],
+     "Stereo Spread": [
+      "-1.00",
+      "1.00"
+     ]
+    },
+    "EVOC 20 Filterbank": {
+     "Level 1 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 2 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 3 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 4 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 5 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 6 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 7 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 8 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 9 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 10 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 11 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 12 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 13 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 14 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 15 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 16 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 17 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 18 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 19 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 20 A": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Boost A": [
+      "-20.000 dB",
+      "20.000 dB"
+     ],
+     "Bands": [
+      "5",
+      "20"
+     ],
+     "Stereo": [
+      "0.00",
+      "5.00"
+     ],
+     "Low Frequency": [
+      "75 Hz",
+      "750 Hz"
+     ],
+     "High Frequency": [
+      "800 Hz",
+      "8000 Hz"
+     ],
+     "Formant Shift": [
+      "-2.00",
+      "2.00"
+     ],
+     "Resonance": [
+      "0.50",
+      "16.00"
+     ],
+     "LFO1 Rate": [
+      "32 Bars",
+      "200.00"
+     ],
+     "LFO -> Formant": [
+      "0.000",
+      "1.000"
+     ],
+     "Level 1 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 2 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 3 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 4 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 5 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 6 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 7 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 8 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 9 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 10 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 11 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 12 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 13 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 14 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 15 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 16 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 17 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 18 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 19 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Level 20 B": [
+      "0.000 %",
+      "100.000 %"
+     ],
+     "Boost B": [
+      "-20.000 dB",
+      "20.000 dB"
+     ],
+     "Level A<>B": [
+      "0 %",
+      "100 %"
+     ],
+     "LFO2 Rate": [
+      "32 Bars",
+      "100.00"
+     ],
+     "LFO -> Xfade": [
+      "0.00",
+      "1.00"
+     ],
+     "Output Level": [
+      "-60 dB",
+      "60 dB"
+     ]
+    },
+    "Fuzz-Wah": {
+     "Wah Level": [
+      "-50.0 dB",
+      "10.0 dB"
+     ],
+     "Pedal Position": [
+      "0.000",
+      "1.000"
+     ],
+     "Pedal Range Start": [
+      "-0.50",
+      "1.50"
+     ],
+     "Pedal Range End": [
+      "-0.50",
+      "1.50"
+     ],
+     "Relative Q": [
+      "-1.00",
+      "1.00"
+     ],
+     "Auto Wah Depth": [
+      "Off",
+      "100"
+     ],
+     "Auto Wah Attack": [
+      "10.0 ms",
+      "10000 ms"
+     ],
+     "Auto Wah Release": [
+      "10.0 ms",
+      "10000 ms"
+     ],
+     "Comp Ratio": [
+      "1.0 :1",
+      "30.0 :1"
+     ],
+     "Fuzz Gain": [
+      "0.000 dB",
+      "20.000 dB"
+     ],
+     "Fuzz Tone": [
+      "200 Hz",
+      "20000 Hz"
+     ]
+    },
+    "Spectral Gate": {
+     "Threshold": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Sub Energy": [
+      "-100.0 dB",
+      "+20.0 dB"
+     ],
+     "Super Energy": [
+      "-100.0 dB",
+      "+20.0 dB"
+     ],
+     "Speed": [
+      "0.100 Hz",
+      "2.000 Hz"
+     ],
+     "Center Frequency": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Bandwidth": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "CF Modulation": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "BW Modulation": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Low Level": [
+      "-100.0 dB",
+      "+20.0 dB"
+     ],
+     "High Level": [
+      "-100.0 dB",
+      "+20.0 dB"
+     ],
+     "Gain": [
+      "-20 dB",
+      "+20 dB"
+     ]
+    },
+    "Rotor Cabinet": {
+     "Rotor Fast Rate": [
+      "0.00",
+      "8.00"
+     ],
+     "Acc/Dec Scale": [
+      "0.00",
+      "4.00"
+     ],
+     "Horn Stereo Width": [
+      "0.00",
+      "2.00"
+     ],
+     "Drum Stereo Width": [
+      "0.00",
+      "2.00"
+     ],
+     "Balance": [
+      "100 %",
+      "0 %"
+     ]
+    }
    }
   }
  },
@@ -28117,7 +28939,7 @@
  },
  "stockfx-dr-defaults-12-4": {
   "path": "stockfx-r01-dr-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -28140,7 +28962,611 @@
    },
    "third_party_slots": [
     2
-   ]
+   ],
+   "slider_ends": {
+    "Tru-Tape Delay": {
+     "Time": [
+      "1/64t",
+      "2 Bars"
+     ],
+     "Feedback": [
+      "0.0 %",
+      "140.0 %"
+     ],
+     "Mix": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Hi Cut": [
+      "850 Hz",
+      "3400 Hz"
+     ],
+     "Lo Cut": [
+      "20 Hz",
+      "500 Hz"
+     ],
+     "Dirt": [
+      "0",
+      "100"
+     ],
+     "Flutter": [
+      "0",
+      "100"
+     ]
+    },
+    "Delay Designer": {
+     "Swing": [
+      "33 %",
+      "99 %"
+     ],
+     "Feedback Amount": [
+      "Mute",
+      "+6.0 dB"
+     ],
+     "Dry": [
+      "Mute",
+      "0.0 dB"
+     ],
+     "Wet": [
+      "Mute",
+      "0.0 dB"
+     ],
+     "Tap Time": [
+      "5.0 ms",
+      "10000 ms"
+     ],
+     "Tap Level": [
+      "Mute",
+      "+6.0 dB"
+     ],
+     "Pan Amount": [
+      "-100 %",
+      "+100 %"
+     ],
+     "Pan Stereo Spread": [
+      "-100 %",
+      "+100 %"
+     ],
+     "Filter HighPass Freq": [
+      "0Hz",
+      "20000 Hz"
+     ],
+     "Filter LowPass Freq": [
+      "20.0 Hz",
+      "22000Hz"
+     ],
+     "Filter Resonance": [
+      "0 %",
+      "100 %"
+     ],
+     "Pitch Transpose": [
+      "-12.50 semi",
+      "12.50 semi"
+     ]
+    },
+    "Space Designer": {
+     "Output Dry": [
+      "Mute",
+      "0.0 dB"
+     ],
+     "Output Wet": [
+      "Mute",
+      "0.0 dB"
+     ],
+     "Predelay": [
+      "0 ms",
+      "999 ms"
+     ],
+     "Length": [
+      "914 \u00b5s",
+      ""
+     ],
+     "Input Crossfeed": [
+      "",
+      ""
+     ],
+     "Volume Init Level": [
+      "0 %",
+      ""
+     ],
+     "Volume Attack Time": [
+      "",
+      ""
+     ],
+     "Volume Attack X1": [
+      "",
+      ""
+     ],
+     "Volume Attack Y1": [
+      "0.000",
+      ""
+     ],
+     "Volume Attack X2": [
+      "",
+      ""
+     ],
+     "Volume Attack Y2": [
+      "0.000",
+      ""
+     ],
+     "Volume Decay Time": [
+      "",
+      ""
+     ],
+     "Volume Decay X1": [
+      "",
+      ""
+     ],
+     "Volume Decay Y1": [
+      "",
+      ""
+     ],
+     "Volume Decay X2": [
+      "",
+      ""
+     ],
+     "Volume Decay Y2": [
+      "",
+      ""
+     ],
+     "Volume End Level": [
+      "",
+      ""
+     ],
+     "Filter Init Level": [
+      "0.1 Hz",
+      "1.0 Hz"
+     ],
+     "Filter Attack Time": [
+      "0.0 s",
+      "1.0 s"
+     ],
+     "Filter Attack X1": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Attack Y1": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Attack X2": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Attack Y2": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Max Level": [
+      "0.1 Hz",
+      "1.0 Hz"
+     ],
+     "Filter Decay Time": [
+      "0.0 s",
+      "1.0 s"
+     ],
+     "Filter Decay X1": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Decay Y1": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Decay X2": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter Decay Y2": [
+      "0.000",
+      "1.000"
+     ],
+     "Filter End Level": [
+      "0.1 Hz",
+      "1.0 Hz"
+     ],
+     "Filter Resonance": [
+      "0.60",
+      "60.00"
+     ],
+     "Low Shelf Gain": [
+      "-24.0 dB",
+      "24.0 dB"
+     ],
+     "Low Shelf Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "X-Over Freq": [
+      "200 Hz",
+      "16.0 kHz"
+     ],
+     "Stereo Spread Low": [
+      "0 %",
+      "100 %"
+     ],
+     "IR Offset": [
+      "0.0 s",
+      ""
+     ],
+     "Low Mid Gain": [
+      "-24.0 dB",
+      "24.0 dB"
+     ],
+     "Low Mid Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Low Mid Q": [
+      "0.10",
+      "10.00"
+     ],
+     "High Mid Gain": [
+      "-24.0 dB",
+      "24.0 dB"
+     ],
+     "High Mid Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "High Mid Q": [
+      "0.10",
+      "10.00"
+     ],
+     "High Shelf Gain": [
+      "-24.0 dB",
+      "24.0 dB"
+     ],
+     "High Shelf Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Center Level": [
+      "Mute",
+      "0.0 dB"
+     ],
+     "Balance F/R": [
+      "0.00",
+      "1.00"
+     ],
+     "Low Shelf Y": [
+      "-24 dB",
+      "24 dB"
+     ],
+     "High Shelf Y": [
+      "-24 dB",
+      "24 dB"
+     ],
+     "LFE to Rev": [
+      "0.00",
+      "1.00"
+     ],
+     "Size": [
+      "10 %",
+      "1000 %"
+     ],
+     "Stereo Spread High": [
+      "0 %",
+      "100 %"
+     ],
+     "Low Cut Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Low Cut Q": [
+      "0.10",
+      "10.00"
+     ],
+     "Low Shelf Q": [
+      "0.10",
+      "10.00"
+     ],
+     "High Shelf Q": [
+      "0.10",
+      "10.00"
+     ],
+     "High Cut Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "High Cut Q": [
+      "0.10",
+      "10.00"
+     ]
+    },
+    "Echo": {
+     "Feedback": [
+      "0 %",
+      "100 %"
+     ],
+     "Color": [
+      "-100",
+      "100"
+     ],
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Wet": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "ChromaVerb": {
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Wet": [
+      "0 %",
+      "100 %"
+     ],
+     "Predelay": [
+      "0 ms",
+      "999 ms"
+     ],
+     "Decay Time": [
+      "0.25 s",
+      "100.00 s"
+     ],
+     "Attack": [
+      "0 %",
+      "100 %"
+     ],
+     "Size": [
+      "0 %",
+      "100 %"
+     ],
+     "Density": [
+      "0 %",
+      "100 %"
+     ],
+     "Distance": [
+      "0 %",
+      "100 %"
+     ],
+     "Early/Late Mix": [
+      "100 | 0",
+      "0 | 100"
+     ],
+     "Width": [
+      "0 %",
+      "150 %"
+     ],
+     "Mono Maker Freq": [
+      "20 Hz",
+      "5000 Hz"
+     ],
+     "Modulation Depth": [
+      "off",
+      "100 %"
+     ],
+     "Modulation Speed": [
+      "0.10 Hz",
+      "10.00 Hz"
+     ],
+     "Modulation Smoothing": [
+      "0 %",
+      "100 %"
+     ],
+     "Damping Low Shelf Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Damping Low Shelf Ratio": [
+      "0.10 x",
+      "2.00 x"
+     ],
+     "Damping Low Shelf Q": [
+      "0.10",
+      "2.00"
+     ],
+     "Damping Low Peak Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Damping Low Peak Ratio": [
+      "0.10 x",
+      "2.00 x"
+     ],
+     "Damping Low Peak Q": [
+      "0.10",
+      "100"
+     ],
+     "Damping High Peak Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Damping High Peak Ratio": [
+      "0.10 x",
+      "2.00 x"
+     ],
+     "Damping High Peak Q": [
+      "0.10",
+      "100"
+     ],
+     "Damping High Shelf Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Damping High Shelf Ratio": [
+      "0.10 x",
+      "2.00 x"
+     ],
+     "Damping High Shelf Q": [
+      "0.10",
+      "2.00"
+     ],
+     "Low Cut Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Cut Q": [
+      "0.10",
+      "100"
+     ],
+     "Low Shelf Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Low Shelf Q": [
+      "0.10",
+      "2.00"
+     ],
+     "Low Peak Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Peak Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Low Peak Q": [
+      "0.10",
+      "100"
+     ],
+     "High Peak Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Peak Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "High Peak Q": [
+      "0.10",
+      "100"
+     ],
+     "High Shelf Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "High Shelf Q": [
+      "0.10",
+      "2.00"
+     ],
+     "High Cut Freq": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Cut Q": [
+      "0.10",
+      "100"
+     ]
+    },
+    "SilverVerb": {
+     "Predelay": [
+      "0 ms",
+      "200 ms"
+     ],
+     "Reflectivity": [
+      "0 %",
+      "100 %"
+     ],
+     "Room Size": [
+      "10",
+      "200"
+     ],
+     "High Cut": [
+      "1200 Hz",
+      "12000 Hz"
+     ],
+     "Low Cut": [
+      "20 Hz",
+      "6000 Hz"
+     ],
+     "Density/Time": [
+      "0 %",
+      "100 %"
+     ],
+     "Modulation Rate": [
+      "0.10 Hz",
+      "100.00 Hz"
+     ],
+     "Modulation Intensity": [
+      "0.00",
+      "1.00"
+     ],
+     "Modulation Phase": [
+      "-180 \u00b0",
+      "180 \u00b0"
+     ],
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Wet": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "EnVerb": {
+     "Dry Signal Delay": [
+      "0 ms",
+      "5000 ms"
+     ],
+     "Predelay": [
+      "10 ms",
+      "1000 ms"
+     ],
+     "Attack": [
+      "10 ms",
+      "1000 ms"
+     ],
+     "Decay": [
+      "10 ms",
+      "1000 ms"
+     ],
+     "Sustain": [
+      "0 %",
+      "100 %"
+     ],
+     "Hold": [
+      "10 ms",
+      "1000 ms"
+     ],
+     "Release": [
+      "10 ms",
+      "1000 ms"
+     ],
+     "Density": [
+      "0 %",
+      "100 %"
+     ],
+     "Crossover": [
+      "100 Hz",
+      "1000 Hz"
+     ],
+     "Low Freq Level": [
+      "-100.0 dB",
+      "+12.0 dB"
+     ],
+     "High Cut": [
+      "1000 Hz",
+      "12000 Hz"
+     ],
+     "Spread": [
+      "0 %",
+      "200 %"
+     ],
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Wet": [
+      "0 %",
+      "100 %"
+     ]
+    }
+   }
   },
   "scrubbed": {
    "Alternatives/000/ProjectData": {
@@ -28912,7 +30338,7 @@
  },
  "stockfx-dr2-defaults-12-4": {
   "path": "stockfx-s01-dr2-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr2-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr2-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -28929,7 +30355,181 @@
    },
    "third_party_slots": [
     3
-   ]
+   ],
+   "slider_ends": {
+    "Tape Delay": {
+     "Feedback": [
+      "0 %",
+      "600 %"
+     ],
+     "High Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Low Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Deviation": [
+      "-34.00 %",
+      "+50.00 %"
+     ],
+     "Smoothing": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Flutter Rate": [
+      "0.0 Hz",
+      "10.0 Hz"
+     ],
+     "Flutter Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "LFO Rate": [
+      "0.00 Hz",
+      "10.00 Hz"
+     ],
+     "LFO Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Dry": [
+      "0 %",
+      "100 %"
+     ],
+     "Wet": [
+      "0 %",
+      "100 %"
+     ],
+     "Clip Threshold": [
+      "-20.0 dB",
+      "+20.0 dB"
+     ],
+     "Stereo Spread": [
+      "-100",
+      "100"
+     ],
+     "Sync Time": [
+      "0.03",
+      "2.25"
+     ]
+    },
+    "Stereo Delay": {
+     "Left Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Right Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Left Feedback": [
+      "0 %",
+      "100 %"
+     ],
+     "Right Feedback": [
+      "0 %",
+      "100 %"
+     ],
+     "Crossfeed L->R": [
+      "0 %",
+      "100 %"
+     ],
+     "Crossfeed R->L": [
+      "0 %",
+      "100 %"
+     ],
+     "Left Deviation": [
+      "-34.00 %",
+      "+50.00 %"
+     ],
+     "Right Deviation": [
+      "-34.00 %",
+      "+50.00 %"
+     ],
+     "Left High Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Left Low Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Right High Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Right Low Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Left Sync Time": [
+      "0.03",
+      "1.12"
+     ],
+     "Right Sync Time": [
+      "0.03",
+      "1.12"
+     ]
+    },
+    "Match EQ": {
+     "Analyzer Top": [
+      "+20 dB",
+      "-40 dB"
+     ],
+     "Apply Amount": [
+      "-100 %",
+      "+200 %"
+     ],
+     "Channel Link": [
+      "0 %",
+      "100 %"
+     ],
+     "Smoothing": [
+      "0.0",
+      "24.0"
+     ]
+    },
+    "Noise Gate": {
+     "Threshold": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Hysteresis": [
+      "-20.0 dB",
+      "0.0 dB"
+     ],
+     "Reduction": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Attack": [
+      "0 ms",
+      "100 ms"
+     ],
+     "Hold": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Release": [
+      "0.0 ms",
+      "10000 ms"
+     ],
+     "High Cutoff": [
+      "200 Hz",
+      "20000 Hz"
+     ],
+     "Low Cutoff": [
+      "20 Hz",
+      "10000 Hz"
+     ],
+     "Lookahead": [
+      "0.0 ms",
+      "20.0 ms"
+     ]
+    }
+   }
   }
  },
  "stockfx-dr2-mono-12-4": {
@@ -29167,7 +30767,7 @@
  },
  "stockfx-dr3-defaults-12-4": {
   "path": "stockfx-t01-dr3-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr3-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dr3-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -29177,6 +30777,60 @@
    "variants": {
     "Quantec Room Simulator": 2365,
     "Sample Delay": 1461
+   },
+   "slider_ends": {
+    "Quantec Room Simulator": {
+     "Dry Level": [
+      "Mute",
+      " 0 dB"
+     ],
+     "Reverb Level": [
+      "Mute",
+      " 0 dB"
+     ],
+     "Reverb Delay": [
+      "1 ms",
+      "200 ms"
+     ],
+     "Reverb Time": [
+      "2.0 s",
+      "2.0 s"
+     ],
+     "Reverb Low x": [
+      "0.10 x",
+      "10.00 x"
+     ],
+     "Reverb High x": [
+      "0.10 x",
+      "0.10 x"
+     ],
+     "Room Size": [
+      "1 m\u00b3",
+      "10^6 m\u00b3"
+     ],
+     "1st Reflection Delay": [
+      "1 ms",
+      "200 ms"
+     ],
+     "1st Reflection Level": [
+      "Mute",
+      " 0 dB"
+     ],
+     "1st Reflection Spread": [
+      "-50 ms",
+      "50 ms"
+     ]
+    },
+    "Sample Delay": {
+     "Left Delay": [
+      "0 samples",
+      "10000 samples"
+     ],
+     "Right Delay": [
+      "0 samples",
+      "10000 samples"
+     ]
+    }
    }
   }
  },
@@ -29278,7 +30932,7 @@
  },
  "stockfx-dynamics-defaults-12-4": {
   "path": "stockfx-d01-dynamics-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dynamics-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dynamics-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "inserts": [
@@ -29290,6 +30944,98 @@
     "Compressor": 154,
     "DeEsser 2": 291,
     "Expander": 156
+   },
+   "slider_ends": {
+    "Compressor": {
+     "Threshold": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Ratio": [
+      "1.0:1",
+      "30.0:1"
+     ],
+     "Attack": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Release": [
+      "5.0 ms",
+      "5000.0 ms"
+     ],
+     "Make Up": [
+      "-20.0 dB",
+      "50.0 dB"
+     ],
+     "Knee": [
+      "0.0",
+      "1.0"
+     ],
+     "Limiter Threshold": [
+      "-10.0 dB",
+      "0.0 dB"
+     ],
+     "Frequency": [
+      "16.352 Hz",
+      "19912 Hz"
+     ],
+     "Q": [
+      "0.50",
+      "5.00"
+     ],
+     "Mix": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Input Gain": [
+      "-30.0 dB",
+      "+30.0 dB"
+     ],
+     "Output Gain": [
+      "-30.0 dB",
+      "+30.0 dB"
+     ]
+    },
+    "DeEsser 2": {
+     "Max Reduction": [
+      "25.0 dB",
+      "0.0 dB"
+     ],
+     "Threshold": [
+      "-60.0 dB",
+      "0.0 dB"
+     ],
+     "Detector Frequency": [
+      "1200 Hz",
+      "12000 Hz"
+     ]
+    },
+    "Expander": {
+     "Threshold": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Ratio": [
+      "0.50 :1",
+      "1.00 :1"
+     ],
+     "Attack": [
+      "0.0 ms",
+      "2000.0 ms"
+     ],
+     "Release": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Gain": [
+      "-50.0 dB",
+      "+20.0 dB"
+     ],
+     "Knee": [
+      "0.0",
+      "1.0"
+     ]
+    }
    }
   }
  },
@@ -29415,7 +31161,7 @@
  },
  "stockfx-dynamics2-defaults-12-4": {
   "path": "stockfx-d03-dynamics2-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dynamics2-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-dynamics2-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "inserts": [
@@ -29431,6 +31177,64 @@
     "Expander": 156,
     "Adaptive Limiter": 193,
     "Noise Gate": 179
+   },
+   "slider_ends": {
+    "Adaptive Limiter": {
+     "Input Scale": [
+      "-10.0 dB",
+      "+10.0 dB"
+     ],
+     "Gain": [
+      "0.0 dB",
+      "12.0 dB"
+     ],
+     "Out Ceiling": [
+      "-2.0 dB",
+      "0.0 dB"
+     ],
+     "Lookahead": [
+      "20 ms",
+      "200 ms"
+     ]
+    },
+    "Noise Gate": {
+     "Threshold": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Hysteresis": [
+      "-20.0 dB",
+      "0.0 dB"
+     ],
+     "Reduction": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Attack": [
+      "0 ms",
+      "100 ms"
+     ],
+     "Hold": [
+      "0 ms",
+      "1000 ms"
+     ],
+     "Release": [
+      "0.0 ms",
+      "10000 ms"
+     ],
+     "High Cutoff": [
+      "200 Hz",
+      "20000 Hz"
+     ],
+     "Low Cutoff": [
+      "20 Hz",
+      "10000 Hz"
+     ],
+     "Lookahead": [
+      "0.0 ms",
+      "20.0 ms"
+     ]
+    }
    }
   }
  },
@@ -29589,7 +31393,7 @@
  },
  "stockfx-eq-defaults-12-4": {
   "path": "stockfx-e01-eq-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-eq-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-eq-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -29604,7 +31408,585 @@
    },
    "third_party_slots": [
     3
-   ]
+   ],
+   "slider_ends": {
+    "Channel EQ": {
+     "Low Cut Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Cut Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Low Shelf Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Low Shelf Q-Factor": [
+      "0.10",
+      "2.00"
+     ],
+     "Peak 1 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 1 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 1 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 2 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 2 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 2 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 3 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 3 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 3 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 4 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 4 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 4 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "High Shelf Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "High Shelf Q-Factor": [
+      "0.10",
+      "2.00"
+     ],
+     "High Cut Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Cut Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Master Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Analyzer Top": [
+      "+20 dB",
+      "-40 dB"
+     ],
+     "Analyzer Decay": [
+      "0 dB/s",
+      "30 dB/s"
+     ],
+     "EQ Scale Shift": [
+      "-5",
+      "+5"
+     ]
+    },
+    "Linear Phase EQ": {
+     "Low Cut Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Cut Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Low Shelf Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Low Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Low Shelf Q-Factor": [
+      "0.10",
+      "2.00"
+     ],
+     "Peak 1 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 1 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 1 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 2 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 2 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 2 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 3 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 3 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 3 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Peak 4 Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Peak 4 Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Peak 4 Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "High Shelf Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Shelf Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "High Shelf Q-Factor": [
+      "0.10",
+      "2.00"
+     ],
+     "High Cut Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "High Cut Q-Factor": [
+      "0.10",
+      "100"
+     ],
+     "Master Gain": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ],
+     "Analyzer Top": [
+      "+20 dB",
+      "-40 dB"
+     ],
+     "Analyzer Decay": [
+      "0 dB/s",
+      "30 dB/s"
+     ],
+     "EQ Scale Shift": [
+      "-5",
+      "+5"
+     ]
+    },
+    "Single Band EQ": {
+     "Frequency": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Q-Factor": [
+      "0.10",
+      "100"
+     ]
+    },
+    "Vintage Console EQ": {
+     "High Gain": [
+      "-18.0 dB",
+      "18.0 dB"
+     ],
+     "Mid Gain": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Mid Freq": [
+      "0.360 kHz",
+      "7.200 kHz"
+     ],
+     "Low Gain": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Low Freq": [
+      "35.000 Hz",
+      "220.000 Hz"
+     ],
+     "Low Cut": [
+      "50 Hz",
+      "300 Hz"
+     ],
+     "Drive": [
+      "0.0",
+      "11.0"
+     ],
+     "Volume": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ]
+    },
+    "Vintage Graphic EQ": {
+     "16.0K": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "8.0K": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "4.0K": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "2.0K": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "1.0K": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "500": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "250": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "125": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "63": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "31": [
+      "-12.0 dB",
+      "12.0 dB"
+     ],
+     "Detune": [
+      "",
+      ""
+     ],
+     "Drive": [
+      "0.0",
+      "11.0"
+     ],
+     "Volume": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ]
+    },
+    "Vintage Tube EQ": {
+     "Low Boost": [
+      "0.0",
+      "10.0"
+     ],
+     "Low Atten": [
+      "0.0",
+      "10.0"
+     ],
+     "Program EQ Low Freq": [
+      "20.0 Hz",
+      "100.0 Hz"
+     ],
+     "High Atten": [
+      "0.0",
+      "10.0"
+     ],
+     "High Atten Sel": [
+      "5.0 kHz",
+      "20.0 kHz"
+     ],
+     "High Boost": [
+      "0.0",
+      "10.0"
+     ],
+     "Program EQ High Freq": [
+      "1.000 kHz",
+      "16.000 kHz"
+     ],
+     "High Bandwidth": [
+      "0.0",
+      "10.0"
+     ],
+     "Low Peak": [
+      "0.0",
+      "10.0"
+     ],
+     "Mid-Range EQ Low Freq": [
+      "0.200 kHz",
+      "1.000 kHz"
+     ],
+     "Dip": [
+      "0.0",
+      "10.0"
+     ],
+     "Dip Freq": [
+      "0.20 kHz",
+      "7.00 kHz"
+     ],
+     "Dip Q": [
+      "0.00",
+      "1.00"
+     ],
+     "High Peak": [
+      "0.0",
+      "10.0"
+     ],
+     "Mid-Range EQ High Freq": [
+      "1.500 kHz",
+      "5.000 kHz"
+     ],
+     "Drive": [
+      "0.0",
+      "11.0"
+     ],
+     "Volume": [
+      "-24.0 dB",
+      "+24.0 dB"
+     ]
+    },
+    "Multipressor": {
+     "Lookahead": [
+      "0.000 ms",
+      "20.000 ms"
+     ],
+     "Band 4 Xover Frequency 3/4": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Band 4 Response": [
+      "0 ms",
+      "200 ms"
+     ],
+     "Band 4 Reduction": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Band 4 Exp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 4 Exp. Ratio": [
+      "1.00",
+      "10.10"
+     ],
+     "Band 4 Comp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 4 Comp. Ratio": [
+      "1.000",
+      "30.000"
+     ],
+     "Band 4 Make Up": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Band 4 Attack": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Band 4 Release": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Band 3 Xover Frequency 2/3": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Band 3 Response": [
+      "0 ms",
+      "200 ms"
+     ],
+     "Band 3 Reduction": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Band 3 Exp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 3 Exp. Ratio": [
+      "1.00",
+      "10.10"
+     ],
+     "Band 3 Comp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 3 Comp. Ratio": [
+      "1.000",
+      "30.000"
+     ],
+     "Band 3 Make Up": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Band 3 Attack": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Band 3 Release": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Band 2 Xover Frequency 1/2": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Band 2 Response": [
+      "0 ms",
+      "200 ms"
+     ],
+     "Band 2 Reduction": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Band 2 Exp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 2 Exp. Ratio": [
+      "1.00",
+      "10.10"
+     ],
+     "Band 2 Comp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 2 Comp. Ratio": [
+      "1.000",
+      "30.000"
+     ],
+     "Band 2 Make Up": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Band 2 Attack": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Band 2 Release": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Band 1 Response": [
+      "0 ms",
+      "200 ms"
+     ],
+     "Band 1 Reduction": [
+      "-50.0 dB",
+      "0.0 dB"
+     ],
+     "Band 1 Exp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 1 Exp. Ratio": [
+      "1.00",
+      "10.10"
+     ],
+     "Band 1 Comp. Threshold": [
+      "-60.0 dB",
+      "10.0 dB"
+     ],
+     "Band 1 Comp. Ratio": [
+      "1.000",
+      "30.000"
+     ],
+     "Band 1 Make Up": [
+      "-20.0 dB",
+      "20.0 dB"
+     ],
+     "Band 1 Attack": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Band 1 Release": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Master Gain": [
+      "-20.0",
+      "20.0"
+     ]
+    },
+    "Enveloper": {
+     "Attack Time": [
+      "0.0 ms",
+      "200.0 ms"
+     ],
+     "Attack Gain": [
+      "-100 %",
+      "100 %"
+     ],
+     "Release Time": [
+      "2.0 ms",
+      "2000.0 ms"
+     ],
+     "Release Gain": [
+      "-100 %",
+      "100 %"
+     ],
+     "Threshold": [
+      "-100 dB",
+      "0 dB"
+     ],
+     "Lookahead": [
+      "0 ms",
+      "100 ms"
+     ],
+     "Out Level": [
+      "-20 dB",
+      "+20 dB"
+     ]
+    }
+   }
   }
  },
  "stockfx-eq-mono-12-4": {
@@ -29741,10 +32123,6 @@
       "before": 0.71,
       "after": 0.75
      },
-     "Master": {
-      "before": 0.0,
-      "after": 0.1
-     },
      "Analyzer On/Off": {
       "before": 1.0,
       "after": 0.0
@@ -29772,6 +32150,10 @@
      "EQ Scale Shift": {
       "before": 0.0,
       "after": 1.0
+     },
+     "Master Gain": {
+      "before": 0.0,
+      "after": 0.1
      }
     },
     "Linear EQ": {
@@ -29895,10 +32277,6 @@
       "before": 0.71,
       "after": 0.75
      },
-     "Master": {
-      "before": 0.0,
-      "after": 0.1
-     },
      "Analyzer On/Off": {
       "before": 1.0,
       "after": 0.0
@@ -29922,6 +32300,10 @@
      "EQ Scale Shift": {
       "before": 0.0,
       "after": 1.0
+     },
+     "Master Gain": {
+      "before": 0.0,
+      "after": 0.1
      }
     },
     "Single EQ": {
@@ -30373,7 +32755,7 @@
  },
  "stockfx-mfx-defaults-12-4": {
   "path": "stockfx-x01-mfx-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-mfx-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-mfx-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -30389,6 +32771,596 @@
     "Remix FX": 2466,
     "Phat FX": 2296,
     "Binaural Post-Processing": 1590
+   },
+   "slider_ends": {
+    "Beat Breaker": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Slice De-click": [
+      "0 %",
+      "100 %"
+     ],
+     "Bypass Below": [
+      "Off",
+      "10000 Hz"
+     ],
+     "Time Start Probability": [
+      "0 %",
+      "100 %"
+     ],
+     "Time Start Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Time Slope Probability": [
+      "0 %",
+      "100 %"
+     ],
+     "Time Slope Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Time Curve Probability": [
+      "0 %",
+      "100 %"
+     ],
+     "Time Curve Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Number of Slices": [
+      "",
+      ""
+     ],
+     "Input Beat 1": [
+      "1.00",
+      "5.00"
+     ],
+     "Input Beat 4": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Input Beat 7": [
+      "-100 %",
+      "100 %"
+     ],
+     "Speed 3": [
+      "1",
+      "8"
+     ],
+     "Input Time Curve 2": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Input Time Curve 5": [
+      "-100 %",
+      "100 %"
+     ],
+     "Input Time Curve 8": [
+      "0 %",
+      "100 %"
+     ],
+     "Output Beat 1": [
+      "Mute",
+      "+6.0 dB"
+     ],
+     "Output Beat 4": [
+      "-800.0 %",
+      "800.0 %"
+     ],
+     "Output Beat 7": [
+      "-100 %",
+      "100 %"
+     ],
+     "Repeat 3": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Repeat 6": [
+      "-100 %",
+      "100 %"
+     ]
+    },
+    "Step FX": {
+     "Filter Cutoff": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Filter Resonance": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Filter Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Distortion Exciter": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Distortion Dirt": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Mod FX Delay": [
+      "0.10 ms",
+      "30.0 ms"
+     ],
+     "Mod FX Rate": [
+      "0.00 Hz",
+      "20.00 Hz"
+     ],
+     "Mod FX Depth": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Mod FX Feedback": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Mod FX Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Delay Feedback": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Delay Cutoff": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Delay Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Delay L Rate": [
+      "1/64t",
+      "16 Bars"
+     ],
+     "Delay R Rate": [
+      "1/64t",
+      "16 Bars"
+     ],
+     "Reverb Time": [
+      " 200 ms",
+      "20000 ms"
+     ],
+     "Reverb Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Master Input Gain": [
+      "-30.0 dB",
+      "30.0 dB"
+     ],
+     "Master Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Master Output": [
+      "-inf dB",
+      "6.2 dB"
+     ],
+     "Step Mod 1 Depth - X": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Reverb Mix - Y": [
+      "0.0 %",
+      "100 %"
+     ],
+     "XY Pad X Depth 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad X Depth 2": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad Y Depth 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad Y Depth 2": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 1 Depth": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 1 Swing": [
+      "50.0 %",
+      "99.9 %"
+     ],
+     "Step Mod 1 Attack": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 1 Attack Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 1 Hold": [
+      "0.0 %",
+      "87.6 %"
+     ],
+     "Step Mod 1 Release": [
+      "0.0 %",
+      "87.6 %"
+     ],
+     "Step Mod 1 Release Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 1 Num Steps": [
+      "",
+      ""
+     ],
+     "Step Mod 1 Value 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 1 Value 3": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 1 Value 9": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 1 Value 11": [
+      "50.0 %",
+      "99.9 %"
+     ],
+     "Step Mod 1 Value 12": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 1 Value 13": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 1 Value 14": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 1 Value 15": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 1 Value 16": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 1 Length 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 2 Value 9": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 2 Value 11": [
+      "50.0 %",
+      "99.9 %"
+     ],
+     "Step Mod 2 Value 12": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 2 Value 13": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 2 Value 14": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 2 Value 15": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 2 Value 16": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 2 Length 1": [
+      "0.0 %",
+      "100 %"
+     ]
+    },
+    "Remix FX": {
+     "Filter Drive": [
+      "0.00",
+      "1.00"
+     ],
+     "Motion X": [
+      "0.00",
+      "1.00"
+     ],
+     "Motion Y": [
+      "0.00",
+      "1.00"
+     ],
+     "Filter Cutoff": [
+      "-1.00",
+      "1.00"
+     ],
+     "Filter Resonance": [
+      "0.00",
+      "1.00"
+     ],
+     "Filter On/Off": [
+      "Off",
+      "On"
+     ],
+     "Wobble Rate": [
+      "4 Bars",
+      "1/32"
+     ],
+     "Wobble Depth": [
+      "1.00",
+      "-1.00"
+     ],
+     "Wobble On/Off": [
+      "Off",
+      "On"
+     ],
+     "Orbit Rate": [
+      "2 Bars",
+      "1/8"
+     ],
+     "Orbit Depth": [
+      "0.00",
+      "0.80"
+     ],
+     "Orbit On/Off": [
+      "Off",
+      "On"
+     ],
+     "Repeater Rate": [
+      "1/1",
+      "1/64"
+     ],
+     "Repeater Mix": [
+      "0.00",
+      "1.00"
+     ],
+     "Repeater On/Off": [
+      "Off",
+      "On"
+     ],
+     "Reverb Time": [
+      "1.000",
+      "200.000"
+     ],
+     "Reverb Mix": [
+      "0.00",
+      "1.00"
+     ],
+     "Reverb On/Off": [
+      "Off",
+      "On"
+     ],
+     "Delay Rate": [
+      "1/4.",
+      "1/128T"
+     ],
+     "Delay Feedback": [
+      "0.00",
+      "1.00"
+     ],
+     "Delay On/Off": [
+      "Off",
+      "On"
+     ],
+     "Gater Rate": [
+      "1/4",
+      "1/32"
+     ],
+     "Gater On/Off": [
+      "Off",
+      "On"
+     ],
+     "Downsampler Frequency": [
+      "136",
+      "80"
+     ],
+     "Downsampler On/Off": [
+      "Off",
+      "On"
+     ],
+     "Reverse Rate": [
+      "1/8",
+      "1/16"
+     ],
+     "Reverse On/Off": [
+      "Off",
+      "On"
+     ],
+     "Scratcher Rate": [
+      "0.85",
+      "0.65"
+     ],
+     "Scratcher On/Off": [
+      "Off",
+      "On"
+     ],
+     "Tape Stop Speed": [
+      "1/1",
+      "1/4"
+     ],
+     "Tape Stop On/Off": [
+      "Off",
+      "On"
+     ],
+     "Reverse Note Value L": [
+      "1/1",
+      "1/32"
+     ],
+     "Reverse Note Value R": [
+      "1/1",
+      "1/32"
+     ],
+     "Scratch Note Value L": [
+      "1/1",
+      "1/32"
+     ],
+     "Scratch Note Value R": [
+      "1/1",
+      "1/32"
+     ],
+     "Tape Stop Note Value L": [
+      "1/1",
+      "1/32"
+     ],
+     "Tape Stop Note Value R": [
+      "1/1",
+      "1/32"
+     ]
+    },
+    "Phat FX": {
+     "Bandpass Low Cutoff": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Bandpass High Cutoff": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Bandpass Low Resonance": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Bandpass High Resonance": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Bandpass Reject Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Distortion Drive 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Distortion Drive 2": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Distortion Drive 3": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Filter Cutoff": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Filter Resonance": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Filter Drive": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Filter Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Mod FX Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Mod FX Rate": [
+      "0.00 Hz",
+      "20.00 Hz"
+     ],
+     "Bass Enhancer Amount": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Bass Enhancer Tune": [
+      "30 Hz",
+      "150 Hz"
+     ],
+     "Compressor Amount": [
+      " 0 dB",
+      "-40 dB"
+     ],
+     "Compressor Release": [
+      "   5 ms",
+      "5000 ms"
+     ],
+     "Master Input Gain": [
+      "-30.0 dB",
+      "30.0 dB"
+     ],
+     "Master Mix": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Master Output": [
+      "-inf dB",
+      "0.0 dB"
+     ],
+     "Bandpass Low Cutoff - X": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Bandpass High Cutoff - Y": [
+      "0.0 %",
+      "100 %"
+     ],
+     "XY Pad X Depth 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad X Depth 2": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad Y Depth 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "XY Pad Y Depth 2": [
+      "-100 %",
+      "100 %"
+     ],
+     "Envelope Attack": [
+      "0.01 s",
+      "10.00 s"
+     ],
+     "Envelope Release": [
+      "0.01 s",
+      "10.00 s"
+     ],
+     "Envelope Depth": [
+      "-1000 %",
+      "1000 %"
+     ],
+     "LFO 1 Rate": [
+      "16 Bars",
+      "1/64t"
+     ],
+     "LFO 1 Depth": [
+      "-100 %",
+      "100 %"
+     ],
+     "LFO 2 Rate": [
+      "16 Bars",
+      "1/64t"
+     ],
+     "LFO 2 Depth": [
+      "-100 %",
+      "100 %"
+     ]
+    }
    }
   }
  },
@@ -32270,7 +35242,7 @@
  },
  "stockfx-mod-defaults-12-4": {
   "path": "stockfx-m01-mod-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-mod-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-mod-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -32296,6 +35268,344 @@
     "Scanner Vibrato": 1104,
     "Spreader": 1444,
     "Tremolo": 832
+   },
+   "slider_ends": {
+    "Chorus": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Intensity": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Rate": [
+      "0.000 Hz",
+      "20.00 Hz"
+     ]
+    },
+    "Ensemble": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Effect Volume": [
+      "-10.0 dB",
+      "10.0 dB"
+     ],
+     "Voices": [
+      "1",
+      "8"
+     ],
+     "Rate LFO 1": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Intensity LFO 1": [
+      "0 %",
+      "100 %"
+     ],
+     "Rate LFO 2": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Intensity LFO 2": [
+      "0 %",
+      "100 %"
+     ],
+     "Random Rate": [
+      "1.0 Hz",
+      "10.0 Hz"
+     ],
+     "Random Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "Phase": [
+      "-90 %",
+      "+100 %"
+     ],
+     "Spread": [
+      "0 %",
+      "200 %"
+     ]
+    },
+    "Flanger": {
+     "Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Intensity": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Rate": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Feedback": [
+      "-99 %",
+      "99 %"
+     ]
+    },
+    "Microphaser": {
+     "LFO Rate": [
+      "0.00 Hz",
+      "10.00 Hz"
+     ],
+     "Feedback": [
+      "0 %",
+      "100 %"
+     ],
+     "Intensity": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "Modulation Delay": {
+     "Output Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Flanger/Chorus": [
+      "0 %",
+      "100 %"
+     ],
+     "Mod. Intensity": [
+      "0.0 %",
+      "100.0 %"
+     ],
+     "Rate LFO 1 L": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Rate LFO 2 L": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "LFO Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Feedback": [
+      "-99 %",
+      "+99 %"
+     ],
+     "Volume Modulation": [
+      "0 %",
+      "100 %"
+     ],
+     "LFO Phase": [
+      "-180 \u00b0",
+      "+180 \u00b0"
+     ],
+     "Rate LFO 1 R": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Rate LFO 2 R": [
+      "0.000 Hz",
+      "20.000 Hz"
+     ],
+     "Low Cut": [
+      "20 Hz",
+      "500 Hz"
+     ],
+     "High Cut": [
+      "1.0 kHz",
+      "20.0 kHz"
+     ]
+    },
+    "Phaser": {
+     "Rate LFO 1": [
+      "0.00 Hz",
+      "10.00 Hz"
+     ],
+     "Rate LFO 2": [
+      "0.00 Hz",
+      "10.00 Hz"
+     ],
+     "LFO Mix": [
+      "0 %",
+      "100 %"
+     ],
+     "Feedback": [
+      "0 %",
+      "100 %"
+     ],
+     "Sweep Floor": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Sweep Ceiling": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Stages": [
+      "4",
+      "12"
+     ],
+     "LFO Env Follow": [
+      "-100 %",
+      "100 %"
+     ],
+     "Phase": [
+      "-180 \u00b0",
+      "+180 \u00b0"
+     ],
+     "Output Mix": [
+      "-100 %",
+      "+100 %"
+     ],
+     "Env Follow": [
+      "-100 %",
+      "100 %"
+     ],
+     "LP Cutoff": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "HP Cutoff": [
+      "20 Hz",
+      "2000 Hz"
+     ]
+    },
+    "Ringshifter": {
+     "Frequency": [
+      "-5000 Hz",
+      "5000 Hz"
+     ],
+     "Env->Osc Modulation": [
+      "-1.000",
+      "1.000"
+     ],
+     "LFO->Osc Modulation": [
+      "-1.000",
+      "1.000"
+     ],
+     "Feedback": [
+      "0.00",
+      "1.00"
+     ],
+     "Stereo Width": [
+      "0.00",
+      "1.00"
+     ],
+     "Dry/Wet": [
+      "0.00",
+      "1.00"
+     ],
+     "Env->Dry/Wet Modulation": [
+      "-1.00",
+      "1.00"
+     ],
+     "LFO->Dry/Wet Modulation": [
+      "-1.00",
+      "1.00"
+     ],
+     "Envelope Follower Sensitivity": [
+      "-10.0 dB",
+      "20.0 dB"
+     ],
+     "Envelope Follower Attack": [
+      "0.10 ms",
+      "1000 ms"
+     ],
+     "Envelope Follower Release": [
+      "0.10 ms",
+      "1000 ms"
+     ],
+     "LFO Rate": [
+      "32 Bars",
+      "1/64t"
+     ],
+     "LFO Symmetry": [
+      "-1.00",
+      "1.00"
+     ],
+     "LFO Smooth": [
+      "0.00",
+      "1.00"
+     ],
+     "Delay Amount": [
+      "0.00",
+      "1.00"
+     ],
+     "Delay Time": [
+      "0.00 ms",
+      "2000 ms"
+     ],
+     "Delay Low Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Delay High Cut": [
+      "20 Hz",
+      "20000 Hz"
+     ]
+    },
+    "Scanner Vibrato": {
+     "Depth": [
+      "-1.00",
+      "1.00"
+     ],
+     "Left Rate": [
+      "1.00",
+      "8.00"
+     ],
+     "Right Rate": [
+      "1.00",
+      "8.00"
+     ],
+     "Stereo Phase": [
+      "Free",
+      ""
+     ]
+    },
+    "Spreader": {
+     "LFO Intensity": [
+      "0 %",
+      "100 %"
+     ],
+     "LFO Rate": [
+      "0.250 Hz",
+      "25.000 Hz"
+     ],
+     "Channel Delay": [
+      "0 Samples",
+      "250 Samples"
+     ],
+     "Mix": [
+      "0 %",
+      "100 %"
+     ]
+    },
+    "Tremolo": {
+     "Depth": [
+      "0 %",
+      "100 %"
+     ],
+     "Rate": [
+      "32 Bars",
+      "20.00"
+     ],
+     "Symmetry": [
+      "0 %",
+      "100 %"
+     ],
+     "Smoothing": [
+      "0 %",
+      "100 %"
+     ],
+     "Stereophase": [
+      "-180 \u00b0",
+      "180 \u00b0"
+     ],
+     "Offset": [
+      "-180 \u00b0",
+      "180 \u00b0"
+     ]
+    }
    }
   }
  },
@@ -32729,7 +36039,7 @@
  },
  "stockfx-util-defaults-12-4": {
   "path": "stockfx-u01-util-defaults-12-4.logicx",
-  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-util-defaults",
+  "note": "Logic Pro 12.4 (6707)'s re-save of stockfx-util-defaults; `slider_ends` holds what each plug-in's Controls view showed with its sliders at their AXMinValue and AXMaxValue (read through accessibility on a copy, no save, 2026-10-09).",
   "facts": {
    "channel": "Audio 2",
    "types": {
@@ -32755,6 +36065,116 @@
     "Tuner": 1208,
     "Gain": 815,
     "Test Oscillator": 1397
+   },
+   "slider_ends": {
+    "Direction Mixer": {
+     "Direction": [
+      "-180.0 \u00b0",
+      "+180.0 \u00b0"
+     ],
+     "Spread": [
+      "0.00",
+      "2.00"
+     ]
+    },
+    "Stereo Spread": {
+     "Lower Frequency": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Upper Frequency": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Order": [
+      "2",
+      "12"
+     ],
+     "Lower Intensity": [
+      "-100 %",
+      "100 %"
+     ],
+     "Upper Intensity": [
+      "-100 %",
+      "100 %"
+     ]
+    },
+    "Level Meter": {
+     "Target Level": [
+      "-30 dB",
+      "0 dB"
+     ]
+    },
+    "Loudness Meter": {
+     "Target Level": [
+      "-30 LUFS",
+      "0 LUFS"
+     ]
+    },
+    "MultiMeter": {
+     "Analyzer Top": [
+      "-40 dB",
+      "+20 dB"
+     ],
+     "Analyzer Range": [
+      "20 dB",
+      "80 dB"
+     ],
+     "Gonio Decay": [
+      "10.0 ms",
+      "1000 ms"
+     ],
+     "Gonio AutoGain": [
+      "Off",
+      "100 %"
+     ],
+     "Target Level": [
+      "-30 dB",
+      "0 dB"
+     ],
+     "Target Loudness": [
+      "-30 LUFS",
+      "0 LUFS"
+     ]
+    },
+    "Tuner": {
+     "Reference": [
+      "410.0 Hz",
+      "470.0 Hz"
+     ]
+    },
+    "Gain": {
+     "Balance": [
+      "-100.0 %",
+      "+100.0 %"
+     ],
+     "Gain": [
+      "-96.0 dB",
+      "+24.0 dB"
+     ]
+    },
+    "Test Oscillator": {
+     "Frequency": [
+      "20.000 Hz",
+      "20000 Hz"
+     ],
+     "Sweep Time": [
+      "1.0 s",
+      "30.0 s"
+     ],
+     "Sweep Start Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Sweep End Freq": [
+      "20 Hz",
+      "20000 Hz"
+     ],
+     "Level": [
+      "-96 dB",
+      "+6 dB"
+     ]
+    }
    }
   }
  },
@@ -53569,14 +56989,52 @@
  },
  "instrument-params-mastering-assistant-defaults": {
   "path": "instrument-p34a-mastering-assistant-defaults.logicx",
-  "note": "Logic 12.4 on tracks-instrument-logic: Mastering Assistant put on Output 1-2 from its slot menu, its Controls view read (18 rows), nothing moved.",
+  "note": "Logic 12.4 on tracks-instrument-logic: Mastering Assistant put on Output 1-2 from its slot menu, its Controls view read (18 rows), nothing moved; `slider_ends` holds what the Controls view showed with each slider at its AXMinValue and AXMaxValue (read through accessibility, no save).",
   "facts": {
    "channel": "Output 1-2",
    "plugin": "Mastering Assistant",
    "type": 320,
    "variant": 2510,
    "floats": 105,
-   "rows": 18
+   "rows": 18,
+   "slider_ends": {
+    "Low Freq": [
+     "20.0 Hz",
+     "200.0 Hz"
+    ],
+    "Low Gain": [
+     "-6.0 dB",
+     "6.0 dB"
+    ],
+    "Mid Freq": [
+     "200.0 Hz",
+     "8.0 kHz"
+    ],
+    "Mid Gain": [
+     "-6.0 dB",
+     "6.0 dB"
+    ],
+    "High Freq": [
+     "8.0 kHz",
+     "20.0 kHz"
+    ],
+    "High Gain": [
+     "-6.0 dB",
+     "6.0 dB"
+    ],
+    "Width": [
+     "-1.00",
+     "+1.00"
+    ],
+    "Auto EQ": [
+     "0 %",
+     "200 %"
+    ],
+    "Loudness": [
+     "-1.00",
+     "+1.00"
+    ]
+   }
   }
  },
  "instrument-params-mastering-assistant-spots": {
@@ -59185,6 +62643,99 @@
    "channel": "Inst 1",
    "plugin": "Ultrabeat",
    "row": "Level Via"
+  }
+ },
+ "instrument-params-limiter-defaults": {
+  "path": "instrument-p48a-limiter-defaults.logicx",
+  "note": "Logic 12.4 on tracks-instrument-logic: Limiter put on Inst 1 from its slot menu, its Controls view read (7 rows), nothing moved; `slider_ends` holds what the Controls view showed with each slider at its AXMinValue and AXMaxValue (read through accessibility, no save).",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Limiter",
+   "type": 199,
+   "variant": 1020,
+   "floats": 13,
+   "rows": 7,
+   "slider_ends": {
+    "Gain": [
+     "-20.0 dB",
+     "+20.0 dB"
+    ],
+    "Lookahead": [
+     "0.0 ms",
+     "10.0 ms"
+    ],
+    "Release": [
+     "2.0 ms",
+     "2000.0 ms"
+    ],
+    "Output Level": [
+     "-10.0 dB",
+     "+1.0 dB"
+    ]
+   }
+  }
+ },
+ "instrument-params-limiter-spots": {
+  "path": "instrument-p48b-limiter-spots.logicx",
+  "note": "the limiter defaults save after every slider row of Limiter's Controls view was moved one unit and every checkbox pressed.",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Limiter",
+   "type": 199,
+   "variant": 1020,
+   "moved": {
+    "Gain": {
+     "before": 0.0,
+     "after": 0.1
+    },
+    "Lookahead": {
+     "before": 5.0,
+     "after": 5.1
+    },
+    "Release": {
+     "before": 250.0,
+     "after": 260.0
+    },
+    "Output Level": {
+     "before": -0.0,
+     "after": 0.1
+    },
+    "True Peak Detection": {
+     "before": 1.0,
+     "after": 0.0
+    }
+   }
+  }
+ },
+ "instrument-params-limiter-row00": {
+  "path": "instrument-p48r00-limiter-row00.logicx",
+  "note": "Logic 12.4 on tracks-instrument-logic: Limiter on Inst 1 as loaded, the base of its one-row saves.",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Limiter",
+   "row": null,
+   "rows": [
+    "Gain",
+    "Output Level"
+   ]
+  }
+ },
+ "instrument-params-limiter-row01": {
+  "path": "instrument-p48r01-limiter-row01.logicx",
+  "note": "Logic 12.4 on tracks-instrument-logic: Limiter on Inst 1 the save before with its row 'Gain' moved one unit (a slider one step, a popup to its next item).",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Limiter",
+   "row": "Gain"
+  }
+ },
+ "instrument-params-limiter-row02": {
+  "path": "instrument-p48r02-limiter-row02.logicx",
+  "note": "Logic 12.4 on tracks-instrument-logic: Limiter on Inst 1 the save before with its row 'Output Level' moved one unit (a slider one step, a popup to its next item).",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Limiter",
+   "row": "Output Level"
   }
  }
 }

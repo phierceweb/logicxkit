@@ -100,14 +100,18 @@
    "name": "XY Pad X Depth 2",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 7,
    "name": "XY Pad Y Depth 2",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 100.0
   },
   {
    "index": 211,
@@ -125,7 +129,9 @@
    "name": "Envelope Release",
    "unit": "s",
    "default": 0.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.01,
+   "max": 10.0
   },
   {
    "index": 221,

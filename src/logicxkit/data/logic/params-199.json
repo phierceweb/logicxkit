@@ -1,0 +1,64 @@
+{
+ "type": 199,
+ "variant": 1020,
+ "name": "Limiter",
+ "floats": 13,
+ "opaque": [
+  0
+ ],
+ "params": [
+  {
+   "index": 1,
+   "name": "Gain",
+   "unit": "dB",
+   "default": 0.0,
+   "evidence": "row",
+   "shown": "0.0 dB",
+   "min": -20.0,
+   "max": 20.0
+  },
+  {
+   "index": 2,
+   "name": "Lookahead",
+   "unit": "ms",
+   "default": 5.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10.0
+  },
+  {
+   "index": 4,
+   "name": "Release",
+   "unit": "ms",
+   "default": 250.0,
+   "evidence": "value",
+   "min": 2.0,
+   "max": 2000.0
+  },
+  {
+   "index": 5,
+   "name": "Output Level",
+   "unit": "dB",
+   "default": -0.0,
+   "evidence": "row",
+   "min": -10.0,
+   "max": 1.0
+  },
+  {
+   "index": 7,
+   "name": "True Peak Detection",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Off",
+    "On"
+   ]
+  }
+ ],
+ "unmapped": [
+  "Gain Reduction",
+  "Limiter Mode"
+ ],
+ "evidence": "Logic 12.4 Controls view over instrument-params-limiter-*: 5 parameters named \u2014 3 matched by the number shown, 2 by one save per row. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+}

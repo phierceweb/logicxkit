@@ -3,6 +3,45 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.12.0 — 2026-10-11
+
+### Added
+
+- Ranges for the 2026-09-22 effect tables and Mastering Assistant, read from each slider's ends
+  in Logic's Controls view: 1346 of 1785 parameters over 97 tables carry `min` and `max` (877 over
+  41 before); `--set` refuses a number outside them, or holds it to the slider's ends with a note
+  where the plug-in's slider is mapped. A display in s or kHz over a ms or Hz word counts as the
+  word's unit.
+- A parameter table for the Limiter (Gain, Lookahead, Release, Output Level, True Peak Detection),
+  so `project` reads it, `--set` dials it and `chains --verify` compares it.
+
+### Changed
+
+- `chains` holds every configured plug-in value — a channel-keyed chain's and a strip-referenced
+  chain's `pre`/`post` donors' alike — to its table's measured range and, where the plug-in's
+  slider is measured, puts it on the slider's nearer sampled position, as `--set` does; outside
+  either it is refused. The shipped mastering example's Peak 3 Q is 0.79.
+- `chains --verify` reads the output channel as the "Stereo Out" strip the driver finds, not
+  the file's "Output 1-2", so a chain on the Stereo Out is compared.
+- `tracking-chains` keeps a slot holding one of Logic's own with no float block (I/O, Auto Sampler,
+  the sampler family, a stateless Remix FX, Alchemy).
+- A slot is identified by its header first, so `swap-plugin`, `tracking-chains`, `automation`,
+  `transplant` and the donor library's instance-id measuring tell the Studio instruments and the
+  sampler family apart, with or without a float block. `swap-plugin --from` reaches them, Drum Kit
+  Designer, External Instrument and I/O by name or four-letter code; a type id or code several
+  plug-ins share (`InWr`, `147`) is refused.
+- Pitch Shifter's Cents (-50..50) and Tape Delay's Stereo Spread (-100..100) are sliders, not toggles;
+  Channel EQ's and Linear Phase EQ's `Master` row is `Master Gain`, a dB row (-24..24); `--set` and
+  automation lanes name it `Master Gain`.
+- AutoFilter's table drops Dry Signal; Vintage Tube EQ's Mid-Range EQ Low Freq reads and takes Hz
+  (200..1000).
+- `swap-plugin --plan` and `tracking-chains --plan` run the edit in memory over every alternative
+  the write edits, the input's own flaws tolerated as the write tolerates them: a slot the write
+  would leave as it is, the plan leaves too, and its lines are the write's. `swap-plugin`,
+  `tracking-chains`, `chains` and `apply-template` refuse with `--plan` a bundle with no current
+  alternative, as their writes do.
+- A bundle with no ProjectData is refused by every writer before anything is copied.
+
 ## 0.11.0 — 2026-10-08
 
 ### Added

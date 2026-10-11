@@ -12,14 +12,18 @@
    "name": "Detune",
    "unit": "ct",
    "default": -41.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 50.0
   },
   {
    "index": 31,
    "name": "Response",
    "unit": "ms",
    "default": 378.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 999.0
   },
   {
    "index": 37,
@@ -37,7 +41,9 @@
    "name": "Tolerance",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 50.0
   },
   {
    "index": 44,

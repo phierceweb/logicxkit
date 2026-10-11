@@ -12,56 +12,72 @@
    "name": "Pre Filter Distortion",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 400.0
   },
   {
    "index": 2,
    "name": "Post Filter Distortion",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 400.0
   },
   {
    "index": 3,
    "name": "Cutoff",
    "unit": "%",
    "default": 70.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 4,
    "name": "Resonance",
    "unit": "%",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 5,
    "name": "Fatness",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 10,
    "name": "Stereo Phase",
    "unit": "\u00b0",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -180.0,
+   "max": 180.0
   },
   {
    "index": 12,
    "name": "Pulsewidth",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 13,
    "name": "LFO Cutoff Mod",
    "unit": "%",
    "default": 14.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 14,
@@ -79,56 +95,72 @@
    "name": "Threshold",
    "unit": "dB",
    "default": -20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -100.0,
+   "max": 0.0
   },
   {
    "index": 17,
    "name": "Attack",
    "unit": "ms",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1000.0
   },
   {
    "index": 18,
    "name": "Decay",
    "unit": "ms",
    "default": 52.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1000.0
   },
   {
    "index": 19,
    "name": "Sustain",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 20,
    "name": "Release",
    "unit": "ms",
    "default": 52.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1000.0
   },
   {
    "index": 21,
    "name": "Env Cutoff Mod",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 22,
    "name": "Env Dynamic",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 23,
    "name": "Main Out",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -50.0,
+   "max": 6.0
   },
   {
    "index": 25,
@@ -140,13 +172,6 @@
     "Off",
     "On"
    ]
-  },
-  {
-   "index": 31,
-   "name": "Dry Signal",
-   "unit": "%",
-   "default": 0.0,
-   "evidence": "value"
   },
   {
    "index": 34,
@@ -202,5 +227,5 @@
   "Pre Filter Distortion Mode",
   "Post Filter Distortion Mode"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 23 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped."
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 22 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped. Dry Signal is unplaced: word 31 reads 0.01 at the defaults, where Dry Signal shows 0.000 % and Stereo Spread 0.01, and -0.99 after the move."
 }

@@ -12,14 +12,18 @@
    "name": "Dry",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 2,
    "name": "Wet",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 5,
@@ -48,35 +52,45 @@
    "name": "Attack",
    "unit": "%",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 9,
    "name": "Size",
    "unit": "%",
    "default": 60.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 10,
    "name": "Density",
    "unit": "%",
    "default": 60.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 11,
    "name": "Distance",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 13,
    "name": "Width",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 150.0
   },
   {
    "index": 14,
@@ -94,7 +108,9 @@
    "name": "Mono Maker Freq",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 5000.0
   },
   {
    "index": 16,
@@ -119,98 +135,126 @@
    "name": "Modulation Speed",
    "unit": "Hz",
    "default": 0.5,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 10.0
   },
   {
    "index": 22,
    "name": "Modulation Smoothing",
    "unit": "%",
    "default": 12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 24,
    "name": "Damping Low Shelf Freq",
    "unit": "Hz",
    "default": 210.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 25,
    "name": "Damping Low Shelf Ratio",
    "unit": "x",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 26,
    "name": "Damping Low Shelf Q",
    "unit": "",
    "default": 0.75,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 27,
    "name": "Damping Low Peak Freq",
    "unit": "Hz",
    "default": 530.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 28,
    "name": "Damping Low Peak Ratio",
    "unit": "x",
    "default": 0.75,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 29,
    "name": "Damping Low Peak Q",
    "unit": "",
    "default": 2.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 30,
    "name": "Damping High Peak Freq",
    "unit": "Hz",
    "default": 1960.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 31,
    "name": "Damping High Peak Ratio",
    "unit": "x",
    "default": 0.7,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 32,
    "name": "Damping High Peak Q",
    "unit": "",
    "default": 0.88,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 33,
    "name": "Damping High Shelf Freq",
    "unit": "Hz",
    "default": 5500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 34,
    "name": "Damping High Shelf Ratio",
    "unit": "x",
    "default": 0.88,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 35,
    "name": "Damping High Shelf Q",
    "unit": "",
    "default": 0.89,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 37,
@@ -239,14 +283,18 @@
    "name": "Low Cut Freq",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 41,
    "name": "Low Cut Q",
    "unit": "",
    "default": 0.71,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 42,
@@ -264,21 +312,27 @@
    "name": "Low Shelf Freq",
    "unit": "Hz",
    "default": 200.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 44,
    "name": "Low Shelf Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 45,
    "name": "Low Shelf Q",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 46,
@@ -296,21 +350,27 @@
    "name": "Low Peak Freq",
    "unit": "Hz",
    "default": 500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 48,
    "name": "Low Peak Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 49,
    "name": "Low Peak Q",
    "unit": "",
    "default": 0.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 50,
@@ -328,21 +388,27 @@
    "name": "High Peak Freq",
    "unit": "Hz",
    "default": 2000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 52,
    "name": "High Peak Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 53,
    "name": "High Peak Q",
    "unit": "",
    "default": 0.6,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 54,
@@ -360,21 +426,27 @@
    "name": "High Shelf Freq",
    "unit": "Hz",
    "default": 5000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 56,
    "name": "High Shelf Gain",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -24.0,
+   "max": 24.0
   },
   {
    "index": 57,
    "name": "High Shelf Q",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 2.0
   },
   {
    "index": 58,
@@ -392,14 +464,18 @@
    "name": "High Cut Freq",
    "unit": "Hz",
    "default": 10400.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 61,
    "name": "High Cut Q",
    "unit": "",
    "default": 0.71,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.1,
+   "max": 100.0
   },
   {
    "index": 63,

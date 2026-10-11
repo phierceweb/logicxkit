@@ -1,15 +1,15 @@
 """`tracking-chains`: a project's chains made low-latency and native, on a copy — every
 third-party slot with a translation map becomes Logic's own of the same family with its
 settings carried (one native per live family of a plug-in that carries several), the rest
-removed, natives that carry lookahead bypassed; one report line per slot, `--plan` writes
-nothing."""
+removed, natives that carry lookahead bypassed; one report line per slot. `--plan` runs the
+same edit in memory and writes nothing."""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 from ._add_plugin_cmd import _channels, _offsets, _pick
-from ._edit import CommandError, edit_copy, owner_by_label, plan_alternatives
+from ._edit import CommandError, edit_copy, owner_by_label, plan_step
 from ._plugin_settings import replace_slot, translation_of
 
 LATENT = {243: "Linear Phase EQ", 194: "Multipressor", 193: "Adaptive Limiter", 199: "Limiter", 157: "Enveloper"}
@@ -47,16 +47,17 @@ def live_families(payload: bytes, maps) -> list:
 
 
 def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, maps, natives, version, width):
-    """One slot made native -> (data, lines, kind): kind is swapped / removed / bypassed / kept."""
-    from .services.mixer.plugin_names import native_name
+    """One slot made native -> (data, lines, kind): kind is swapped / removed / bypassed / kept.
+    A plan runs this too, on bytes it then drops."""
+    from .services.mixer.plugin_names import native_name, own_name
     from .services.stream.stream import HEADER
     from .services.mixer.add_plugin import add_plugin
     from .services.mixer.remove_plugin import remove_plugin
     from .services.translate.translate_write import write_plan
-    if identity and identity[0] == "native":
-        name = native_name(identity[1], identity[2] if len(identity) > 2 else None) or f"type {identity[1]}"
+    if identity and identity[0] in ("native", "coded"):              # Logic's own, with or without a float block: kept
         if identity[1] in LATENT and not args.keep_lookahead:
-            return (data if args.plan else bypass_slot(data, owner, at)), [f"slot {at}: {name} bypassed: it carries lookahead"], "bypassed"
+            name = own_name(payload) or native_name(*identity[1:3]) or f"type {identity[1]}"
+            return bypass_slot(data, owner, at), [f"slot {at}: {name} bypassed: it carries lookahead"], "bypassed"
         return data, [], "kept"
     from .services.mixer.transplant import is_instrument_channel
     if at == 1 and is_instrument_channel(data, owner):          # the track's instrument, never an effect
@@ -67,20 +68,11 @@ def _slot_lines(data, owner, at, payload, identity, args, donors, libraries, map
         label = f"{identity[3]}/{identity[2]}" if identity else "an unreadable slot"
         if args.keep_unmapped:
             return data, [f"slot {at}: {label} kept: no native analogue"], "kept"
-        if not args.plan:
-            data, gone = remove_plugin(data, owner, at)
-            return data, [f"slot {at}: {label} removed: no native analogue ({gone['lanes_dropped']} automation point(s) with it)"], "removed"
-        return data, [f"slot {at}: {label} removed: no native analogue"], "removed"
+        data, gone = remove_plugin(data, owner, at)
+        return data, [f"slot {at}: {label} removed: no native analogue ({gone['lanes_dropped']} automation point(s) with it)"], "removed"
     first, extra = families[0], families[1:]
     donor = _pick(donors, natives[first.family], width, version)
     plans = [(fam, _pick(donors, natives[fam.family], width, version)) for fam in extra]
-    if args.plan:
-        carried = translation_of(payload, donor, first.family)
-        lines = [f"slot {at}: {first.plugin} -> {donor.label}"] + [f"    {n} = {v}" for n, v in carried.values.items()]
-        lines += [f"    band {b.number}: {b.label()}" for b in carried.bands] + [f"    {n}" for n in carried.notes]
-        lines += [f"slot {at + 1 + i}: {first.plugin}'s {fam.family} -> {d.label}, added after it" for i, (fam, d) in enumerate(plans)]
-        lines += [n for n in (_made_latent(donor, at, args), *(_made_latent(d, at + 1 + i, args) for i, (_f, d) in enumerate(plans))) if n]
-        return data, lines, "swapped"
     data, lines = replace_slot(data, owner, at, donor, id_offsets=_offsets(data, donor, libraries), translate=True)
     lines[0] = f"slot {at}: {first.plugin} -> {lines[0]}"
     if (line := _made_latent(donor, at, args)):
@@ -145,8 +137,7 @@ def cmd_tracking_chains(args) -> int:
     project = find_project(Path(args.project))
     try:
         if args.plan:
-            first = plan_alternatives(project)[0]
-            step(first.read_bytes(), None, first)
+            plan_step(project, step)
         else:
             edit_copy(project, Path(args.out), step)
     except CommandError as e:
@@ -162,7 +153,7 @@ def register(sub) -> None:
                                                 "lookahead bypassed — a low-latency copy for tracking")
     ap.add_argument("project")
     ap.add_argument("--out", help="output directory (a copy)")
-    ap.add_argument("--plan", action="store_true", help="say what each slot would become; writes nothing")
+    ap.add_argument("--plan", action="store_true", help="run the same edit in memory and say what each slot would become; writes nothing")
     ap.add_argument("--channel", action="append", metavar="LABEL", help="only this mixer label (repeatable; default: every channel)")
     ap.add_argument("--stack", action="append", metavar="NAME", help="only this folder stack's members (repeatable)")
     ap.add_argument("--keep-unmapped", action="store_true", dest="keep_unmapped", help="leave a third-party plug-in without a native analogue in place")

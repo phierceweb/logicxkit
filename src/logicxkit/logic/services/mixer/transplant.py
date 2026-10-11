@@ -22,7 +22,8 @@ from .slot_width import MONO, STEREO, slot_format
 from .slots import set_slot_bypass, slot_index_base
 from ..stream.stream import HEADER, ProjRecord, project_records, reassemble
 from .channel_width import STEREO_INPUT_AT, with_channel_io
-from .plugins import is_instrument_plugin, plugin_identity
+from .plugin_names import own_name
+from .plugins import header_only, is_instrument_plugin, plugin_identity
 from .sidechain import carry
 from .slots import is_plugin_slot, property_key_base
 from ..stream.validate import require_full_walk, require_valid
@@ -128,7 +129,7 @@ def id_offsets(data: bytes, raw: bytes) -> tuple[int, ...] | None:
     two instances saved with different settings are not mistaken for it."""
     payload = raw[HEADER:]
     identity = plugin_identity(payload)
-    if identity is None:
+    if identity is None or header_only(payload):
         return None
     base, index_base = property_key_base(data), slot_index_base(data)
     others = [r.raw[HEADER:] for r in project_records(data)
@@ -178,7 +179,9 @@ def _describe(raw: bytes) -> str:
     identity = plugin_identity(raw[HEADER:])
     if identity is None:
         return "a slot"
-    return f"plug-in type {identity[1]}" if identity[0] == "native" else f"{identity[3]}/{identity[2]}"
+    if identity[0] == "au":
+        return f"{identity[3]}/{identity[2]}"
+    return own_name(raw[HEADER:]) or f"plug-in type {identity[1]}"
 
 
 def _refuse_unsafe(slots: list[ProjRecord], *, first: int, base: int,

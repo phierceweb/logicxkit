@@ -12,21 +12,27 @@
    "name": "Analyzer Top",
    "unit": "dB",
    "default": 5.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -40.0,
+   "max": 20.0
   },
   {
    "index": 5,
    "name": "Analyzer Range",
    "unit": "dB",
    "default": 60.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 80.0
   },
   {
    "index": 7,
    "name": "Gonio Decay",
    "unit": "ms",
    "default": 500.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 10.0,
+   "max": 1000.0
   },
   {
    "index": 8,
@@ -51,14 +57,18 @@
    "name": "Target Level",
    "unit": "dB",
    "default": -12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -30.0,
+   "max": 0.0
   },
   {
    "index": 28,
    "name": "Target Loudness",
    "unit": "",
    "default": -14.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -30.0,
+   "max": 0.0
   },
   {
    "index": 31,

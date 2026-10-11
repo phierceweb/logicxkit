@@ -12,14 +12,18 @@
    "name": "Left Delay",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 2,
    "name": "Right Delay",
    "unit": "",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 10000.0
   },
   {
    "index": 3,

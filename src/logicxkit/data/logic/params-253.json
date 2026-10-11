@@ -12,7 +12,9 @@
    "name": "Frequency",
    "unit": "Hz",
    "default": 1000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 4,
@@ -30,21 +32,27 @@
    "name": "Sweep Time",
    "unit": "s",
    "default": 10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 1.0,
+   "max": 30.0
   },
   {
    "index": 6,
    "name": "Sweep Start Freq",
    "unit": "Hz",
    "default": 20.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 7,
    "name": "Sweep End Freq",
    "unit": "Hz",
    "default": 20000.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 20.0,
+   "max": 20000.0
   },
   {
    "index": 12,
@@ -62,7 +70,9 @@
    "name": "Level",
    "unit": "dB",
    "default": -12.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": -96.0,
+   "max": 6.0
   }
  ],
  "unmapped": [

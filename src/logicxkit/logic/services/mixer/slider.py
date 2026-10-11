@@ -61,6 +61,22 @@ def snap(m, param: str, value: float) -> float:
     return round(hit, 4) if hit is not None else value
 
 
+def grid_value(m, param: str, value: float) -> tuple[float, tuple[float, float] | None]:
+    """``value`` as the slider keeps it — held to the measured ends, on the vocabulary item's step,
+    then on the nearer sampled position (`snap`) — with the slider's ends when the value lay
+    outside them. A parameter the map does not measure comes back as given."""
+    curve = slider_curve(m, param)
+    outside = None
+    if curve:
+        lo, hi = min(v for _u, v in curve), max(v for _u, v in curve)
+        if not lo <= value <= hi:
+            outside, value = (lo, hi), min(max(value, lo), hi)
+    item = next((i for i in m.items.values() if i.param.lower() == param.lower()), None)
+    if item is not None and item.step and not item.switch:
+        value = round(round(value / item.step) * item.step, 6)
+    return (snap(m, param, value) if curve else value), outside
+
+
 def units_at(value: float, per: float, offset: float, top: float) -> float:
     """The slider units Logic lays a point on: floor(value x per + offset), within the slider."""
     return max(0.0, min(math.floor(value * per + offset + 1e-9), top))

@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from ._edit import CommandError, bump_track_count, edit_copy, first_project_data, object_by_name
+from ._edit import CommandError, bump_track_count, edit_copy, first_project_data, object_by_name, plan_alternatives
 from .orchestrators.apply_template import KINDS, STRUCTURE, apply_template, lineage_problem, plan, session_only
 from .services.mixer.pairing import format_map, parse_map_full, propose_map
 from .services.project.project import project_metadata
@@ -124,6 +124,7 @@ def cmd_apply_template(args) -> int:
         print(f"\n  ⚠️  FORCED past the lineage check — {problem}\n")
 
     if args.plan:
+        plan_alternatives(session_project)                 # refuses the bundles the write refuses
         session = _rebased(first_project_data(session_project))
         count = project_metadata(session_project).get("tracks")
         try:
