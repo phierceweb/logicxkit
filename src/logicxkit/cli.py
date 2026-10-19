@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import sys
 
-from pf_core.log import get_logger, setup_logging
+from pw_foundation.log import get_logger, setup_logging
 
 from logicxkit import __version__
 from logicxkit.au import cli as _au_cli
@@ -26,7 +26,7 @@ GROUPS = {
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
-    # pf-core logging, adopted at the CLI boundary; the library imports only pf_core.utils
+    # pw-foundation logging, adopted at the CLI boundary; the library imports only pw_foundation.utils
     # foundation helpers (atomic writes), never logging/exceptions.
     # Console stays clean (invocations log at debug); set LOG_FILE=... for a JSON-lines
     # audit trail of every run — useful since these tools mutate scenes loaded on live gear.

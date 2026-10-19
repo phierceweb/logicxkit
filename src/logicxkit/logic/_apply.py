@@ -7,7 +7,7 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 
-from pf_core.utils.io import atomic_write_bytes
+from pw_foundation.utils.io import atomic_write_bytes
 
 from ._edit import CommandError, edit_copy, first_project_data, owner_by_label, pairs
 from .services.arrange.retrack import find_project

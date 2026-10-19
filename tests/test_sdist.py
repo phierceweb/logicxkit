@@ -14,7 +14,7 @@ from pathlib import Path
 
 from _paths import REPO, tracked
 
-FORBIDDEN_DIRS = ("docs/pf-core/", "config/local/", "tests/corpus/", "tests/goldens/")
+FORBIDDEN_DIRS = ("docs/pw-foundation/", "config/local/", "tests/corpus/", "tests/goldens/")
 # Built from parts so this file's own text carries none of them.
 PATH_SHAPES = tuple("/".join(p) for p in (("", "Users", ""), ("~", "projects", ""), ("", "Volumes", "")))
 # The guard test names Logic's library paths on purpose; the gate exempts it the same way.

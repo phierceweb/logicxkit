@@ -262,7 +262,7 @@ class ChainsDiscardTest(unittest.TestCase):
         import tempfile
         from pathlib import Path
         from unittest import mock
-        from pf_core.exceptions import PreconditionError
+        from pw_foundation.exceptions import PreconditionError
         from _records import proj as blank
         from logicxkit.logic import _chains_cmd
 

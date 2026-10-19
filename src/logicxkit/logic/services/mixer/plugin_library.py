@@ -13,7 +13,7 @@ import struct
 from dataclasses import dataclass
 from pathlib import Path
 
-from pf_core.utils.io import atomic_write_bytes, atomic_write_json
+from pw_foundation.utils.io import atomic_write_bytes, atomic_write_json
 
 from ..._binary import find_blocks
 from .plugin_names import native_name, own_name

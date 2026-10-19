@@ -5,10 +5,10 @@ recursive-include tests *.py
 # so they stay out with it; the always-green layer is what an sdist can run.
 prune tests/goldens
 prune tests/corpus
-prune docs/pf-core
+prune docs/pw-foundation
 prune config/local
 # Named, not globbed: an sdist is built from the working tree, where untracked files can sit
-# (config/local/ holds a real rig spec; docs/pf-core is a symlink into the venv).
+# (config/local/ holds a real rig spec; docs/pw-foundation is a symlink into the venv).
 include bin/regen_data.py
 include tests/logic/data/send-taper.json tests/logic/data/fader-steps.json
 include docs/README.md docs/INSTALLATION.md docs/commands.md docs/CAPABILITIES.md docs/EVIDENCE.md

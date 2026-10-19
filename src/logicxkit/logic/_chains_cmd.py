@@ -8,8 +8,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pf_core.exceptions import PreconditionError
-from pf_core.utils.io import atomic_write_bytes
+from pw_foundation.exceptions import PreconditionError
+from pw_foundation.utils.io import atomic_write_bytes
 
 from .services.mixer.chain_checks import describe_duplicates, duplicate_chain_slots, verify_channel_values, verify_strip_values
 from .services.mixer.chain_donors import base_donors, load_extra_donors

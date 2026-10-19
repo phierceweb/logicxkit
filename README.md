@@ -81,7 +81,7 @@ session you care about.
   scripts run JIT at call time. Without it, `au` falls back to static parameter tables and
   `logic ocr` is unavailable.
 
-Two runtime dependencies, installed automatically: [pf-core][pf-core], which supplies the
+Two runtime dependencies, installed automatically: [pw-foundation][pw-foundation], which supplies the
 atomic-write helpers and the logging and exception types used at the CLI boundary, and
 [groovebin][groovebin], the general-MIDI library — Standard MIDI Files, note maps, transforms
 and the pattern library — that the MIDI editors and `logic beats` build on.
@@ -297,7 +297,7 @@ scene, those tests self-skip.
 ## Development
 
 ```bash
-bin/run lint     # ruff + the pf-core structural gate
+bin/run lint     # ruff + the pw-foundation structural gate
 bin/run pytest   # the suite; ends with the goldens line
 ```
 
@@ -309,10 +309,10 @@ there, so a green check is not a substitute for running the suite on a machine t
 files. [`CONTRIBUTING.md`][contributing] has the full loop; the house rules are:
 
 - File size target 300 lines, hard limit 500, one concern per file. The limit is enforced by
-  pf-core's `pf_core.guards` gate inside `bin/run lint`; there is no baseline file and none
+  pw-foundation's `pw_foundation.guards` gate inside `bin/run lint`; there is no baseline file and none
   should be added — split an oversize file instead.
 - src-layout, no `sys.path` hacks. `X | None` types.
-- The library imports the standard library and [groovebin][groovebin]; [pf-core][pf-core] is
+- The library imports the standard library and [groovebin][groovebin]; [pw-foundation][pw-foundation] is
   used for foundation helpers (atomic writes) and adopted for logging and exceptions at the CLI
   boundary only.
 - **Decoding claims need evidence from a real file.** `None` beats a guess, and a command appearing
@@ -333,7 +333,7 @@ Apache License 2.0. See [`LICENSE`][license] and [`NOTICE`][notice].
 [docs]: https://github.com/phierceweb/logicxkit/blob/main/docs/README.md
 [ci]: https://github.com/phierceweb/logicxkit/blob/main/.github/workflows/ci.yml
 [contributing]: https://github.com/phierceweb/logicxkit/blob/main/CONTRIBUTING.md
-[pf-core]: https://pypi.org/project/pf-core/
+[pw-foundation]: https://pypi.org/project/pw-foundation/
 [groovebin]: https://github.com/phierceweb/groovebin
 [license]: https://github.com/phierceweb/logicxkit/blob/main/LICENSE
 [notice]: https://github.com/phierceweb/logicxkit/blob/main/NOTICE

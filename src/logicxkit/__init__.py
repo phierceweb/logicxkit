@@ -5,7 +5,7 @@ Subpackages:
 - ``logicxkit.au``     — 3rd-party plugin presets/states via a headless AU host.
 - ``logicxkit.logicx`` — the .logicx container format; a leaf both logic and au read through.
 
-A pf-core consumer (foundation tier). Each gear domain owns a subpackage; ``logicxkit.utils``
+A pw-foundation consumer (foundation tier). Each gear domain owns a subpackage; ``logicxkit.utils``
 and ``logicxkit.logicx`` are support leaves (only what ≥2 domains actually call). The
 subpackage import graph is a DAG — enforced by tests/test_package_layering.py.
 """

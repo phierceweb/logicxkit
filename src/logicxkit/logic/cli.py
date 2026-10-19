@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-from pf_core.utils.io import atomic_write_bytes
+from pw_foundation.utils.io import atomic_write_bytes
 
 from ._binary import find_blocks, identify_plugin, read_block_floats
 from ._add_plugin_cmd import register as register_add_plugin

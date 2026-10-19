@@ -5,8 +5,9 @@
 #   bin/run pytest [args]     run the test suite in the venv
 #   bin/run python [args]     one-off venv'd python
 #   bin/run pip|ruff [args]   pip / ruff in the venv
-#   bin/run pf-guards [args]  pf-core structural gate directly (lint runs it too)
-#   bin/run lint              ruff check + pf-core structural gate (file size:
+#   bin/run pw-guards [args]  pw-foundation structural gate directly (lint runs it too)
+#   bin/run pw-doctor         check the pw-foundation wiring (docs link, rules, gate config)
+#   bin/run lint              ruff check + pw-foundation structural gate (file size:
 #                             300 soft / 500 hard)
 #   bin/run logic [args]      the Logic strip CLI  (logicxkit logic …)
 #   bin/run au [args]         the AU preset/state decoder (logicxkit au …)
@@ -36,16 +37,16 @@ fi
 
 cmd="${1:-}"; shift || true
 case "$cmd" in
-  pytest|python|pip|ruff|pf-guards) exec "$ROOT/.venv/bin/$cmd" "$@" ;;
+  pytest|python|pip|ruff|pw-guards|pw-doctor|pw-setup) exec "$ROOT/.venv/bin/$cmd" "$@" ;;
   logic|au) exec "$PY" -m logicxkit.cli "$cmd" "$@" ;;
   setup)
     [ -d "$ROOT/.venv" ] || "${PYTHON:-python3.12}" -m venv "$ROOT/.venv"
     "$PY" -m pip install -q --upgrade pip
     extras="dev"; [ "${1:-}" = "rig" ] && extras="dev,rig"
     "$PY" -m pip install -q -e ".[$extras]"
-    mkdir -p docs
-    ln -sfn "$("$PY" -c 'import pf_core, pathlib; print(pathlib.Path(pf_core.__file__).parent / "docs")')" \
-       docs/pf-core 2>/dev/null || true
+    # docs/pw-foundation link, starter rules, editor links, gate config. A wiring conflict is
+    # reported, not fatal: the install above is done either way.
+    "$ROOT/.venv/bin/pw-setup" || echo "bin/run setup: the pw-foundation wiring is incomplete (see above)" >&2
     # tests/rig self-skips when x32scene is absent, so a rig setup that did not actually get it
     # would report OK while the golden quietly stops running.
     if [ "$extras" = "dev,rig" ]; then
@@ -55,13 +56,13 @@ case "$cmd" in
     ;;
   lint)
     "$ROOT/.venv/bin/ruff" check src tests
-    # pf-core structural gate (pf_core.guards): FAIL > 500 lines, WARN > 300.
+    # pw-foundation structural gate (pw_foundation.guards): FAIL > 500 lines, WARN > 300.
     # No baseline file: an oversize file gets split, never grandfathered.
-    "$PY" -m pf_core.guards --root src
-    "$PY" -m pf_core.guards --root tests
+    "$PY" -m pw_foundation.guards --root src
+    "$PY" -m pw_foundation.guards --root tests
     echo "lint OK"
     ;;
   ""|--help|-h)
-    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|logic|au} [args]" ;;
+    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|pw-guards|pw-doctor|logic|au} [args]" ;;
   *) echo "unknown command: $cmd" >&2; exit 2 ;;
 esac

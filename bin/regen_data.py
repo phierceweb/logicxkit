@@ -301,7 +301,7 @@ def id_offsets(lib: Path) -> None:
         found = window_offsets(p, others) if others else ()
         if found:
             entry["id_offsets"] = list(found)
-    from pf_core.utils.io import atomic_write_json
+    from pw_foundation.utils.io import atomic_write_json
     atomic_write_json(lib / MANIFEST, manifest, sort_keys=True, ensure_ascii=True)
 
 

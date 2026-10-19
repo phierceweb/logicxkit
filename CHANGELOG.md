@@ -3,6 +3,16 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.13.0 — 2026-10-19
+
+### Changed
+- Depends on `pw-foundation~=1.0` (pf-core's foundation layer, split out and renamed) instead of
+  `pf-core`; imports are `pw_foundation.*`. The gate config is `.pw-guards.toml`; `bin/run setup`
+  wires the docs link, starter rules and editor links through `pw-setup`, and `bin/run pw-doctor`
+  checks that wiring.
+- Pins `groovebin~=0.6.0`, and `x32scene~=0.9.0` in the `rig` extra: the releases built on
+  pw-foundation.
+
 ## 0.12.0 — 2026-10-11
 
 ### Added

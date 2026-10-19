@@ -1,4 +1,4 @@
-"""The subpackage import graph stays a DAG, and logicx stays a leaf; pf_core.guards' layering
+"""The subpackage import graph stays a DAG, and logicx stays a leaf; pw_foundation.guards' layering
 rule inspects only `app/` trees, so it is enforced here."""
 
 import ast

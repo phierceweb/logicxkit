@@ -59,7 +59,7 @@ def plan_psts(spec: dict) -> list[tuple[str, Path, list[float]]]:
 
 def write_psts(spec: dict, *, overwrite: bool = False):
     """Write each planned .pst from Logic's factory default. Yields (path, status)."""
-    from pf_core.utils.io import atomic_write_bytes
+    from pw_foundation.utils.io import atomic_write_bytes
 
     cache: dict[str, bytes] = {}
     for _name, dest, values in plan_psts(spec):

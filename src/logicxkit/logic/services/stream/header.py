@@ -151,7 +151,7 @@ def width_estimated(alternative: Path, shown: dict[str, bool]) -> bool:
 
 def write_components(alternative: Path, shown: dict[str, bool]) -> dict[str, bool]:
     """Apply ``shown`` to one alternative's display state (both files) -> the resulting set."""
-    from pf_core.utils.io import atomic_write_bytes
+    from pw_foundation.utils.io import atomic_write_bytes
 
     state_path = alternative / "DisplayState.plist"
     state = plistlib.loads(state_path.read_bytes())

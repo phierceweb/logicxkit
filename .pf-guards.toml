@@ -1,3 +1,0 @@
-# Structural gate config — read by default by `python -m pf_core.guards`.
-[tool.pf_guards]
-root = "src/logicxkit"

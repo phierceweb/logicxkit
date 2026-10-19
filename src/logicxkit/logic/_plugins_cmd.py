@@ -8,7 +8,7 @@ import plistlib
 import time
 from pathlib import Path
 
-from pf_core.utils.io import atomic_write_bytes
+from pw_foundation.utils.io import atomic_write_bytes
 
 from ._edit import first_project_data
 from .services.mixer.plugins import installed_components, project_plugins, validate_components, verdict

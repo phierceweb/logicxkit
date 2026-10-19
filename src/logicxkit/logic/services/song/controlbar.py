@@ -197,7 +197,7 @@ def _archive_set(objs: list, holder: dict, key: str, value) -> None:
 def _write_archive(alternative: Path, layout: dict, transport: dict | None) -> bool:
     """Every archived layout dictionary and, when given, every archived LCD state — one of
     each per window — set to match the plist."""
-    from pf_core.utils.io import atomic_write_bytes
+    from pw_foundation.utils.io import atomic_write_bytes
 
     path = alternative / "DisplayStateArchive"
     if not path.exists():
@@ -223,7 +223,7 @@ def _write_archive(alternative: Path, layout: dict, transport: dict | None) -> b
 def write_layout(alternative: Path, layout: dict, transport: dict | None = None) -> None:
     """Replace the control bar layout (and the LCD state when given) in every main window of
     the alternative — both display-state files."""
-    from pf_core.utils.io import atomic_write_bytes
+    from pw_foundation.utils.io import atomic_write_bytes
 
     state_path = alternative / "DisplayState.plist"
     state = plistlib.loads(state_path.read_bytes())

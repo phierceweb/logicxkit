@@ -7,7 +7,7 @@ import shutil
 from collections.abc import Callable, Iterable
 from pathlib import Path
 
-from pf_core.utils.io import atomic_write_bytes
+from pw_foundation.utils.io import atomic_write_bytes
 
 from .services.stream.integrity import require_no_regression
 from .services.project.project import project_metadata

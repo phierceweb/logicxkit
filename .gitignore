@@ -56,7 +56,8 @@ logs/
 tools/driver/drive.log
 tools/driver/bin/
 
-# pf-core docs symlink (bin/run setup recreates it)
+# pw-foundation docs symlink (bin/run setup recreates it); pf-core is the link older setups left
+docs/pw-foundation
 docs/pf-core
 
 # reference material kept beside the repo — real sessions, mixes, the strip library, and

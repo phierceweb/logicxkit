@@ -74,8 +74,9 @@ The variables fall into four groups:
   golden into a failure instead of a skip (`=public` fails only on keys the public corpus
   should supply, which is what CI runs), and `LOGICXKIT_GOLDENS=owner`, which prefers the
   owner's file where both corpora have a key.
-- **Logging.** `LOG_FILE` names a JSON-lines file that records every run; `LOG_LEVEL` sets
-  the threshold. Both are pf-core's and read at the CLI boundary only.
+- **Logging.** `LOG_FILE` names a JSON-lines file that records every run at debug; `LOG_LEVEL`
+  sets the console's level (INFO when unset). Both are pw-foundation's and read at the CLI
+  boundary only.
 
 ## The two roots that live outside the repo
 

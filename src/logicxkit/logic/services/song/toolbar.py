@@ -69,7 +69,7 @@ def toolbar_shown(alternative: Path) -> bool:
 
 def _edit(alternative: Path, plist_edit, archive_edit) -> None:
     """``plist_edit`` on every main window's state, ``archive_edit`` on the archive's objects."""
-    from pf_core.utils.io import atomic_write_bytes
+    from pw_foundation.utils.io import atomic_write_bytes
 
     state_path = alternative / "DisplayState.plist"
     state = plistlib.loads(state_path.read_bytes())
