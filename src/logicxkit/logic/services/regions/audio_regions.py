@@ -21,27 +21,31 @@ length, `+64`..`+79` the fades (`fades.py`).
 
 from __future__ import annotations
 
+import re
 import struct
 from dataclasses import dataclass
 
 from ..song.events import BAR_ONE, PPQ
-from .fades import Fade, read_fade
+from .fades import Fade, crossfaded, read_fade
 from .region_params import REGION_COLOUR_AT, RegionParams, read_params
 from ..stream.stream import HEADER, OWNER_OFF, project_records
 from ..midi.midi import ENTRY_TICK_AT, LOOP_BIT, MUTE_BIT, REGION_BAR_ONE, entry_flags
 from ..stream.recbuild import slot_of
 from .regions import ENTRY, TAIL, TRACK_OBJECT_AT, TRACK_ROW_AT, entry_offsets, song_container
 from ..stream.sequence import sequences
+from ..song.arrangement import marker_sequence, section_sequence
 from ..arrange.stacks import read_tracks
 from ..arrange.tracklist import arrange_run
 
 FILE_TAG, REGION_TAG = b"lFuA", b"gRuA"
 AUDIO_ENTRY = 0x24
+PIECE_LIMIT = 0xFFFF                         # an entry's piece number is a u16 (`entry_pair`)
 ENTRY_PIECE_AT, ENTRY_ORDINAL_AT = 40, 44
 NAME_COUNT_AT, NAME_AT = 8, 10
 PATH_AT, SIZE_AT, FORMAT_AT, OFFSET_AT, FRAMES_AT, RATE_AT, CHANNELS_AT, BITS_AT = 138, 406, 456, 464, 468, 476, 480, 482
 REGION_COUNT_AT = 508                        # u32 from the magic: the file's region records — Logic loads that many
 REGION_MUTE_AT, REGION_MUTE_BIT = 5, 0x02
+PIECE_SUFFIX = re.compile(r"\.\d+$")
 REGION_OFFSET_AT, REGION_FRAMES_AT, REGION_NAME_AT = 6, 22, 74
 
 
@@ -77,6 +81,14 @@ class AudioRegion:
     file_slot: int = -1        # the slot word its record and file carry
     params: RegionParams = RegionParams()
     colour: int = 0            # a palette index; a region born on a track carries the track's
+    crossfaded: bool = False   # its entry carries either side's crossfade bit (`fades.crossfaded`)
+
+    @property
+    def stem(self) -> str:
+        """The name a cut numbers its pieces from: a piece's name less its trailing `.N`, which Logic's
+        own split takes from a counter that runs ahead of the piece number (`take.7` can be piece 2)."""
+        stem = PIECE_SUFFIX.sub("", self.name) if self.piece else self.name
+        return stem or self.name
 
     @property
     def start_bar(self) -> float:
@@ -129,8 +141,10 @@ def region_key(raw: bytes) -> tuple[int, int]:
 
 
 def entry_pair(entry: bytes) -> tuple[int, int]:
-    """An audio entry's ``(slot, piece)``: its `+44` word and `+40` byte."""
-    return struct.unpack_from("<I", entry, ENTRY_ORDINAL_AT)[0], entry[ENTRY_PIECE_AT]
+    """An audio entry's ``(slot, piece)``: its `+44` word and the u16 at `+40` — in Logic 12.4's own
+    save of a live set, a folder region's audio entries are numbered well past 255, each pair
+    with their record read so, `+42..43` zero throughout (2026-10-25)."""
+    return struct.unpack_from("<I", entry, ENTRY_ORDINAL_AT)[0], struct.unpack_from("<H", entry, ENTRY_PIECE_AT)[0]
 
 
 def region_records(records) -> dict[tuple[int, int], int]:
@@ -138,10 +152,38 @@ def region_records(records) -> dict[tuple[int, int], int]:
     return {region_key(r.raw): i for i, r in enumerate(records) if r.tag == REGION_TAG}
 
 
+def highest_pieces(records) -> dict[int, int]:
+    """Per file slot, the highest piece number among its region records, placed or not."""
+    highest: dict[int, int] = {}
+    for slot, piece in region_records(records):
+        highest[slot] = max(highest.get(slot, 0), piece)
+    return highest
+
+
+def name_numbers(records) -> dict[int, int]:
+    """Per file slot, the number a cut's next piece name follows: the highest piece, or a higher
+    ``.N`` already on one of the file's piece names, since Logic's own split names run ahead."""
+    named = highest_pieces(records)
+    for r in records:
+        if r.tag != REGION_TAG:
+            continue
+        slot, piece = region_key(r.raw)
+        m = PIECE_SUFFIX.search(region_name(r.raw[HEADER:])) if piece else None
+        if m:
+            named[slot] = max(named.get(slot, 0), int(m.group()[1:]))
+    return named
+
+
 def audio_entry_pairs(records) -> list[tuple[int, int]]:
-    """``(slot, piece)`` of every audio entry in every sequence (take folders included)."""
+    """``(slot, piece)`` of every audio entry in every sequence (take folders included), the
+    marker and arrangement tracks left out: their events are 48 bytes, not entries, and a name
+    record's slot word (multiples of 4) reads as `AUDIO_ENTRY` at the tenth marker."""
+    markers = marker_sequence(records)
+    skip = {section_sequence(records), None if markers is None else markers.end}
     pairs = []
     for t in sequences(records):
+        if t.end in skip:
+            continue
         events = records[t.end].raw[HEADER:]
         if len(events) < ENTRY + TAIL:
             continue
@@ -183,5 +225,5 @@ def read_audio_regions(data: bytes, track_count: int | None = None) -> list[Audi
                                struct.unpack_from("<I", rec, REGION_FRAMES_AT)[0], files.get(slot),
                                struct.unpack_from("<I", rec, REGION_OFFSET_AT)[0], oid,
                                bool(flags & MUTE_BIT), bool(flags & LOOP_BIT), piece, read_fade(e), off, k, slot,
-                               read_params(e), rec[REGION_COLOUR_AT]))
+                               read_params(e), rec[REGION_COLOUR_AT], crossfaded(e)))
     return out

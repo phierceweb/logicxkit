@@ -93,7 +93,8 @@
    "name": "Velocity Range",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 100.0
   },
   {
    "index": 24,

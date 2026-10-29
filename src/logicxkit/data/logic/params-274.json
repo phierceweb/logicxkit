@@ -66,7 +66,8 @@
    "name": "Output Level",
    "unit": "dB",
    "default": -7.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 15.0
   },
   {
    "index": 15,

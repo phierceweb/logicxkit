@@ -1,6 +1,7 @@
 """Each table parameter's `min` and `max` come from the displays Logic showed at its slider's two
 ends (read through accessibility with no save): the default sits inside, the ends differ, and
-`--set` refuses a number outside them."""
+`--set` refuses a number outside them. A slider ending on a word at one end (Mute, off, Linked,
+inf) carries the other end alone, and the default sits on its side of it."""
 
 import json
 import unittest
@@ -10,23 +11,30 @@ from logicxkit.utils.data import PACKAGED
 
 
 class RangesTest(unittest.TestCase):
-    def test_every_range_holds_its_default_and_the_count_is_pinned(self):
-        ranged, tables_with = 0, 0
+    def test_every_range_holds_its_default_and_the_counts_are_pinned(self):
+        both, one, tables_with = 0, 0, 0
         for f in sorted((PACKAGED / "logic").glob("params-*.json")):
             t = json.loads(f.read_text())
-            if any("min" in p for p in t["params"]):
+            if any("min" in p and "max" in p for p in t["params"]):
                 tables_with += 1
             for p in t["params"]:
-                if "min" not in p:
+                lo, hi = p.get("min"), p.get("max")
+                if lo is None and hi is None:
                     continue
-                ranged += 1
+                both += lo is not None and hi is not None
+                one += (lo is None) != (hi is None)
                 with self.subTest(f"{t['name']} {p['name']}"):
-                    self.assertLess(p["min"], p["max"])
+                    if lo is not None and hi is not None:
+                        self.assertLess(lo, hi)
                     default = p.get("default")
                     if isinstance(default, (int, float)):
                         word = int_word(default) if p.get("kind") == "int" and p.get("offset") is None and abs(default) < 1e-30 else default
-                        self.assertTrue(p["min"] - 1e-6 <= word * p.get("scale", 1.0) <= p["max"] + 1e-6, (word, p["min"], p["max"]))
-        self.assertEqual((ranged, tables_with), (1346, 97))          # a fold that drops ranges shows here
+                        value = word * p.get("scale", 1.0)
+                        if lo is not None:
+                            self.assertGreaterEqual(value, lo - 1e-6, (word, lo, hi))
+                        if hi is not None:
+                            self.assertLessEqual(value, hi + 1e-6, (word, lo, hi))
+        self.assertEqual((both, one, tables_with), (1346, 28, 97))     # a fold that drops or adds ranges shows here
 
     def test_a_number_outside_the_range_is_refused(self):
         from _fixtures import chunk

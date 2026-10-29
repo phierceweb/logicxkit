@@ -39,7 +39,7 @@ def live_families(payload: bytes, maps) -> list:
     fresh instance, stays out), in the vocabulary's order: eq, gate, compressor, multiband."""
     from .services.translate.translate import maps_for, read_settings
     order = {"eq": 0, "gate": 1, "compressor": 2, "multiband": 3}
-    found = maps_for(payload, maps)
+    found = [m for m in maps_for(payload, maps) if m.family]
     if len(found) <= 1:
         return found
     live = [m for m in found if not any("bypassed" in note for note in read_settings(payload, m).notes)]
@@ -112,7 +112,7 @@ def cmd_tracking_chains(args) -> int:
         print("  no donors in the library; `logic donors PROJECT` harvests them")
         return 1
     maps = load_maps()
-    natives = {m.family: m.plugin for m in maps if m.type is not None}
+    natives = {m.family: m.plugin for m in maps if m.type is not None and m.family}
     counts: dict[str, int] = {}
 
     def step(data, count, data_file):

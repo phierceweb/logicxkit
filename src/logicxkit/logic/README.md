@@ -581,8 +581,13 @@ evidence that placed them. What the instruments added to the method:
   Phase, to `test_stereo_rows.py`), and the save's own word at each ranged row to the table's
   default. A table parameter carries them as `min` and `max` in its own unit, and `--set` refuses
   a number outside (or, where the plug-in's slider is mapped, holds it to the slider's ends with
-  a note): 1346 of 1785 parameters over 97 tables. A row gets none where an end is a word ("32
-  Bars" at a tempo-synced LFO rate, "Mute" at a dB slider's bottom, "Auto", "off"), where the
+  a note): 1346 of the 1785 parameters in the 100 tables carry both ends (97 tables hold one or
+  more), and 28 more carry one — a slider whose other end reads a word with no number in it
+  ("Mute", "Off", "off", "mono", "Fix" or "Click" at the bottom, "inf", "∞" or "Paradise" at the
+  top) keeps that bound open, unchecked and with no word to write, the number on its end's
+  side unless the default's display sits past it (a slider that runs backwards), and `--set` and
+  `chains` refuse a number past the end it has. A row gets none where an end is blank or a number
+  of another kind ("32 Bars" at a tempo-synced LFO rate, "1/64t", "+/-127"), where the
   display at the default is not the word the save holds (EVOC 20 PolySynth's Resonance shows
   0.700 for 0.5; Logic truncates a display, so the word may sit one step past it), or where the
   row is a choice; a curve row's range is its curve's (Vintage Graphic EQ's bands, −12..12), and
@@ -596,7 +601,7 @@ evidence that placed them. What the instruments added to the method:
   default check holds the display at the default to half its last decimal). A range is the read
   instance's: a mono instance keeps 0 on a stereo-only row (MultiMeter's Gonio Decay, Scanner
   Vibrato's Right Rate), outside it. Delay
-  Designer's three dB rows end on "Mute" and its two others are toggles, so it carries none;
+  Designer's three dB rows end on "Mute" and carry their tops alone; its two others are toggles;
   Alchemy's and Sample Alchemy's text states carry none; the Controls rows past a multi-FX's
   slider cells (Step FX, Beat Breaker) and some of Alchemy's and Quick Sampler's are not read.
   A row the one-unit move had taken for a toggle (0 to 1) and the slider shows otherwise (Pitch
@@ -1106,9 +1111,27 @@ project (2026-09-13) and its move, trim, split, mute, rename, loop, fade and fur
 type-0x24 entries and more `gRuA` than `lFuA`: records no entry names are kept, never paired. A
 split also gave the registry a blank kind-0x17 pair for the next free sequence slot (the next MIDI
 region took the slot after it) and a blank kind-0x1e pair keyed by the parent's slot, which Logic
-dropped on its next load; the parent's `+208` word read `ffffffff` and the piece's `+210` byte 1 for
-a few saves. `regions --split` writes all of that; Logic's re-save kept the piece once the file's
-region count was raised, and dropped it when the count alone was left at 1.
+dropped on its next load; the record's split-link word, 11 bytes from its end (it follows the
+name, so its offset from the start moves with the name's length), read `ffffffff` on the parent
+and 1 on the piece for a few saves. Logic's re-save of a copy kept those words as written, a piece
+of a piece's `ffffff01` (byte 1 over its parent's `ffffffff`) included (`arrangement-gaps-resave`),
+and its own later save of a set reads 0 on every record (`live-set-pieces`, 2026-10-27): the word
+is transient. A piece's is written as the u32 1, Logic's own for a fresh piece; a piece of a piece
+written so has not been re-saved. `regions --split` writes all of that; Logic's re-save kept the piece once the file's
+region count was raised, and dropped it when the count alone was left at 1. A recorded project's
+registry held no kind-0x1e run at all, and Logic's own splits of it, read across two of its backups,
+added none (2026-10-25): the pair is written only where a run exists. The piece number at the
+entry's `+40` is a u16, not a byte: Logic 12.4's own save of a live set (a 10.8.1 project it
+converted) carries a folder region whose container holds audio entries numbered well past 255,
+every one pairing with its record when read so, `+42..43` zero throughout (2026-10-25). A folder
+region's container holds its entries from `+16`, after a 16-byte head, which this reader does not
+follow: `regions` lists nothing inside a folder region.
+
+**A region on another track** is the entry's `+16` (track object) and `+20` (row) and nothing else:
+Logic 12.4's own drag of a split piece onto another track left its `gRuA` untouched, the entry
+differing from a piece left behind at the tick, those two words and the piece number alone
+(`vocal-pieces-moved-logic`, 2026-10-25); `regions --to-track` writes the two. Both tracks shared a
+colour, so whether Logic recolours a moved region is unmeasured.
 
 **Fades** live in the entry's last sixteen bytes (`fades.py`): `+65` u8 Fade-In type (0 In, 1 Speed
 Up), `+67` u8 Fade-Out type (0 or 3 Out, 4 X, 5 EqP, 6 X S — Logic wrote 3 for Out on a region that
@@ -1118,7 +1141,12 @@ under Drag: X-Fade that overlapped two regions wrote 0x20 at `+66` of the region
 fade-out side) and 0x80 at `+66` of the one dragged over it, the overlap in ms at `+72`, the type at
 `+67` and the curve reset at `+75`; dragging the crossfade's edge changed `+72` (500 -> 563) and
 `+68` (f9 -> da -> c1 across edits, no formula found: kept as found), and the regions moved apart
-keep every byte. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
+keep every byte. **A split** of a faded region (Edit > Split > Regions at Playhead, 2026-10-28, `regions-c01`/`c02`)
+moved the fade-out's `+72..+75` to the piece and zeroed them on the parent, left `+65`/`+67` on both, gave
+the piece no fade-in, and moved the selection (`+15` bit 7) from the parent to the piece; it also set
+`+14` bit 5 on the parent, not read. Logic's re-save of `regions --split` on the same base
+(`regions-c03`) kept both entries; it set the piece record's payload `+130` to 1, which Logic's own
+split writes 0. A crossfaded region's split is not measured, so it is refused. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
 goldens): Gain in dB as a tens byte `+52` i8 and a signed five-bit remainder in `+48` bits 0-4 (-17
 is -1 and -7), Reverse `+48` bit 5, Fine Tune `+50` i8 cents, Transpose `+53` i8 semitones, Delay
 `+60` i32 ticks. Transpose on an unflexed region made Logic switch the track to Flex Pitch (two 0xAA
@@ -1348,7 +1376,7 @@ whole structure. A group is a **sequence triple of its own** — `qeSM` / zero-s
 | `gnoS` | a `<0x11><slot>` entry per group in both runs, directly before the object entries |
 
 Nothing else moves: the row's `+4` and the channel's `+92`, both candidates before the saves, stay
-put. `services/arrange/groups.py` reads and writes all of it; the writer reproduces six of the saves byte
+put. `services/arrange/groups.py` reads all of it and `groups_write.py` writes it; the writer reproduces six of the saves byte
 for byte in the triple, the numbers and the registry pair. Create Group sets the new bit and leaves
 a member's other groups and their events alone; leaving a group is composed (events out, bit
 cleared), not measured. `apply-template` carries the template's groups by name — made in the session
@@ -1396,7 +1424,19 @@ project is private, so the facts are pinned here and in synthetic tests.
   fraction). A written anchor left at +1024 comes back as kind `04` with Logic's own `03`
   before it; two hits snapping to one grid target come back as the one nearest it; with
   Quantize Off the hits are kind `05` with their unmoved, fractional targets.
-  `regions.entry_offsets` steps over the blocks.
+  `regions.entry_offsets` steps over the blocks. A region bounced in place on a flexed track carries
+  the two anchors as an **identity map** — source 0 to target 0, its last frame to its length in
+  ticks with the fraction, `+15` bit 4 clear, `+32` `ffffffff`, `+48` bit 7 set — on every drum
+  region of a live set (2026-10-25). **Blocks past the anchors are the file's markers, relative
+  to the region's start**: a region at an offset carries each of the file's markers at source
+  equal to the marker's file position minus that offset, and target the same in ticks (the
+  owner's saves, 2026-10-25), so a
+  region sees markers before its start and past its end; kind `06` blocks (one per bounced drum
+  file on another set, past the end anchor) and kind `00` transients are such markers. A split or
+  trim of a region whose list is the two identity anchors and then only kinds `00`/`06` writes
+  each piece the two anchors for its own length and the markers shifted by its new offset
+  (`region_entry.identity_anchors`, `_shifted_block`); any other list — a quantized region's hits
+  — is refused.
 - **Quantize** on a flexed region: `+13` = 1, `+48` bit 7, `+32` = the slot of a new sequence
   triple per region named **RBA Sequence** (309-byte `qeSM`, empty `qSvE`, a registry pair):
   `+8` its id, `+88` the region length in ticks with fraction, **`+102` i16 the Quantize value**
@@ -2597,7 +2637,11 @@ section event), a second triple with an empty `qSvE`, and a `snrT` (504 bytes); 
 68-byte `OgnS` before the first `rpyH` with a 774-byte one, appends a 734-byte `MneG` (a bplist)
 and two `qSxT` — an empty text at slot 0, the section's name at slot 4. `arrangement --add`
 writes the same from `arrangement-track-12.3.1.json`, and Logic re-saved one with the section
-intact. The time signature line (`0x30`) carries the denominator's log2 at `+11` and the
+intact. A Logic 12.4 save can already carry the pair with both `qSvE` empty and no `snrT` after
+them (a live set, 2026-10-25); `--add` then writes into that section sequence — a second pair
+inserted before it left Logic's arrangement track empty. Sections need not touch: Logic 12.4
+showed a set's written one per song with the gaps between songs unclaimed, and its re-save kept
+every start and length (`arrangement-gaps-resave`). The time signature line (`0x30`) carries the denominator's log2 at `+11` and the
 numerator at `+12`; the key line (`0x32`) the key's index in the circle of fifths at `+12`
 (C major 7) — read since 2026-09-06, the field offsets confirmed on the blank project's meter
 edits.

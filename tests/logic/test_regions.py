@@ -140,5 +140,33 @@ class RegionPairTest(unittest.TestCase):
         self.assertEqual(sorted(audio_entry_pairs(project_records(data))), [(172, 0), (176, 2), (188, 0), (252, 1)])
 
 
+class PieceNumberTest(unittest.TestCase):
+    """An entry's piece number is two bytes at +40: a Logic 10.8.1 live set's audio entries are
+    numbered well past 255, every one pairing with its record read so, the two bytes after always
+    zero (2026-10-25)."""
+
+    def test_a_piece_past_255_is_written_in_two_bytes_and_read_back(self):
+        from logicxkit.logic.services.regions.audio_regions import ENTRY_ORDINAL_AT, ENTRY_PIECE_AT, entry_pair
+        from logicxkit.logic.services.regions.region_entry import _piece_entry
+        base = bytearray(entry(object_id=9, row=1))
+        struct.pack_into("<I", base, ENTRY_ORDINAL_AT, 64)                  # an audio entry's file slot word
+        base = bytes(base)
+        piece = _piece_entry(base, 38400, piece=300)
+        self.assertEqual(piece[ENTRY_PIECE_AT:ENTRY_PIECE_AT + 4], (300).to_bytes(2, "little") + b"\0\0")
+        self.assertEqual(entry_pair(piece), (64, 300))
+        self.assertEqual(entry_pair(_piece_entry(base, 38400, piece=7)), (64, 7))
+
+
+class PieceStemTest(unittest.TestCase):
+    def test_a_piece_drops_its_trailing_number_whatever_it_is_and_a_parent_keeps_its_name(self):
+        from logicxkit.logic.services.regions.audio_regions import AudioRegion
+        stem = lambda name, piece: AudioRegion("Gtr", 1, name, 38400, 1, None, piece=piece).stem  # noqa: E731
+        self.assertEqual(stem("Gtr #02.7", 2), "Gtr #02")          # Logic's counter ran ahead of the piece
+        self.assertEqual(stem("take.3", 3), "take")
+        self.assertEqual(stem("take", 4), "take")                   # renamed by hand, no suffix
+        self.assertEqual(stem("Mix v1.2", 0), "Mix v1.2")           # the parent's own name is left alone
+        self.assertEqual(stem(".5", 5), ".5")
+
+
 if __name__ == "__main__":
     unittest.main()

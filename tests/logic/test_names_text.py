@@ -7,7 +7,8 @@ import unittest
 import _paths  # noqa: F401
 from logicxkit.logic.services.song.arrangement import TEXT_NAME_AT, _text
 from logicxkit.logic.services.song.arrangement_write import plain_text_payload
-from logicxkit.logic.services.arrange.groups import NAME_AT, _name_of, _with_name
+from logicxkit.logic.services.arrange.groups import NAME_AT, _name_of
+from logicxkit.logic.services.arrange.groups_write import _with_name
 from logicxkit.logic.services.arrange.names import written
 from logicxkit.logic.services.song.rtf import rtf_text
 

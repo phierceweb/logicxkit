@@ -129,7 +129,8 @@
    "name": "Steps per ENV pass",
    "unit": "",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 2.0
   },
   {
    "index": 18,

@@ -116,5 +116,23 @@ class SongCommandsTest(unittest.TestCase):
         self.assertEqual(set(read_groups(data(off))[0].members), set(read_groups(data(named))[0].members))
 
 
+    def test_fill_names_every_gap_from_bar_one_to_the_last_section(self):
+        filled = written(self, "arrangement", ARRANGEMENT, "--add", "5:8:A", "--add", "21:8:B", "--fill", "break",
+                         out=self.out / "fill")
+        sections = read_sections(data(filled))
+        self.assertEqual([(s.name, s.start, s.length) for s in sections],
+                         [("break", BAR_ONE, 4 * BAR), ("A", BAR_ONE + 4 * BAR, 8 * BAR), ("break", BAR_ONE + 12 * BAR, 8 * BAR),
+                          ("B", BAR_ONE + 20 * BAR, 8 * BAR)])
+        again = written(self, "arrangement", filled, "--fill", "break", out=self.out / "fill-again")
+        self.assertEqual(len(read_sections(data(again))), 4, "contiguous sections leave nothing to fill")
+
+    def test_fill_runs_to_the_end_of_the_last_region(self):
+        from logicxkit.logic.services.song.arrangement_write import fill_gaps
+        with_regions = data(_goldens.path(THREE))
+        end = fill_gaps(with_regions, "tail", end=BAR_ONE + 100 * BAR)
+        sections = read_sections(end)
+        self.assertEqual([(s.name, s.start, s.length) for s in sections], [("tail", BAR_ONE, 100 * BAR)])
+
+
 if __name__ == "__main__":
     unittest.main()

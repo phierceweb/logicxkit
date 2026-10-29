@@ -12,7 +12,7 @@ def apply(template: bytes, session: bytes, ops: list[Op], *, session_count: int 
     it changes, not for flaws the session arrived with (`validate.tolerating`)."""
     from ..services.arrange.addtrack import add_track
     from ..services.arrange.environment import rename_track, set_colour, set_icon
-    from ..services.arrange.groups import assign, create_group
+    from ..services.arrange.groups_write import assign, create_group
     from ..services.mixer.channel_width import widen_channels
     from ..services.mixer.instout import bind_instrument_output, unbind_instrument_output
     from ..services.mixer.levels import set_levels

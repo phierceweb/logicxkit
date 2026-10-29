@@ -67,8 +67,10 @@ README; two lists drift.
 
 The variables fall into four groups:
 
-- **Where Logic keeps its own files.** Defaults point at Logic's real locations. Override them
-  to read from a staged copy instead of the live library.
+- **Where Logic keeps its own files.** `LOGICXKIT_AUDIO_MUSIC_APPS`, `LOGICXKIT_STRIP_ROOT`,
+  `LOGICXKIT_LOGIC_PREFS` and `LOGICXKIT_LOGIC_APP`. Defaults point at Logic's real locations.
+  Override them to read from a staged copy instead of the live library. `LOGICXKIT_STRIP_ROOT`
+  is also the base for a strip spec's relative paths and where `logic diff --library` looks.
 - **Where your rig's specs and reference files live.** These point outside the repo (see below).
 - **Test behaviour.** Most usefully `LOGICXKIT_REQUIRE_GOLDENS=1`, which turns a missing
   golden into a failure instead of a skip (`=public` fails only on keys the public corpus

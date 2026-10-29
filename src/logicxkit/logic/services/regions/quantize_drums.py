@@ -28,7 +28,8 @@ from .flexmarkers import (
     rba_triple, samples_per_tick, ticks_of,
 )
 from .flexmode import set_flex_mode, set_q_reference
-from ..arrange.groups import create_group, read_groups, set_group
+from ..arrange.groups import read_groups
+from ..arrange.groups_write import create_group, set_group
 from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.integrity_regions import NO_SLOT
 from ..midi.midi import REGION_BAR_ONE
@@ -146,7 +147,7 @@ def _hits(regions: list[AudioRegion], ref_ids: list[int], wav_of: WavFinder, det
             continue
         wav = wav_of(region)
         if wav is None or not Path(wav).exists():
-            raise ValueError(f"no audio file for {region.track}'s region {region.name!r} ({region.file.name if region.file else '?'})")
+            raise ValueError(f"no audio file for {region.track}'s region {region.name!r} ({region.file.name if region.file else '?'}); --audio DIR names the folder that holds it")
         samples, file_rate = read_wav(wav)
         if rate not in (None, file_rate):
             raise ValueError("the reference files run at different sample rates")

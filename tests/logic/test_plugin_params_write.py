@@ -136,5 +136,35 @@ class NamedWordTest(unittest.TestCase):
             set_by_name(table, chunk(229, [0.0] * 6), {"Stereo Phase": 400})
 
 
+ONE_SIDED = {"type": 217, "name": "Test Amp", "floats": 2, "opaque": [0],
+             "params": [{"index": 1, "name": "Output Level", "unit": "dB", "default": -7.0, "max": 15.0}],
+             "evidence": "a synthetic table: a dB slider whose bottom reads Mute carries its top alone"}
+
+
+class OneSidedRangeTest(unittest.TestCase):
+    def test_a_one_sided_range_refuses_past_its_end_and_names_that_end(self):
+        from logicxkit.logic.services.mixer.plugin_params import decode_payload
+        table = Table.from_dict(ONE_SIDED)
+        with self.assertRaisesRegex(ValueError, r"Output Level: 16\.0 is outside \.\.15\.0 dB"):
+            set_by_name(table, chunk(217, [0.0, 0.0]), {"Output Level": 16})
+        for value in (15, -90):
+            with self.subTest(value):
+                out = set_by_name(table, chunk(217, [0.0, 0.0]), {"Output Level": value})
+                self.assertEqual(decode_payload(table, out)["Output Level"], float(value))
+
+    def test_a_number_on_the_open_side_past_a_float_is_refused_not_a_crash(self):
+        table = Table.from_dict(ONE_SIDED)
+        for value in (-1e39, "-3.5e38"):
+            with self.subTest(value), self.assertRaisesRegex(ValueError, "past what the plug-in's float holds"):
+                set_by_name(table, chunk(217, [0.0, 0.0]), {"Output Level": value})
+
+    def test_an_int_row_with_an_open_end_refuses_past_an_int32(self):
+        open_int = dict(ONE_SIDED, params=[{"index": 1, "name": "Steps", "unit": "", "kind": "int", "default": 1, "min": 1}])
+        table = Table.from_dict(open_int)
+        for value in (2**31, "3e9", 1e300):
+            with self.subTest(value), self.assertRaisesRegex(ValueError, "past what the plug-in's int32 holds"):
+                set_by_name(table, chunk(217, [0.0, 0.0]), {"Steps": value})
+
+
 if __name__ == "__main__":
     unittest.main()

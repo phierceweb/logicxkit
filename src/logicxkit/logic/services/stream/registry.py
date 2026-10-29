@@ -213,6 +213,11 @@ def register_slot(payload: bytes, *, slot: int, blank: bool = False) -> bytes:
     return bytes(touch_lists(g))
 
 
+def has_run(payload: bytes, kind: int) -> bool:
+    """Whether both strides hold a run of ``kind``."""
+    return bool(_run(payload, kind, UUID_STRIDE)) and bool(_run(payload, kind, TIME_STRIDE))
+
+
 def register_after_run(payload: bytes, *, kind: int, entry_id: int) -> bytes:
     """A zeroed ``<kind><entry_id>`` pair appended to the end of ``kind``'s run in both strides;
     Logic's audio split added one of kind 0x1e keyed by the parent record's slot (2026-09-15)."""

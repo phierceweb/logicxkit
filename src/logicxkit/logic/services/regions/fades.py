@@ -13,7 +13,7 @@ over it (`region_params.py`); +68 changes when Logic edits the length and is kep
 from __future__ import annotations
 
 import struct
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 IN_TYPE_AT, OUT_TYPE_AT, OUT_MS_AT, OUT_CURVE_AT, IN_MS_AT, IN_CURVE_AT = 65, 67, 72, 75, 76, 79
 CROSSFADE_AT = slice(66, 69)
@@ -22,6 +22,7 @@ IN_TYPES = {0: "in", 1: "speed-up"}
 OUT_TYPES = {0: "out", 3: "out", 4: "x", 5: "eqp", 6: "xs"}
 OUT_CODES = {"out": 0, "x": 4, "eqp": 5, "xs": 6}
 OUT_CLEARED = 3                                        # what Logic wrote for Out on a region that had a crossfade
+CROSSFADES = ("x", "eqp", "xs")
 MAX_MS, MAX_CURVE = 0xFFFF, 99
 
 
@@ -33,6 +34,29 @@ class Fade:
     out_ms: int = 0
     out_curve: int = 0
     out_type: str = "out"
+
+    @classmethod
+    def for_piece(cls, parent: "Fade", *, first: bool, last: bool) -> "Fade":
+        """The fade a cut piece starts from: the parent's in side on the first piece, its out side
+        on the last, nothing between — a split's piece has no fade of its own."""
+        return cls(in_ms=parent.in_ms if first else 0, in_curve=parent.in_curve if first else 0,
+                   in_type=parent.in_type if first else 0, out_ms=parent.out_ms if last else 0,
+                   out_curve=parent.out_curve if last else 0, out_type=parent.out_type if last else cls().out_type)
+
+    def fitted(self, length_ms: int) -> "Fade":
+        """This fade held within a piece ``length_ms`` long: neither side past the piece; where the two
+        together outlast it, the longer yields first, down to the other's length, and what is still too
+        long is shared."""
+        in_ms, out_ms = min(self.in_ms, length_ms), min(self.out_ms, length_ms)
+        if in_ms + out_ms > length_ms:
+            if in_ms > out_ms:
+                in_ms = max(out_ms, length_ms - out_ms)
+            elif out_ms > in_ms:
+                out_ms = max(in_ms, length_ms - in_ms)
+        if in_ms + out_ms > length_ms:
+            in_ms = length_ms // 2
+            out_ms = length_ms - in_ms
+        return replace(self, in_ms=in_ms, out_ms=out_ms)
 
     def __str__(self) -> str:
         parts = []
@@ -53,6 +77,23 @@ def read_fade(entry: bytes) -> Fade:
     return Fade(struct.unpack_from("<H", entry, IN_MS_AT)[0], _curve(entry[IN_CURVE_AT]), entry[IN_TYPE_AT],
                 struct.unpack_from("<H", entry, OUT_MS_AT)[0], _curve(entry[OUT_CURVE_AT]),
                 OUT_TYPES.get(entry[OUT_TYPE_AT], str(entry[OUT_TYPE_AT])))
+
+
+def crossfaded(entry: bytes) -> bool:
+    """Whether ``entry`` carries either side's crossfade bit at +66, kept when the regions move apart."""
+    return bool(entry[CROSS_OUT[0]] & (CROSS_OUT[1] | CROSS_IN[1]))
+
+
+def split_fades(parent: bytes, piece: bytes) -> tuple[bytes, bytes]:
+    """A split's two entries with the fade-out's length and curve (+72..+75) moved from the parent
+    to the piece and the types left on both, as Logic's own split moved them
+    (`regions-c02-faded-split-logic`); a crossfaded region is refused, its split unmeasured."""
+    if crossfaded(parent):
+        raise ValueError("a crossfaded region is not split: what Logic's own split does with a crossfade is not measured")
+    out = slice(OUT_MS_AT, OUT_CURVE_AT + 1)
+    p, q = bytearray(parent), bytearray(piece)
+    q[out], p[out] = parent[out], bytes(out.stop - out.start)
+    return bytes(p), bytes(q)
 
 
 def crossfade_bytes(entry: bytes) -> bytes:

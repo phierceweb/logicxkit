@@ -249,7 +249,8 @@
    "name": "Pedal Sustain",
    "unit": "ms",
    "default": 10.0,
-   "evidence": "code"
+   "evidence": "code",
+   "max": 5000.0
   },
   {
    "offset": 1320,
@@ -272,7 +273,8 @@
    "name": "Perc Time",
    "unit": "ms",
    "default": 150.0,
-   "evidence": "row"
+   "evidence": "row",
+   "min": 0.0
   },
   {
    "offset": 1340,

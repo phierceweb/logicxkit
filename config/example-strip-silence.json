@@ -1,0 +1,39 @@
+{
+  "_comment": "Neutral example of a strip-silence spec: groups of tracks, each cut with its own settings in one run on one copy. Keys are the command's flags with underscores; a group without a key takes the flag's default. Copy to config/local/ (gitignored) and name your own tracks.",
+  "groups": [
+    {
+      "_": "instruments that go silent between phrases: the loud-level rule",
+      "tracks": ["Bass DI", "Bass Amp", "Guitar 1", "Guitar 2"],
+      "min_gap": 2
+    },
+    {
+      "_": "a vocal mic full of bleed: heard over its bleed floor while the overheads play",
+      "tracks": ["Vocal 1", "Vocal 2"],
+      "ref": ["Overheads"],
+      "band": "300:3000",
+      "min_gap": 1.5
+    },
+    {
+      "_": "a backing mic that hears the leads: the lead mics as references too, each at its own ratio, a lower gate for a singer off the mic",
+      "tracks": ["Backing 1"],
+      "ref": ["Overheads", "Vocal 1", "Vocal 2"],
+      "band": "300:3000",
+      "gate": 3,
+      "min_gap": 3,
+      "min_keep": 0.3
+    },
+    {
+      "_": "a tom mic: short window, the tilt on the drum's own note against the snare's range, a pad for the ring",
+      "tracks": ["Floor Tom"],
+      "ref": ["Snare", "Kick"],
+      "band": "60:400",
+      "tilt_band": "auto",
+      "against_band": "400:2000",
+      "window": 50,
+      "above": 12,
+      "min_gap": 0.5,
+      "min_keep": 0.05,
+      "pad": "50:600"
+    }
+  ]
+}

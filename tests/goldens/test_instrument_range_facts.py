@@ -1,6 +1,7 @@
 """Each table range is consistent with the staged read it came from: the defaults save's
 `slider_ends` fact holds what the Controls view showed with the slider at each end, and the
-table's `min` and `max` are those displays' numbers in the parameter's unit. A save holding one
+table's `min` and `max` are those displays' numbers in the parameter's unit, a word at one end
+(Mute, off, Linked) leaving that bound open. A save holding one
 plug-in keys the fact by parameter name; a group save (`stockfx-<group>-defaults-12-4`) by plug-in
 name first, and every plug-in named must have a table. The save itself holds each ranged row's
 default in the row's word, so a range on another row's word or in another unit fails."""
@@ -55,17 +56,23 @@ class RangeFactsTest(unittest.TestCase):
                     with self.subTest(f"{table.name} carries ranges"):      # a text state is read, never written
                         self.assertTrue(any(p.min is not None for p in table.params))
                 for p in table.params:
-                    if p.min is None or p.name not in rows or p.named:      # a named end's range is its own (`tests/goldens/test_stereo_rows.py`)
+                    if (p.min is None and p.max is None) or p.name not in rows or p.named:   # a named end's range is its own (`tests/goldens/test_stereo_rows.py`)
                         continue
-                    lo, hi = (_number(e, p.unit) for e in rows[p.name])
+                    present = [n for n in (_number(e, p.unit) for e in rows[p.name]) if n is not None]
                     with self.subTest(f"{table.name} {p.name}"):
-                        self.assertIsNotNone(lo)
-                        self.assertIsNotNone(hi)
-                        self.assertAlmostEqual(p.min, min(lo, hi), places=3)
-                        self.assertAlmostEqual(p.max, max(lo, hi), places=3)
+                        self.assertTrue(present, rows[p.name])
+                        if len(present) == 2:
+                            self.assertAlmostEqual(p.min, min(present), places=3)
+                            self.assertAlmostEqual(p.max, max(present), places=3)
+                        else:                                                # one end a word (Mute, Off, inf): the number is one bound, the other is open
+                            self.assertEqual((p.min is None) + (p.max is None), 1, (p.min, p.max, rows[p.name]))
+                            self.assertAlmostEqual(p.max if p.min is None else p.min, present[0], places=3)
+                            side = next(i for i, e in enumerate(rows[p.name]) if _number(e, p.unit) is not None)
+                            self.assertEqual("min" if p.min is not None else "max", ("min", "max")[side], rows[p.name])
                         checked += 1
                         seen.add((table.name, p.name))
-        ranged = {(t.name, p.name) for t in tables.values() if t.state != "text" for p in t.params if p.min is not None and not p.named}
+        ranged = {(t.name, p.name) for t in tables.values() if t.state != "text" for p in t.params
+                  if (p.min is not None or p.max is not None) and not p.named}
         self.assertEqual(sorted(ranged - seen), [], "ranges with no staged end displays behind them")
         self.assertGreater(checked, 0)
 
@@ -83,14 +90,14 @@ class RangeFactsTest(unittest.TestCase):
                 done.add(table.name)
                 words, rows = decode_payload(table, payload), by_plugin[table.name]
                 for p in table.params:
-                    if p.min is None or p.named or p.choices or p.name not in rows or not isinstance(p.default, (int, float)):
+                    if (p.min is None and p.max is None) or p.named or p.choices or p.name not in rows or not isinstance(p.default, (int, float)):
                         continue
                     with self.subTest(key, row=f"{table.name} {p.name}"):
                         self.assertLessEqual(abs(words[p.name] - p.default), _step(rows[p.name], p.unit) + 1e-6,
                                              (words[p.name], p.default, p.unit, rows[p.name]))
                         seen.add((table.name, p.name))
         ranged = {(t.name, p.name) for t in tables.values() if t.state != "text" for p in t.params
-                  if p.min is not None and not p.named and not p.choices and isinstance(p.default, (int, float))}
+                  if (p.min is not None or p.max is not None) and not p.named and not p.choices and isinstance(p.default, (int, float))}
         self.assertEqual(sorted(ranged - seen), [], "ranged rows no save's word was checked for")
 
 

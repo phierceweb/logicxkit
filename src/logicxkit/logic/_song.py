@@ -54,7 +54,7 @@ def cmd_arrangement(args) -> int:
     from logicxkit.logicx import project_data
     from .services.song import arrangement_write as w
     from .services.song.arrangement import KINDS
-    edits = [a for a in (args.rename, args.move, args.length, args.delete, args.add) if a]
+    edits = [a for a in (args.rename, args.move, args.length, args.delete, args.add, args.fill) if a]
     project = find_project(Path(args.project))
     if not edits:
         _print_sections(project, project_data(project))
@@ -85,9 +85,26 @@ def cmd_arrangement(args) -> int:
             start = _bar_tick(data, parts[0], "add")
             data = w.add_section(data, parts[2], start=start,
                                  length=_bar_length(data, parts[1], "add", at=start), kind=kind)
+        if args.fill:
+            data = w.fill_gaps(data, args.fill, end=_song_end(project, data, _count, _file))
         _print_sections(project, data)
         return data
     return _run(project, args.out, step)
+
+
+def _song_end(project: Path, data: bytes, track_count: int | None, data_file: Path) -> int:
+    """The tick the last region ends on, or the last section's end when the song holds no region."""
+    from .services.project.project import project_metadata
+    from .services.regions.region_locate import listed, regions_end, samples_per_tick_of
+    from .services.song.arrangement import read_sections
+    regions = listed(data, track_count)
+    spt = None
+    if any(loc.audio for loc in regions):
+        rate = project_metadata(project, data_file.parent.name).get("sample_rate")
+        if not rate:
+            raise CommandError("the project's sample rate is unknown; an audio region's end in ticks needs it")
+        spt = samples_per_tick_of(data, rate)
+    return max([s.start + s.length for s in read_sections(data)] + [regions_end(regions, spt)])
 
 
 def cmd_tempo(args) -> int:
@@ -155,6 +172,8 @@ def register(sub) -> None:
     ar.add_argument("--length", action="append", metavar="N=BARS", help="make section N last BARS")
     ar.add_argument("--delete", action="append", type=int, metavar="N", help="take section N off")
     ar.add_argument("--add", action="append", metavar="BAR:BARS:NAME[:KIND]", help="a new section (kind: custom, verse, chorus, bridge, outro)")
+    ar.add_argument("--fill", metavar="NAME", help="a section NAME over every gap: from bar 1 to the first section, between "
+                    "two, and after the last to the end of the last region")
     ar.set_defaults(func=cmd_arrangement)
     tp = sub.add_parser("tempo", help="read the tempo track, or set the project tempo")
     tp.add_argument("project")

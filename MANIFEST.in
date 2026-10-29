@@ -13,7 +13,7 @@ include bin/regen_data.py
 include tests/logic/data/send-taper.json tests/logic/data/fader-steps.json
 include docs/README.md docs/INSTALLATION.md docs/commands.md docs/CAPABILITIES.md docs/EVIDENCE.md
 include config/example-chains.json config/example-mastering.json config/example-psts.json
-include config/example-retrack.json config/example-strips.json
+include config/example-retrack.json config/example-strips.json config/example-strip-silence.json
 include CHANGELOG.md CONTRIBUTING.md CODE_OF_CONDUCT.md .env.example
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

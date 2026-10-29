@@ -1,25 +1,21 @@
 """The Region inspector's parameters, fade-out types, crossfade and colours read from Logic's
 single-change saves (2026-09-15, the `regions-b*` goldens), and each writer held to the save Logic made of the same edit."""
 
-import importlib.util
 import unittest
 from dataclasses import replace
-from pathlib import Path
 
 import _goldens
 from logicxkit.logic.services.regions.audio_regions import read_audio_regions
 from logicxkit.logic.services.stream.integrity import regressions
 from logicxkit.logic.services.midi.midi import read_midi
-from logicxkit.logic.services.regions.region_edit import listed, move_region, samples_per_tick_of, set_fade
+from logicxkit.logic.services.regions.region_edit import move_region, set_fade
+from logicxkit.logic.services.regions.region_locate import listed, samples_per_tick_of
 from logicxkit.logic.services.regions.region_params import RegionParams
 from logicxkit.logic.services.regions.region_params_write import overlapped, set_colour, set_crossfade, set_params
 from logicxkit.logic.services.stream.validate import validate_project
 from logicxkit.logicx import project_data
 
-_spec = importlib.util.spec_from_file_location("goldens_region_edit", Path(__file__).with_name("test_region_edit.py"))
-_region_edit = importlib.util.module_from_spec(_spec)
-_spec.loader.exec_module(_region_edit)
-entries = _region_edit.entries
+from _region_edit import entries
 
 A18, A20 = "regions-a18-fade-in-speed-up-logic", "regions-a20-crossfade-logic"
 B = {k: f"regions-b{k:02d}-{name}-logic" for k, name in (

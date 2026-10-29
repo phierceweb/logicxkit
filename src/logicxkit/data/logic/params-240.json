@@ -39,7 +39,8 @@
    "name": "Gonio AutoGain",
    "unit": "%",
    "default": 50.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 100.0
   },
   {
    "index": 9,

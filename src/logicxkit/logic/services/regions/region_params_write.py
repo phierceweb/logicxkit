@@ -13,7 +13,8 @@ from .fades import CROSS_IN, CROSS_OUT, OUT_TYPES, with_fade
 from ..stream.stream import HEADER, project_records
 from ..midi.midi import COLOUR_AFTER_NAME, name_end
 from ..stream.recbuild import rec
-from .region_edit import _container, _entry, _finish, _require_sole, _rewrite, located
+from .region_entry import _container, _entry, _finish, _require_sole, _rewrite
+from .region_locate import located
 from .region_params import REGION_COLOUR_AT, RegionParams, with_params
 from ..stream.sequence import sequences, triple_by_slot
 

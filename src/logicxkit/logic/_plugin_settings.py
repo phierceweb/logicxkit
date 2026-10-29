@@ -92,10 +92,10 @@ def translation_of(old: bytes, donor, family: str | None = None):
     from .services.mixer.sidechain import side_chain
     from .services.translate.translate import load_maps, map_for, maps_for, plan, read_settings
     maps = load_maps()
-    src_maps, dst_map = maps_for(old, maps), map_for(donor.raw[HEADER:], maps)
+    src_maps, dst_map = [m for m in maps_for(old, maps) if m.family], map_for(donor.raw[HEADER:], maps)
     if not src_maps:
         raise LookupError("no translation map")
-    if dst_map is None:
+    if dst_map is None or dst_map.family is None:
         raise ValueError(f"no translation map for {donor.label}")
     wanted = family or dst_map.family
     src_map = next((m for m in src_maps if m.family == wanted), src_maps[0])   # a plug-in of several families

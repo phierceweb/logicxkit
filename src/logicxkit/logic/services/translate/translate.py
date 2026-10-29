@@ -6,7 +6,8 @@ silent), `curve` (sampled stored-to-vocabulary points, interpolated both ways), 
 (nonzero is on), `min`/`max` (the target's range, clamped to with a note), `step` (the grid
 the plug-in keeps its value on — Logic rounds a written value to it on load, so the plan
 rounds first) and, for one of Logic's own, the slider's measured positions (`automation` in the
-map — a write lands on the nearest one, the value Logic keeps). Translating A to B reads A's
+map — a write lands on the nearest one, the value Logic keeps; a map of `automation` alone is a
+slider grid with no family, no translation). Translating A to B reads A's
 map backwards into the vocabulary and B's forwards; an item without a home in B is reported,
 never guessed, and an `approx` item says so in the report. A plan for one of Logic's own names
 its table parameters with stored values; one for a third-party names the vocabulary items its
@@ -77,7 +78,7 @@ class Item:
 
 @dataclass(frozen=True)
 class Map:
-    family: str
+    family: str | None                                 # None: a slider grid alone, never translated
     plugin: str
     items: dict[str, Item]
     component: tuple[str, str, str] | None = None     # (type, subtype, manufacturer) of a third-party
@@ -96,7 +97,7 @@ class Map:
                             i.get("max"), i.get("step"), i.get("approx"), min=i.get("min"))
                  for name, i in d.get("items", {}).items()}
         comp = tuple(d["component"]) if d.get("component") else None
-        return cls(d["family"], d["plugin"], items, comp, d.get("type"), d.get("variant"), d.get("evidence", ""),
+        return cls(d.get("family"), d["plugin"], items, comp, d.get("type"), d.get("variant"), d.get("evidence", ""),
                    d.get("decoder"), dict(d.get("not_carried", {})), d)
 
 
@@ -162,6 +163,8 @@ def map_for(payload: bytes, maps: list[Map]) -> Map | None:
 def read_settings(payload: bytes, m: Map, tables: dict | None = None) -> Settings:
     """A slot's settings through its map: a third-party's from the AU state's id/value pairs,
     one of Logic's own from its float block by its parameter table."""
+    if m.family is None:
+        raise ValueError(f"{m.plugin}'s map is a slider grid with no family; it has no settings to read")
     out = Settings(m)
     if m.family == "eq":
         from .translate_eq import read_bands
@@ -231,6 +234,9 @@ def _number(v) -> float | None:
 
 def plan(settings: Settings, target: Map) -> Plan:
     """The target's parameters set to the source's vocabulary values, with the report."""
+    bare = next((m for m in (settings.map, target) if m.family is None), None)
+    if bare is not None:
+        raise ValueError(f"{bare.plugin}'s map is a slider grid, not a translation map")
     if settings.map.family != target.family:
         raise ValueError(f"{settings.map.plugin} is a {settings.map.family}, {target.plugin} a {target.family}")
     out = Plan(target, source=settings.map)

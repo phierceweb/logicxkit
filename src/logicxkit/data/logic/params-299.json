@@ -12,14 +12,16 @@
    "name": "Dry Level",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 0.0
   },
   {
    "index": 2,
    "name": "Reverb Level",
    "unit": "dB",
    "default": -6.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 0.0
   },
   {
    "index": 3,

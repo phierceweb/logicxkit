@@ -10,17 +10,9 @@ import _goldens
 import _paths  # noqa: F401
 from logicxkit.logic.services.arrange.environment import channel_objects
 from logicxkit.logic.services.arrange.groups import (
-    EVENT,
-    FLAGS,
-    assign,
-    create_group,
-    group_errors,
-    group_of,
-    missing_group_events,
-    read_groups,
-    set_group,
-    settings_of,
+    EVENT, FLAGS, group_errors, group_of, missing_group_events, read_groups, settings_of,
 )
+from logicxkit.logic.services.arrange.groups_write import assign, create_group, set_group
 from logicxkit.logic.services.stream.integrity import regressions
 from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.stream.recbuild import rec
@@ -107,7 +99,7 @@ class TemplateGroupsTest(unittest.TestCase):
     def test_a_members_events_are_rebuilt_from_its_channel_levels(self):
         """The template's overheads sit off unity, and their Volume events carry that."""
         from logicxkit.logicx import project_data
-        from logicxkit.logic.services.arrange.groups import _events_for, _values
+        from logicxkit.logic.services.arrange.groups_write import _events_for, _values
         data = project_data(TEMPLATE)
         oh = next(g for g in read_groups(data) if g.name == "OH")
         raw = project_records(data)[oh.start + 2].raw[HEADER:]
@@ -134,7 +126,8 @@ class EventsSurviveAddTrackTest(unittest.TestCase):
 
     def test_the_group_keeps_one_event_per_member_per_fader(self):
         from logicxkit.logic.services.arrange.addtrack import add_track
-        from logicxkit.logic.services.arrange.groups import assign, create_group, group_errors, read_groups
+        from logicxkit.logic.services.arrange.groups import group_errors, read_groups
+        from logicxkit.logic.services.arrange.groups_write import assign, create_group
         from logicxkit.logicx import project_data
         data = project_data(_goldens.path("stack-folder-flattened-logic"))
         data, _made = create_group(data, name="Drums")

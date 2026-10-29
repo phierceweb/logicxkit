@@ -1,6 +1,7 @@
 """Put tests/ on sys.path so subdirectories can import the shared helpers, drop bytecode that
 disagrees with its source (`_bytecode`), refuse any read of Logic's live library (`_liveguard`),
-and say at the end which goldens the run could and could not find (`_goldens`)."""
+and say at the end which goldens the run could and could not find (`_goldens`) and whether the
+swift toolchain was there for the tests that need it."""
 
 import sys
 from pathlib import Path
@@ -29,5 +30,8 @@ def pytest_terminal_summary(terminalreporter):
     line = _goldens.report()
     if line:
         terminalreporter.write_sep("-", line)
+    from logicxkit.utils.swiftrun import swift_available
+    if not swift_available():
+        terminalreporter.write_sep("-", "swift: absent; every test that runs a swift helper skipped")
     if _liveguard.violations:
         raise AssertionError("read Logic's live library: " + ", ".join(sorted(set(_liveguard.violations))))

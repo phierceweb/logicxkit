@@ -20,7 +20,8 @@ def _print(groups, objs) -> None:
 
 def cmd_group(args) -> int:
     from .services.arrange.environment import channel_objects
-    from .services.arrange.groups import assign, create_group, read_groups, set_group
+    from .services.arrange.groups import read_groups
+    from .services.arrange.groups_write import assign, create_group, set_group
     from .services.arrange.retrack import find_project
     from logicxkit.logicx import project_data
 

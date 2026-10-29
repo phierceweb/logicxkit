@@ -26,7 +26,7 @@ def cmd_settings(args) -> int:
     for ref, payload in slot_payloads(data):
         if wanted and ref.channel not in wanted:
             continue
-        found = maps_for(payload, maps)            # one entry per family the plug-in carries
+        found = [m for m in maps_for(payload, maps) if m.family]   # one entry per family the plug-in carries
         for m in found or [None]:
             entry = {"channel": ref.channel, "slot": ref.key - base + 1, "key": ref.key, "name": ref.name,
                      "side_chain": ref.side_chain}
@@ -92,7 +92,7 @@ def _write(args, maps, tables) -> int:
             raise CommandError(f"{alt}: {label}: slot {args.at} holds no plug-in (plug-ins in slot(s) {held})")
         payload = rec.raw[HEADER:]
         m = map_for(payload, maps)
-        if m is None:
+        if m is None or m.family is None:
             raise CommandError(f"{alt}: {label} slot {args.at}: no map for the plug-in there")
         try:
             notes = []

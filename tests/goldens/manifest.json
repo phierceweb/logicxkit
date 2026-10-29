@@ -62737,5 +62737,112 @@
    "plugin": "Limiter",
    "row": "Output Level"
   }
+ },
+ "slider-snap-raw": {
+  "path": "slider-s01-raw.logicx",
+  "note": "The three output plug-ins written onto the blank's Stereo Out by `chains` with values between slider positions and no map loaded; nothing snapped.",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Linear Phase EQ": 1,
+    "Adaptive Limiter": 2,
+    "Limiter": 3
+   },
+   "written": {
+    "Linear Phase EQ": {
+     "Peak 3 Frequency": 803.0,
+     "Peak 3 Gain": 1.55,
+     "Peak 3 Q-Factor": 0.8
+    },
+    "Adaptive Limiter": {
+     "Gain": 3.14,
+     "Out Ceiling": -0.33,
+     "Lookahead": 51.5
+    },
+    "Limiter": {
+     "Gain": 0.15,
+     "Output Level": -0.15,
+     "Release": 251.3,
+     "Lookahead": 5.15
+    }
+   }
+  }
+ },
+ "regions-c01-faded-base-logic": {
+  "path": "regions-c01-faded-base.logicx",
+  "note": "Logic's re-save of one 10 s region on Audio 1 with a 300 ms fade-in at curve 40 and an 800 ms fade-out at curve -30",
+  "facts": {
+   "fade": {
+    "in_ms": 300,
+    "in_curve": 40,
+    "out_ms": 800,
+    "out_curve": -30
+   }
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "project paths": 1
+   }
+  }
+ },
+ "regions-c02-faded-split-logic": {
+  "path": "regions-c02-faded-split.logicx",
+  "note": "regions-c01's region split at bar 3 by Edit > Split > Regions at Playhead: the parent keeps the fade-in, the piece takes the fade-out and the selection",
+  "facts": {
+   "pieces": [
+    {
+     "name": "tone",
+     "piece": 0,
+     "frames": 176400,
+     "fade": {
+      "in_ms": 300,
+      "in_curve": 40,
+      "out_ms": 0,
+      "out_curve": 0
+     },
+     "selected": false
+    },
+    {
+     "name": "tone.1",
+     "piece": 1,
+     "frames": 264600,
+     "fade": {
+      "in_ms": 0,
+      "in_curve": 0,
+      "out_ms": 800,
+      "out_curve": -30
+     },
+     "selected": true
+    }
+   ]
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "project paths": 1
+   }
+  }
+ },
+ "regions-c03-faded-split-ours-resave-logic": {
+  "path": "regions-c03-faded-split-ours-resave.logicx",
+  "note": "Logic's re-save of regions --split 1=3 on regions-c01: both entries as written; the piece record's payload +130 went 0 to 1, which Logic's own split (regions-c02) writes as 0",
+  "facts": {
+   "pieces": [
+    {
+     "name": "tone",
+     "piece": 0,
+     "frames": 176400
+    },
+    {
+     "name": "tone.1",
+     "piece": 1,
+     "frames": 264600
+    }
+   ]
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "project paths": 1
+   }
+  }
  }
 }

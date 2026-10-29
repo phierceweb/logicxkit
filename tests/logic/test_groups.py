@@ -7,20 +7,9 @@ import unittest
 import _paths  # noqa: F401
 from _records import chan, env_obj, gnos, group_triple, marker, proj, rec, track, uuid
 from logicxkit.logic.services.arrange.groups import (
-    DEFAULT_FLAGS,
-    FLAGS,
-    GROUP_ON,
-    assign,
-    create_group,
-    flags_for,
-    group_errors,
-    group_of,
-    member_events,
-    missing_group_events,
-    read_groups,
-    set_group,
-    settings_of,
+    DEFAULT_FLAGS, FLAGS, GROUP_ON, flags_for, group_errors, group_of, missing_group_events, read_groups, settings_of,
 )
+from logicxkit.logic.services.arrange.groups_write import assign, create_group, member_events, set_group
 from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logic.services.stream.registry import group_entries, register_group
 from _data import needs

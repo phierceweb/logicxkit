@@ -254,7 +254,14 @@ CAPABILITIES = (
                "add record for record and survived its re-save, and a move plus a delete came back "
                "from Logic's re-save event for event. On a song with no arrangement track `--add` "
                "makes the track as Logic's first section does, and Logic re-saved one with the "
-               "section intact (2026-09-13). A name outside ASCII is written as UTF-8, which "
+               "section intact (2026-09-13). A Logic 12.4 save can carry the track's two sequences "
+               "empty with no `snrT` after them: `--add` then writes into that pair, since a second "
+               "pair inserted before it left Logic's arrangement track empty; Logic 12.4 showed the "
+               "sections written into the carried pair, one per song with the gaps between songs "
+               "unclaimed, and its re-save kept every start and length (`arrangement-gaps-resave`, "
+               "2026-10-25). `--fill NAME` adds a section over every gap from bar 1 to the first section, between two and "
+               "after the last to the end of the last region, through the same add; those sections touch, and a filled copy "
+               "has not been re-saved by Logic, whose re-save kept sections with gaps between them. A name outside ASCII is written as UTF-8, which "
                "Logic's arrangement track showed and its re-save kept; Logic's own rename to one, "
                "an RTF record, is read (`names-text-*`, 2026-10-02)"),
     Capability(("signature",), "CONFIRMED", "yes, on a copy",

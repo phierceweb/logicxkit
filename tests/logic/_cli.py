@@ -59,6 +59,16 @@ def written(test, command: str, key: str | Path, *rest, out: Path, copied: str |
     return dest
 
 
+def refused(test, command: str, key: str | Path, *rest, why: str, out: Path, code: int = 1) -> str:
+    """Run ``command`` with ``--out out`` and hold it to a refusal: exit ``code``, ``why`` in the
+    output, and no bundle written under ``out``."""
+    got, text = run(command, source(key), *rest, "--out", out)
+    test.assertEqual(got, code, text)
+    test.assertIn(why, text)
+    test.assertEqual(sorted(out.glob("*.logicx")) if out.exists() else [], [], text)
+    return text
+
+
 def data(bundle: str | Path) -> bytes:
     return first_project_data(source(bundle))
 

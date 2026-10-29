@@ -243,6 +243,9 @@ def _along(points: tuple[tuple[float, float], ...], x: float, inverse: bool = Fa
     return pairs[-1][1]
 
 
+FLOAT32_MAX = 3.4028234663852886e38
+
+
 def int_word(value: float) -> int:
     """The int32 whose bits a float list carries as this (denormal) float32."""
     return struct.unpack("<i", struct.pack("<f", value))[0]
@@ -268,12 +271,18 @@ def _coerce(table: Table, p: Param, value: float | str) -> float:
     if number != number or number in (float("inf"), float("-inf")):
         raise ValueError(f"{table.name} {p.name}: {value!r} is not a finite number")
     if p.min is not None and number < p.min or p.max is not None and number > p.max:
-        raise ValueError(f"{table.name} {p.name}: {number} is outside {p.min}..{p.max} {p.unit}".rstrip())
+        ends = ("" if p.min is None else str(p.min)) + ".." + ("" if p.max is None else str(p.max))   # one end open: Mute below, say
+        raise ValueError(f"{table.name} {p.name}: {number} is outside {ends} {p.unit}".rstrip())
     if p.kind == "int":
         if not number.is_integer():
             raise ValueError(f"{table.name} {p.name}: {value!r} is not a whole number")
+        if not -2**31 <= number < 2**31:
+            raise ValueError(f"{table.name} {p.name}: {value!r} is past what the plug-in's int32 holds")
         return int(number) if p.offset is not None else _as_word(int(number))
-    return word_of(p, number)
+    word = word_of(p, number)
+    if abs(word) > FLOAT32_MAX:
+        raise ValueError(f"{table.name} {p.name}: {value!r} is past what the plug-in's float holds")
+    return word
 
 
 def _number(text: str) -> bool:

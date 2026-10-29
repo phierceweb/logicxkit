@@ -112,7 +112,7 @@ class GroupOpTest(unittest.TestCase):
 
     def _grouped(self):
         from _records import gnos, rec
-        from logicxkit.logic.services.arrange.groups import create_group
+        from logicxkit.logic.services.arrange.groups_write import create_group
         base = proj(gnos(88, 504, 80), rec(b"rpyH", 0xFFFF, 0xFFFF, bytes(40)),
                     env_obj(88, "Kick In"), env_obj(504, "Vox"), env_obj(80, "Master", grouping=True),
                     chan(0, "Audio 1", uuid=uuid(88), fader=99), chan(19, "Audio 20", uuid=uuid(504)),

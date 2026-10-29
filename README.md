@@ -133,6 +133,9 @@ bin/run logic markers "<song.logicx>"                     # the marker track
 bin/run logic sessionplayer "<song.logicx>"               # Session Player drummer, preset, settings
 bin/run logic quantize-drums "<song.logicx>" --out DIR    # quantize a drum take to the grid, no Logic
 bin/run logic drums-to-midi "<song.logicx>" --out DIR --hit "Kick In=kick" --track NAME  # hits to notes
+bin/run logic strip-silence "<song.logicx>" --track NAME --out DIR   # cut the silences out of a track's regions
+bin/run logic songs "<set.logicx>" setlist.txt --track NAME --out DIR  # a live set's songs as sections
+bin/run logic split-sections "<song.logicx>" --section NAME --track NAME --to NAME --out DIR  # a section's pieces onto another track
 bin/run au strip "<strip.cst | song.logicx>"             # every embedded 3rd-party state
 bin/run au preset "<preset.aupreset | .ffp>"             # a preset file, named, in real units
 bin/run logic capabilities -v                            # what each writer is trusted for
@@ -152,8 +155,11 @@ bin/run logic capabilities -v                            # what each writer is t
   runs Apple's `auval -a` scan and can take 25 seconds or more); **`logic patch`** (a Library patch
   bundle's channels, strips and plug-ins, and `--build` to make one); **`logic regions`** (MIDI and
   audio regions with their files, mutes, loops and fades; `--audio` imports a WAV and `--move`,
-  `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in`, `--fade-out` edit one by its
-  number); **`logic markers`** (the marker track, with add, rename, move and delete); **`logic
+  `--to-track`, `--trim`, `--split`, `--loop`, `--mute`, `--rename`, `--fade-in`, `--fade-out` edit
+  one by its number); **`logic strip-silence`** (the silences cut out of a track's regions, the cuts
+  faded); **`logic songs`** (a live set's songs found and written as arrangement sections);
+  **`logic split-sections`** (the regions cut at a section's edges, the pieces moved to another
+  track); **`logic markers`** (the marker track, with add, rename, move and delete); **`logic
   sessionplayer`** (a Session Player region's settings and generated notes); **`logic beats`**
   (patterns from a [groovebin][groovebin] library placed, composed or generated as regions);
   **`logic drums-to-midi`** (drum hits in audio tracks as MIDI notes); **Neural DSP state decode**

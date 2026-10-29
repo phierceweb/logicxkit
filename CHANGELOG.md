@@ -3,6 +3,52 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.14.0 — 2026-10-28
+
+### Added
+
+- `logic strip-silence`: the silent stretches cut out of the named audio tracks' regions and the
+  cuts faded, on a copy; without `--out`, the plan.
+  - `--threshold`, `--edge`, `--min-gap`, `--min-keep`, `--pad`, `--fade`, `--audio`.
+  - `--ref`, `--band`, `--above`, `--gate`, `--window`: a mic full of bleed cut to where it is heard
+    over the bleed its references predict (`--band` needs the swift toolchain).
+  - `--against-band`, `--tilt-band` (or `auto`), `--tilt`: a sound kept only where it is louder in
+    one band of the mic than in another.
+  - `--spec FILE.json`: groups of tracks with their own settings in one run
+    (`config/example-strip-silence.json`).
+  - The region's own fades stay on its first and last piece; the cuts take `--fade`; pieces are
+    named `<stem>.N` past the file's highest piece or `.N`.
+- `logic songs`: a live set's songs found where the named tracks all stop, laid under a setlist and
+  written as arrangement sections on a copy; `--breaks NAME` names the stops too.
+- `logic split-sections`: the named tracks' regions cut at the edges of one section name's
+  sections, the pieces inside moved to another track with `--to`; `--min-piece`.
+- `regions --to-track N=TRACK`: a region put on another audio track, where it is in time.
+- `arrangement --fill NAME`: a section over every gap between sections, to the end of the last
+  region.
+
+### Changed
+
+- A slider ending on a word at one end — Mute, Off, mono, Fix or Click at the bottom, inf or Paradise
+  at the top — carries its numeric end as a one-sided range: `add-plugin --set`, `replace-plugin
+  --set` and `chains` refuse a number past it.
+- `regions --split` names a piece of a piece `<stem>.N` past the file's highest piece or `.N`, as
+  the cutters do, and refuses a region with a crossfade.
+
+### Fixed
+
+- `regions --split` writes on a project whose registry holds no run of the split's pair kind,
+  numbers a piece past 255, writes the piece link Logic's own split writes on a name of any length,
+  and re-anchors a region whose flex markers are an identity map's two anchors.
+- `regions --split` on a faded region gives the fade-out and the selection to the new piece, as
+  Logic's own split does.
+- `arrangement --add` on a Logic 12.4 save whose arrangement track carries its two sequences
+  empty writes into them.
+- `markers --add` and `arrangement --add` no longer refuse a copy on the marker or arrangement
+  track's own events.
+- `quantize-drums`, `drums-to-midi`, `strip-silence` and `songs` on a copy read the copy's own
+  audio, never the project it was copied from; `--audio DIR` is read first, and the latest take of a
+  name is the one with the highest number (`#10` after `#9`).
+
 ## 0.13.0 — 2026-10-19
 
 ### Changed

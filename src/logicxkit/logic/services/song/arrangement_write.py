@@ -29,7 +29,7 @@ from .arrangement import (
     section_sequence,
 )
 from ....utils.data import data_file
-from .events import DATA_LINE, LINE, events
+from .events import BAR_ONE, DATA_LINE, LINE, events
 from ..arrange.names import written
 from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.recbuild import rec, slot_of, with_owner, with_slot
@@ -174,6 +174,9 @@ def new_section_event(template_head: bytes, *, start: int, length: int, kind: in
     return bytes(head) + bytes(data) + bytes(tail)
 
 
+SECTION_SLOT, TRACK_SLOT = 0, 12          # the pair's `qeSM` slots, in the template and in Logic's own saves
+
+
 def _track_template() -> dict[str, bytes]:
     spec = json.loads(data_file("logic", _TRACK_DATA).read_text())
     return {role: bytes.fromhex(r["header"]) + bytes.fromhex(r["payload"]) for role, r in spec["records"].items()}
@@ -198,16 +201,43 @@ def _empty_section_sequence(records) -> int:
     return _anchor(records) + 3
 
 
+def fill_gaps(data: bytes, name: str, *, end: int, start: int = BAR_ONE, kind: int = 0) -> bytes:
+    """A section ``name`` over every stretch no section covers from ``start`` to ``end``: before
+    the first, between two, after the last; a stretch of no length is skipped."""
+    cursor = start
+    gaps: list[tuple[int, int]] = []
+    for s in read_sections(data):
+        if s.start > cursor:
+            gaps.append((cursor, s.start - cursor))
+        cursor = max(cursor, s.start + s.length)
+    if end > cursor:
+        gaps.append((cursor, end - cursor))
+    for at, length in gaps:
+        data = add_section(data, name, start=at, length=length, kind=kind)
+    return data
+
+
+def has_arrangement_pair(records, anchor: int) -> bool:
+    """Whether the arrangement track's two triples follow ``anchor``: the section sequence on
+    slot 0, then the track sequence on slot 12. Logic 12.3.1 writes a `snrT` after them with the
+    first section; a Logic 12.4 save can carry the pair empty with none, so the `snrT` is not
+    required (2026-10-25)."""
+    triples = records[anchor + 1:anchor + 7]
+    return ([r.tag for r in triples] == [b"qeSM", b"karT", b"qSvE"] * 2
+            and (slot_of(triples[0].raw), slot_of(triples[3].raw)) == (SECTION_SLOT, TRACK_SLOT))
+
+
 def ensure_arrangement_track(data: bytes) -> bytes:
     """The song with an arrangement track, as Logic writes one with its first section: the
     section sequence (empty) and the track sequence with the `snrT` after the last `tSxT`,
     the `OgnS` before the first `rpyH` replaced, the `MneG` and the empty text record after
-    the last `MneG` (`arrangement-track-12.3.1.json`). A no-op when the track exists."""
+    the last `MneG` (`arrangement-track-12.3.1.json`). A no-op when the track exists, its
+    section sequence filled or still empty (`has_arrangement_pair`)."""
     records = project_records(data)
     if section_sequence(records) is not None:
         return data
     anchor = _anchor(records)
-    if [r.tag for r in records[anchor + 1:anchor + 8]] == [b"qeSM", b"karT", b"qSvE"] * 2 + [b"snrT"]:
+    if has_arrangement_pair(records, anchor):
         return data
     t = _track_template()
     taken = {s.seq_id for s in sequences(records)}

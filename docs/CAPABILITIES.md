@@ -149,9 +149,9 @@ Smaller pieces copy from one project to another on their own:
 
 ## Regions, MIDI and drums
 
-- **Audio and MIDI regions.** Import a WAV; move, trim, split, loop, mute and rename regions; set
-  fades and crossfades; set the region inspector's gain, delay, transpose, fine tune and reverse;
-  color a region (`regions`).
+- **Audio and MIDI regions.** Import a WAV; move, trim, split, loop, mute and rename regions, and
+  move a region onto another track; set fades and crossfades; set the region inspector's gain,
+  delay, transpose, fine tune and reverse; color a region (`regions`).
 - **Markers and sections.** Add, rename, move and delete markers (`markers`) and arrangement
   sections (`arrangement`).
 - **Tempo and signature.** Set the tempo, and add tempo changes and ramps (`tempo`); set the time
@@ -165,6 +165,22 @@ Smaller pieces copy from one project to another on their own:
   so the result is close to Logic's, not identical. `--bars` quantizes only part of the song.
 - **Turn drum audio into MIDI.** Kick, snare and tom hits become notes in a region on a software
   instrument track (`drums-to-midi`). Hi-hats and cymbals do not convert well.
+- **Cut out the silence.** On the tracks you name, split each region wherever nothing plays for a
+  couple of seconds, between songs and inside them, trim the pieces back to the music, and put a
+  short fade on every cut (`strip-silence`). Without `--out` it prints the plan: every kept span in
+  bars and minutes. A vocal mic full of bleed is cut to where the singer is heard over it, with a
+  drum or amp track as the reference for when the band plays (`--ref`), measured in the voice band
+  (`--band 300:3000`); a tom mic is cut to its own hits, told from the snare by the drum's note. A
+  spec file does every track group in one run.
+- **Find the songs in a live set.** Name the tracks that go quiet between songs, a bass DI, the
+  kick and the snare, and give it the setlist: it finds where they all stop, lays the songs over the
+  playing in order and writes one arrangement section per song (`songs`). Without `--out` it prints
+  the stops and the plan; when the stops and the setlist disagree in number it says so and writes
+  nothing, since a song that runs straight into the next has no stop to find.
+- **Take the talking off the lead vocal.** Once the breaks between songs are arrangement sections,
+  cut the singers' regions at the sections' edges and move what lies inside the breaks onto another
+  track, a talking track with its own processing (`split-sections`). Without `--out` it prints the
+  plan: every cut, every piece moved, and the stretches too short to cut, which stay where they are.
 - **Drum patterns.** Write patterns from a MIDI drum library into a song: one pattern, a pattern
   per arrangement section with fills, or a new phrase put together from real bars (`beats`). The
   library is [groovebin](https://github.com/phierceweb/groovebin)'s.
@@ -208,13 +224,22 @@ None of these write into Logic's own library folders unless you add `--install`.
 
 ## How far to trust it
 
-Every command that changes a project has had its output opened in Logic and checked there.
+Every command that changes a project has had its output opened in Logic and checked there, except
+the ones named below.
 [EVIDENCE.md](EVIDENCE.md) says, for each command, what was checked, in which Logic version, on
 what date, and where it stops; `logicxkit logic capabilities` prints the same list.
 
-Opened in Logic but not yet listened to: drum parts converted between note layouts
-(`midi --remap`), a region transposed with `regions --transpose`, and the patterns `beats`
-writes. `migrate --verify` has not yet been run against Logic.
+Opened in Logic but not yet listened to: drum parts converted between note layouts (`midi
+--remap`), a region transposed with `regions --transpose`, and the patterns `beats` writes.
+`migrate --verify` has not yet been run against Logic. Logic saved a live set's copies from
+`strip-silence` and `split-sections` (with its `regions --to-track` moves), and the region entries
+are as written; some region records carry words Logic rewrites that are not yet read. `songs
+--breaks` writes sections that touch, and Logic saved a set's copy with them as written;
+`arrangement --fill` writes them the same way, but a filled copy has not been re-saved yet. A
+split written by `regions --split` on a project whose registry holds no split run, or numbering a
+piece past 255, reads back as planned but has not been re-saved by Logic either; so does a split
+or trim of a region carrying flex anchors, which re-anchors each piece by the identity map the
+owner's drum regions carry.
 
 ## Adding a new command
 

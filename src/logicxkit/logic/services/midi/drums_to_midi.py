@@ -115,7 +115,7 @@ def _track_hits(regions: list[AudioRegion], wav_of: WavFinder, bpm: float, detec
         wav = wav_of(region)
         if wav is None or not Path(wav).exists():
             raise ValueError(f"no audio file for {region.track}'s region {region.name!r} "
-                             f"({region.file.name if region.file else '?'})")
+                             f"({region.file.name if region.file else '?'}); --audio DIR names the folder that holds it")
         wav = Path(wav)
         if wav not in read:
             samples, rate = read_wav(wav)

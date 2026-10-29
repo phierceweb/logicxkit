@@ -12,14 +12,16 @@
    "name": "Output Dry",
    "unit": "dB",
    "default": 0.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 0.0
   },
   {
    "index": 21,
    "name": "Output Wet",
    "unit": "dB",
    "default": -10.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 0.0
   },
   {
    "index": 24,

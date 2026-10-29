@@ -172,7 +172,7 @@ class AlternativesCliTest(unittest.TestCase):
         import contextlib
         import io
         from argparse import Namespace
-        from test_migrate import SYNTHETIC_SKIP, alternative, bundle, map_text, other_lineage, session as song_data
+        from _migrate import SYNTHETIC_SKIP, alternative, bundle, map_text, other_lineage, session as song_data
         from logicxkit.logic._apply_template import cmd_apply_template
         song = alternative(bundle(self.tmp / "s", "Song", first), "001", second)
         (self.tmp / "map.txt").write_text(map_text(other_lineage(), self.MAP))
@@ -183,14 +183,14 @@ class AlternativesCliTest(unittest.TestCase):
             return cmd_apply_template(args), buf.getvalue()
 
     def test_a_map_the_first_alternative_does_not_fit_is_refused(self):
-        from test_migrate import other_lineage, session as song_data
+        from _migrate import other_lineage, session as song_data
         with self.assertRaisesRegex(ValueError, "map names a session track that does not exist"):
             self.run_cli(song_data({"Test Bounce": "Other"}, shift=1000), other_lineage())
         self.assertEqual(list((self.tmp / "out").rglob("*.logicx")), [])
 
     def test_another_alternative_the_map_misses_is_left_byte_for_byte(self):
         from unittest import mock
-        from test_migrate import other_lineage, session as song_data
+        from _migrate import other_lineage, session as song_data
         other = song_data({"Test Bounce": "Other"}, shift=1000)
         with mock.patch("logicxkit.logic._apply_template._rebased", lambda d: d.replace(b"Other", b"Otter")):
             rc, text = self.run_cli(other_lineage(), other)

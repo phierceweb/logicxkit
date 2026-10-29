@@ -941,7 +941,8 @@
    "unit": "",
    "default": 100.0,
    "evidence": "code",
-   "shown": "100"
+   "shown": "100",
+   "min": 1.0
   },
   {
    "index": 3355,
@@ -976,7 +977,8 @@
    "unit": "",
    "default": 100.0,
    "evidence": "code",
-   "shown": "100"
+   "shown": "100",
+   "min": 1.0
   },
   {
    "index": 3364,

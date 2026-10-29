@@ -110,7 +110,8 @@
    "name": "Vibrato Phase Vari",
    "unit": "",
    "default": -0.8,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 1.0
   },
   {
    "index": 34,
@@ -562,7 +563,8 @@
    "name": "LFO1 Phase Vari",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 1.0
   },
   {
    "index": 138,
@@ -668,7 +670,8 @@
    "name": "LFO2 Phase Vari",
    "unit": "",
    "default": 0.08,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 1.0
   },
   {
    "index": 156,

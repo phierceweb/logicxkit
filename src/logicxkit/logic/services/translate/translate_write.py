@@ -23,6 +23,8 @@ _OFF = {"off", "false", "no", "0"}
 def write_settings(payload: bytes, m: Map, values: dict, tables: dict | None = None) -> tuple[bytes, list[str]]:
     """``values`` by vocabulary name (a switch takes on/off), written through ``m``; the
     notes say what was clamped to the plug-in's range."""
+    if m.family is None:
+        raise ValueError(f"{m.plugin}'s map is a slider grid with no family; it has no settings to write")
     if m.family == "eq":
         raise ValueError(f"{m.plugin} is an EQ: its settings are bands (`band N=<shape> <frequency> …`)")
     stored, notes = {}, []

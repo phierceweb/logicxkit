@@ -12,7 +12,8 @@
    "name": "DI Gain",
    "unit": "dB",
    "default": 13.4,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 15.0
   },
   {
    "index": 3,
@@ -247,7 +248,8 @@
    "name": "Output Gain",
    "unit": "dB",
    "default": 4.5,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 15.0
   },
   {
    "index": 67,

@@ -30,24 +30,42 @@ def _prefix(name: str) -> str:
     return name.split("#")[0].split(":")[0].strip()
 
 
+def _take_order(path: Path) -> list:
+    """A file name's numbers compared as numbers: `Bass#10` after `Bass#9`."""
+    return [(0, int(s), "") if s.isdigit() else (1, 0, s) for s in re.split(r"(\d+)", path.name)]
+
+
+def _owner(folder: Path) -> Path | None:
+    """The project an audio folder belongs to: the bundle whose Media it is, or the folder an
+    `Audio Files` sits in beside a bundle."""
+    if folder.parent.name == "Media" and folder.parent.parent.suffix == ".logicx":
+        return folder.parent.parent.resolve()
+    if folder.name == "Audio Files" and any(folder.parent.glob("*.logicx")):
+        return folder.parent.resolve()
+    return None
+
+
 def _wav_finder(project_file: Path, audio_dir: str | None):
     """A region's WAV: a file named after the region (the record paired with it when that
-    agrees, else the latest take), looked for where the file record says, beside the project
-    folder, in the bundle's Media, and under --audio; a region without a same-named file
+    agrees, else the latest take), looked for under --audio, in the bundle's Media, beside the
+    project folder, then where the file record says unless that is another project's audio — a
+    copy's records still name the bundle it was copied from; a region without a same-named file
     falls back to its paired record."""
     bundle = project_file.parents[2]
     folders = [Path(audio_dir)] if audio_dir else []
-    folders += [bundle.parent / "Audio Files", bundle / "Media" / "Audio Files"]
+    folders += [bundle / "Media" / "Audio Files", bundle.parent / "Audio Files"]
+    ours = {bundle.resolve(), bundle.parent.resolve()}
 
     def find(region):
         if region.file is None:
             return None
-        places = [Path(region.file.folder), *folders]
+        recorded = Path(region.file.folder)
+        places = [*folders, *([recorded] if _owner(recorded) in ours | {None} else [])]
         paired = next((f / region.file.name for f in places if (f / region.file.name).exists()), None)
         want = _prefix(region.name)
         if paired is not None and _prefix(paired.stem) == want:
             return paired
-        same = sorted({p for f in places if f.is_dir() for p in f.glob("*.wav") if _prefix(p.stem) == want}, key=lambda p: p.name)
+        same = sorted({p for f in places if f.is_dir() for p in f.glob("*.wav") if _prefix(p.stem) == want}, key=_take_order)
         return same[-1] if same else paired
     return find
 

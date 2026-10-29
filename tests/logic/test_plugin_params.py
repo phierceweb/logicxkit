@@ -269,5 +269,19 @@ def int_word_of(value: float) -> int:
     return int_word(value)
 
 
+class OneSidedRowsTest(unittest.TestCase):
+    """A dB or percent slider whose bottom reads Mute or off carries its measured top alone."""
+
+    def test_a_word_at_one_end_leaves_the_other_end_alone(self):
+        from logicxkit.logic.services.mixer.plugin_params import load_tables
+        tables = {t.name: t for t in load_tables().values()}
+        for plugin, row, top in (("Amp Designer", "Output Level", 15.0), ("Bass Amp Designer", "DI Gain", 15.0),
+                                 ("Delay Designer", "Dry", 0.0), ("Space Designer", "Output Dry", 0.0),
+                                 ("ChromaVerb", "Modulation Depth", 100.0)):
+            p = next(p for p in tables[plugin].params if p.name == row)
+            with self.subTest(f"{plugin} {row}"):
+                self.assertEqual((p.min, p.max), (None, top))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -128,7 +128,8 @@
    "name": "Modulation Depth",
    "unit": "%",
    "default": 25.0,
-   "evidence": "value"
+   "evidence": "value",
+   "max": 100.0
   },
   {
    "index": 20,

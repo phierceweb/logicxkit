@@ -6,7 +6,7 @@ import struct
 import unittest
 
 from logicxkit.au.services.izotope import pack_izotope
-from logicxkit.logic.services.translate.translate import Item, Map, load_maps, map_for, maps_for, plan, read_settings
+from logicxkit.logic.services.translate.translate import Item, Map, Settings, load_maps, map_for, maps_for, plan, read_settings
 from logicxkit.utils.data import PACKAGED
 
 MAPS = load_maps([PACKAGED / "translate"])
@@ -234,6 +234,32 @@ class NeutronTest(unittest.TestCase):
         from logicxkit.logic.services.translate.translate_write import write_settings
         with self.assertRaises(ValueError):
             write_settings(self.payload(), next(m for m in NEUTRON if m.family == "compressor"), {"threshold": -20.0})
+
+
+class SliderMapTest(unittest.TestCase):
+    """A map may carry a slider grid alone: found by type for the grid, no translation map."""
+    GRID = {"plugin": "Limiter", "type": 199, "automation": {"Gain": {"per": 128, "units": [[0, -20.0], [1, -19.9]]}}}
+
+    def test_a_map_without_a_family_loads_and_is_found_by_type(self):
+        from logicxkit.logic.services.mixer.slider import slider_curve
+        m = Map.from_dict(self.GRID)
+        self.assertIsNone(m.family)
+        self.assertEqual(maps_for(native_payload([0.0] * 13, 199), [m]), [m])
+        self.assertEqual(slider_curve(m, "Gain"), ((0.0, -20.0), (1.0, -19.9)))
+
+    def test_a_family_less_map_is_no_translation_map(self):
+        m = Map.from_dict(self.GRID)
+        with self.assertRaisesRegex(ValueError, "slider grid, not a translation map"):
+            plan(Settings(m), m)
+
+    def test_a_family_less_map_reads_and_writes_no_settings(self):
+        from logicxkit.logic.services.translate.translate import read_settings
+        from logicxkit.logic.services.translate.translate_write import write_settings
+        m, payload = Map.from_dict(self.GRID), native_payload([0.0] * 13, 199)
+        with self.assertRaisesRegex(ValueError, "no family; it has no settings to read"):
+            read_settings(payload, m)
+        with self.assertRaisesRegex(ValueError, "no family; it has no settings to write"):
+            write_settings(payload, m, {"gain": 0})
 
 
 if __name__ == "__main__":

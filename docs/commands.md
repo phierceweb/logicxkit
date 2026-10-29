@@ -216,8 +216,10 @@ keeps its slot's shape, and Pro-Q 4 takes a new band past its last.
 `add-plugin --set` and `replace-plugin --set` dial the same way on the way in — a table name
 for one of Logic's own (held to its slider's measured ends with a note and put on the slider's
 grid where the plug-in has a translation map; the instrument, MIDI-effect and re-measured effect
-tables carry each slider's measured ends as the parameter's range, and a number outside is
-refused — within it a finite number goes as given: Logic's load puts a value between slider
+tables carry each slider's measured ends as the parameter's range, a slider ending on a word at one
+end (Mute, Off, mono, Fix or Click at the bottom, inf or Paradise at the top) its other end alone,
+and a number outside is refused — the word's own side is not checked, and the word cannot be
+written by name — within it a finite number goes as given: Logic's load puts a value between slider
 positions on one, and derives the next word from an ES2 MM Amount written alone, the one linked
 shape measured; the other effect tables carry no ranges), a vocabulary item for a third-party, a
 band on any EQ — and after `--translate` they override what was carried. A table name that lives past the float block (Vintage B3's lower
@@ -429,7 +431,9 @@ sample rate — other rates are refused, since Logic converts on import and this
 onto a project with no audio regions or with the ones Logic's own imports and splits leave, and
 refuses any other layout and a WAV whose name the project already holds, before anything is copied.
 Names outside ASCII are written as Logic writes them (UTF-8 region names, UTF-16 file names). The
-edits take the listing number, in command-line order on a copy: `--move N=BAR`, `--trim N=BAR:BARS`
+edits take the listing number, in command-line order on a copy: `--move N=BAR`, `--to-track N=TRACK` (onto
+another audio track, where it is in time; a MIDI region, the region's own track and a track that is
+not an audio track are refused), `--trim N=BAR:BARS`
 (the start with its content kept in place, the length, or both), `--split N=BAR`, `--loop
 N[=on|off]`, `--mute N[=on|off]`, `--rename N=NAME`, `--fade-in N=MS[:CURVE[:speed-up]]`,
 `--fade-out N=MS[:CURVE[:TYPE]]` (type `out`, `x`, `eqp` or `xs`), `--crossfade
@@ -437,8 +441,13 @@ N=[MS][:CURVE[:TYPE]]` (from region N into the one that starts inside it on its 
 must; MS is the overlap when empty, the type `eqp` by default), the inspector's `--gain N=DB`,
 `--delay N=TICKS`, `--transpose N=SEMITONES`, `--fine-tune N=CENTS` and `--reverse N[=on|off]`, and
 `--colour N=INDEX` (a palette index; the Color window's swatch k is 24 + k); the listing shows the
-parameters that are set and a colour that differs from the track's. A looping region is not split, a
-flexed (quantized) region is neither trimmed nor split, a trim past the file is refused, a MIDI
+parameters that are set and a colour that differs from the track's. A split leaves the fade-in on the
+region and gives its fade-out to the new piece, which takes the region's selection, as Logic's own split
+does. A looping region and a crossfaded one are not split, a
+quantized region (flex markers that are hits) is neither trimmed nor split — one carrying the two
+anchors of an identity map, as a region bounced in place on a flexed track does, and at most the
+file's own markers after them, is cut, each piece re-anchored for its length with those markers
+shifted to its start — a trim past the file is refused, a MIDI
 region has no fades or parameters, and Transpose is written as the entry's field alone (Logic flexes
 the track itself when it transposes an unflexed region). Each edit names a region by its number in
 the input's listing, whatever the imports and edits before it moved; regions playing one sequence
@@ -457,6 +466,130 @@ label two channels carry, a channel keyed both by strip and by name, or an index
 refused before anything is written, and every configured value is read back afterwards. `logic
 plugins --validate` opens each listed third-party component with `auval -v`, since the registry
 keeps a component whose bundle has gone bad and Logic's own launch trusts that registry.
+
+`logic strip-silence PROJECT --track NAME [--track NAME …]` cuts the silent stretches out of the
+named audio tracks' regions and fades the cuts, on a copy with `--out`; without it the plan is printed
+and nothing written. Each audio file is read once into a peak per 10 ms; a stretch is silent while it
+sits under the file's own loud level, its 95th-percentile peak, by more than the `--threshold`
+figure (default -30 dB, given at or below 0) for at least `--min-gap` seconds (default 2: a rest between phrases is shorter, a gap between
+songs far longer), and a sound shorter than `--min-keep` seconds (default 0.5) between two such
+stretches is silence too, so a bump between songs is not a song. `--pad` takes one figure or
+`BEFORE:AFTER` in ms, since a drum rings on after its hit. A
+gap's edges then crop outward over sound under the loud level by more than the `--edge` figure
+(default -20 dB, or the threshold when that is higher; at or above the threshold) — hum, string noise and room between songs — stepping
+over a click of under 50 ms, and a sound the crop leaves shorter than `--min-keep` is silence too.
+The crop walks as far as the sound stays under that figure, so a quiet outro that decays into a gap
+is cropped with the hum; an `--edge` nearer the threshold (-28) keeps it. Each kept
+span is widened by `--pad` ms (default 500) before the first sound and after the last; the
+region is split at the end of one kept span and the new piece's start trimmed to the next, a region
+that begins or ends in a gap is trimmed, and `--fade` ms (default 20) goes in and out on every edge
+this run cut, with no curve or type, the region's own fade-in and fade-out kept on its first and last
+piece and shortened to fit a piece they outlast (the longer yielding first, the rest shared); a region
+the plan would cut that is crossfaded into or from another on its track is refused, since a cut would leave
+half a crossfade (a crossfaded pair the plan leaves whole is no bar); two kept spans that touch, the pad
+having reached half the gap, are one; the pieces are named `<stem>.N`, the stem a piece's name less its
+trailing `.N` and N the piece's number in its file — or the next past the highest `.N` already on a
+piece of that file, since Logic's own split numbers names from a counter that runs ahead of the piece
+number (`take.7` may be piece 2), so no name repeats; a cut of `take.7` gives `take.N`, never
+`take.7.1`. A kept span's edge within half a tick of the region's own is the region's, since no trim
+can move it; a kept span shorter than a tick cannot be written and is dropped; a region whose every kept span is that
+short is left as it is, and the plan says so. A region silent throughout is muted, since there is no
+region delete; with `--ref`, so is a mic never heard over its bleed floor, and the plan names that floor. When no region changes, the plan says `nothing to cut; no copy written`, `--out`
+writes nothing and the exit is 0. The plan lists every kept span in minutes from bar 1 and in bars, with
+the loud level and the limit per region; a track with no audio regions, an unknown track, a track
+named as its own reference, a reference named twice, a file whose rate or frame count disagrees with
+its record, a file at another rate than the project, a changing tempo, a band reaching half the sample rate, and a figure past a day of
+seconds, an hour of ms (a fade past 65535 ms) or 200 dB are refused. Audio is found
+as `quantize-drums` finds it (`--audio DIR`).
+
+A mic that is never silent while the band plays — a vocal mic full of drum and amp bleed — takes
+`--ref NAME` (repeatable): the reference track's playing, by the same loud-level rule, says when
+the band plays (a reference whose file is silent never does); the mic's bleed floor is its
+25th-percentile nonzero level over those moments within the region, and it is
+heard wherever it rises more than `--above` dB (default 9) over that floor, on a running median
+over `--window` ms (default 300, long enough that a drum hit in the bleed does not count; a drum
+mic wants 50, short enough to keep its own hits) — and, since bleed rises with whatever is
+playing, only where it is also `--above` dB over the bleed the references predict: each reference
+scaled by the mic's usual ratio to it (the 25th percentile of mic over reference while that
+reference plays) and summed as power, so a loud chorus's bleed stays silence, and a backing mic given
+the lead mics as references too hears the lead's bleed, far under the lead's own mic, as silence while
+its own singer is heard. `--gate DB` sets the floor rule's margin apart from the bleed rule's (default
+`--above`): a singer who stands off the mic clears the bleed by a wide margin while sitting only a
+little over the floor, and a lower gate keeps them. The plan names each reference's usual
+ratio, the bleed floor and the heard-over level per region; a region beside which no reference
+plays is left unchanged, since its floor cannot be read. `--band LOW:HIGH` measures within that
+band in Hz, as an RMS (without `--band` the RMS is of the whole band), and `--ref` or `--band` switches
+the envelope from the top-16-bit peak to an RMS read through the `bandrms.swift` helper (so this needs the swift toolchain, as `ocr` does). The
+reference's hops are aligned to the mic's file by song time, so the two regions may sit at
+different offsets in their files. `--against-band LOW:HIGH` reads the mic in a second band of its own, and each sound is then kept
+only if, at its peak, it is `--tilt` dB (default 0) louder in `--tilt-band` (default `--band`) than
+there: a tom's fundamental against 400:2000 drops the snare hits a level rule lets through, since a
+snare in a tom mic has more above 400 Hz than at the tom's note, while the level rule itself stays
+on the wide band, where the kick and the snare shell do not reach into the tom's note. For a voice
+over drums and amps: `--ref Overheads --band 300:3000`; for a tom mic full of snare and kick:
+`--ref Snare --ref Kick --band 60:400 --tilt-band auto --against-band 400:2000 --window 50
+--above 12 --min-gap 0.5 --min-keep 0.05 --pad 50:600`. `--tilt-band auto` reads each file's
+fundamental itself — the frequency with the most power at the mic's loudest moments, searched in
+5 Hz steps from 50 to 350 Hz (a floor tom near 80 Hz, a rack near 120) — and takes the band from
+0.7 to 1.4 times it; the plan names the note it found, and a file whose loudest moments peak at the
+search's edge is refused. `--above`, `--gate`, `--window` and
+`--against-band` are refused without `--ref`, and `--tilt` and `--tilt-band` without `--against-band`.
+
+`--spec FILE.json` does every group of tracks in one run on one copy: `{"groups": [{"tracks":
+[...], ...}]}`, each group's settings under the flags' names with underscores (`min_gap`,
+`against_band`, `tilt_band`), the rest the defaults; `config/example-strip-silence.json` is the
+shape. A spec is instead of `--track` and the flags, a track belongs to one group, and the groups
+are cut in order on one copy, so the plan and the copy hold them all. A file's pieces are
+numbered in two bytes of the entry, so a file the cuts would take past 65535 pieces is refused, in
+the plan and before any write.
+
+`logic songs PROJECT SETLIST --track NAME [--track NAME …]` finds a live set's songs where the named
+tracks all stop and writes one arrangement section per song on a copy with `--out`; without it the
+plan is printed. The setlist is a text file, one song per line in playing order, a line reading
+`break` (any case) after a song the band stopped on, blank lines and lines starting with `#` skipped (so no song
+starts with `#` or is named `break`); a break before the first song, two in a row, a control character
+in a name, a file that is not UTF-8 or a setlist naming no song is refused. Name the tracks that go
+quiet between songs — a bass DI, the kick, the snare; a vocal or an amp full of hum is not one. Each
+file is read once into a peak per 10 ms as `strip-silence` reads it; a track is quiet while it stays
+under its file's loud level by more than the `--threshold` figure (default -30 dB, given at or below 0), and wherever no region of it plays;
+a run of `--min-gap` s (default 0.5) with every named track quiet is a gap, a sound under `--min-keep` s
+(default 0.3) between two gaps silence too; gaps less than `--merge` s (default 15) of playing apart are
+one stop, since a band that has stopped noodles and talks; a stop of `--min-stop` s (default 10) separates
+songs, and playing shorter than `--min-song` s (default 45) is listed and left out. The plan lists every
+stop, every stretch of playing with its bars and the song laid over it, the bits left out and, for each
+`break` on the setlist, the stop that follows the song before it. When the setlist and the stretches
+differ in number nothing is written and the plan says so: a song that runs straight into the next has no
+stop to find, so lower `--min-stop` and `--merge` for a set with short stops, or split that song by hand
+with `arrangement`. Each section runs from the stretch's first hop for its length; the stops stay
+unclaimed, and Logic keeps such gaps between sections — but its own section edits misbehave around
+them, so `--breaks NAME` also writes a section NAME over every stop, from the set's start to the first
+song and after the last to the end of the last region on any track, and the sections run contiguous. A
+section already on the arrangement where a song plays — a second run on a copy that has the songs — is
+named in the plan and nothing is written. `logic arrangement PROJECT --fill
+NAME --out DIR` does the same on any project's existing sections: a section NAME over every gap from
+bar 1 to the first section, between two, and after the last to the end of the last region. Audio is
+found as `quantize-drums` finds it (`--audio DIR`); a changing tempo, an unknown track, a track with no
+audio regions and a file at another rate than the project are refused.
+
+`logic split-sections PROJECT --section NAME --track NAME [--track NAME …] [--to NAME …]` cuts the named
+audio tracks' regions at the edges of every arrangement section called NAME and, with `--to`, puts the
+pieces inside those sections on another track, where they are in time, on a copy with `--out`; without
+it the plan is printed — the talk between a live set's songs off the lead vocal track and onto a talking
+track, once the breaks are sections (`songs --breaks`, `arrangement --fill`). `--to` names one track per
+`--track`, in order; without it the regions are cut and stay. The section edges inside a region cut it
+into stretches inside and outside those sections; a stretch shorter than `--min-piece` seconds (default
+1) stays with its neighbour, uncut, so a cut made by hand a beat off a section's edge is left alone, and
+the plan names it. The pieces are named `<stem>.N` as `strip-silence` names them, by the piece's number
+in the file or past the highest `.N` already on one of its pieces (a piece of `Vocal.8` gives `Vocal.N`,
+never `Vocal.8.1`), keep the region's fade-in on its first piece and its fade-out on its last, each shortened
+to fit a piece it outlasts, with the cuts unfaded, and are `regions`' own split and `--to-track`. A
+region the plan would cut or move that is crossfaded into or from another on its track is refused. A piece that would land over a
+region already on the destination or over another piece this run moves there, a destination that is not
+an audio track or is the track itself, `--to` naming fewer or more tracks than `--track`, a
+`--min-piece` under 0 or past a day, an unknown section and a changing tempo are refused before
+anything is copied. A destination's regions count until a run moves them, so swapping two tracks'
+pieces takes two runs. When no region changes, the plan says `nothing to cut; no copy written`,
+`--out` writes nothing and the exit is 0.
 
 `logic automation` lists each track's automation lanes and points. A plug-in lane is listed as
 `--set` takes it, `slot N NAME`, with its plug-in, its parameter index and each point in the
@@ -485,9 +618,10 @@ members of a folder stack (or `--track`s) go into a Drums group with Editing (Se
 Quantize-Locked (Audio), the groups named by `--off` are switched off, Q-Reference stays on the
 `--ref` tracks, every member is on flex Slicing, and each member region gets one flex marker per hit
 found in the reference tracks' audio with its target on the `--grid` (4, 8, 16 or 32, the measured
-values; 1/16 by default). The audio is read from where the file record says, from `Audio Files`
-beside the project, from the bundle's Media, or from `--audio DIR`; it may be 16/24/32-bit PCM or
-32/64-bit float WAV. A song whose tempo changes, and reference audio with no hits, are refused and
+values; 1/16 by default). The audio is read from `--audio DIR` first, then the bundle's Media,
+`Audio Files` beside the project, or where the file record says unless that is another
+project's audio (a copy's records still name the project it was copied from, so a copy reads only
+its own); it may be 16/24/32-bit PCM or 32/64-bit float WAV. A song whose tempo changes, and reference audio with no hits, are refused and
 nothing is written. `--bars FIRST-LAST` re-quantizes only the hits in those song bars, on `--grid`
 or each region's own Quantize value, and keeps every other marker block's bytes; regions outside the
 range are untouched. It refuses a region that does not start on a line of the song's grid (quantize

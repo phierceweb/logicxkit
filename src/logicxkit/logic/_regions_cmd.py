@@ -17,9 +17,9 @@ from .services.regions.audio_write import add_audio_region
 from .services.project.project import first_alternative, project_metadata
 from .services.regions.fades import OUT_CODES
 from .services.regions.region_edit import (
-    listed, located, move_region, rename_region, renumbered, samples_per_tick_of, set_fade, set_loop, set_mute, split_region,
-    trim_region,
+    move_region, move_to_track, rename_region, set_fade, set_loop, set_mute, split_region, trim_region,
 )
+from .services.regions.region_locate import listed, located, renumbered, samples_per_tick_of
 from .services.regions.region_params_write import set_colour, set_crossfade, set_params
 from .services.arrange.retrack import find_project
 from .services.song.signature import meter
@@ -81,7 +81,7 @@ def _int(spec: str, flag: str, shape: str) -> tuple[int, int]:
         raise CommandError(f"bad --{flag} {spec!r}: {shape}") from None
 
 
-UNVERIFIED = ("transpose",)      # Logic flexed the track for it and the writer does not; the rest re-saved as written
+UNVERIFIED = ("transpose",)      # Logic flexes the track and the writer does not
 
 
 class _Marked(argparse.Action):
@@ -142,6 +142,9 @@ def _edits(args, data, count, tempo: _Tempo, idents: dict) -> bytes:
         if flag == "move":
             _n, bar = _split(spec, flag, "N=BAR")
             data = move_region(data, n, m.tick(_number(bar, "bar")), count)
+        elif flag == "to-track":
+            _n, track = _split(spec, flag, "N=TRACK")
+            data = move_to_track(data, n, track, count)
         elif flag == "trim":
             _n, rest = _split(spec, flag, "N=BAR:BARS (either may be empty)")
             start, _sep, bars = rest.partition(":")
@@ -197,7 +200,7 @@ def _edits(args, data, count, tempo: _Tempo, idents: dict) -> bytes:
 def _moved(targets: dict, data, count, data_file: Path, listed_alternative: str) -> list:
     """The keys of the regions an edit moves or cuts in this alternative, for the gate."""
     found = _matched(targets, data, count, data_file.parent.name, listed_alternative)
-    return [loc.key for (flag, _spec), loc in found.items() if flag in ("move", "trim", "split")]
+    return [loc.key for (flag, _spec), loc in found.items() if flag in ("move", "to-track", "trim", "split")]
 
 
 def _write(args, project: Path) -> int:
@@ -287,6 +290,7 @@ def register(sub) -> None:
     ap.add_argument("--out", help="output directory (needed to write)")
     ap.add_argument("--audio", action="append", metavar="TRACK:BAR:FILE.wav", help="import a PCM WAV at the project's sample rate as a region")
     for flag, shape, text in (("move", "N=BAR", "start region N at BAR"),
+                              ("to-track", "N=TRACK", "put region N on track TRACK, where it is in time"),
                               ("trim", "N=BAR:BARS", "region N from BAR (content kept in place) for BARS; either may be empty"),
                               ("split", "N=BAR", "cut region N at BAR; the rest becomes a new region"),
                               ("loop", "N[=on|off]", "loop region N (on by default)"),
