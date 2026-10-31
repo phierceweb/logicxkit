@@ -54,11 +54,21 @@
     "Off",
     "On"
    ]
+  },
+  {
+   "index": 8,
+   "name": "Limiter Mode",
+   "unit": "",
+   "default": 1.0,
+   "evidence": "value",
+   "choices": [
+    "Legacy",
+    "Precision"
+   ]
   }
  ],
  "unmapped": [
-  "Gain Reduction",
-  "Limiter Mode"
+  "Gain Reduction"
  ],
- "evidence": "Logic 12.4 Controls view over instrument-params-limiter-*: 5 parameters named \u2014 3 matched by the number shown, 2 by one save per row. 2 rows unmapped: popups, buttons, and rows whose word the saves did not tell apart."
+ "evidence": "Logic 12.4 Controls view over instrument-params-limiter-*: 6 parameters named \u2014 3 matched by the number shown, 2 by one save per row, Limiter Mode by one save of its popup. 1 row unmapped: Gain Reduction, a meter. Limiter Mode placed at word 8 by one save of its popup, Precision (1) -> Legacy (0) (master-lim-mode-logic, Logic 12.4, 2026-10-30)."
 }

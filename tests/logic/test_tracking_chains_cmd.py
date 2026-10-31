@@ -8,11 +8,21 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from test_translate import au_payload, native_payload  # noqa: E402
 
-from logicxkit.logic._tracking_chains_cmd import LATENT, live_families, register  # noqa: E402
+from logicxkit.logic._tracking_chains_cmd import LATENT, live_families, register, tracking_natives  # noqa: E402
 from logicxkit.logic.services.translate.translate import load_maps  # noqa: E402
 from logicxkit.utils.data import PACKAGED  # noqa: E402
 
 MAPS = load_maps([PACKAGED / "translate"])
+
+
+class TrackingNativesTest(unittest.TestCase):
+    def test_the_eq_family_goes_to_channel_eq_whatever_the_map_order(self):
+        eqs = [m for m in MAPS if m.family == "eq" and m.type is not None]
+        self.assertEqual(sorted(m.plugin for m in eqs), ["Channel EQ", "Linear Phase EQ"])
+        self.assertEqual(tracking_natives(eqs)["eq"], "Channel EQ")
+        self.assertEqual(tracking_natives(list(reversed(eqs)))["eq"], "Channel EQ")
+        self.assertEqual(tracking_natives(MAPS)["compressor"], "Compressor")
+        self.assertNotIn(None, tracking_natives(MAPS))
 
 
 class LiveFamiliesTest(unittest.TestCase):

@@ -34,7 +34,7 @@ class RangesTest(unittest.TestCase):
                             self.assertGreaterEqual(value, lo - 1e-6, (word, lo, hi))
                         if hi is not None:
                             self.assertLessEqual(value, hi + 1e-6, (word, lo, hi))
-        self.assertEqual((both, one, tables_with), (1346, 28, 97))     # a fold that drops or adds ranges shows here
+        self.assertEqual((both, one, tables_with), (1349, 28, 97))     # a fold that drops or adds ranges shows here
 
     def test_a_number_outside_the_range_is_refused(self):
         from _fixtures import chunk

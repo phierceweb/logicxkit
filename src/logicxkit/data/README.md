@@ -19,7 +19,9 @@ against one with every slider in Logic's Controls view moved (`stockfx-*`), read
 
 `translate/` holds the translation maps `logic settings` and `replace-plugin --translate` read
 (`services/translate`): one per plug-in and family, naming its parameters in the family's
-vocabulary; a native map's `automation` table is its sliders sampled position by position.
+vocabulary; a native map's `automation` table is its sliders sampled position by position (a row's
+`tie` up where Logic lays a midpoint between two positions on the upper one), and a map may carry that
+table alone, with no family (Adaptive Limiter, the Limiter).
 
 `logic/rba-sequence-12.3.1.json` is not from the corpus: the RBA Sequence triple and the flex
 marker block shapes Logic writes on an audio quantize, taken from a tracking take with every

@@ -15,7 +15,8 @@ u32 frames, `+476` u32 sample rate, `+480` u16 channels, `+482` u16 bits, `+508`
 region records on the file (Logic loads that many: a split's second piece with the count left at
 1 was dropped) — the file as Logic stored it, converted to the project's rate. The region record: `+5` bit 1 Mute, `+6` u32 the
 region's first frame within the file, `+22` u32 its length in frames, `+74` the name (u16 byte
-length, UTF-8, padded to even). The entry: `+12` bit 0 Mute, `+13` bit 1 Loop, `+28` the loop
+length, UTF-8, padded to even), `+130` u16 0 from Logic's own split and the header owner (the piece
+number) once Logic re-saves the project (`regions-c03`, `writers-a01-strip-silence-ours-resave-logic`, `writers-a03-split-sections-ours-resave-logic`). The entry: `+12` bit 0 Mute, `+13` bit 1 Loop, `+28` the loop
 length, `+64`..`+79` the fades (`fades.py`).
 """
 

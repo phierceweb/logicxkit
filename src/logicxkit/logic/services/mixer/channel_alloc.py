@@ -65,7 +65,7 @@ WIDTH = {78: {1: 211, 2: 215}, 86: {1: 0, 2: 1}, 123: {1: 1, 2: 2}}
 INST_FRESH = {78: 243, 81: 0, 86: 0, 92: 0, 123: 1, 188: 0}
 INST_FRESH_STEREO = {**INST_FRESH, 78: 247, 81: 8, 86: 1, 123: 2}   # Logic's own: `sessionplayer-track-logic`
 INST_SLOT_WIDTH_AT = (84, 119)    # the slot's output counts; Logic takes the channel's width here
-# +84/+119 as on Logic's own stereo slot; +81/+116 as Logic 12.4 set them when it saved ours
+# +84/+119 as on Logic's own stereo slot; +81/+116 as Logic 12.4 set them when it saved ours (`addtrack-inst-stereo-outs-logic`)
 INST_SLOT_STEREO = {81: 2, 84: 2, 116: 255, 119: 2}
 INST_SLOT_CLOSE = 4               # after the slot's id: a u32 Logic writes 0 in and refuses large
 UUID_LEN = 16

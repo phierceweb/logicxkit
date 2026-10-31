@@ -8,7 +8,12 @@ from logicxkit.logic.services.mixer.binding import channels
 from logicxkit.logic.services.mixer.plugin_names import PLUGIN_NAMES
 from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logic.services.mixer.output_params import NAMES, PARAMS
+from logicxkit.logic.services.mixer.slider import grid_value
+from logicxkit.logic.services.translate.translate import load_maps, map_for
+
 from logicxkit.logicx import project_data
+
+MAPS = load_maps()
 
 OUT_LABEL = "Output 1-2"
 DONOR_KEYS = ("master-out-lpeq-logic", "master-out-multipressor-logic", "master-out-adaptive-limiter-logic",
@@ -165,12 +170,36 @@ class ResaveTest(unittest.TestCase):
         for type_id, floats in inserts:
             for name, value in wanted[by_type[type_id]].items():
                 with self.subTest(NAMES[type_id], parameter=name):
-                    places = 1 if name == "band1_ratio" else 3
+                    places = 1 if name in ("band1_ratio", "peak3_q") else 3
                     self.assertAlmostEqual(floats[PARAMS[type_id][name]], float(value), places=places)
             if type_id == 194:
                 self.assertAlmostEqual(floats[PARAMS[194]["band1_ratio"]], 2.511, places=3)     # Logic's position for a written 2.5
             if type_id == 243:
                 self.assertAlmostEqual(floats[PARAMS[243]["peak3_q"]], 0.79, places=4)            # Logic's position for a written 0.8
+                lpeq = next(r for r in project_records(project_data(_goldens.path("master-ours-resave-logic")))
+                            if r.tag == b"UCuA" and find_blocks(r.raw[HEADER:]) and find_blocks(r.raw[HEADER:])[0][1] == 243)
+                self.assertEqual(grid_value(map_for(lpeq.raw[HEADER:], MAPS), "Peak 3 Q-Factor", 0.8)[0], 0.79)
+
+
+@_goldens.needs("master-track-limiter-logic", "master-lim-mode-logic")
+class LimiterModeTest(unittest.TestCase):
+    """One save of the Limiter Mode popup: word 8 alone moves, 1 Precision to 0 Legacy."""
+
+    def test_the_popup_moves_word_8_alone(self):
+        from logicxkit.logic.services.mixer.plugin_params import decode, load_tables, table_for
+        from logicxkit.logic.services.mixer.slot_width import plugin_variant
+        key = "master-lim-mode-logic"
+        label = _goldens.fact(key, "channel")
+        before = dict(_inserts(project_data(_goldens.path("master-track-limiter-logic")), label))[199]
+        after = dict(_inserts(project_data(_goldens.path(key)), label))[199]
+        moved = [i for i, (a, b) in enumerate(zip(before, after, strict=True)) if a != b]
+        self.assertEqual(moved, [_goldens.fact(key, "word")])
+        self.assertEqual((before[8], after[8]), (1.0, 0.0))
+        payload = next(r.raw[HEADER:] for r in project_records(project_data(_goldens.path(key)))
+                       if r.tag == b"UCuA" and find_blocks(r.raw[HEADER:]) and find_blocks(r.raw[HEADER:])[0][1] == 199)
+        table = table_for(load_tables(), 199, plugin_variant(payload))
+        self.assertEqual(decode(table, before)[_goldens.fact(key, "parameter")], _goldens.fact(key, "before"))
+        self.assertEqual(decode(table, after)[_goldens.fact(key, "parameter")], _goldens.fact(key, "after"))
 
 
 if __name__ == "__main__":

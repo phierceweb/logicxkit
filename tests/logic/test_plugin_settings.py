@@ -39,6 +39,15 @@ class GriddedTest(unittest.TestCase):
         self.assertEqual(len(notes), 1)
         self.assertEqual(gridded(_payload("Gain"), {"Gain": "99"}), ({"Gain": "99"}, []))
 
+    def test_the_three_output_plugins_are_gridded(self):
+        self.assertEqual(gridded(_payload("Linear Phase EQ"), {"Peak 3 Q-Factor": "0.8"})[0], {"Peak 3 Q-Factor": 0.79})
+        self.assertEqual(gridded(_payload("Limiter"), {"Gain": "99"}), ({"Gain": 20.0}, ["Gain 99: Limiter's slider runs -20..20; set to 20"]))
+        self.assertEqual(gridded(_payload("Adaptive Limiter"), {"Lookahead": "51"})[0], {"Lookahead": 51.0})
+
+    def test_a_toggle_and_a_sampled_value_pass_through(self):
+        self.assertEqual(gridded(_payload("Linear Phase EQ"), {"Peak 1 On/Off": "On", "Peak 3 Frequency": "750"})[0],
+                         {"Peak 1 On/Off": "On", "Peak 3 Frequency": 750.0})
+
 
 if __name__ == "__main__":
     unittest.main()

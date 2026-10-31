@@ -54,8 +54,8 @@ These only read. Point them at any project.
   a channel that no longer matches the strip it names (`diff`).
 - **Plug-ins.** Every plug-in in the project — Logic's own instruments, MIDI effects and
   Pedalboard's pedals by name too — and which third-party ones are not installed on this Mac (`plugins`). A compressor's, gate's, EQ's or multiband's settings in plain units —
-  threshold, ratio, EQ bands (`settings`) — for Logic's Compressor, Noise Gate, Channel EQ and
-  Multipressor, FabFilter Pro-C 2, Pro-Q 4 and Pro-MB, sonible smart:comp 2 and smart:gate, and
+  threshold, ratio, EQ bands (`settings`) — for Logic's Compressor, Noise Gate, Channel EQ, Linear
+  Phase EQ and Multipressor, FabFilter Pro-C 2, Pro-Q 4 and Pro-MB, sonible smart:comp 2 and smart:gate, and
   iZotope Neutron 5.
 - **Inside third-party plug-ins.** The settings a third-party plug-in stores, which Logic shows
   only as a preset name (`logicxkit au strip` for a project or a `.cst`, `au preset` for a preset
@@ -96,8 +96,8 @@ Logic nests stacks two deep, and logicxkit refuses a third level as Logic does.
 - Set faders and pans, or copy every fader and pan from another project (`levels`).
 - Make groups, choose what each one links, and put channels in or take them out (`group`).
 - Write, copy and clear automation: volume, pan, mute and solo, and plug-in parameters on Logic's
-  Compressor, Noise Gate, Channel EQ and Multipressor and on third-party plug-ins logicxkit has a
-  parameter list for (`automation`).
+  Compressor, Noise Gate, Channel EQ, Linear Phase EQ, Adaptive Limiter, Limiter and Multipressor and on
+  third-party plug-ins logicxkit has a parameter list for (`automation`).
 
 A change that leaves channels feeding each other in a loop, such as two summing stacks each
 routed into the other, is still written, with a warning that names the loop.
@@ -113,8 +113,8 @@ routed into the other, is still written, with a warning that names the loop.
   instrument is. Its Smart Controls are not set up for most of them the way Logic sets them up
   when you load the instrument yourself. MIDI effects are listed but not added.
 - Change the settings of a plug-in already on a channel by name — threshold, ratio, an EQ band
-  (`settings --set`) — on Logic's Compressor, Noise Gate, Channel EQ and Multipressor and on
-  FabFilter Pro-C 2, Pro-Q 4 and Pro-MB.
+  (`settings --set`) — on Logic's Compressor, Noise Gate, Channel EQ, Linear Phase EQ and Multipressor
+  and on FabFilter Pro-C 2, Pro-Q 4 and Pro-MB.
 - Swap one plug-in for another everywhere in a project, carrying the settings across when both
   do the same job, such as a FabFilter Pro-C 2 into Logic's Compressor (`swap-plugin`). A setting
   with no equivalent is named in the report.

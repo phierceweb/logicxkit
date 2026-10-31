@@ -3,6 +3,52 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.15.0 — 2026-11-01
+
+### Changed
+
+- The Swift helpers are compiled once with `swiftc -O` and the binary reused, in place of a JIT run per
+  call, so each helper's first use is slower; `swiftc` alone is enough. A new build removes the script's
+  builds no run has used for a week. A cached binary that cannot run is dropped: with `swift` the script
+  runs JIT for the rest of the process, with `swiftc` alone the call fails naming the script; the next
+  process rebuilds it. A helper that does not answer in time is reported as an error naming it.
+- A native map may carry a slider grid with no translation family; `settings` says it has no settings
+  vocabulary and names `add-plugin`/`replace-plugin --set` and `automation --set`, and `swap-plugin` and
+  `tracking-chains` treat it as no map.
+- `--set`, `chains` and `automation --set` refuse a value that is not a finite number, and `swap-plugin`
+  leaves a slot whose value, band or master gain is not one as it is; the first three refuse a number on
+  a choices row (an On/Off or a popup) unless it is one of the row's choices. `settings --set` refuses a
+  band spec with a word it cannot read as a frequency, gain, Q or slope.
+- A value on a linear slider row (the dB and ms rows) lands on the row's nearest whole unit by Logic's own
+  single-precision arithmetic, half up, whether or not that unit was sampled; Logic's re-save of eight values
+  between a linear row's samples confirms the units. On a knob-shaped row a value midway between two
+  sampled positions goes to the lower, or to the upper on the rows Logic was measured laying up
+  (Compressor Attack, every frequency row of Channel EQ and Linear Phase EQ, every Multipressor band's
+  Attack, Exp. Threshold and Exp. Ratio), and a value in a gap between the row's samples (Compressor Make Up, Noise
+  Gate High Cutoff, the Multipressor's compression thresholds) to the curve's value at the nearest unit.
+  `swap-plugin`, `tracking-chains` and `settings --set` land a measured row the same way; the
+  vocabulary's step applies only to a row no map measures. An EQ band or master value past the target's
+  slider is held to its end with a report line.
+
+### Added
+
+- Slider maps for Linear Phase EQ, Adaptive Limiter and the Limiter: `add-plugin --set`,
+  `replace-plugin --set`, `chains` and `automation --set` put a value on the slider's nearer position, as
+  for Channel EQ; the mastering example carries its Peak 3 Q as 0.8, written on the slider's 0.79.
+- Linear Phase EQ is an eq-family translation target and source: `settings` reads its bands, `swap-plugin`
+  carries bands into or out of it with nothing reported (its rows are Channel EQ's), bells by
+  rising frequency as between any two EQs, and `tracking-chains` keeps making Channel EQ.
+- Limiter Mode and AutoFilter's Dry Signal, Stereo Spread and LFO Rate (0.001 to 10000 Hz with Beat Sync
+  off) are named in their tables, so `project` reads them and `--set` writes them by name. LFO Rate is read
+  and written in Hz whatever Beat Sync says; with it on, how Logic shows the word is unmeasured.
+- Public goldens for the instrument-slot width saves behind a stereo instrument add (ours and Logic's, for
+  the channel and the outputs), the Limiter Mode popup, a Controls read of AutoFilter, the slider maps
+  (Logic's re-saves of values off the grid and midway between the map's samples, four times on each of
+  eighteen rows and once on twenty-three more, and lanes read at Logic's display), a Channel EQ carried
+  into Linear Phase EQ, today's Sonible translation and AutoFilter with Beat Sync off.
+- Public goldens for `strip-silence`, `songs --breaks` and `split-sections`: Logic 12.4's re-saves of
+  short blank-born copies, which the tests rebuild and compare entry by entry and record by record.
+
 ## 0.14.0 — 2026-10-28
 
 ### Added

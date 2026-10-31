@@ -39,5 +39,20 @@ class MixerSlotTest(unittest.TestCase):
             self.assertIn("bell 250 Hz -4.0 dB Q 2.43; bell 1.00 kHz +2.0 dB Q 1.00; high shelf", text)
 
 
+@_goldens.needs("slider-midpoints-resave-logic")
+class SliderOnlyMapTest(unittest.TestCase):
+    def test_set_on_a_plug_in_with_sliders_but_no_vocabulary_names_the_other_routes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            rc, text = _run(["settings", str(_goldens.path("slider-midpoints-resave-logic")), "--channel", "Output 1-2",
+                             "--at", "5", "--set", "gain=1", "--out", tmp])
+        self.assertEqual(rc, 1)
+        self.assertIn("slot 5: Limiter has no settings vocabulary; use add-plugin/replace-plugin --set or automation --set", text)
+
+    def test_the_listing_says_the_same(self):
+        rc, text = _run(["settings", str(_goldens.path("slider-midpoints-resave-logic")), "--channel", "Output 1-2"])
+        self.assertEqual(rc, 0, text)
+        self.assertIn("slot  5  Limiter: no settings vocabulary; use add-plugin/replace-plugin --set or automation --set", text)
+
+
 if __name__ == "__main__":
     unittest.main()

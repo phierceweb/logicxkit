@@ -169,5 +169,29 @@ class PlanBothWaysTest(unittest.TestCase):
         self.assertEqual(len(new), len(promb_payload({})))
 
 
+
+class NonFiniteSourceTest(unittest.TestCase):
+    def test_a_non_finite_value_band_or_master_is_refused_on_every_path(self):
+        from logicxkit.logic.services.translate.translate import Settings
+        from logicxkit.logic.services.translate.translate_eq import Band
+        proc = next(m for m in MAPS if m.plugin == "Pro-C 2")
+        proq, cheq = (next(m for m in MAPS if m.plugin == n) for n in ("Pro-Q 4", "Channel EQ"))
+        cases = [(Settings(PROMB, values={"output_gain": float("nan")}), PROMB, "output_gain: nan"),
+                 (Settings(PROMB, values={"output_gain": float("inf")}), MULTI, "output_gain: inf"),
+                 (Settings(proc, values={"threshold": float("inf")}), proc, "threshold: inf"),
+                 (Settings(PROMB, bands=[MBand(20.0, 200.0, "compress", float("nan"), 2.0)]), MULTI, "band 1 threshold: nan"),
+                 (Settings(MULTI, bands=[MBand(20.0, 200.0, "compress", -20.0, 1.0, expander=(float("nan"), 2.0, -20.0),
+                                               number=1)]), PROMB, r"band 1 expander\[0\]: nan"),
+                 (Settings(proq, bands=[Band("bell", float("inf"), 0.0, 1.0, True, None, False, 1)]), cheq, "band 1 frequency: inf"),
+                 (Settings(proq, bands=[Band("low_cut", 30.0, 0.0, 1.0, True, float("nan"), False, 1)]), cheq,
+                  "band 1 slope: nan"),
+                 (Settings(proq, master=float("-inf")), cheq, "master: -inf")]
+        for settings, target, why in cases:
+            with self.subTest(why=why):
+                with self.assertRaisesRegex(ValueError, f"{why} is not a finite number"):
+                    plan(settings, target)
+        brickwall = Band("low_cut", 30.0, 0.0, 1.0, True, float("inf"), False, 1)     # Pro-Q 4's brickwall slope
+        self.assertEqual(plan(Settings(proq, bands=[brickwall]), cheq).values["Low Cut Frequency"], 30.0)
+
 if __name__ == "__main__":
     unittest.main()

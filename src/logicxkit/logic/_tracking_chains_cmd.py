@@ -34,6 +34,21 @@ def _made_latent(donor, at: int, args) -> str | None:
     return None
 
 
+TRACKING_NATIVE = {"eq": "Channel EQ"}      # a family with several natives: the one with no lookahead, for tracking
+
+
+def tracking_natives(maps) -> dict[str, str]:
+    """{family: the native plug-in `tracking-chains` makes it}: the family's one native, or the
+    `TRACKING_NATIVE` choice where Logic has several (Channel EQ over Linear Phase EQ)."""
+    out: dict[str, str] = {}
+    for m in maps:
+        if m.type is None or not m.family:
+            continue
+        if m.family not in out or TRACKING_NATIVE.get(m.family) == m.plugin:
+            out[m.family] = m.plugin
+    return out
+
+
 def live_families(payload: bytes, maps) -> list:
     """The maps of the slot's plug-in whose element is not bypassed (Neutron's gate, off in a
     fresh instance, stays out), in the vocabulary's order: eq, gate, compressor, multiband."""
@@ -112,7 +127,7 @@ def cmd_tracking_chains(args) -> int:
         print("  no donors in the library; `logic donors PROJECT` harvests them")
         return 1
     maps = load_maps()
-    natives = {m.family: m.plugin for m in maps if m.type is not None and m.family}
+    natives = tracking_natives(maps)
     counts: dict[str, int] = {}
 
     def step(data, count, data_file):

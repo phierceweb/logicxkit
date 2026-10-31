@@ -36,6 +36,8 @@ def problems(m: dict, table: dict) -> list[str]:
             out.append(f"{name}: units do not ascend")
         if any(v1 < v0 for (_u0, v0), (_u1, v1) in pairs):
             out.append(f"{name}: values fall")
+        if any(round(v, 4) != v for _u, v in units):              # `land` compares values at four places
+            out.append(f"{name}: a value past four places")
         lo, hi = units[0][1], units[-1][1]
         if (p.get("min") is not None and p["min"] != lo) or (p.get("max") is not None and p["max"] != hi):
             out.append(f"{name}: ends {lo}..{hi}, table {p.get('min')}..{p.get('max')}")
@@ -61,14 +63,24 @@ class NativeMapFactsTest(unittest.TestCase):
             with self.subTest(stem):
                 self.assertEqual(problems(m, table), [])
 
+    def test_the_three_output_maps_sample_every_unit(self):
+        for stem, m, _table in native_maps():
+            if m["type"] not in (243, 193, 199):
+                continue
+            for name, a in m["automation"].items():
+                with self.subTest(stem, row=name):
+                    units = [u for u, _v in a["units"]]
+                    self.assertEqual(units, list(range(int(units[0]), int(units[-1]) + 1)))
+
     def test_the_check_can_fail(self):
         table = {"type": 199, "variant": 1020, "name": "Limiter",
                  "params": [{"index": 1, "name": "Gain", "min": -20.0, "max": 20.0}]}
         bad = {"type": 199, "variant": 1021,
-               "automation": {"Gain": {"per": 130, "units": [[0, -20.0], [2, -19.0], [1, -19.5], [3, 19.0]]},
+               "automation": {"Gain": {"per": 130, "units": [[0, -20.0], [2, -19.00001], [1, -19.5], [3, 19.0]]},
                               "Nope": {"per": 128, "units": [[0, 0.0]]}}}
         found = problems(bad, table)
-        for what in ("variant", "Gain: units do not ascend", "Gain: values fall", "Gain: ends -20.0..19.0", "Gain: per 130", "Nope: not a row"):
+        for what in ("variant", "Gain: units do not ascend", "Gain: values fall", "Gain: ends -20.0..19.0", "Gain: per 130",
+                     "Gain: a value past four places", "Nope: not a row"):
             with self.subTest(what):
                 self.assertTrue(any(what in f for f in found), found)
-        self.assertEqual(len(found), 6)
+        self.assertEqual(len(found), 7)

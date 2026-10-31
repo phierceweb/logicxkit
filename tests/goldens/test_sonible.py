@@ -2,9 +2,12 @@
 slider moved (`sonible-*`, 2026-09-22): the values each window showed, and plans for Logic's
 Compressor and Noise Gate with what does not cross reported. Skips without the public corpus."""
 
+import tempfile
 import unittest
+from pathlib import Path
 
 import _goldens
+from _cli import run
 from logicxkit.logic.services.mixer.plugins import slot_payloads
 from logicxkit.logic.services.translate.translate import load_maps, map_for, plan, read_settings
 from logicxkit.logicx import project_data
@@ -20,6 +23,16 @@ def _payloads(key: str) -> dict[str, bytes]:
         if m is not None and m.component and ref.channel == _goldens.entry(key)["facts"]["channel"]:
             out[m.plugin] = payload
     return out
+
+
+def _audio2_floats(bundle: Path) -> list[list[float]]:
+    from logicxkit.logic._binary import find_blocks, read_block_floats
+    from logicxkit.logic._edit import owner_by_label
+    from logicxkit.logic.services.mixer.transplant import channel_slots
+    from logicxkit.logic.services.stream.stream import HEADER
+    data = project_data(bundle)
+    return [read_block_floats(r.raw[HEADER:], *find_blocks(r.raw[HEADER:])[0][::2])
+            for r in channel_slots(data, owner_by_label(data, "Audio 2"))[:2]]
 
 
 @_goldens.needs("sonible-defaults", "sonible-spots", "sonible-mono")
@@ -42,7 +55,8 @@ class SonibleTest(unittest.TestCase):
         p = plan(read_settings(self.spots["smart:comp 2"], map_for(self.spots["smart:comp 2"], self.maps)),
                  next(m for m in self.maps if m.plugin == "Compressor"))
         self.assertEqual(p.values["Threshold"], -10.0)                        # -10.2 dB on the 0.5 dB grid
-        self.assertEqual((p.values["Ratio"], p.values["Attack"], p.values["Release"]), (1.5, 41.0, 390.0))   # 1.45 stored, half up; the knobs' positions Logic showed
+        # 1.45 is a ratio midpoint, laid on the lower position; Logic laid this one up (`slider-ties1-resave-logic`)
+        self.assertEqual((p.values["Ratio"], p.values["Attack"], p.values["Release"]), (1.4, 41.0, 390.0))
         self.assertEqual((p.values["Make Up"], p.values["Mix"], p.values["Input Gain"]), (2.5, 95.0, 2.5))
         self.assertEqual(p.values["Knee"], 0.0)                               # 0.3 dB / 72 on the 0.1 grid
         notes = "\n".join(p.notes)
@@ -58,8 +72,9 @@ class SonibleTest(unittest.TestCase):
 
     @_goldens.needs("translate-sonible-ours", "translate-sonible-resave-logic")
     def test_logic_kept_the_translations_on_its_knobs(self):
-        """Our Compressor and Noise Gate read back as planned; Logic's re-save keeps every value
-        on a grid and settles the knobs' own positions for attack, hold and release."""
+        """Our Compressor and Noise Gate hold the values written then (the ratio 1.5 of the
+        vocabulary's step at the time); Logic's re-save keeps every value on a grid and settles the
+        knobs' own positions for attack, hold and release."""
         from logicxkit.logic._binary import find_blocks, read_block_floats
         from logicxkit.logic._edit import owner_by_label
         from logicxkit.logic.services.stream.stream import HEADER
@@ -77,6 +92,20 @@ class SonibleTest(unittest.TestCase):
         self.assertEqual([round(v, 1) for v in theirs[1][4:7]], [16.0, 10.0, 351.0])   # 350.99 stored, shown 351.0
         shown = _goldens.entry("translate-sonible-resave-logic")["facts"]["shown"]
         self.assertEqual((shown["Compressor"]["Attack"], shown["Noise Gate"]["Release"]), ("41.0 ms", "351.0 ms"))
+
+    @_goldens.needs("translate-sonible-today", "translate-sonible-today-resave-logic")
+    def test_todays_translation_is_the_copy_logic_kept(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            one, two = Path(tmp) / "one", Path(tmp) / "two"
+            for src, out, frm, to in ((_goldens.path("sonible-spots"), one, "Soni/smC2", "Compressor"),
+                                      (one / _goldens.path("sonible-spots").name, two, "Soni/sGat", "Noise Gate")):
+                code, text = run("swap-plugin", src, "--channel", "Audio 2", "--from", frm, "--to", to, "--out", out)
+                self.assertEqual(code, 0, text)
+            rebuilt = _audio2_floats(two / _goldens.path("sonible-spots").name)
+        ours, theirs = _audio2_floats(_goldens.path("translate-sonible-today")), _audio2_floats(_goldens.path("translate-sonible-today-resave-logic"))
+        self.assertEqual(rebuilt, ours)
+        self.assertEqual([round(v, 3) for v in ours[0][1:7]], [-10.0, 1.4, 41.0, 390.0, 2.5, 0.0])
+        self.assertEqual([[round(v, 1) for v in slot] for slot in theirs], [[round(v, 1) for v in slot] for slot in ours])   # 351 kept as 350.99, shown 351.0
 
     def test_the_defaults_and_the_mono_instances_read_too(self):
         for key in ("sonible-defaults", "sonible-mono"):

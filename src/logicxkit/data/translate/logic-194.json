@@ -3,7 +3,7 @@
  "plugin": "Multipressor",
  "type": 194,
  "variant": 954,
- "evidence": "Logic's Multipressor by its measured table (params-194.json), 2026-09-23: four bands over 20 Hz..20 kHz with three crossovers, a compressor and a downward expander each; Band N Monitor is the band's on/off (default on, all four). Comp. Threshold and Make Up step 0.5 dB (stockfx-eq-spots); ratio, attack and release move on their knobs' positions and are written as read. Ranges from the Controls view's sliders at their ends (2026-09-23): threshold -60..10 dB, ratio 1..30, attack 0..200 ms, release 2..2000 ms, expansion ratio 1..10.1, make-up and output \u00b120 dB, crossovers 20 Hz..20 kHz, lookahead 0..20 ms; the expansion threshold's floor of -60 dB from the manual. `automation`: each parameter's slider units per 1.0 of automation and its slider's values by position, read in Logic's Controls view (2026-09-23). The expander threshold, reduction and response rows (no band name in the Controls view; listed band 4 first) measured 2026-09-23: rates 161.25 / 128 / 128 on every band, band 1's positions at every unit.",
+ "evidence": "Logic's Multipressor by its measured table (params-194.json), 2026-09-23: four bands over 20 Hz..20 kHz with three crossovers, a compressor and a downward expander each; Band N Monitor is the band's on/off (default on, all four). Comp. Threshold and Make Up step 0.5 dB (stockfx-eq-spots); ratio, attack and release move on their knobs' positions and are written as read. Ranges from the Controls view's sliders at their ends (2026-09-23): threshold -60..10 dB, ratio 1..30, attack 0..200 ms, release 2..2000 ms, expansion ratio 1..10.1, make-up and output \u00b120 dB, crossovers 20 Hz..20 kHz, lookahead 0..20 ms; the expansion threshold's floor of -60 dB from the manual. `automation`: each parameter's slider units per 1.0 of automation and its slider's values by position, read in Logic's Controls view (2026-09-23). The expander threshold, reduction and response rows (no band name in the Controls view; listed band 4 first) measured 2026-09-23: rates 161.25 / 128 / 128 on every band, band 1's positions at every unit. A midpoint between two sampled positions goes to the upper one (`tie` up) on every band's Attack, Exp. Threshold and Exp. Ratio: band 1's at four midpoints each and bands 2 to 4 at one, all laid up (`slider-midpoints-resave-logic`, `slider-ties1..3-resave-logic`, `slider-siblings-resave-logic`, 2026-10-31).",
  "edges": [
   20,
   20000
@@ -1079,7 +1079,8 @@
      100,
      10.1
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 4 Comp. Threshold": {
    "per": 161.25,
@@ -1979,7 +1980,8 @@
      100,
      200.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 4 Release": {
    "per": 128,
@@ -3358,7 +3360,8 @@
      100,
      10.1
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 3 Comp. Threshold": {
    "per": 161.25,
@@ -4258,7 +4261,8 @@
      100,
      200.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 3 Release": {
    "per": 128,
@@ -5637,7 +5641,8 @@
      100,
      10.1
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 2 Comp. Threshold": {
    "per": 161.25,
@@ -6537,7 +6542,8 @@
      100,
      200.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 2 Release": {
    "per": 128,
@@ -7431,7 +7437,8 @@
      100,
      10.1
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 1 Comp. Threshold": {
    "per": 161.25,
@@ -8331,7 +8338,8 @@
      100,
      200.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 1 Release": {
    "per": 128,
@@ -9530,7 +9538,8 @@
      160,
      10.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 2 Exp. Threshold": {
    "per": 161.25,
@@ -10179,7 +10188,8 @@
      160,
      10.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 3 Exp. Threshold": {
    "per": 161.25,
@@ -10828,7 +10838,8 @@
      160,
      10.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 4 Exp. Threshold": {
    "per": 161.25,
@@ -11477,7 +11488,8 @@
      160,
      10.0
     ]
-   ]
+   ],
+   "tie": "up"
   },
   "Band 1 Reduction": {
    "per": 128,

@@ -10,7 +10,7 @@ from __future__ import annotations
 import math
 import re
 
-from ..mixer.slider import interp, snap
+from ..mixer.slider import interp, past_ends, slider_curve, snap
 from .translate_izotope import izotope_values
 from dataclasses import dataclass
 
@@ -108,6 +108,16 @@ def read_bands(payload: bytes, m, tables: dict) -> tuple[list[Band], float | Non
     return out, float(master) if master is not None else None
 
 
+def held(target, param: str, value: float, label: str) -> str | None:
+    """The report line for a band value past the target's measured slider, which `snap` holds to its ends."""
+    curve = slider_curve(target, param)
+    ends = past_ends(curve, value) if curve else None
+    if ends is None:
+        return None
+    lo, hi = ends
+    return f"{label}: {target.plugin}'s {param} slider runs {lo:g}..{hi:g}; set to {snap(target, param, value):g}"
+
+
 def plan_bands(bands: list[Band], master: float | None, source, target) -> tuple[dict, list[str], dict]:
     """The target's parameters for the source's bands, the report, and which slot (its field
     names) each source band landed in."""
@@ -127,19 +137,23 @@ def plan_bands(bands: list[Band], master: float | None, source, target) -> tuple
         slot = free.pop(0)
         placed[band.number] = slot
         values[slot["on"]] = "On" if band.on else "Off"
-        values[slot["frequency"]] = snap(target, slot["frequency"], round(band.frequency, 2))
+        label = f"band {band.number} {band.label()}"
+        given = {slot["frequency"]: band.frequency, slot["q"]: band.q}
         if "gain" in slot:
-            gain = band.gain if not step else round(math.floor(band.gain / step + 0.5 + 1e-9) * step, 6)
-            values[slot["gain"]] = snap(target, slot["gain"], gain)
-        values[slot["q"]] = snap(target, slot["q"], round(band.q, 3))
+            given[slot["gain"]] = band.gain if not step or slider_curve(target, slot["gain"]) else round(math.floor(band.gain / step + 0.5 + 1e-9) * step, 6)
+        for param, value in given.items():
+            values[param] = snap(target, param, value)
+            notes += [n for n in [held(target, param, value, label)] if n]
         if band.shape in ("low_cut", "high_cut") and band.slope is not None:
-            notes.append(f"band {band.number} {band.label()}: the slope stays {target.plugin}'s own")
+            notes.append(f"{label}: the slope stays {target.plugin}'s own")
         if band.shape not in ("bell",):
-            notes.append(f"band {band.number} {band.label()}: Q carried as is; {target.plugin}'s {band.shape.replace('_', ' ')} is another design (approximate)")
+            q = "" if held(target, slot["q"], band.q, label) else "Q carried as is; "
+            notes.append(f"{label}: {q}{target.plugin}'s {band.shape.replace('_', ' ')} is another design (approximate)")
         if band.dynamic:
             notes.append(f"band {band.number} {band.label()}: its dynamics are not carried")
     if master is not None and raw.get("master"):
         values[raw["master"]] = snap(target, raw["master"], master)
+        notes += [n for n in [held(target, raw["master"], master, f"master {master:+.1f} dB")] if n]
     for what, why in source.not_carried.items():
         notes.append(f"{source.plugin} {what}: {why}")
     for what, why in target.not_carried.items():
@@ -208,6 +222,10 @@ def parse_band(spec: str) -> Band:
     q = re.search(r"\bq\s*(\d+(?:\.\d+)?)", rest)
     slope = re.search(r"(\d+(?:\.\d+)?)\s*db/oct", rest)
     wall = re.search(r"\bbrickwall\b", rest)
+    spans = [m.span() for m in (freq, gain, q, slope, wall) if m]
+    left = "".join(" " if any(a <= i < b for a, b in spans) else c for i, c in enumerate(rest)).split()
+    if unread := [w for w in left if w not in ("off", "dynamic")]:
+        raise ValueError(f"{spec!r}: {' '.join(unread)!r} is not a frequency, gain, Q or slope")
     return Band(shape.replace(" ", "_"), float(freq.group(1)) * (1000 if freq.group(2) else 1),
                 float(gain.group(1)) if gain else 0.0, float(q.group(1)) if q else 1.0,
                 "off" not in rest.split(), BRICKWALL if wall else float(slope.group(1)) if slope else None)

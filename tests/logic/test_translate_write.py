@@ -164,7 +164,8 @@ class BandSpecTest(unittest.TestCase):
             self.assertEqual(parse_band(band.label()), band)
 
     def test_bad_specs_are_refused(self):
-        for spec in ("250 Hz", "bell -4 dB", "bell 250"):
+        for spec in ("250 Hz", "bell -4 dB", "bell 250", "bell 250 Hz nan dB Q 2", "bell 250 Hz -4 dB Q inf",
+                     "bell 1e999 Hz -4 dB Q 2", "bell 250 Hz -4 dB +2 dB"):
             with self.subTest(spec), self.assertRaises(ValueError):
                 parse_band(spec)
 

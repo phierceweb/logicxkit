@@ -267,9 +267,15 @@ def _coerce(table: Table, p: Param, value: float | str) -> float:
         return keys.index(_key(value)) / p.scale            # a scaled choice: D-Mode's "On" is word 100 at scale 0.01
     if isinstance(value, str) and not _number(value):
         raise ValueError(f"{table.name} {p.name}: {value!r} is not a number, and the row has no named choices")
+    if isinstance(value, bool):
+        raise ValueError(f"{table.name} {p.name}: {value!r} is not a value here; give a number" + (" or one of its words" if p.choices or p.named else ""))
     number = float(value)
     if number != number or number in (float("inf"), float("-inf")):
         raise ValueError(f"{table.name} {p.name}: {value!r} is not a finite number")
+    if p.choices:                                           # a number is the choice's index, as shown; its word is index / scale
+        if not number.is_integer() or not 0 <= number < len(p.choices):
+            raise ValueError(f"{table.name} {p.name}: {value!r} is not one of {', '.join(p.choices)} (0..{len(p.choices) - 1})")
+        return round(number) / p.scale
     if p.min is not None and number < p.min or p.max is not None and number > p.max:
         ends = ("" if p.min is None else str(p.min)) + ".." + ("" if p.max is None else str(p.max))   # one end open: Mute below, say
         raise ValueError(f"{table.name} {p.name}: {number} is outside {ends} {p.unit}".rstrip())

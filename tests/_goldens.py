@@ -104,8 +104,13 @@ def fact(key: str, name: str, default=None):
     return e.get("facts", {}).get(name, default)
 
 
-def needs(*keys: str):
-    """Class decorator: skip unless every key resolves to a file."""
+def needs(*keys: str, lacking: str | None = None):
+    """Class decorator: skip unless every key resolves to a file. ``lacking`` names a tool the test
+    cannot run without; when given, the keys count as not found, since nothing reads them."""
+    if lacking:
+        for k in keys:
+            asked.setdefault(k, False)
+        return unittest.skip(lacking)
     missing = [k for k in keys if path(k) is None]
     return unittest.skipUnless(not missing, f"golden(s) not on this machine: {', '.join(missing)}")
 

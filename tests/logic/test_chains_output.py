@@ -154,12 +154,12 @@ class GridTest(unittest.TestCase):
             self._plan({"band1_ratio": 99})
         self.assertIn("Band 1 Comp. Ratio 99 is outside Multipressor's", str(e.exception))
 
-    def test_a_plug_in_with_no_map_takes_the_value_as_given(self):
+    def test_a_mapped_output_plugin_lands_on_its_slider(self):
         cfg = {"chains": {"Stereo Out": {"plugins": [{"donor": "lpeq", "params": {"peak3_q": 0.8}}]}}}
-        self.assertEqual(chain_plan(self.data, cfg, None, None, extra=self.extra)[0][OUT][0][8], {PARAMS[243]["peak3_q"]: 0.8})
+        self.assertEqual(chain_plan(self.data, cfg, None, None, extra=self.extra)[0][OUT][0][8], {PARAMS[243]["peak3_q"]: 0.79})
 
-    def test_a_value_outside_the_tables_range_is_refused_with_or_without_a_map(self):
-        """The Limiter has a table (Gain -20..20 dB) and no map; `--set` refuses the same value."""
+    def test_a_value_outside_the_tables_range_is_refused(self):
+        """The Limiter's table (Gain -20..20 dB) refuses a value past it; `--set` refuses the same value."""
         extra = {"lim": (donor(93, 199, 13), 199)}
         ok = {"chains": {"Stereo Out": {"plugins": [{"donor": "lim", "params": {"gain": 0, "output_level": -0.1}}]}}}
         self.assertEqual(chain_plan(self.data, ok, None, None, extra=extra)[0][OUT][0][8], {PARAMS[199]["gain"]: 0.0, PARAMS[199]["output_level"]: -0.1})

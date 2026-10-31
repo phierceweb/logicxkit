@@ -38,7 +38,8 @@ class SnapTest(unittest.TestCase):
         _m, raw = _slot("snap-raw", "Noise Gate")
         _m, kept = _slot("snap-raw-resave-logic", "Noise Gate")
         self.assertEqual((raw["hold"], raw["release"]), (205.0, 351.0))
-        self.assertEqual(kept["hold"], 210.0)                                 # the snap takes this tie down
+        self.assertEqual(kept["hold"], 210.0)                                 # a tie on a linear row goes up
+        self.assertEqual(snap(_m, "Hold", 205.0), 210.0)
         self.assertAlmostEqual(kept["release"], 350.99, places=2)
 
     def test_a_snapped_write_comes_back_as_written(self):

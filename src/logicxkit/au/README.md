@@ -17,8 +17,8 @@ need neither.
    `kAudioUnitProperty_ClassInfo`, and dumps every parameter: real name, unit,
    min/max/default, current value, and the plugin's own display string
    (`ParameterStringFromValue` — "2.00:1", "101.62 Hz", "24 dB/oct"). Works for
-   any AU that instantiates headless; needs the `swift` toolchain (JIT, no
-   build step).
+   any AU that instantiates headless; needs the Swift toolchain (compiled
+   on first use, no manual build step).
 2. **Static tables** — parse the file/blob directly and name values via the
    AU parameter tables under the data root (`LOGICXKIT_DATA`), one
    `au/<Manu>_<Subtype>.json` per plugin, generated from the installed AUs via

@@ -17,7 +17,7 @@ from ..._binary import find_blocks, read_block_floats
 from ..mixer.plugin_params import decode, table_for
 from ..mixer.slot_width import plugin_variant
 from ..mixer.mb_segments import SLIVER, _hz, segments  # noqa: F401
-from ..mixer.slider import interp, snap
+from ..mixer.slider import interp, slider_curve, snap
 
 UNLIMITED = -30.0                    # Pro-MB's widest downward range: a compressor without a limit
 
@@ -133,7 +133,7 @@ def _into_slots(settings, target, notes: list[str]) -> tuple[dict, dict, dict]:
         lo, hi, b = segs[i] if i < len(segs) else (raw["edges"][1], raw["edges"][1], None)
         values[slot["on"]] = "On" if i < len(segs) and (b is None or b.on) else "Off"
         if "high" in slot:
-            values[slot["high"]] = snap(target, slot["high"], round(within("crossover", hi, b), 1))
+            values[slot["high"]] = snap(target, slot["high"], within("crossover", hi, b))
         if b is None:
             if i < len(segs):                               # an uncovered stretch passes untouched
                 values[slot["threshold"]] = _step(0.0, steps.get("threshold"))
@@ -144,8 +144,8 @@ def _into_slots(settings, target, notes: list[str]) -> tuple[dict, dict, dict]:
         values[slot["threshold"]], values[slot["ratio"]] = _step(0.0, steps.get("threshold")), 1.0
         if b.mode == "compress" and (b.range is None or b.range <= 0):
             modes[b.number] = "compress"
-            values[slot["threshold"]] = snap(target, slot["threshold"], _step(within("threshold", b.threshold, b), steps.get("threshold")))
-            values[slot["ratio"]] = snap(target, slot["ratio"], round(within("ratio", b.ratio, b), 3))
+            values[slot["threshold"]] = _gridded(target, slot["threshold"], within("threshold", b.threshold, b), steps.get("threshold"))
+            values[slot["ratio"]] = snap(target, slot["ratio"], within("ratio", b.ratio, b))
             if b.range is not None and b.range > UNLIMITED + 0.05:
                 notes.append(f"band {b.number} {b.label()}: {source.plugin}'s range stops the gain change at "
                              f"{b.range:+.1f} dB; {target.plugin} has no limit")
@@ -157,10 +157,10 @@ def _into_slots(settings, target, notes: list[str]) -> tuple[dict, dict, dict]:
         else:
             notes.append(f"band {b.number} {b.label()}: upward {b.mode}ion has no analogue in {target.plugin}; "
                          f"the band passes as it is")
-        values[slot["level"]] = snap(target, slot["level"], _step(within("level", b.level, b), steps.get("level")))
+        values[slot["level"]] = _gridded(target, slot["level"], within("level", b.level, b), steps.get("level"))
         if b.time_unit == "ms" and b.attack is not None:
-            values[slot["attack"]] = snap(target, slot["attack"], round(within("attack", b.attack, b), 3))
-            values[slot["release"]] = snap(target, slot["release"], round(within("release", b.release, b), 3))
+            values[slot["attack"]] = snap(target, slot["attack"], within("attack", b.attack, b))
+            values[slot["release"]] = snap(target, slot["release"], within("release", b.release, b))
         else:
             percent = True
         if b.knee is not None:
@@ -171,11 +171,11 @@ def _into_slots(settings, target, notes: list[str]) -> tuple[dict, dict, dict]:
     look = [b.lookahead for _lo, _hi, b in segs if b is not None and b.on and b.lookahead is not None]
     if "lookahead" in target.items and (look or "lookahead_on" in g):
         ms = max(look) if look and g.get("lookahead_on", True) else 0.0
-        values[target.items["lookahead"].param] = snap(target, target.items["lookahead"].param, round(within("lookahead", ms, None), 3))
+        values[target.items["lookahead"].param] = snap(target, target.items["lookahead"].param, within("lookahead", ms, None))
         if look and len(set(round(x, 3) for x in look)) > 1:
             notes.append(f"lookahead: the bands differ ({', '.join(f'{x:g}' for x in look)} ms); the longest carried (approximate)")
     if "output_gain" in g and "output_gain" in target.items:
-        values[target.items["output_gain"].param] = snap(target, target.items["output_gain"].param, round(within("output_gain", g["output_gain"], None), 2))
+        values[target.items["output_gain"].param] = snap(target, target.items["output_gain"].param, within("output_gain", g["output_gain"], None))
     if g.get("input_gain"):
         notes.append(f"input_gain {g['input_gain']:+.1f} dB: no analogue in {target.plugin}")
     if "mix" in g and abs(g["mix"] - 100) > 0.05:
@@ -277,3 +277,8 @@ def _state(payload: bytes, m, plist: bool = False):
 
 def _step(value: float, step: float | None) -> float:
     return round(value, 3) if not step else round(math.floor(value / step + 0.5 + 1e-9) * step, 6)
+
+
+def _gridded(target, row: str, value: float, step: float | None) -> float:
+    """``value`` on the target row's slider where it is measured, else on the vocabulary's step."""
+    return snap(target, row, value) if slider_curve(target, row) else _step(value, step)

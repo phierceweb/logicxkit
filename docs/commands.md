@@ -175,8 +175,10 @@ and `--stack` narrow it.
 ratio, attack, release, knee, make-up, mix, auto release, input and output gain whichever
 compressor it is — through the plug-in's translation map (`data/translate/`: Pro-C 2 from its
 AU state's id/value pairs, sonible's smart:comp 2 and smart:gate from their protobuf state,
-Logic's Compressor, Noise Gate, Channel EQ and Multipressor from their measured tables; a slot
-without a map says so), each slot by its mixer slot. An
+Logic's Compressor, Noise Gate, Channel EQ, Linear Phase EQ and Multipressor from their measured tables; a slot
+without a map says so, and one whose map holds a slider grid alone says it has no settings vocabulary and
+names `add-plugin`/`replace-plugin --set` and `automation --set`, `sliders_only` in the JSON), each slot by its
+mixer slot. An
 EQ's settings are its bands — shape, frequency, gain, Q, slope — and Pro-Q 4's cross into
 Channel EQ's one slot per shape, bells by rising frequency, the rest reported. `replace-plugin
 --translate` carries the old slot's settings into the replacement through that vocabulary and
@@ -215,7 +217,7 @@ on an EQ, by band (`"band 2=bell 250 Hz -4 dB Q 2.4"`, `"band 1=low cut 80 Hz 24
 keeps its slot's shape, and Pro-Q 4 takes a new band past its last.
 `add-plugin --set` and `replace-plugin --set` dial the same way on the way in — a table name
 for one of Logic's own (held to its slider's measured ends with a note and put on the slider's
-grid where the plug-in has a translation map; the instrument, MIDI-effect and re-measured effect
+grid where the plug-in's map measures its sliders; the instrument, MIDI-effect and re-measured effect
 tables carry each slider's measured ends as the parameter's range, a slider ending on a word at one
 end (Mute, Off, mono, Fix or Click at the bottom, inf or Paradise at the top) its other end alone,
 and a number outside is refused — the word's own side is not checked, and the word cannot be
@@ -460,7 +462,10 @@ keyed by a channel name instead of a strip reference — `Stereo Out` for the ma
 its plug-ins in slot order as declared donors with parameters named as `services/mixer/output_params.py`
 names them, or by an index inside the donor's block; every configured value, a strip-referenced chain's
 `pre`/`post` donors' too, is held to the table's measured range and, where the plug-in's map measures
-the slider, goes to the nearer sampled position, as `--set` writes it; outside either it is refused.
+the slider, goes to the slider's nearer position (a linear row's nearest unit; a knob row's nearer sampled
+position, or between its samples the curve's value at the nearest unit, unmeasured: Compressor Make Up, Noise Gate
+High Cutoff and the Multipressor's compression thresholds have such gaps), as `--set` writes it; outside either it is refused, as is a value that is not a finite number
+or a number on a choices row that is none of its choices.
 `config/example-mastering.json` is the shape. A
 label two channels carry, a channel keyed both by strip and by name, or an index past the block is
 refused before anything is written, and every configured value is read back afterwards. `logic
@@ -600,8 +605,8 @@ lane's points on a copy (`--out`), `--copy "TRACK:LANE->TRACK"` copies a lane on
 Mute, Solo and ±Volume (the relative lane), values 0-127 with Volume 90 and Pan 64 at unity. A
 plug-in parameter lane is `slot N NAME` — `--set "Audio 2:slot 1 Threshold=-30@1,-12@9"` — N the
 mixer slot and TRACK the track's name or its mixer label, with values in the parameter's own unit
-(`on`/`off` for a switch): for one of Logic's own with a translation map (Compressor, Noise Gate,
-Channel EQ, Multipressor), NAME is a name from its measured table and each value lands on the nearer
+(`on`/`off` for a switch): for one of Logic's own whose map measures its sliders (Compressor, Noise Gate,
+Channel EQ, Multipressor, Linear Phase EQ, Adaptive Limiter, Limiter), NAME is a name from its measured table and each value lands on the nearer
 position of its slider, which the report names (a value past the slider's end is held there and the
 report gives the slider's range); the other natives are refused, their sliders unmeasured; for a
 third-party, NAME is a parameter name or id from its AU table (the value within the table's range)

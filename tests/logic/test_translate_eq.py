@@ -90,6 +90,78 @@ class PlanChannelEQTest(unittest.TestCase):
         self.assertEqual((by_shape["bell"].frequency, by_shape["bell"].gain, by_shape["bell"].q), (1000.0, 3.0, 1.0))
         self.assertEqual(s.master, 1.5)
 
+    def _channel_eq(self) -> bytes:
+        floats = [0.0] * 52
+        floats[1], floats[2], floats[4] = 1.0, 80.0, 0.71
+        floats[9], floats[10], floats[11], floats[12] = 1.0, 1000.0, 3.0, 1.0
+        floats[33] = 1.5
+        p = bytearray(184 + 12 + 4 * 52)
+        p[184:192] = b"GAMETSPP"
+        struct.pack_into("<III", p, 172, 24 + 52 * 4, 1, 52)
+        struct.pack_into("<I", p, 192, 236)
+        struct.pack_into("<52f", p, 196, *floats)
+        return bytes(p)
+
+    def test_linear_phase_eq_is_an_eq_target_with_channel_eqs_slots(self):
+        """The two tables name the same rows, so every one of a Channel EQ's bands finds a slot."""
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        self.assertEqual((lpeq.family, lpeq.raw["slots"], lpeq.raw["master"]), ("eq", CHEQ.raw["slots"], CHEQ.raw["master"]))
+        out = plan(read_settings(self._channel_eq(), CHEQ), lpeq)
+        self.assertEqual(out.values["Low Cut On/Off"], "On")
+        self.assertEqual(out.values["Low Cut Frequency"], 80.0)
+        bell = next(n for n in range(1, 5) if out.values[f"Peak {n} On/Off"] == "On")   # bells land by rising frequency
+        self.assertEqual((out.values[f"Peak {bell} Frequency"], out.values[f"Peak {bell} Gain"], out.values[f"Peak {bell} Q-Factor"]), (1000.0, 3.0, 1.0))
+        self.assertEqual(out.values["Master Gain"], 1.5)
+        self.assertEqual([n for n in out.notes if "no slot" in n or "no analogue" in n], [])
+
+    def test_linear_phase_eq_is_an_eq_source_too(self):
+        p = bytearray(self._channel_eq())
+        struct.pack_into("<I", p, 192, 243)
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        self.assertIs(map_for(bytes(p), MAPS), lpeq)
+        out = plan(read_settings(bytes(p), lpeq), CHEQ)
+        self.assertEqual((out.values["Low Cut On/Off"], out.values["Low Cut Frequency"], out.values["Master Gain"]), ("On", 80.0, 1.5))
+        bell = next(n for n in range(1, 5) if out.values[f"Peak {n} On/Off"] == "On")
+        self.assertEqual((out.values[f"Peak {bell} Frequency"], out.values[f"Peak {bell} Gain"]), (1000.0, 3.0))
+
+    def test_bells_out_of_order_land_by_rising_frequency_between_the_twin_eqs(self):
+        p = bytearray(self._channel_eq())
+        struct.pack_into("<4f", p, 196 + 4 * 9, 1.0, 4000.0, 2.0, 1.0)          # peak 1 above peak 2
+        struct.pack_into("<4f", p, 196 + 4 * 13, 1.0, 500.0, -1.0, 1.0)
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        out = plan(read_settings(bytes(p), CHEQ), lpeq).values
+        on = [(out[f"Peak {n} Frequency"], out[f"Peak {n} Gain"]) for n in (1, 2, 3, 4) if out[f"Peak {n} On/Off"] == "On"]
+        self.assertEqual(on, [(500.0, -1.0), (4000.0, 2.0)])
+
+    def test_a_band_past_the_sliders_is_held_to_their_ends_and_reported(self):
+        from logicxkit.logic.services.translate.translate_eq import plan_bands
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        values, notes, _ = plan_bands([Band("low_shelf", 10.0, -40.0, 5.0, True, None, False, 1),
+                                       Band("bell", 500.0, 3.0, 1.0, True, None, False, 2)], None, PROQ, lpeq)
+        self.assertEqual((values["Low Shelf Frequency"], values["Low Shelf Gain"], values["Low Shelf Q-Factor"]), (20.0, -24.0, 2.0))
+        shelf = [n for n in notes if n.startswith("band 1 ")]
+        self.assertEqual(sum("slider runs" in n for n in shelf), 3)
+        self.assertNotIn("Q carried as is", "\n".join(shelf))
+        self.assertFalse([n for n in notes if n.startswith("band 2 ")])
+        _v, notes, _ = plan_bands([], 40.0, PROQ, lpeq)
+        self.assertEqual([n for n in notes if n.startswith("master")], ["master +40.0 dB: Linear Phase EQ's Master Gain slider runs -24..24; set to 24"])
+
+    def test_a_band_spec_past_the_sliders_is_reported(self):
+        from logicxkit.logic.services.translate.translate_write import _slot_values
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        notes = []
+        values = _slot_values(lpeq, Band("bell", 5.0, 30.0, 0.01, True, None, False, 3), notes)
+        self.assertEqual((values["Peak 1 Frequency"], values["Peak 1 Gain"], values["Peak 1 Q-Factor"]), (20.0, 24.0, 0.1))
+        self.assertEqual(len(notes), 3)
+
+    def test_a_band_at_the_sliders_ends_is_not_reported(self):
+        from logicxkit.logic.services.translate.translate_eq import held
+        lpeq = next(m for m in MAPS if m.plugin == "Linear Phase EQ")
+        for param, value in (("Low Shelf Frequency", 20.0), ("Low Shelf Frequency", 19.99999), ("Peak 1 Gain", 24.00001)):
+            with self.subTest(param=param, value=value):
+                self.assertIsNone(held(lpeq, param, value, "b"))
+        self.assertIsNotNone(held(lpeq, "Peak 1 Gain", 24.001, "b"))
+
 
 class BandLabelTest(unittest.TestCase):
     def test_labels(self):

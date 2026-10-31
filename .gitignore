@@ -38,6 +38,7 @@ samples/
 .claude/
 .cursor/
 .superpowers/
+.cbmignore
 CLAUDE.md
 
 # Logic project exchange — drop copies in in/, tooling writes new versions to out/.

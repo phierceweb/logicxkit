@@ -124,6 +124,14 @@ class ConfigDeclaredDonorTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Band 1 Comp. Ratio 99 is outside Multipressor"):
             chain_plan(self.data, cfg, self.eq, self.cp, extra={"mp": (mp, 194)})
 
+    def test_a_linear_phase_eq_q_lands_on_its_slider(self):
+        from logicxkit.logic import chain_plan
+        from logicxkit.logic.services.mixer.output_params import PARAMS
+        lp = rec(b"UCuA", 94, 4, b"\x00" * 14 + b"D.pst".ljust(62, b"\x00") + chunk(243, [0.0] * 52))
+        cfg = {"chains": {"Snare Down.cst": {"label": "S", "pre": ["lp"], "params": {"lp": {"peak3_q": 0.8}}}}}
+        plan, _ = chain_plan(self.data, cfg, self.eq, self.cp, extra={"lp": (lp, 243)})
+        self.assertEqual(plan[0][0][8], {PARAMS[243]["peak3_q"]: 0.79})
+
     def test_post_slot_follows_the_compressor(self):
         from logicxkit.logic import chain_plan
         verb = rec(b"UCuA", 93, 4, b"\x00" * 14 + b"D.pst".ljust(62, b"\x00") + chunk(287, [0.0] * 40))
@@ -225,26 +233,22 @@ class DuplicateChainSlotTest(unittest.TestCase):
         cleaned = insert_slots(data, plan, drop=drop)
         self.assertEqual(duplicate_chain_slots(cleaned, plan), [])
 
-    def test_dropping_never_touches_a_plugin_the_chain_does_not_place(self):
-        """Bass DI's own Channel EQ is not superseded, so nothing is dropped for it."""
-        from logicxkit.logic import chain_plan, duplicate_chain_slots, insert_slots
-        cfg = {"chains": {"Bass DI.cst": {"label": "Bass DI", "comp": {
-            "circuit": "FET", "threshold": -12.0, "ratio": 2.5,
-            "attack": 33, "release": 64}}}}
-        data = proj(*self._chan(0, "Bass DI.cst", [(5, 236)]))
-        plan, _ = chain_plan(data, cfg, self.eq_donor, self.comp_donor)
-        self.assertEqual(duplicate_chain_slots(insert_slots(data, plan), plan), [])
-
     def test_a_pre_existing_plugin_the_chain_does_not_place_is_left_alone(self):
         """Bass DI's chain is a Compressor only; the channel's own Channel EQ is not a
-        duplicate and must not be flagged."""
+        duplicate and must not be flagged or dropped."""
         from logicxkit.logic import chain_plan, duplicate_chain_slots, insert_slots
         cfg = {"chains": {"Bass DI.cst": {"label": "Bass DI", "comp": {
             "circuit": "FET", "threshold": -12.0, "ratio": 2.5,
             "attack": 33, "release": 64}}}}
+        from logicxkit.logic._binary import find_blocks
+        from logicxkit.logic.services.mixer.transplant import channel_slots
+        from logicxkit.logic.services.stream.stream import HEADER
         data = proj(*self._chan(0, "Bass DI.cst", [(5, 236)]))
         plan, _ = chain_plan(data, cfg, self.eq_donor, self.comp_donor)
-        self.assertEqual(duplicate_chain_slots(insert_slots(data, plan), plan), [])
+        patched = insert_slots(data, plan)
+        self.assertEqual(duplicate_chain_slots(patched, plan), [])
+        self.assertEqual([(s.key, find_blocks(s.raw[HEADER:])[0][1]) for s in channel_slots(patched, 0)],
+                         [(4, 154), (5, 236)])
 
     def test_a_fully_overwritten_channel_is_clean(self):
         from logicxkit.logic import chain_plan, duplicate_chain_slots, insert_slots

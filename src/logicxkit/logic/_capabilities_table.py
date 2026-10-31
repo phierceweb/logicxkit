@@ -120,8 +120,9 @@ CAPABILITIES = (
                "donors on the Stereo Out with parameters named as measured, each held to its table's range and, "
                "where the plug-in's map measures the slider (Multipressor), put on its grid: ratio 2.5 is written "
                "2.511, the value Logic's re-save of the example holds (`master-ours-resave-logic`, 2026-09-16). "
-               "Linear Phase EQ has no map, so a Q is written as given; the example carries 0.79, the value that "
-               "re-save holds for a written 0.8. `--verify` reads a written copy back through Logic's own Controls views "
+               "Linear Phase EQ's, Adaptive Limiter's and the Limiter's sliders are measured too (2026-10-30): the "
+               "example's Q 0.8 lands on 0.79, the value that re-save holds (`slider-snap-raw-resave-logic`; the lanes "
+               "written by value land where Logic shows them, `slider-lanes-ours`). `--verify` reads a written copy back through Logic's own Controls views "
                "(`tools/driver/controls.py`, macOS, a checkout) and names every row that differs from the "
                "file; on the example written onto a copy of `inserts-native-logic`, Logic 12.4 showed every "
                "slot as the file holds it (2026-10-09)"),

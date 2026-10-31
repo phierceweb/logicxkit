@@ -174,6 +174,33 @@
    ]
   },
   {
+   "index": 28,
+   "name": "Dry Signal",
+   "unit": "%",
+   "default": 0.0,
+   "evidence": "value",
+   "min": 0.0,
+   "max": 200.0
+  },
+  {
+   "index": 31,
+   "name": "Stereo Spread",
+   "unit": "",
+   "default": 0.01,
+   "evidence": "value",
+   "min": -1.0,
+   "max": 1.0
+  },
+  {
+   "index": 32,
+   "name": "LFO Rate",
+   "unit": "Hz",
+   "default": 0.951,
+   "evidence": "value",
+   "min": 0.001,
+   "max": 10000.0
+  },
+  {
    "index": 34,
    "name": "Filter",
    "unit": "",
@@ -221,11 +248,9 @@
  "unmapped": [
   "Filter Mode",
   "Waveform",
-  "Rate",
   "Sync Phase",
-  "Stereo Spread",
   "Pre Filter Distortion Mode",
   "Post Filter Distortion Mode"
  ],
- "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 22 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. Popup rows unmapped. Dry Signal is unplaced: word 31 reads 0.01 at the defaults, where Dry Signal shows 0.000 % and Stereo Spread 0.01, and -0.99 after the move."
+ "evidence": "Logic 12.3.1 Controls view, every slider row moved one unit and saved; 22 indices matched by value between stockfx-dist-defaults and stockfx-dist-spots, 0 by order. A Logic 12.4 Controls read of the spots save (2026-10-30) placed three more by the values shown: Dry Signal 9.680 % at word 28, Stereo Spread -0.99 at 31, LFO Rate 0.730 Hz at 32 with Beat Sync off (the spots save; with it on, the defaults, the row reads Rate, synced). Dry Signal's and Stereo Spread's ends are the slider ends read on the stockfx-dist-defaults-12-4 save; LFO Rate's ends are its slider ends with Beat Sync off, read on a copy whose Logic 12.4 re-save is stockfx-autofilter-sync-off-defaults (2026-10-31); word 32 holds the same 0.951 with Beat Sync on (the defaults), where the row shows a synced rate; how it reads the word then is not measured. Popup rows unmapped; Sync Phase reads 180.00 \u00b0 where word 27 holds 180 on both saves, unmoved, so it is not placed."
 }

@@ -116,5 +116,27 @@ class StockGroupsTest(unittest.TestCase):
                     self.assertFalse({p.index for p in params if p.name not in moved[name]} & changed)
 
 
+@_goldens.needs("stockfx-dist-defaults-12-4", "stockfx-dist-spots-12-4")
+class AutoFilterRowsTest(unittest.TestCase):
+    """Three AutoFilter rows placed by a Controls read of the spots save: the floats read back as
+    the view showed them on both saves."""
+
+    def test_dry_signal_stereo_spread_and_lfo_rate(self):
+        tables = load_tables([PACKAGED / "logic"])
+        moved = _goldens.entry("stockfx-dist-spots-12-4")["facts"]["moved"]["AutoFilter"]
+        label = _goldens.entry("stockfx-dist-defaults-12-4")["facts"]["channel"]
+        saves = {"before": _goldens.path("stockfx-dist-defaults-12-4"), "after": _goldens.path("stockfx-dist-spots-12-4")}
+        for when, path in saves.items():
+            type_id, floats, variant = next(b for b in _blocks(project_data(path), label) if b[0] == 162)
+            values = decode(table_for(tables, type_id, variant), floats)
+            for name, word in (("Dry Signal", 28), ("Stereo Spread", 31), ("LFO Rate", 32)):
+                want = moved[name][when]
+                if not isinstance(want, (int, float)):           # the defaults showed LFO Rate synced, no Hz to read
+                    continue
+                with self.subTest(when, row=name):
+                    self.assertTrue(_close(values[name], want), (values[name], want))
+                    self.assertTrue(_close(floats[word], want))
+
+
 if __name__ == "__main__":
     unittest.main()

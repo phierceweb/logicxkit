@@ -12,9 +12,9 @@ from ....au.services.austate_write import patch_ffbs, patch_pairs, replace_data
 from ....au.services.embed import find_au_plists
 from ..mixer.plugin_params import load_tables, set_by_name, table_for
 from ..mixer.slot_width import plugin_variant
-from ..mixer.slider import interp, snap
+from ..mixer.slider import interp, slider_curve, snap
 from .translate import VOCABULARY, Item, Map, Plan, _show, clamp, read_settings
-from .translate_eq import BRICKWALL, Band, parse_band
+from .translate_eq import BRICKWALL, Band, held, parse_band
 
 _ON = {"on", "true", "yes", "1"}
 _OFF = {"off", "false", "no", "0"}
@@ -35,7 +35,9 @@ def write_settings(payload: bytes, m: Map, values: dict, tables: dict | None = N
         carried, note = clamp(item, _coerce(item, value, name))
         if note:
             notes.append(f"{name} {value}: {m.plugin}'s {item.param} {note} {carried:g}, set there")
-        stored[name] = _rounded(item, item.to_stored(carried)) if m.component is None else item.to_stored(carried)
+        stored[name] = item.to_stored(carried)
+        if m.component is None and slider_curve(m, item.param) is None:     # an unmeasured row: the vocabulary's step
+            stored[name] = _rounded(item, stored[name])
         if m.component is None and not item.switch:
             stored[name], note = _on_slider(m, item, stored[name])
             notes += [f"{name} {value}: {note}"] if note else []
@@ -51,12 +53,12 @@ def write_bands(payload: bytes, m: Map, bands: list[Band], master: float | None 
     kept), a third-party into its band layout, the rest of the layout unused and every band's
     dynamics off — a plan carries a band's static curve only."""
     if m.component is None:
-        values = {}
+        values, notes = {}, []
         for band in bands:
-            values.update(_slot_values(m, band))
+            values.update(_slot_values(m, band, notes))
         if master is not None and m.raw.get("master"):
             values[m.raw["master"]] = master
-        return set_by_name(_table(payload, m, tables), payload, values), []
+        return set_by_name(_table(payload, m, tables), payload, values), notes
     lay = m.raw["bands"]
     by_slot: dict[int, Band] = {}
     for band in bands:
@@ -75,18 +77,20 @@ def write_bands(payload: bytes, m: Map, bands: list[Band], master: float | None 
     return write_state(payload, m, by_id), notes
 
 
-def _slot_values(m: Map, band: Band) -> dict:
-    """One of Logic's own EQ slot's table values for ``band`` (its number is the slot's)."""
+def _slot_values(m: Map, band: Band, notes: list[str]) -> dict:
+    """One of Logic's own EQ slot's table values for ``band`` (its number is the slot's); a value
+    held to its slider's ends is reported in ``notes``."""
     slots = [slot for entries in m.raw["slots"].values() for slot in entries]
     if not 1 <= band.number <= len(slots):
         raise ValueError(f"{m.plugin} has no band {band.number}; its slots run 1 to {len(slots)}")
     slot, step = slots[band.number - 1], m.raw.get("steps", {}).get("gain")
-    values = {slot["on"]: "On" if band.on else "Off",
-              slot["frequency"]: snap(m, slot["frequency"], round(band.frequency, 2)),
-              slot["q"]: snap(m, slot["q"], round(band.q, 3))}
+    given = {slot["frequency"]: band.frequency, slot["q"]: band.q}
     if "gain" in slot:
-        gain = band.gain if not step else round(math.floor(band.gain / step + 0.5 + 1e-9) * step, 6)
-        values[slot["gain"]] = snap(m, slot["gain"], gain)
+        given[slot["gain"]] = band.gain if not step or slider_curve(m, slot["gain"]) else round(math.floor(band.gain / step + 0.5 + 1e-9) * step, 6)
+    values = {slot["on"]: "On" if band.on else "Off"}
+    for param, value in given.items():
+        values[param] = snap(m, param, value)
+        notes += [n for n in [held(m, param, value, f"band {band.number} {band.label()}")] if n]
     return values
 
 
@@ -142,7 +146,7 @@ def apply_band_specs(payload: bytes, m: Map, specs: dict[str, str], tables: dict
     One of Logic's own keeps its slot's shape; a third-party takes a new band in an unused slot,
     its dynamics off. A cut named with no slope keeps the band's own."""
     if m.family != "eq":
-        raise ValueError(f"{m.plugin} is a {m.family}: band specs edit an EQ's bands (its bands cross with --translate)")
+        raise ValueError(f"{m.plugin} has no bands" + (f" (its family is {m.family})" if m.family else "") + ": band specs edit an EQ's bands")
     current = {b.number: b for b in read_settings(payload, m, tables).bands}
     values, by_id, notes = {}, {}, []
     for key, spec in specs.items():
@@ -155,7 +159,7 @@ def apply_band_specs(payload: bytes, m: Map, specs: dict[str, str], tables: dict
         if band.slope is None and old is not None:
             band = replace(band, slope=old.slope)
         if m.component is None:
-            values.update(_slot_values(m, band))
+            values.update(_slot_values(m, band, notes))
         else:
             if not 1 <= n <= m.raw["bands"]["count"]:
                 raise ValueError(f"{m.plugin}: band {n} is past its {m.raw['bands']['count']} bands")
@@ -208,19 +212,19 @@ def _coerce(item: Item, value, name: str) -> float | bool:
 
 
 def _on_slider(m: Map, item: Item, stored: float) -> tuple[float, str | None]:
-    """A native value held to its measured slider's ends and put on the nearer sampled position;
-    the note says when it was held, or when it sits between positions the table has not sampled."""
-    from ..mixer.slider import is_linear, slider_curve
+    """A native value held to its measured slider's ends and put where `snap` lands it; the note
+    says when it was held, or when it fell between positions the table has not sampled."""
+    from ..mixer.slider import is_linear, past_ends, slider_curve
     curve = slider_curve(m, item.param)
     if not curve:
         return stored, None
-    lo, hi = min(v for _u, v in curve), max(v for _u, v in curve)
-    if not lo <= stored <= hi:
+    if ends := past_ends(curve, stored):
+        lo, hi = ends
         held = min(max(stored, lo), hi)
         return snap(m, item.param, held), f"{m.plugin}'s {item.param} slider runs {lo:g}..{hi:g}; set to {held:g}"
     value = snap(m, item.param, stored)
     if not is_linear(curve) and not any(v == value for _u, v in curve):
-        return value, f"between {m.plugin}'s sampled {item.param} positions; Logic lays it on the nearer one"
+        return value, f"between {m.plugin}'s sampled {item.param} positions; written on the curve's nearest unit"
     return value, None
 
 

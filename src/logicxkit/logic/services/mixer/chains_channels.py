@@ -5,12 +5,14 @@ its slider's grid as `--set` puts it, and read back from the written project aft
 
 from __future__ import annotations
 
+import math
+
 from ..._binary import find_blocks, read_block_floats
 from .binding import channels
 from .slots import slot_index_base
 from ..stream.stream import HEADER, project_records
 from .output_params import NAMES, PARAMS, set_params
-from .plugin_params import load_tables, shown_of, table_of, word_of
+from .plugin_params import _coerce, load_tables, shown_of, table_of, word_of
 from .slider import grid_value
 from ..translate.translate import load_maps, map_for
 
@@ -67,9 +69,13 @@ def resolve_params(type_id: int, params: dict, where: str, donor: bytes) -> dict
 
 def on_grid(values: dict[int, float], donor: bytes, where: str) -> dict[int, float]:
     """Each value as `--set` writes it: held to the table's measured range (`set_by_name` refuses
-    the same), then on its slider's nearer sampled position where the plug-in's map measures the
-    slider (`slider.grid_value`); outside either, refused. The range and the slider are in what
-    Logic shows, so a scaled word is checked and gridded as shown. A word no table names goes as given."""
+    the same), then where its slider keeps it, where the plug-in's map measures the slider
+    (`slider.grid_value`); outside either, refused. The range and the slider are in what
+    Logic shows, so a scaled word is checked and gridded as shown. A word no table names goes as given;
+    a non-finite value is refused wherever it lands."""
+    for i, v in values.items():
+        if not math.isfinite(v):
+            raise ValueError(f"{where}: float index {i}: {v} is not a finite number")
     payload = donor[HEADER:]
     table = table_of(load_tables(), payload)
     if table is None:
@@ -80,6 +86,16 @@ def on_grid(values: dict[int, float], donor: bytes, where: str) -> dict[int, flo
     for i, v in values.items():
         p = params.get(i)
         if p is None:
+            continue
+        if p.choices:                                        # the word must be a choice's: `_coerce` reads the index, word x scale
+            if isinstance(v, bool):
+                raise ValueError(f"{where}: {table.name} {p.name}: a choice is a word, not {v!r}")
+            try:
+                index = v * p.scale
+                out[i] = _coerce(table, p, round(index) if abs(index - round(index)) < 1e-6 else index)
+            except ValueError:
+                words = ", ".join(f"{c} ({k / p.scale:g})" for k, c in enumerate(p.choices))
+                raise ValueError(f"{where}: {table.name} {p.name}: word {v!r} is not one of {words}") from None
             continue
         shown = v if p.kind == "int" else shown_of(p, v)
         if p.curve:                                     # held to its curve's word ends: a curve clamps past them

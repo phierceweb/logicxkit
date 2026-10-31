@@ -53,8 +53,13 @@ without a physical console's scene file.
   `PYTHON=python3.13` (or any 3.12+) to choose another interpreter.
 - **Logic Pro**, to confirm anything. A file that opens is not proof a write was correct — see
   [EVIDENCE.md](EVIDENCE.md).
-- **A Swift toolchain**, optionally. Without `swift` on `PATH`, `au` falls back to the static
-  parameter tables and `logic ocr` is unavailable. Everything else works.
+- **A Swift toolchain**, optionally. Without `swiftc` or `swift` on `PATH`, `au` falls back to the static
+  parameter tables, and `logic ocr` and the `--band` and `--ref` rules of `strip-silence` are
+  unavailable. Everything else works. Each Swift helper is compiled on first use into
+  `logicxkit-swift/` under the temp directory and the binary reused until the script or the
+  compiler changes; without `swiftc` it runs JIT through `swift`. On a cold or hung toolchain the
+  first use can wait up to six minutes before the command's own timeout applies. A build removes the
+  script's builds no run has used for a week.
 
 ## Configuration
 

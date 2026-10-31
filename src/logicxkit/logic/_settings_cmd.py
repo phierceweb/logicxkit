@@ -13,6 +13,9 @@ from .services.arrange.retrack import find_project
 from .services.translate.translate import VOCABULARY, _show, load_maps, map_for, maps_for, read_settings
 
 
+NO_VOCABULARY = "no settings vocabulary; use add-plugin/replace-plugin --set or automation --set"
+
+
 def cmd_settings(args) -> int:
     maps = load_maps([Path(args.maps)] if args.maps else None)
     tables = load_tables()
@@ -26,12 +29,14 @@ def cmd_settings(args) -> int:
     for ref, payload in slot_payloads(data):
         if wanted and ref.channel not in wanted:
             continue
-        found = [m for m in maps_for(payload, maps) if m.family]   # one entry per family the plug-in carries
+        mapped = maps_for(payload, maps)
+        found = [m for m in mapped if m.family]                    # one entry per family the plug-in carries
         for m in found or [None]:
             entry = {"channel": ref.channel, "slot": ref.key - base + 1, "key": ref.key, "name": ref.name,
                      "side_chain": ref.side_chain}
             if m is None:
                 entry["settings"] = None
+                entry["sliders_only"] = bool(mapped)
             else:
                 s = read_settings(payload, m, tables)
                 entry.update({"family": m.family, "plugin": m.plugin, "settings": s.values, "silent": s.silent,
@@ -51,7 +56,7 @@ def cmd_settings(args) -> int:
 def _line(e: dict) -> str:
     head = f"  {e['channel']:16s} slot {e['slot']:2d}  {e['name']}"
     if e["settings"] is None:
-        return f"{head}: no map for it"
+        return f"{head}: {NO_VOCABULARY if e.get('sliders_only') else 'no map for it'}"
     units = VOCABULARY.get(e["family"], {})                     # an EQ is bands only
     parts = [f"{k} {_show(v, units.get(k, ''))}" for k, v in e["settings"].items()]
     parts += [f"{k} silent" for k in e["silent"]] + list(e.get("notes") or [])
@@ -92,8 +97,10 @@ def _write(args, maps, tables) -> int:
             raise CommandError(f"{alt}: {label}: slot {args.at} holds no plug-in (plug-ins in slot(s) {held})")
         payload = rec.raw[HEADER:]
         m = map_for(payload, maps)
-        if m is None or m.family is None:
+        if m is None:
             raise CommandError(f"{alt}: {label} slot {args.at}: no map for the plug-in there")
+        if m.family is None:
+            raise CommandError(f"{alt}: {label} slot {args.at}: {m.plugin} has {NO_VOCABULARY}")
         try:
             notes = []
             if bands:

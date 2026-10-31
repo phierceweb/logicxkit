@@ -85,7 +85,7 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
     payload = record.raw[HEADER:]
     identity = plugin_identity(payload)
     if is_own(identity):
-        from .services.mixer.slider import point_for, slider_by_name
+        from .services.mixer.slider import past_ends, point_for, slider_by_name
         table = table_of(load_tables(), payload)
         m = map_for(payload, load_maps())
         param = next((p for p in (table.params if table else []) if p.name.lower() == name.lower()), None)
@@ -102,9 +102,8 @@ def _param_target(data: bytes, obj: int, track: str, slot: int, name: str):
             point, units, landed, sampled = point_for(m, param.name, value)
             held = ""
             if not isinstance(value, bool):
-                ends = [v for _u, v in slider_by_name(m, param.name)[2]]
-                if not min(ends) <= value <= max(ends):
-                    held = f"; the slider runs {min(ends):g}..{max(ends):g}"
+                if ends := past_ends(slider_by_name(m, param.name)[2], value):
+                    held = f"; the slider runs {ends[0]:g}..{ends[1]:g}"
             return point, f"{landed:g} (unit {units:g}{'' if sampled else ', between sampled positions'}{held})"
         return table.name, param.index - 1, native
     if identity and identity[0] == "au":

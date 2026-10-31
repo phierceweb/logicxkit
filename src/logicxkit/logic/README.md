@@ -475,7 +475,8 @@ own Sample Delay is type 259 and sits under Apple's AUSampleDelay in the menu's 
 Chorus 4/4, Ensemble 14/14, Flanger 5/5, Microphaser 3/4, Modulation Delay 15/18, Phaser
 15/18, Ringshifter 20/30, Scanner Vibrato 4/5, Spreader 4/4, Tremolo 6/7 (`stockfx-mod-*`),
 Bitcrusher 5/6, Clip Distortion 10/10, Distortion 4/4, Distortion II 6/7, Overdrive 4/4, Phase
-Distortion 7/7, AutoFilter 22/30, EVOC 20 Filterbank 35/61, Fuzz-Wah 13/17, Spectral Gate
+Distortion 7/7, AutoFilter 25/30 (LFO Rate in Hz; with Beat Sync on, Logic's synced reading of
+its word is unmeasured), EVOC 20 Filterbank 35/61, Fuzz-Wah 13/17, Spectral Gate
 11/11, Rotor Cabinet 5/14 (`stockfx-dist-*`), Amp Designer 13/25, Bass Amp Designer 27/46,
 Pedalboard 8/63 (its 2001 floats hold every pedal's parameters), Pitch Correction 7/36, Pitch
 Shifter 4/8, Vocal Transformer 7/10, Exciter 3/4, SubBass 9/9 (`stockfx-amp-*`; Denoiser and
@@ -581,7 +582,7 @@ evidence that placed them. What the instruments added to the method:
   Phase, to `test_stereo_rows.py`), and the save's own word at each ranged row to the table's
   default. A table parameter carries them as `min` and `max` in its own unit, and `--set` refuses
   a number outside (or, where the plug-in's slider is mapped, holds it to the slider's ends with
-  a note): 1346 of the 1785 parameters in the 100 tables carry both ends (97 tables hold one or
+  a note): 1349 of the 1789 parameters in the 100 tables carry both ends (97 tables hold one or
   more), and 28 more carry one — a slider whose other end reads a word with no number in it
   ("Mute", "Off", "off", "mono", "Fix" or "Click" at the bottom, "inf", "∞" or "Paradise" at the
   top) keeps that bound open, unchecked and with no word to write, the number on its end's
@@ -1146,7 +1147,9 @@ moved the fade-out's `+72..+75` to the piece and zeroed them on the parent, left
 the piece no fade-in, and moved the selection (`+15` bit 7) from the parent to the piece; it also set
 `+14` bit 5 on the parent, not read. Logic's re-save of `regions --split` on the same base
 (`regions-c03`) kept both entries; it set the piece record's payload `+130` to 1, which Logic's own
-split writes 0. A crossfaded region's split is not measured, so it is refused. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
+split writes 0. Logic 12.4's re-saves of `strip-silence` and `split-sections` copies (`writers-a01-strip-silence-ours-resave-logic`,
+`writers-a03-split-sections-ours-resave-logic`, 2026-10-30) set it on every piece to the record's header owner, the piece number (1, 2, 3),
+and kept every other byte of each entry and record but the time and UUID. A crossfaded region's split is not measured, so it is refused. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
 goldens): Gain in dB as a tens byte `+52` i8 and a signed five-bit remainder in `+48` bits 0-4 (-17
 is -1 and -7), Reverse `+48` bit 5, Fine Tune `+50` i8 cents, Transpose `+53` i8 semitones, Delay
 `+60` i32 ticks. Transpose on an unflexed region made Logic switch the track to Flex Pitch (two 0xAA
@@ -1190,6 +1193,13 @@ top (the Compressor's Threshold 100, Ratio 85, Knee 10, so Knee's automation rea
 lane carried onto such a short slider, four times shorter than its automation reaches, gets a note:
 nearly a switch); the slider's own scale then gives the value, read at up to 44 positions into each
 native map's `automation` table (Compressor, Noise Gate, Channel EQ and Multipressor, 2026-09-23;
+Linear Phase EQ, Adaptive Limiter and the Limiter at every position, 2026-10-30, their `per` by the
+rule the measured rates follow — 128 for a slider of up to 127 units, else the units × 128/127 to the
+nearest quarter, Channel EQ's frequencies a quarter under it — consistent with `slider-lanes-ours` on the
+seven rows its eight points cover, each shown at its bar on the predicted unit and value, the rule
+holding every row of every map in the tests; a map may
+carry the grid alone, with no vocabulary family: `settings` names it as having no settings vocabulary,
+and `swap-plugin` and `tracking-chains` see no map there;
 the rates from every row read at eleven automation values, `auto_value_probe.py`; a switch is on
 from one unit; a written point aims at the middle of its unit so no rounding tips it down).
 `automation --set "TRACK:slot N NAME=V@BAR,…"` writes such a lane from the parameter's own values:
@@ -1200,8 +1210,19 @@ Compressor's threshold on units 40, 52 and 76, its Auto Release 127 and 0, a Noi
 and 20, a Pro-C 2's threshold 85 and 106 of 128 — and the Controls view showed a Multipressor's band
 1 expander threshold, reduction and response on the written units, the points kept as written. The
 same tables give the settings writers their grid: a native value is put on the nearer of the two
-sampled slider positions around it before it is written (`slider.snap`; a tie goes down — Logic's
-own choice at a midpoint depends on the knob), so the re-save keeps it as written — the knob-shaped
+sampled slider positions around it before it is written (`slider.snap`; a value midway between two
+positions of a linear row goes where the slider's own single-precision arithmetic puts it, value less
+bottom over the step rounded half up, `linear_unit`, and so does a value between a linear row's
+samples — every value Logic writes on such a row sits on a whole unit, and eight raw values between the
+samples of Compressor, Noise Gate, Channel EQ and Multipressor rows came back on the predicted units,
+`slider-linear-resave-logic`, 2026-10-30; on a knob-shaped row a midpoint down, or up where the row's
+`tie` says so — six rows Logic laid up at all four midpoints measured on each, `slider-midpoints-resave-logic`
+and `slider-ties1..3-resave-logic`, and the twenty-three sharing their curves at one each,
+`slider-siblings-resave-logic`, 2026-10-31, where four other rows went either way; on Noise Gate Release and
+the Multipressor's band 1 compression ratio the map's samples are display-rounded (53.7 for a stored 53.694,
+1.977 for 1.97778), so a value midway between two of them is not the slider's midpoint — and a value in a gap between
+its samples — Compressor Make Up, Noise Gate High Cutoff, the Multipressor's compression thresholds — the curve's value at the
+nearest unit along them, unmeasured), so the re-save keeps it as written — most knob-shaped
 rows are sampled at every unit for that (ratios, times, Q, the Channel EQ's frequencies at all 1051
 positions), the linear dB rows every few. The Multipressor's expander threshold, reduction and
 response rows carry no band name in the Controls view or the Event List (Logic's own parameter names
@@ -1209,10 +1230,13 @@ lack one); the view lists them band 4 first, and a lane on each band's row found
 2026-09-23): the thresholds run 161.25 per 1.0 like the compression thresholds, the other two 128,
 every band alike. Logic-confirmed 2026-09-23 (`snap-*`): raw floats between positions came back on
 the positions the snap picks — a Compressor ratio 4.0 as 3.9, attack 20.5 as 20, release 115 as 110;
-the Noise Gate's hold 205 as 210, a midpoint Logic took up where the snap takes it down — and a copy
+the Noise Gate's hold 205 as 210 — and a copy
 written through the snap came back with every float as written. The Noise Gate's release positions
 are not round numbers (351 came back 350.99: the display's tenth hides the rest), so there the snap
-is exact to a hundredth. A third-party's value spans its AU parameter's range (`raw` in its map:
+is exact to a hundredth. Logic-confirmed 2026-10-30 (`slider-snap-raw-resave-logic`): ten raw values on
+Linear Phase EQ, Adaptive Limiter and the Limiter came back on the snap's positions, five of them
+midpoints the single-precision rule decides (a gain 1.55 as 1.5, a lookahead 51.5 as 52), and the
+Controls view showed each position before the save. A third-party's value spans its AU parameter's range (`raw` in its map:
 Pro-C 2's threshold -60..0 dB). Bit 14 of the type word (0x4051) is set on some of a real song's
 parameter points and read as `flagged`; meaning unknown. Logic-confirmed 2026-09-23
 (`auto-lanes-*`): four lanes written on a Pro-C 2 and carried into a Compressor by `replace-plugin
@@ -1550,8 +1574,10 @@ those ids — so it may have been this word and not the keys.
 channel bytes alone (`+78 +81 +86 +123` = 247 8 1 2) over the default mono slot, Logic 12.4
 saved the channel back as mono (243 8 0 1). `+84` and `+119` are 2 on Logic's own stereo
 instrument slot (`sessionplayer-track-logic`, another plug-in's); with those two set, Logic
-12.4 kept the channel stereo and itself wrote `+81` 2 and `+116` 255 (mono 1 and 254). Neither
-that save nor the mono one was kept. With all four written, Logic 12.4 kept the slot record
+12.4 kept the channel stereo and itself wrote `+81` 2 and `+116` 255 (mono 1 and 254). Both saves
+were remade and kept 2026-10-30 (`addtrack-inst-stereo-chan-mine`/`-logic`: the channel back to
+243 8 0 1, the slot untouched; `addtrack-inst-stereo-outs-mine`/`-logic`: the channel kept, the slot
+made 2 2 255 2). With all four written, Logic 12.4 kept the slot record
 byte for byte (`addtrack-inst-stereo-mine`, `-logic`, 2026-10-01).
 
 **The sequence triple and the index table are linked by slot.** The three records of a
@@ -2131,7 +2157,8 @@ Existing files are never overwritten unless you pass `--overwrite`.
 
 **Limiter** parameters (index == Apple's own `parameterID`, from Logic's `Limiter.plist`):
 `[1]` Gain dB · `[2]` Lookahead ms · `[3]` Softknee · `[4]` Release ms · `[5]` Output Level dB ·
-`[6]` Gain Reduction · `[7]` True Peak Detection · `[8]` Mode (0 Legacy, 1 Precision).
+`[6]` Gain Reduction · `[7]` True Peak Detection · `[8]` Mode (0 Legacy, 1 Precision; confirmed by one
+save of the popup, `master-lim-mode-logic`, Logic 12.4, 2026-10-30; the Controls view has no Softknee row).
 
 ## Usage
 

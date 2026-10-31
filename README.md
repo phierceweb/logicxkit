@@ -77,9 +77,10 @@ session you care about.
   serves as an `apply-template` template; before 11.2, tracks may read unnamed.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set
   `PYTHON=python3.13` (or any 3.12+) to use another interpreter.
-- **A Swift toolchain** (`swift`) — the headless AU host and the Apple Vision OCR are Swift
-  scripts run JIT at call time. Without it, `au` falls back to static parameter tables and
-  `logic ocr` is unavailable.
+- **A Swift toolchain** (`swiftc` or `swift`) — the headless AU host, the Apple Vision OCR and the band-limited
+  audio envelopes are Swift scripts, compiled on first use and the binary reused. Without it, `au`
+  falls back to static parameter tables, and `logic ocr` and the `--band` and `--ref` rules are
+  unavailable.
 
 Two runtime dependencies, installed automatically: [pw-foundation][pw-foundation], which supplies the
 atomic-write helpers and the logging and exception types used at the CLI boundary, and
@@ -259,8 +260,8 @@ logicxkit/
       cli.py _views.py
       services/            ffp, aupreset, embed, waves, sonible, tr5, juce, host,
                            tables, report
-    native/                auprobe.swift, aulatency.swift, vision_ocr.swift — run by
-                           `swift` at call time, shipped as package data
+    native/                auprobe.swift, aulatency.swift, vision_ocr.swift, bandrms.swift —
+                           compiled on first use, shipped as package data
     utils/                 helpers ≥2 domains share (swiftrun, data root, env)
   tests/logic tests/au     synthetic records — green on any macOS checkout
   tests/corpus             the public corpus: Logic's saves of a blank project, one change each

@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import json
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from decimal import Decimal
 from pathlib import Path
 
@@ -29,7 +29,7 @@ from ....au.services.sonible import decode_sonible
 from ....utils.data import MissingData, data_dirs
 from ..._binary import find_blocks, read_block_floats
 from ..mixer.plugin_params import decode, load_tables, table_for
-from ..mixer.slider import interp, snap
+from ..mixer.slider import interp, slider_curve, snap
 from ..mixer.slot_width import plugin_variant
 from .translate_izotope import izotope_module, izotope_values
 
@@ -239,6 +239,7 @@ def plan(settings: Settings, target: Map) -> Plan:
         raise ValueError(f"{bare.plugin}'s map is a slider grid, not a translation map")
     if settings.map.family != target.family:
         raise ValueError(f"{settings.map.plugin} is a {settings.map.family}, {target.plugin} a {target.family}")
+    _refuse_non_finite(settings)
     out = Plan(target, source=settings.map)
     if target.family == "eq":
         from .translate_eq import plan_bands, plan_bands_into
@@ -269,10 +270,10 @@ def plan(settings: Settings, target: Map) -> Plan:
                 out.notes.append(f"{name} {_show(value, units[name])} -> {item.param}: approximate ({item.approx})")
             continue
         stored = item.to_stored(carried)
-        if item.step and not item.switch:
-            stored = round(math.floor(stored / item.step + 0.5 + 1e-9) * item.step, 6)   # half up, float32 noise aside
+        if item.step and not item.switch and slider_curve(target, item.param) is None:   # an unmeasured row: the vocabulary's step
+            stored = round(math.floor(stored / item.step + 0.5 + 1e-9) * item.step, 6)
         if not item.switch:
-            stored = snap(target, item.param, stored)
+            stored = snap(target, item.param, stored)                                  # a measured row: the slider's own unit
         out.values[item.param] = "On" if item.switch and stored else "Off" if item.switch else round(stored, 4)
         if item.approx:
             out.notes.append(f"{name} {_show(value, units[name])} -> {item.param} {out.values[item.param]}: approximate ({item.approx})")
@@ -290,6 +291,27 @@ def _bypass_notes(out: Plan, settings: Settings, target: Map) -> list[str]:
         return list(settings.notes)
     out.bypass = True
     return [f"{n}; {target.plugin} goes in bypassed" if n.endswith(" is bypassed") else n for n in settings.notes]
+
+
+def _refuse_non_finite(settings: Settings) -> None:
+    """A source value, band field or master gain that is not a finite number, refused before any
+    path clamps it to a slider's end."""
+    numbers = list(settings.values.items())
+    for i, band in enumerate(settings.bands, 1):
+        label = f"band {getattr(band, 'number', 0) or i}"
+        for f in fields(band):
+            value = getattr(band, f.name)
+            if f.name == "slope" and value == math.inf:                             # a brickwall cut's slope
+                continue
+            if isinstance(value, tuple):
+                numbers += [(f"{label} {f.name}[{k}]", x) for k, x in enumerate(value)]
+            else:
+                numbers.append((f"{label} {f.name}", value))
+    if settings.master is not None:
+        numbers.append(("master", settings.master))
+    for name, value in numbers:
+        if isinstance(value, float) and not math.isfinite(value):
+            raise ValueError(f"{name}: {value} is not a finite number")
 
 
 def clamp(item: Item, value) -> tuple[float | bool, str | None]:
