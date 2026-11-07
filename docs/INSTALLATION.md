@@ -36,7 +36,7 @@ bin/run lint
 ```
 
 Do not create the venv by hand. `bin/run` is the entry point for every development task —
-`setup | pytest | python | pip | ruff | lint | logic | au` — and it sources a local `.env`
+`setup | pytest | python | pip | ruff | lint | pw-guards | pw-doctor | pw-setup | logic | au` — and it sources a local `.env`
 before running, so commands work without exported variables. `bin/run logic …` and
 `logicxkit logic …` invoke the same CLI.
 
@@ -70,13 +70,15 @@ Treat `.env.example` as the authoritative list — it carries each variable's de
 consequence of leaving it unset. Do not maintain a second copy of that list here or in the
 README; two lists drift.
 
-The variables fall into four groups:
+The variables fall into five groups:
 
 - **Where Logic keeps its own files.** `LOGICXKIT_AUDIO_MUSIC_APPS`, `LOGICXKIT_STRIP_ROOT`,
   `LOGICXKIT_LOGIC_PREFS` and `LOGICXKIT_LOGIC_APP`. Defaults point at Logic's real locations.
   Override them to read from a staged copy instead of the live library. `LOGICXKIT_STRIP_ROOT`
   is also the base for a strip spec's relative paths and where `logic diff --library` looks.
 - **Where your rig's specs and reference files live.** These point outside the repo (see below).
+- **The write notice.** `LOGICXKIT_NO_NOTICE=1` silences the line a write by a command that is not
+  CONFIRMED prints (`docs/EVIDENCE.md` says which those are).
 - **Test behaviour.** Most usefully `LOGICXKIT_REQUIRE_GOLDENS=1`, which turns a missing
   golden into a failure instead of a skip (`=public` fails only on keys the public corpus
   should supply, which is what CI runs), and `LOGICXKIT_GOLDENS=owner`, which prefers the

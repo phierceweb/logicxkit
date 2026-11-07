@@ -4,7 +4,8 @@
 directions passes. The independent read of one of Logic's own plug-ins is Logic's Controls view:
 `tools/driver/controls.py` opens the written bundle, reads every slot's rows on the named tracks
 and closes it without saving, and this module compares those rows with what the measured tables
-(`plugin_params`) decode from the bundle's bytes. Nothing is written or staged.
+(`plugin_params`) decode from the bundle's bytes. A third-party slot's second reading is the
+plug-in's own, through the headless AU host (`au/services/state_check.py`). Nothing is written or staged.
 """
 
 from __future__ import annotations
@@ -19,10 +20,12 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from ...au.services.host import AuHost
 from ..services.mixer.plugin_params import decode_payload, load_tables, table_for
 from ..services.mixer.plugins import slot_payloads
 from ..services.mixer.slot_identity import slot_header
 from ..services.mixer.slot_width import plugin_variant
+from .chains_verify_au import host_line, third_party_states
 from .migrate import DRIVER, LOGIC_APP
 
 TOGGLES = {"off": "0", "on": "1"}            # a checkbox row shows 0/1 where a table names the choice
@@ -207,12 +210,24 @@ def _run(argv: list[str]) -> tuple[int, str]:
     return r.returncode, (r.stdout or r.stderr).strip()
 
 
+def _paired(rows: list[tuple[str, str, dict | None]], states: list[dict | None]) -> dict[int, dict | None]:
+    """Row index -> the AU state of that third-party row: the states come in slot order over the
+    third-party rows alone, so a row the strip lacks must not shift the next row's state."""
+    pairs, states = {}, iter(states)
+    for i, (_name, _short, values) in enumerate(rows):
+        if values is None:
+            pairs[i] = next(states, None)
+    return pairs
+
+
 def verify(bundle: Path, tracks: list[str], *, run: Callable[[list[str]], tuple[int, str]] | None = None,
-           driver: Path = DRIVER) -> Verdict:
+           driver: Path = DRIVER, host: AuHost | None = None) -> Verdict:
     """Read the named tracks' Controls views in Logic and compare them with the bundle's bytes.
     Logic opens a copy of the bundle in a scratch directory (it autosaves into what it opens),
-    removed afterwards; the bundle itself is never opened."""
+    removed afterwards; the bundle itself is never opened. A third-party slot is read through the
+    headless AU host instead (``host``, by default the machine's when it has one)."""
     run = run or _run
+    host = host if host is not None else (AuHost() if AuHost.available() else None)
     alternative = sorted(bundle.glob("Alternatives/*/ProjectData"))
     if not alternative:
         return Verdict(problem=f"{bundle} holds no ProjectData")
@@ -220,6 +235,8 @@ def verify(bundle: Path, tracks: list[str], *, run: Callable[[list[str]], tuple[
     labels = {t: channel_label(data, t) for t in tracks}
     by_label = expected_rows(data, list(labels.values()))
     expected = {t: by_label[labels[t]] for t in tracks}
+    by_states = third_party_states(data, list(labels.values()))
+    states = {t: _paired(expected[t], by_states[labels[t]]) for t in tracks}   # the state beside its own row
     units = expected_units(data, list(labels.values()))
     scratch = Path(tempfile.mkdtemp(prefix="logicxkit-verify-"))
     try:
@@ -241,14 +258,16 @@ def verify(bundle: Path, tracks: list[str], *, run: Callable[[list[str]], tuple[
         if not expected.get(track) and not slots:
             verdict.lines.append(f"{track}: no native slot in the file, none on Logic's strip")
             continue
-        for name, short, values in expected.get(track, []):
+        for name_index, (name, short, values) in enumerate(expected.get(track, [])):
             slot = _take_slot(slots, short, name)                      # the driver's slot of that name, in order
             if slot is None:
                 verdict.lines.append(f"{track} / {name}: no slot of that name on Logic's strip")
                 verdict.differences += 1
                 continue
             if values is None:
-                verdict.lines.append(f"{track} / {name}: third-party, not compared")
+                line, differ = host_line(f"{track} / {name}", states[track].get(name_index), host)
+                verdict.lines.append(line)
+                verdict.differences += differ
                 continue
             if not values:
                 verdict.lines.append(f"{track} / {name}: no table, not compared")

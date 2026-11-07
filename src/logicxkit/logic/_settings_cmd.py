@@ -7,9 +7,10 @@ import json
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data, owner_by_label
+from ._plugin_settings import repeated_name
 from .services.mixer.plugin_params import load_tables
 from .services.mixer.plugins import slot_payloads
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.translate.translate import VOCABULARY, _show, load_maps, map_for, maps_for, read_settings
 
 
@@ -82,6 +83,9 @@ def _write(args, maps, tables) -> int:
         name, sep, value = spec.partition("=")
         if not sep or not name.strip():
             print(f"  --set takes NAME=VALUE, e.g. 'threshold=-18' or 'band 2=bell 250 Hz -4 dB Q 2'; got {spec!r}")
+            return 2
+        if twice := repeated_name([*specs, name.strip()]):
+            print(twice)
             return 2
         specs[name.strip()] = value.strip()
     label = args.channel[0].strip()

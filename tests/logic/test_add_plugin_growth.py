@@ -82,6 +82,27 @@ class GrowthTest(unittest.TestCase):
         self.assertEqual(_keyed(out, 5), [4, 14, 16, 17])
         self.assertEqual(flag_errors(out), [])
 
+    def test_an_add_on_an_empty_channel_grows_the_range_once(self):
+        """Channel 3 empty, channel 5 on keys 4..6, the reference at 10 (headroom 4): an add at
+        position 5 lands on key 8 and moves the reference to 12, not twice to 14."""
+        data = proj(mono_chan(OWNER, "Audio 3"), stray(OWNER, 9), ref(OWNER, 10), archive(OWNER, 12, 1), archive(OWNER, 13, 2),
+                    mono_chan(5, "Audio 5"), *(native(5, 4 + i, i) for i in range(3)), ref(5, 10), archive(5, 12, 1), archive(5, 13, 2))
+        out, report = add_plugin(data, OWNER, au(9, 4, 7), at=5)
+        self.assertEqual((report["key"], report["grown"]), (8, 2))
+        self.assertEqual(_keyed(out, OWNER), [8, 11, 12, 14, 15])
+        self.assertEqual(_keyed(out, 5), [4, 5, 6, 12, 14, 15])
+
+    def test_a_slot_at_the_projects_highest_key_moves_nothing_under_a_short_headroom(self):
+        """Channel 3 on keys 4..7 with the reference at 9 (two keys of headroom, as Logic lays an
+        instrument with one effect out): an add on channel 5 that lands on key 7 stays put."""
+        data = proj(mono_chan(OWNER, "Audio 3"), *(native(OWNER, 4 + i, i) for i in range(4)), ref(OWNER, 9),
+                    archive(OWNER, 11, 1), archive(OWNER, 12, 2),
+                    mono_chan(5, "Audio 5"), native(5, 4, 50), ref(5, 9), archive(5, 11, 1), archive(5, 12, 2))
+        out, report = add_plugin(data, 5, au(9, 4, 7), at=4)
+        self.assertEqual((report["key"], report["grown"]), (7, 0))
+        self.assertEqual(_keyed(out, 5), [4, 7, 9, 11, 12])
+        self.assertEqual(_keyed(out, OWNER), [4, 5, 6, 7, 9, 11, 12])
+
     def test_a_slot_under_the_projects_highest_key_moves_nothing(self):
         """Channel 3 runs to key 7; a second slot on channel 5 lands at 5, inside the range."""
         data = self._project(*(native(OWNER, 4 + i, i) for i in range(4)))
@@ -103,7 +124,7 @@ class GrowthTest(unittest.TestCase):
         self.assertEqual(_shown(out), {OWNER: 6, 5: 6})
 
     def test_the_projects_shown_count_is_the_highest_any_record_carries(self):
-        from logicxkit.logic.services.mixer.add_plugin import shown_slots
+        from logicxkit.logic.services.mixer.shown import shown_slots
         self.assertEqual(shown_slots(self._project(native(OWNER, 4, 1))), 0)
         self.assertEqual(shown_slots(_with_shown(self._project(native(OWNER, 4, 1)), 9)), 9)
 

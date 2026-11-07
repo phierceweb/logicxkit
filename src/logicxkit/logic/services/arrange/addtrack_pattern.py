@@ -4,9 +4,10 @@ index-table entry, and the mixer-order row the new row follows."""
 from __future__ import annotations
 
 from ..mixer.channel_alloc import (
-    channel_run_end, default_inst_records, is_mixer_record, is_unused_stub, mixer_record, new_audio_channel,
-    new_aux_channel, new_inst_channel, project_words,
+    channel_run_end, default_inst_records, is_mixer_record, mixer_record, new_audio_channel, new_aux_channel,
+    new_inst_channel, project_words,
 )
+from ..mixer.channel_stubs import is_unused_stub
 from ..mixer.slots import property_key_base, slot_index_base
 from ..stream.stream import HEADER
 from .tracklist import row_object, row_position

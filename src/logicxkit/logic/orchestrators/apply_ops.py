@@ -93,6 +93,8 @@ def apply(template: bytes, session: bytes, ops: list[Op], *, session_count: int 
                     target = a["new"] if a["category"] is None else {"name": a["new"], "category": a["category"]}
                     data, _r = retrack_channels(data, {a["owner"]: target})
                 elif op.kind == "output":
+                    if a.get("use_bus"):                  # a fresh aux strip would move the owners these ops name
+                        raise ValueError(f"{a['use_bus']} is put in use before the channel ops are planned, not among them")
                     data = set_output(data, a["owner"], a["dest"])
                 elif op.kind == "input":
                     data = set_input(data, a["owner"], a["dest"])

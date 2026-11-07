@@ -4,7 +4,7 @@ no map measures goes as given."""
 
 import unittest
 
-from logicxkit.logic._plugin_settings import gridded
+from logicxkit.logic._plugin_settings import gridded, set_specs
 from logicxkit.logic.services.stream.stream import HEADER
 from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
 from logicxkit.utils.data import PACKAGED
@@ -47,6 +47,18 @@ class GriddedTest(unittest.TestCase):
     def test_a_toggle_and_a_sampled_value_pass_through(self):
         self.assertEqual(gridded(_payload("Linear Phase EQ"), {"Peak 1 On/Off": "On", "Peak 3 Frequency": "750"})[0],
                          {"Peak 1 On/Off": "On", "Peak 3 Frequency": 750.0})
+
+
+
+class SetSpecsTest(unittest.TestCase):
+    def test_one_row_named_twice_is_refused_whatever_the_spelling(self):
+        for twice in (["Threshold=-18", "Threshold=-20"], ["Threshold=-18", "threshold=-20"],
+                      ["Make Up=3", "make_up=4"], ["band 2=bell 1 kHz", "Band  2=bell 2 kHz"]):
+            with self.subTest(twice), self.assertRaisesRegex(SystemExit, "names one row twice"):
+                set_specs(twice)
+
+    def test_distinct_rows_pass(self):
+        self.assertEqual(set_specs(["Threshold=-18", "Make Up=3"]), {"Threshold": "-18", "Make Up": "3"})
 
 
 if __name__ == "__main__":

@@ -3,8 +3,10 @@ indices and, into a summing stack, the routing."""
 
 from __future__ import annotations
 
+import struct
+
 from ..mixer.binding import bound_channels, set_stack_index
-from .environment import object_id_of, set_parent, set_selected_object
+from .environment import PARENT_AT, object_id_of, set_parent, set_selected_object
 from ..mixer.mixer import CHANNEL_TAG
 from ..stream.recbuild import with_key
 from ..regions.regions import sync_region_tracks, sync_row_count
@@ -12,7 +14,7 @@ from .selection import select_track
 from .stack_place import summing_bus, to_summing_bus
 from .stacks import FOLDER, SUMMING, read_stacks, require_two_levels, span_end, summing_holder
 from ..stream.stream import HEADER, NO_KEY, project_records, reassemble
-from .tracklist import MEMBER_AT, arrange_run, row_object, with_member
+from .tracklist import MEMBER_AT, arrange_run, row_object, with_member, with_selected_row
 from ..stream.validate import require_full_walk, require_valid
 
 
@@ -152,10 +154,12 @@ def move_out_of_stack(data: bytes, track_object: int, track_count: int | None = 
 
 def flatten_stack(data: bytes, stack_object: int, track_count: int | None = None) -> bytes:
     """Flatten a stack as Logic's own Flatten Stack leaves the file (`stack-folder-flattened-logic`,
-    `stack-summing-flattened-logic`, `nest-flatten-after-logic`): the header's arrange row goes and
-    its members come up a level, their parent pointer cleared even inside another stack, and all
-    of them selected, the first foremost. The header object, its strip, its flat row and the members'
-    channel stack indices stay as they were, and so does every member's routing."""
+    `stack-summing-flattened-logic`, `nest-flatten-after-logic`, `stack-flatten-in-summing-after-logic`,
+    `stack-flatten-inner-summing-after-logic`): the header's arrange row goes and its members come
+    up a level with the header's own parent pointer (Sum 2's header for a summing stack inside Sum 2;
+    none under a folder), every one of them selected, the first foremost. The header object, its
+    strip, its flat row and the members' channel stack indices stay as they were, and so does every
+    member's routing."""
     require_full_walk(data)
     records = list(project_records(data))
     run = arrange_run(records, track_count)
@@ -171,6 +175,8 @@ def flatten_stack(data: bytes, stack_object: int, track_count: int | None = None
     direct = [order[k] for k in range(start + 1, end) if depths[k] == stack.depth + 1]
     if not direct:
         raise ValueError("no track sits in it, so there is nothing to flatten")
+    header = next(r.raw for r in records if object_id_of(r) == stack_object)
+    parent = struct.unpack_from("<I", header, HEADER + PARENT_AT)[0]
     rows = [records[i].raw for i in run]
     kept = (rows[:start]
             + [with_member(rows[k], depths[k] - 1, header=order[k] in stacks) for k in range(start + 1, end)]
@@ -185,13 +191,16 @@ def flatten_stack(data: bytes, stack_object: int, track_count: int | None = None
             continue
         raw = record.raw
         if object_id_of(record) in direct:
-            raw = set_parent(raw, 0)
+            raw = set_parent(raw, parent)
         out.append(raw)
     count = None if track_count is None else track_count - 1
     result = sync_region_tracks(sync_row_count(reassemble(data, out), count), count)
     result = select_track(result, direct[0], count)
     if len(direct) > 1:                                   # Logic leaves every member selected
-        result = reassemble(result, [set_selected_object(r.raw, True) if object_id_of(r) in direct else r.raw
-                                     for r in project_records(result)])
+        records = project_records(result)
+        rows = set(arrange_run(records, count))
+        result = reassemble(result, [set_selected_object(r.raw, True) if object_id_of(r) in direct
+                                     else with_selected_row(r.raw) if i in rows and row_object(r.raw) in direct else r.raw
+                                     for i, r in enumerate(records)])
     require_valid(result)
     return result

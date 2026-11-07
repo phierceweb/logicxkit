@@ -130,14 +130,14 @@ class OtherMakersFollowTheClassTest(unittest.TestCase):
         self.assertNotIn(out[-16:], (self.MARK, bytes(16)))
 
     def test_binding_an_audio_stub_is_refused_at_class_6(self):
-        from logicxkit.logic.services.mixer.channel_alloc import bind_audio_stub
+        from logicxkit.logic.services.mixer.channel_stubs import bind_audio_stub
         stub = chan(9, "Audio 10", in_use=False, size=233, ver=6)
         with self.assertRaisesRegex(ValueError, "class-6 channel record keeps no input uuid"):
             bind_audio_stub(stub, object_uuid=self.MARK, input_uuid=bytes(range(17, 33)),
                             output_uuid=None)
 
     def test_a_stub_that_is_routed_keeps_its_output(self):
-        from logicxkit.logic.services.mixer.channel_alloc import bind_audio_stub
+        from logicxkit.logic.services.mixer.channel_stubs import bind_audio_stub
         routed = bytes(range(33, 49))
         stub = chan(9, "Audio 10", dest=routed, in_use=False, size=265)
         out = bind_audio_stub(stub, object_uuid=self.MARK, input_uuid=bytes(range(17, 33)),

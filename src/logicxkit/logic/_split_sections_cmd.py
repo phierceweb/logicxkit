@@ -10,7 +10,7 @@ from ._edit import CommandError, edit_copy, plan_alternatives
 from ._silence_cmd import _clock
 from ._silence_spec import LONGEST_S
 from .orchestrators.split_sections import RegionPlan, apply_split, plan_split
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.project.project import project_metadata
 from .services.song.signature import meter
 

@@ -13,7 +13,7 @@ from ._automation_list import list_lanes
 from ._edit import CommandError, edit_copy, object_by_name
 from .services.regions.automation_write import clear_lane, copy_lane, set_lane, set_param_lane
 from .services.arrange.groups import FADER_IDS
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.song.signature import meter
 
 

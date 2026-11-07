@@ -4,9 +4,9 @@ The slot records are cloned verbatim — third-party AU state is opaque bytes an
 decode — then re-stamped for the target (owner, key, slot index, width for native plugins).
 
 Which keys are slots is per project: they run from 4 up to the key of the channel's `.cst`
-reference record, which sits at 9, 10, 12 or 13 depending on the session. That range is the
-capacity, and overrunning it deletes the reference record — `validate_project` cannot see the
-loss, so the guard here is the only thing standing in front of it.
+reference record, which sits at 9, 10, 12 or 13 depending on the session. A chain longer than
+that range moves the reference and the records around it up (`insert_slots`, `key_range`), as
+Logic's own save lays them out.
 """
 
 from __future__ import annotations
@@ -73,9 +73,9 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
     included. ``fan_out`` says the same source goes onto more than one channel: then each copy
     gets its own instance id, measured from a second instance of that plug-in in ``src``, and a
     plug-in with no second instance is refused. With the source's instrument among the slots,
-    the destination channel takes the source channel's width. Refuses a move that would overrun
-    the key range, cross a class version, change a third-party slot's width on an audio channel
-    or put an instrument on a channel that is not an instrument's; ``force`` writes anyway.
+    the destination channel takes the source channel's width. Refuses a move that would cross a
+    class version, change a third-party slot's width on an audio channel or put an instrument on
+    a channel that is not an instrument's; ``force`` writes anyway.
     """
     require_full_walk(dst)
     slots = channel_slots(src, src_owner)
@@ -83,7 +83,6 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
         raise ValueError(f"source channel {src_owner} carries no plugin slots")
     existing = {r.key for r in channel_slots(dst, dst_owner)}
     first = slot_index_base(dst)
-    base = property_key_base(dst)
     src_width, dst_width = channel_formats(src).get(src_owner), channel_formats(dst).get(dst_owner)
     instrument = any(is_instrument_plugin(r.raw[HEADER:]) for r in slots)
     if instrument and not force and not is_instrument_channel(dst, dst_owner):
@@ -95,7 +94,7 @@ def transplant(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int,
         dst_width = src_width
     offsets = [id_offsets(src, r.raw) if fan_out else () for r in slots]
     if not force:
-        _refuse_unsafe(slots, first=first, base=base, dst_version=slot_class_version(dst))
+        _refuse_unsafe(slots, dst_version=slot_class_version(dst))
         if is_audio(dst, dst_owner):
             refuse_width([r.raw for r in slots], dst_width)
         if fan_out and not all(offsets):
@@ -184,14 +183,7 @@ def _describe(raw: bytes) -> str:
     return own_name(raw[HEADER:]) or f"plug-in type {identity[1]}"
 
 
-def _refuse_unsafe(slots: list[ProjRecord], *, first: int, base: int,
-                   dst_version: int | None) -> None:
-    capacity = base - first
-    if len(slots) > capacity:
-        raise ValueError(
-            f"{len(slots)} source slots into a channel that holds {capacity}: keys "
-            f"{first}..{first + len(slots) - 1} would run into the `.cst` reference record at "
-            f"key {base} and delete it. Move fewer slots, or pass --force.")
+def _refuse_unsafe(slots: list[ProjRecord], *, dst_version: int | None) -> None:
     versions = sorted({r.ver for r in slots})
     if dst_version is not None and versions != [dst_version]:
         got = "/".join(f"v{v}" for v in versions)

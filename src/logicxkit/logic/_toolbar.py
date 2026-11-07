@@ -6,7 +6,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import display_source, edit_display
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.song.toolbar import (BUTTONS, alternative_dirs, buttons_of, copy_toolbar, read_toolbar, set_buttons,
                                show_toolbar, toolbar_shown)
 

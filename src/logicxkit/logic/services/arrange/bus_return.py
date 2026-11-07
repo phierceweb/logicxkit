@@ -15,7 +15,7 @@ the new UUID, so a project that carries such a bus comes out as Logic's own.
 from __future__ import annotations
 
 from ..mixer.binding import channels, input_labels, stamp_uuids, uuids_of
-from ..mixer.channel_alloc import free_aux_stub
+from ..mixer.channel_stubs import free_aux_stub
 from ..mixer.mixer import is_mixer_record
 from ..mixer.routing import set_input
 from ..mixer.sends import DEST_UUID_AT, is_send

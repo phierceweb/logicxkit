@@ -69,8 +69,26 @@ class FadedSplitTest(unittest.TestCase):
 
 
 @_goldens.needs(THREE)
+class PieceFadeTypeTest(unittest.TestCase):
+    def test_the_piece_keeps_the_parents_fade_out_type(self):
+        """`split_fades` on bare entries: a parent with a fade-out of type xs (+67 = 5) and no crossfade
+        gives the piece the length and curve with the type, and a parent crossfaded at its start keeps
+        its own +66..+68 while the piece gets the type alone."""
+        from logicxkit.logic.services.regions.fades import CROSSFADE_AT, OUT_TYPE_AT, split_fades
+        parent = bytearray(80)
+        parent[OUT_TYPE_AT], parent[72], parent[73] = 5, 32, 3
+        p, q = split_fades(bytes(parent), bytes(parent))           # the piece starts as a copy, as `_piece_entry` makes it
+        self.assertEqual((q[OUT_TYPE_AT], q[72], q[73], p[72], p[73]), (5, 32, 3, 0, 0))
+        crossed = bytearray(parent)
+        crossed[66], crossed[68] = 0x80, 7
+        p, q = split_fades(bytes(crossed), bytes(crossed))
+        self.assertEqual((bytes(p[CROSSFADE_AT]), bytes(q[CROSSFADE_AT])), (bytes([0x80, 5, 7]), bytes([0, 5, 0])))
+
+
 class CrossfadedSplitTest(unittest.TestCase):
-    def test_a_crossfaded_region_is_refused_and_nothing_written(self):
+    def test_a_region_crossfaded_at_its_end_is_refused_and_nothing_written(self):
+        """`--crossfade 1=500` makes "take" the out side of the crossfade into "later": Logic's split of
+        that side is unmeasured (the measured one, `regions-c04-crossfade-split-logic`, is the in side)."""
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp)
             pair = written(self, "regions", THREE, "--audio", f"Audio 1:1:{sound_gap_sound(out / 'take.wav')}",
@@ -78,9 +96,8 @@ class CrossfadedSplitTest(unittest.TestCase):
             crossed = written(self, "regions", pair, "--crossfade", "1=500", out=out / "crossed")
             code, text = run("regions", crossed, "--split", "1=2", "--out", out / "split")
             self.assertEqual(code, 1, text)
-            self.assertIn("a crossfaded region is not split", text)
+            self.assertIn("crossfaded at its end is not split", text)
             self.assertFalse((out / "split" / crossed.name).exists())
-
 
 if __name__ == "__main__":
     unittest.main()

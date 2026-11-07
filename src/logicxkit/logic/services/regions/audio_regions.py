@@ -101,6 +101,9 @@ class AudioRegion:
         return (self.file_slot, self.piece)
 
 
+PRESENT_AT = 4                      # past the magic
+
+
 def name_count(payload: bytes) -> int:
     return struct.unpack_from("<H", payload, NAME_COUNT_AT)[0]
 
@@ -112,6 +115,12 @@ def magic_at(payload: bytes) -> int:
 
 def file_name(payload: bytes) -> str:
     return payload[NAME_AT:magic_at(payload)].decode("utf-16-le", "replace")
+
+
+def file_present(payload: bytes) -> bool:
+    """The byte after the `LFUA` magic: 1 for a file Logic found, 0 once it was skipped on open
+    (`regions-c04-crossfade-split-logic`, three names of three lengths, each cleared there)."""
+    return payload[magic_at(payload) + PRESENT_AT] == 1
 
 
 def _file(payload: bytes) -> AudioFile:
@@ -143,7 +152,7 @@ def region_key(raw: bytes) -> tuple[int, int]:
 
 def entry_pair(entry: bytes) -> tuple[int, int]:
     """An audio entry's ``(slot, piece)``: its `+44` word and the u16 at `+40` — in Logic 12.4's own
-    save of a live set, a folder region's audio entries are numbered well past 255, each pair
+    save of a live set, audio entries are numbered well past 255, each pair
     with their record read so, `+42..43` zero throughout (2026-10-25)."""
     return struct.unpack_from("<I", entry, ENTRY_ORDINAL_AT)[0], struct.unpack_from("<H", entry, ENTRY_PIECE_AT)[0]
 

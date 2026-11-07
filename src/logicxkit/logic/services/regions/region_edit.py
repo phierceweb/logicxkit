@@ -34,7 +34,7 @@ from ..midi.midi import sequence_offset
 from ..midi.midi_write import _with_name, region_length
 from ..stream.recbuild import fresh_uuid, rec, slot_of, with_owner, with_slot
 from .region_entry import (
-    _anchors_after, _container, _entry, _finish, _flagged, _frames, _piece_entry, _record_with_name, _require_sole,
+    EDITED_BIT, ENTRY_FLAGS_AT, _anchors_after, _container, _entry, _finish, _flagged, _frames, _piece_entry, _record_with_name, _require_sole,
     _require_unflexed, _rewrite, _shifted, _with_length, _with_loop, _with_offset, _with_start,
 )
 from .region_locate import located
@@ -170,6 +170,9 @@ def split_region(data: bytes, number: int, tick: int, *, spt: float | None = Non
         parent_entry, piece_entry = (bytearray(e) for e in split_fades(entry, _piece_entry(entry, tick, piece=piece)))
         piece_entry[ENTRY_SELECTED_AT] |= entry[ENTRY_SELECTED_AT] & SELECTED
         parent_entry[ENTRY_SELECTED_AT] &= ~SELECTED
+        # the edited bit goes with the selection: one Logic 13.0 split (`regions-c04-crossfade-split-logic`); 12.4's unmeasured
+        piece_entry[ENTRY_FLAGS_AT] |= entry[ENTRY_FLAGS_AT] & EDITED_BIT
+        parent_entry[ENTRY_FLAGS_AT] &= ~EDITED_BIT
         parent = bytearray(records[a.record].raw)
         struct.pack_into("<I", parent, HEADER + REGION_FRAMES_AT, frames)
         struct.pack_into("<I", parent, len(parent) - SPLIT_LINK_FROM_END, NO_LINK)

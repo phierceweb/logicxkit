@@ -15,7 +15,7 @@ from logicxkit.logic.services.song.arrangement_write import free_text_slot
 from logicxkit.logic.services.song.markers import read_markers
 from logicxkit.logic.services.song.markers_write import add_marker
 from logicxkit.logic.services.stream.integrity_regions import dangling_files
-from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 
 
 class ParseAddTest(unittest.TestCase):
@@ -36,9 +36,9 @@ BASE = "regions-a00-base-logic"
 
 @_goldens.needs(BASE)
 class TenMarkersTest(unittest.TestCase):
-    """The marker track's events are 48 bytes; walked in 80-byte strides, a data line at byte 160
-    or 400 (the fourth or ninth event) whose name slot is 36, `AUDIO_ENTRY`'s value, reads as a
-    region entry. The gate's entry walk leaves the marker and arrangement tracks out."""
+    """The marker track's events are 48 bytes, no region entries; the gate's entry walk leaves the
+    marker and arrangement tracks out, so a name slot of 36, `AUDIO_ENTRY`'s value, is never read as
+    one."""
 
     def _ten_markers(self) -> bytes:
         """Ten markers, the one on name slot 36 placed ninth in tick order."""
@@ -60,10 +60,16 @@ class TenMarkersTest(unittest.TestCase):
         records = project_records(self._ten_markers())
         self.assertEqual(len(audio_regions.audio_entry_pairs(records)), before)
         self.assertEqual(dangling_files(records)["entries"], [])
-        with mock.patch.object(audio_regions, "marker_sequence", lambda records: None), \
-                mock.patch.object(audio_regions, "section_sequence", lambda records: None):
-            self.assertEqual(len(audio_regions.audio_entry_pairs(records)), before + 1,
-                             "walked, the slot-36 data line at byte 400 reads as an audio entry")
+        markers = records[audio_regions.marker_sequence(records).end].raw[HEADER:]
+        walked = []
+        offsets = audio_regions.entry_offsets
+        with mock.patch.object(audio_regions, "entry_offsets", lambda events: walked.append(events) or offsets(events)):
+            audio_regions.audio_entry_pairs(records)
+            self.assertNotIn(markers, walked)
+            with mock.patch.object(audio_regions, "marker_sequence", lambda records: None), \
+                    mock.patch.object(audio_regions, "section_sequence", lambda records: None):
+                audio_regions.audio_entry_pairs(records)
+            self.assertIn(markers, walked, "without the skip the marker track is walked")
 
     def test_ten_markers_write_through_the_gate(self):
         tmp = tempfile.TemporaryDirectory()

@@ -87,13 +87,12 @@ def shared_output(data: bytes, outputs: list[str | None]) -> str | None:
 
 def own_aux(data: bytes, bus: str, members: set[int]) -> int | None:
     """Owner of the one aux fed from ``bus`` when the channels ``members`` are all that outputs
-    to it and nothing sends to it: the aux Logic makes the main track in place of a new one. A
-    send to the bus is unmeasured and counts as another feeder."""
+    to it: the aux Logic makes the main track in place of a new one, a send to the bus from
+    outside notwithstanding (`stack-convert-send-feeder-after-logic`)."""
     chans, outs, ins = channels(data), output_labels(data), input_labels(data)
     feeders = {o for o, label in outs.items() if label == bus and chans[o].in_use}
-    sent = {f"Bus {s.bus}" for sends in read_sends(data).values() for s in sends}
     fed = [o for o, c in chans.items() if c.in_use and c.label.startswith("Aux ") and ins.get(o) == bus]
-    return fed[0] if feeders == members and bus not in sent and len(fed) == 1 else None
+    return fed[0] if feeders == members and len(fed) == 1 else None
 
 
 def _routed(raw: bytes, *, word_at: int, word: int, **uuids: bytes) -> bytes:
@@ -117,7 +116,9 @@ def create_summing_stack(data: bytes, *, name: str, members: list[int], track_co
                          colour: int | None = None) -> tuple[bytes, dict]:
     """A summing stack ``name`` over the arrange rows of ``members`` (any order). With no
     ``colour`` the header takes its first member's, as every summing header Logic made has it
-    (`stack-summing-busfolder-after-logic`, `stack-summing-reuse-colour-after-logic`)."""
+    (`stack-summing-busfolder-after-logic`, `stack-summing-reuse-colour-after-logic`). A member
+    that outputs to a bus whose aux is a member too keeps that output: the aux alone goes to the
+    new bus (`stack-convert-aux-inside-after-logic`)."""
     if not members:
         raise ValueError("a stack needs at least one member")
     require_full_walk(data)
@@ -130,6 +131,9 @@ def create_summing_stack(data: bytes, *, name: str, members: list[int], track_co
     if unbound:
         raise ValueError(f"{', '.join(map(repr, unbound))}: a track with no channel has no output for a "
                          "summing stack to send to its bus")
+    feeds = input_labels(data)
+    member_auxes = {feeds.get(bound[m]) for m in ordered if m in bound and (feeds.get(bound[m]) or "").startswith("Bus ")}
+    routed = [m for m in routed if outputs.get(bound.get(m)) not in member_auxes]    # a track feeding a member aux stays on its bus
     went = {m: outputs.get(bound.get(m)) for m in routed}
     folders = {s.object_id for s in stacks if s.kind == FOLDER}
     shared = shared_output(data, [None if m in folders else outputs.get(bound.get(m)) for m in ordered])

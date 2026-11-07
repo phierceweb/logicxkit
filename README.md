@@ -241,7 +241,7 @@ Three more things write outside `--out`, and one warning:
 
 ```
 logicxkit/
-  bin/run                  venv wrapper: setup|pytest|python|pip|ruff|lint|logic|au
+  bin/run                  venv wrapper: setup|pytest|python|pip|ruff|lint|pw-guards|pw-doctor|pw-setup|logic|au
   config/example-*.json    neutral example specs (strips, psts, chains, retrack)
   docs/CAPABILITIES.md     what each command does, in plain words
   docs/EVIDENCE.md         what each writer is trusted for, and the evidence behind it

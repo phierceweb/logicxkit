@@ -9,7 +9,7 @@ from pathlib import Path
 from ._edit import CommandError, edit_copy, first_project_data
 from .services.song.markers import TO_NEXT, marker_number, read_markers
 from .services.song.markers_write import add_marker, delete_marker, move_marker, rename_marker
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.song.signature import meter
 
 

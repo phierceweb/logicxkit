@@ -7,7 +7,8 @@ import unittest
 from logicxkit.au.services.aupreset import parse_au_state
 from logicxkit.au.services.embed import find_au_plists
 from logicxkit.au.services.ffp import parse_ffp
-from logicxkit.logic.services.translate.translate import Settings, load_maps, plan, read_settings
+from logicxkit.logic.services.translate.translate import Settings, load_maps, read_settings
+from logicxkit.logic.services.translate.translate_plan import plan
 from logicxkit.logic.services.translate.translate_eq import Band, parse_band
 from logicxkit.logic.services.translate.translate_write import (
     apply_band_specs,

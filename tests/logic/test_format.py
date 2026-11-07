@@ -64,7 +64,13 @@ class FormatWordTest(unittest.TestCase):
     def test_a_later_format_is_named_too(self):
         data = bytearray(proj(chan(0, "Audio 1")))
         struct.pack_into("<H", data, 4, NEXT)
-        with self.assertRaisesRegex(ValueError, rf"newer than this release \(file format {NEXT}"):
+        with self.assertRaisesRegex(ValueError, rf"saved by Logic 13\.0 \(file format {NEXT}"):
+            self.validate.require_measured_format(bytes(data))
+
+    def test_a_format_no_logic_is_known_for_falls_back_to_newer(self):
+        data = bytearray(proj(chan(0, "Audio 1")))
+        struct.pack_into("<H", data, 4, NEXT + 1)
+        with self.assertRaisesRegex(ValueError, rf"saved by a Logic newer than this release \(file format {NEXT + 1}"):
             self.validate.require_measured_format(bytes(data))
 
     def test_bytes_that_are_no_project_file_are_called_that(self):

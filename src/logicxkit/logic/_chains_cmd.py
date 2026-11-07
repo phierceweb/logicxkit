@@ -22,7 +22,7 @@ from .services.mixer.insert import insert_slots
 from .services.mixer.slot_width import MONO, STEREO
 from .services.stream.stream import project_records
 from .services.stream.integrity import regressions
-from .services.arrange.retrack import copy_project, find_project, left_line
+from .services.arrange.project_copy import copy_project, find_project, left_line
 
 _REPORT_LABELS = (("unmatched", "no chain configured"),
                   ("missing_from_project", "configured but absent here"),

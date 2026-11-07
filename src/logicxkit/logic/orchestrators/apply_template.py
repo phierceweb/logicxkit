@@ -118,10 +118,39 @@ def apply_template(template: bytes, session: bytes, *, template_count: int | Non
             break
     ops = plan(template, data, template_count=template_count, session_count=count, skip=skip,
                only=only, forced=forced, known=known, excluded=excluded)
+    if "return" in skip:                                   # the step that brings a bus up is a return
+        returns = []
+        for op in ops:
+            if op.kind == "output" and op.status == "planned" and op.args.get("use_bus"):
+                op.status, op.note = "skipped", f"{op.args['use_bus']} is brought up by a return, and returns are skipped"
+    else:
+        data, returns = with_bus_returns(data, ops, count)
+    if returns:
+        ops = plan(template, data, template_count=template_count, session_count=count, skip=skip,
+                   only=only, forced=forced, known=known, excluded=excluded)
     leftover = [op for op in ops if op.kind in STRUCTURE]          # what still cannot be done
     rest = [op for op in ops if op.kind not in STRUCTURE]
     data, _ = apply(template, data, rest, session_count=count)
-    return data, done_structural + leftover + rest, added
+    return data, done_structural + leftover + returns + rest, added
+
+
+def with_bus_returns(session: bytes, ops: list[Op], count: int | None) -> tuple[bytes, list[Op]]:
+    """The session with every bus a planned output op sends to and nothing in it will hear put
+    in use, as Logic's own output change leaves one (`bus_return.use_bus`: the lowest free aux
+    fed from it, output Output 1-2). It runs before the channel ops are planned for good — a
+    fresh aux strip moves the owners above it, so no op may name one yet. With "return" skipped it
+    does not run, and the output ops that needed it are skipped, saying so."""
+    from ..services.arrange.bus_return import use_bus
+    buses = dict.fromkeys(op.args["use_bus"] for op in ops
+                          if op.kind == "output" and op.status == "planned" and op.args.get("use_bus"))
+    done: list[Op] = []
+    for bus in buses:
+        owner = next(o for o, c in channels(session).items() if c.label == bus)
+        session, made = use_bus(session, owner, count)
+        what = f"{made['aux']} fed from it, output Output 1-2" if made["aux"] else "a UUID of its own"
+        done.append(Op("return", bus, f"put in use: {what}, as Logic's own does", "template returns it",
+                       status="done"))
+    return session, done
 
 
 def session_only(template: bytes, session: bytes, *, template_count: int | None,

@@ -48,7 +48,7 @@ def cmd_manifest(args) -> int:
     """Tracks, stacks and channels of a project from decoded fields only."""
     from .services.mixer.levels import db_text
     from .services.project.manifest import read_manifest
-    from .services.arrange.retrack import find_project
+    from .services.arrange.project_copy import find_project
 
     m = read_manifest(find_project(Path(args.project)))
     if args.json:

@@ -32,7 +32,10 @@
    "default": 1.0,
    "evidence": "code",
    "shown": "1.00",
-   "max": 10.0
+   "max": 10.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 5,
@@ -41,7 +44,10 @@
    "default": 1.0,
    "evidence": "code",
    "shown": "1.00",
-   "max": 10.0
+   "max": 10.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 6,
@@ -67,7 +73,10 @@
    "unit": "",
    "default": 100.0,
    "evidence": "value",
-   "max": 100.0
+   "max": 100.0,
+   "named": {
+    "mono": 0.0
+   }
   },
   {
    "index": 9,
@@ -121,7 +130,10 @@
    "unit": "",
    "default": 1.0,
    "evidence": "value",
-   "max": 30.0
+   "max": 30.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 15,
@@ -157,7 +169,10 @@
    "unit": "%",
    "default": 10.0,
    "evidence": "value",
-   "max": 100.0
+   "max": 100.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 21,
@@ -191,7 +206,10 @@
    "default": 2.0,
    "evidence": "code",
    "shown": "2",
-   "max": 12.0
+   "max": 12.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 26,
@@ -200,7 +218,10 @@
    "default": 2.0,
    "evidence": "code",
    "shown": "2",
-   "max": 12.0
+   "max": 12.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 27,

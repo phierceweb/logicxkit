@@ -87,12 +87,17 @@ def crossfaded(entry: bytes) -> bool:
 def split_fades(parent: bytes, piece: bytes) -> tuple[bytes, bytes]:
     """A split's two entries with the fade-out's length and curve (+72..+75) moved from the parent
     to the piece and the types left on both, as Logic's own split moved them
-    (`regions-c02-faded-split-logic`); a crossfaded region is refused, its split unmeasured."""
-    if crossfaded(parent):
-        raise ValueError("a crossfaded region is not split: what Logic's own split does with a crossfade is not measured")
+    (`regions-c02-faded-split-logic`). A parent crossfaded at its start (the in side, +66 bit 0x80)
+    keeps its crossfade bytes (+66..+68) and the piece gets no side bit and no +68, the partner untouched
+    (`regions-c04-crossfade-split-logic`); one crossfaded at its end (the out side, bit 0x20) is
+    refused, its split unmeasured."""
+    if parent[CROSS_OUT[0]] & CROSS_OUT[1]:
+        raise ValueError("a region crossfaded at its end is not split: what Logic's own split does with that crossfade is not measured")
     out = slice(OUT_MS_AT, OUT_CURVE_AT + 1)
     p, q = bytearray(parent), bytearray(piece)
     q[out], p[out] = parent[out], bytes(out.stop - out.start)
+    q[CROSS_IN[0]] = 0                                      # the crossfade's side bits and +68 go; +67, the type, stays
+    q[CROSSFADE_AT.stop - 1] = 0
     return bytes(p), bytes(q)
 
 

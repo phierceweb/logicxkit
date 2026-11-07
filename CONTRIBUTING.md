@@ -52,6 +52,9 @@ diff the record list against the input.
 - Comments carry the non-obvious why, an invariant, or a trap — not what the code already says,
   and not history.
 - Tests travel with the change.
+- `bin/run setup` also writes pw-foundation's generic starter rules for AI assistants into a
+  gitignored folder. Where they disagree with these rules, these win: below the CLI the library
+  uses pw-foundation for atomic writes alone, and `tests/test_framework_boundary.py` enforces it.
 
 ## Recording a golden
 
@@ -61,6 +64,26 @@ one action and one Save As per step, `tools/driver/diff.py` diffs two saves, and
 `tools/stage_public.py` files the saves under `tests/corpus/` with a manifest key and the
 facts a test may assert. Only saves of a project born in Logic on your own machine go into the
 public corpus; a session that holds anyone's music or third-party plug-in state stays out.
+
+## Opening a command on another Logic version
+
+Every writer takes Logic 12.3.1's file format (2513, which 12.4 writes too) and refuses the rest;
+the readers run on older saves. A command takes another format when its row in
+`src/logicxkit/logic/_capabilities_table.py` names it in `formats`, for example
+`formats=(2511, 2513)` for Logic 11.2. A pull request that adds one carries:
+
+- the saves, made in that Logic from a blank project, one change each, staged with
+  `tools/stage_public.py` — Logic's own version of the edit the command makes, beside the save
+  before it;
+- the command's output on a copy of the save before, re-saved in that Logic without a change,
+  staged too, with a golden that compares the re-save with the output record by record;
+- the row's catch naming those saves by manifest key in backticks, the Logic version and the date.
+  `tests/logic/test_format_evidence.py` fails on a row that names a format no public save it
+  cites is in; `logic capabilities` and `docs/EVIDENCE.md` then list the format under the row.
+
+One command per pull request. A command may still refuse an operation it cannot do on that format
+(an instrument add, for one, needs Logic 12's channel records); the refusal is narrowed, not
+removed, by the same evidence.
 
 ## Licensing of contributions
 

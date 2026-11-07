@@ -1,7 +1,8 @@
 """Environment objects — the `ivnE` records that name tracks and stack folders.
 
     +0     u32   channel-object type in the low half, the build's: 1800 at class v12 from
-                 Logic 12, 1760 at class v12 from Logic 11.2, 1728 at v11; mixed projects set
+                 Logic 12, 1312 at class v12 from Logic 13.0, 1760 at class v12 from Logic 11.2,
+                 1728 at v11; mixed projects set
                  flag bits 0x4040 in the high half on some tracks
     +16    u32   object id — what a `karT` row's +8 points at
     +38    u32   parent: the object id of the stack this track was dragged into (0 = never)
@@ -31,7 +32,7 @@ from ..stream.recbuild import fresh_uuid, rec
 
 ENV_TAG = b"ivnE"
 CHANNEL_OBJECT = {11: 1728, 12: 1800}
-CHANNEL_OBJECT_TYPES = {11: {1728}, 12: {1760, 1800}}
+CHANNEL_OBJECT_TYPES = {11: {1728}, 12: {1312, 1760, 1800}}   # 1312: Logic 13.0's re-save (`tracks-two-audio-13-0-logic`)
 OBJECT_ID_AT = 16
 PARENT_AT = 38
 KIND_AT = 154

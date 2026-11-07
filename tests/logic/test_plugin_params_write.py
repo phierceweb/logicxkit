@@ -166,5 +166,31 @@ class OneSidedRangeTest(unittest.TestCase):
                 set_by_name(table, chunk(217, [0.0, 0.0]), {"Steps": value})
 
 
+class WordEndBoundsTest(unittest.TestCase):
+    def test_a_number_past_a_word_end_is_refused_and_the_word_itself_goes(self):
+        from logicxkit.logic.services.mixer.plugin_params import Param, Table, _coerce
+        low = Param(index=0, name="Level", unit="dB", max=0.0, named=(("Mute", -100.0),))
+        high = Param(index=1, name="Cycles", min=1.0, named=(("inf", 101.0),))
+        table = Table(type=1, name="T", floats=2, params=(low, high))
+        self.assertEqual((_coerce(table, low, -100), _coerce(table, low, "Mute"), _coerce(table, high, 101), _coerce(table, high, 50)), (-100.0, -100.0, 101.0, 50.0))
+        with self.assertRaisesRegex(ValueError, r"outside -100\.0 \(Mute\)\.\.0\.0 dB"):
+            _coerce(table, low, -150)
+        with self.assertRaisesRegex(ValueError, r"outside 1\.0\.\.101\.0 \(inf\)"):
+            _coerce(table, high, 500)
+        self.assertEqual(_coerce(table, low, -50), -50.0)
+        bounded = Param(index=2, name="Depth", min=0.0, max=10.0, named=(("Below", -5.0),))   # a set end wins over a word past it
+        both = Table(type=1, name="T", floats=3, params=(low, high, bounded))
+        with self.assertRaisesRegex(ValueError, r"outside 0\.0\.\.10\.0"):
+            _coerce(both, bounded, -3)
+
+
+class InfinityWordTest(unittest.TestCase):
+    def test_inf_names_a_word_spelled_with_the_sign(self):
+        from logicxkit.logic.services.mixer.plugin_params import Param, Table, _coerce
+        p = Param(index=0, name="Steps", named=(("∞", 101.0),))
+        table = Table(type=1, name="T", floats=1, params=(p,))
+        self.assertEqual((_coerce(table, p, "inf"), _coerce(table, p, "∞"), _coerce(table, p, "INF")), (101.0, 101.0, 101.0))
+
+
 if __name__ == "__main__":
     unittest.main()

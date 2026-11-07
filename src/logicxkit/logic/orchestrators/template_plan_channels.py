@@ -112,7 +112,9 @@ def channel_ops(template: bytes, session: bytes, pairs) -> tuple[list[Op], Chann
             if dest_label not in s_labels:
                 op.status, op.note = "refused", f"the session has no {dest_label}"
             elif kind == "output" and dest_label in t_heard and dest_label not in s_heard:
-                op.status, op.note = "refused", f"nothing in the session takes {dest_label} as input"
+                # `apply_template.with_bus_returns` brings the aux up before these ops are planned for good
+                op.detail += " (put in use: an aux fed from it, as Logic's own does)"
+                op.args["use_bus"] = dest_label
             ops.append(op)
         tb = t_inst.get(to)
         if tb is not None:

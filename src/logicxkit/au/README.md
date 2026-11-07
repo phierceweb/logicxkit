@@ -54,6 +54,13 @@ Per-state ladder in `au strip`: **NDSP** → the `juce` JUCE decoders ·
   FFBS blob for Pro-Q 4) and re-encoded into the same span, the whitespace
   kept, so the XML's length word and every byte around it stay as Logic wrote
   them.
+- **A state against the plug-in's own reading** (`services/state_check.py`) —
+  the values by id from the pairs or the FFBS blob, against what the host
+  reports after restoring that state. Pro-C 2 reports all 46 and Pro-Q 4 all
+  600 as decoded (`write-proc`, `translate-proq`); Pro-Q 4 keeps a band's
+  frequency in its range and its shape among its shapes (1e6 Hz came back
+  14.8727, shape 99 came back 9), Pro-C 2 reports a pair past its range as
+  written. `chains --verify` reads third-party slots this way.
 - **Waves `Waves_XPst`** — binary head + `<PresetChunkXMLTree>` XML whose
   `RealWorld` parameter text is positional real-unit values (`*` = unset).
   WaveShell AUs crash headless (objc class collision), so XPst is the only

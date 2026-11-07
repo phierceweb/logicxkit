@@ -24,7 +24,7 @@ from .audio_regions import AudioRegion, read_audio_regions
 from ..arrange.environment import object_id_of
 from ..song.events import BAR_ONE
 from .flexmarkers import (
-    ENTRY_SLOT_AT, GRIDS, MARKER, RBA_CODE_AT, anchors, flexed_entry, hit_blocks, quantize_code, rba_sequences,
+    ENTRY_SLOT_AT, GRIDS, RBA_CODE_AT, anchors, flexed_entry, hit_blocks, quantize_code, rba_sequences,
     rba_triple, samples_per_tick, ticks_of,
 )
 from .flexmode import set_flex_mode, set_q_reference
@@ -34,11 +34,12 @@ from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.integrity_regions import NO_SLOT
 from ..midi.midi import REGION_BAR_ONE
 from .onsets import Detector, merge_hits, onsets, read_wav
+from .quantize_entries import _aligned, _free, _lender, _with_markers
 from .quantize_range import bar_span, chunks, has_hits, hit_run, own_hits, region_range
 from ..stream.recbuild import rec
-from .regions import ENTRY, TAIL, TRACK_OBJECT_AT, TRACK_ROW_AT, entry_blocks, entry_offsets, song_container
+from .regions import ENTRY, TRACK_OBJECT_AT, TRACK_ROW_AT, blocks_of, entry_layout, song_container
 from ..stream.registry import GNOS_TAG, register_slot
-from ..stream.sequence import SLOT_STEP, TABLE_FIRST_SLOT, index_table, sequences, table_entries
+from ..stream.sequence import sequences
 from ..song.signature import meter
 from ..arrange.stacks import read_tracks
 from ..song.tempo import project_tempo, read_tempo_events
@@ -49,7 +50,6 @@ from ..stream.validate import require_full_walk, require_valid
 GROUP_SETTINGS = ("Volume", "Mute", "Automation Mode", "Editing (Selection)", "Quantize-Locked (Audio)")
 LOCK_SETTINGS = ("Editing (Selection)", "Quantize-Locked (Audio)")
 ENTRY_TICK_AT = 4
-_MAX_ID = 512
 
 WavFinder = Callable[[AudioRegion], Path | None]
 
@@ -160,54 +160,6 @@ def _hits(regions: list[AudioRegion], ref_ids: list[int], wav_of: WavFinder, det
     return merge_hits(lists, rate), rate
 
 
-def _free(records, n: int) -> tuple[list[int], list[int]]:
-    """``n`` free table slots and ``n`` free sequence ids."""
-    seqs = sequences(records)
-    table = records[index_table(records)].raw[HEADER:]
-    used_slots = {slot for _at, _oid, _index, slot in table_entries(table)} | {t.slot for t in seqs}
-    used_ids = {t.seq_id for t in seqs}
-    slots, ids, slot = [], [], TABLE_FIRST_SLOT
-    while len(slots) < n:
-        if slot not in used_slots:
-            slots.append(slot)
-        slot += SLOT_STEP
-    for i in range(1, _MAX_ID):
-        if i not in used_ids:
-            ids.append(i)
-            if len(ids) == n:
-                break
-    return slots, ids
-
-
-def _aligned(a: AudioRegion, b: AudioRegion) -> bool:
-    """Two regions whose marker sources mean the same samples: the same start, first frame and length."""
-    return (a.start, a.offset, a.frames) == (b.start, b.offset, b.frames)
-
-
-def _lender(regions: list[AudioRegion], ref_ids: list[int], entries: dict, payload: bytes) -> tuple[AudioRegion, list[bytes]] | None:
-    """The first reference region carrying hit blocks, with them: what a member listing only
-    anchors takes as its own (Logic's first quantize writes the hits there alone)."""
-    for region in regions:
-        at = entries.get((region.object_id, region.start - BAR_ONE + REGION_BAR_ONE))
-        if region.object_id in ref_ids and at is not None:
-            blocks = chunks(payload[at[0] + ENTRY:at[0] + ENTRY + at[1] * MARKER])
-            if has_hits(blocks):
-                return region, blocks
-    return None
-
-
-def _with_markers(payload: bytes, plans: dict[int, bytes]) -> bytes:
-    """The container with each planned entry (by offset) and its marker blocks replaced by the
-    plan's bytes; other entries keep theirs."""
-    body, tail = payload[:len(payload) - TAIL], payload[len(payload) - TAIL:]
-    offsets = entry_offsets(payload)
-    out = bytearray()
-    for k, off in enumerate(offsets):
-        end = offsets[k + 1] if k + 1 < len(offsets) else len(body)
-        out += plans.get(off, body[off:end])
-    return bytes(out) + tail
-
-
 def _detected(regions, ref_ids, wav_of, detector, report, bpm) -> tuple[list[int], int]:
     hits, rate = _hits(regions, ref_ids, wav_of, detector, report, lambda r: samples_per_tick(r * 60 / bpm))
     if not hits:
@@ -247,9 +199,10 @@ def quantize_drums(data: bytes, *, members: Sequence[str], references: Sequence[
     run = arrange_run(records, track_count)
     song = song_container(records, run)
     payload = records[song.end].raw[HEADER:]
+    layout = dict(entry_layout(payload))
     entries = {(int.from_bytes(payload[off + TRACK_OBJECT_AT:off + TRACK_OBJECT_AT + 2], "little"),
-                int.from_bytes(payload[off + ENTRY_TICK_AT:off + ENTRY_TICK_AT + 4], "little")): (off, n)
-               for off, n in entry_blocks(payload)}
+                int.from_bytes(payload[off + ENTRY_TICK_AT:off + ENTRY_TICK_AT + 4], "little")): (off, len(blocks))
+               for off, blocks in layout.items()}
     seqs = sequences(records)
     rba_by_slot = rba_sequences(records)
     free_slots, free_ids = _free(records, len(regions))
@@ -275,7 +228,7 @@ def quantize_drums(data: bytes, *, members: Sequence[str], references: Sequence[
             start, end = anchors(frames=region.frames, samples_per_beat=spb)
             blocks, code = [start, *hit_blocks(own_hits(region, hits, spt), spt=spt, grid=grid), end], quantize_code(grid)
         else:
-            blocks, borrowed = chunks(payload[off + ENTRY:off + ENTRY + n * MARKER]), None
+            blocks, borrowed = chunks(b"".join(blocks_of(payload, off, layout))), None
             if lender and region is not lender[0] and not has_hits(blocks) and _aligned(region, lender[0]):
                 borrowed = hit_run(lender[1])[1]
                 report.borrowed.append((region.track, lender[0].track, len(borrowed)))

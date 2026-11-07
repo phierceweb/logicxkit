@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from ._edit import CommandError, edit_copy
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _spec(spec: str, what: str) -> tuple[int, str]:

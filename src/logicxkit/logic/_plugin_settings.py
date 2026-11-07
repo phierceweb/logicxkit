@@ -4,6 +4,20 @@ slot's automation lanes carried after them."""
 
 from __future__ import annotations
 
+import re
+
+
+def repeated_name(names: list[str]) -> str | None:
+    """The message for two ``--set`` names that spell one row (case, spaces and underscores
+    aside: ``Make Up`` and ``make_up``), or None."""
+    seen: dict[str, str] = {}
+    for name in names:
+        key = re.sub(r"[\s_]+", "", name).lower()
+        if key in seen:
+            return f"  --set names one row twice: {seen[key]!r} and {name!r}; give it once"
+        seen[key] = name
+    return None
+
 
 def set_specs(specs: list[str] | None) -> dict[str, str]:
     """``NAME=VALUE`` pairs from ``--set``."""
@@ -12,6 +26,8 @@ def set_specs(specs: list[str] | None) -> dict[str, str]:
         name, sep, value = spec.partition("=")
         if not sep or not name.strip():
             raise SystemExit(f"  --set takes NAME=VALUE, e.g. 'Threshold=-18'; got {spec!r}")
+        if twice := repeated_name([*out, name.strip()]):
+            raise SystemExit(twice)
         out[name.strip()] = value.strip()
     return out
 
@@ -90,7 +106,8 @@ def translation_of(old: bytes, donor, family: str | None = None):
     from .services.stream.stream import HEADER
     from .services.mixer.plugin_params import load_tables
     from .services.mixer.sidechain import side_chain
-    from .services.translate.translate import load_maps, map_for, maps_for, plan, read_settings
+    from .services.translate.translate import load_maps, map_for, maps_for, read_settings
+    from .services.translate.translate_plan import plan
     maps = load_maps()
     src_maps, dst_map = [m for m in maps_for(old, maps) if m.family], map_for(donor.raw[HEADER:], maps)
     if not src_maps:
@@ -147,10 +164,12 @@ def donor_table(donor):
 
 def replace_slot(data, owner: int, at: int, donor, *, id_offsets, settings: dict[str, str] | None = None,
                  translate: bool = False, keep_automation: bool = False, bypass: bool = False,
-                 side_chain: str | None = None, force: bool = False) -> tuple[bytes, list[str]]:
+                 side_chain: str | None = None, force: bool = False,
+                 translate_hint: str = "--translate") -> tuple[bytes, list[str]]:
     """Mixer slot ``at`` of channel ``owner`` replaced by ``donor`` — the old slot's settings
     carried when ``translate``, its lanes carried after them (or kept as they were, or dropped
-    with a note), ``--set`` values dialled in — one gate. Returns the data and the report lines."""
+    with a note naming ``translate_hint``, the calling command's way to translate), ``--set``
+    values dialled in — one gate. Returns the data and the report lines."""
     from .services.mixer.add_plugin import add_plugin
     from .services.stream.stream import HEADER
     from .services.mixer.insert_lanes import insert_lanes
@@ -181,10 +200,12 @@ def replace_slot(data, owner: int, at: int, donor, *, id_offsets, settings: dict
         data, more = carry_lanes(data, owner, at, carried, raw, old.raw, lanes)
         notes += more
     elif lanes:
+        carry = "" if translate else f"{translate_hint} carries them, "
         notes.append(f"automation: {len(lanes)} lane(s) of the old plug-in dropped "
-                     f"({gone['lanes_dropped']} point(s)); --translate carries them, --keep-automation keeps them")
+                     f"({gone['lanes_dropped']} point(s)); {carry}--keep-automation keeps them")
     if dropped:
-        notes.append(f"side chain {dropped} dropped with the old plug-in; --translate carries it")
+        notes.append(f"side chain {dropped} dropped with the old plug-in"
+                     + ("" if translate else f"; {translate_hint} carries it"))
     keyed = f"  side chain {side_chain or 'carried'} ({report['side_chain']})" if report["side_chain"] else ""
     lines = [f"slot {at}: {donor.label} in, key {gone['key']} out{keyed}"]
     if carried:

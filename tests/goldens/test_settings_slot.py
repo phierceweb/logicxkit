@@ -38,6 +38,13 @@ class MixerSlotTest(unittest.TestCase):
             self.assertEqual(rc, 0, text)
             self.assertIn("bell 250 Hz -4.0 dB Q 2.43; bell 1.00 kHz +2.0 dB Q 1.00; high shelf", text)
 
+    def test_one_band_named_twice_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            rc, text = _run(["settings", str(_goldens.path(KEY)), "--channel", "Audio 2", "--at", "4",
+                             "--set", "band 3=bell 1000 Hz +2 dB Q 1", "--set", "Band 3=bell 500 Hz", "--out", tmp])
+            self.assertEqual(rc, 2, text)
+            self.assertIn("names one row twice", text)
+
 
 @_goldens.needs("slider-midpoints-resave-logic")
 class SliderOnlyMapTest(unittest.TestCase):

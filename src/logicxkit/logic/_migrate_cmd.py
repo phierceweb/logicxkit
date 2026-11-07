@@ -11,7 +11,7 @@ from ._edit import CommandError, bump_track_count, edit_copy, first_project_data
 from .orchestrators import migrate
 from .orchestrators.apply_template import apply_template, session_only
 from .services.project.project import project_metadata
-from .services.arrange.retrack import find_project, project_folder
+from .services.arrange.project_copy import find_project, project_folder
 
 DIFFERENCES_SHOWN = 20
 

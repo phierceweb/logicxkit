@@ -9,7 +9,7 @@ from ._edit import CommandError, bump_track_count, edit_copy, first_project_data
 from .orchestrators.apply_template import KINDS, STRUCTURE, apply_template, lineage_problem, plan, session_only
 from .services.mixer.pairing import format_map, parse_map_full, propose_map
 from .services.project.project import project_metadata
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _rebased(data: bytes) -> bytes:

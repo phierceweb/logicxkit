@@ -122,6 +122,21 @@ def unregistered_slots(records) -> list[str]:
     return out
 
 
+def extended_events(records) -> bytes | None:
+    """The song container's events when an entry in it runs past whole 80-byte chunks (a row
+    `entry_blocks` takes as the entry's own), else None: the writers move entries 80 bytes at a
+    time, so such a container must come out of a write as it went in."""
+    events = song_events(records)
+    if events is None:
+        return None
+    spans = entry_blocks(events)
+    if not spans:
+        return None
+    ends = [off for off, _blocks in spans[1:]] + [len(events) - TAIL]
+    whole = all(end - off == ENTRY * (1 + blocks) for (off, blocks), end in zip(spans, ends, strict=True))
+    return None if whole else events
+
+
 def marker_block_errors(records) -> list[str]:
     """A straight 80-byte walk of the song container against `entry_offsets`: the body a whole
     number of chunks, no block before the first entry, every chunk marked `0xAA` at byte 7
@@ -230,6 +245,9 @@ def region_regressions(was: dict, now: dict, removed: Iterable[RegionKey]) -> li
                             (gained_blocks, "marker_blocks: {} MIDI entr(ies) gained marker blocks")):
         if findings:
             out.append(f"{label.format(len(findings))}: {findings}")
+    if (was["extended"] is not None or now["extended"] is not None) and now["extended"] != was["extended"]:
+        out.append("song container: an entry runs past whole 80-byte chunks, and the write changed the "
+                   "container; no writer here moves such an entry")
     for field, label in (("unregistered_slots", "region entr(ies) whose slot has no sequence or no "
                           "registry pair"),
                          ("marker_blocks", "flex marker block(s) cut short, before any entry, missing a "

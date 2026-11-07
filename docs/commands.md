@@ -59,7 +59,9 @@ modified.** There is no in-place mode and none will be added.
 
 **Every writer takes a project in file format 2513** — the u16 at +4 of `ProjectData`, which
 Logic 12.3.1 and 12.4 write. Logic moves record layouts between builds, so a field written where
-another build keeps something else is damage no later check sees. An alternative an earlier
+another build keeps something else is damage no later check sees. A command takes another format
+only when its row in `logic/_capabilities_table.py` names it (`formats`); no row does yet, and
+`CONTRIBUTING.md` says what opening one takes. An alternative an earlier
 Logic saved is left as it is, byte for byte, and named in the output, when a current one sits
 beside it — Logic keeps such bundles itself. A bundle with no current alternative, or one holding
 an alternative a later Logic saved, is refused before anything is copied, naming the alternative
@@ -96,7 +98,10 @@ map across lineages. It refuses across lineages without a map. A strip reference
 channel lacks stays as it is — clearing one is not written — and the op says so in the plan.
 A template stack is the session stack whose header pairs with its own, else the one stack of
 its name; with two of that name and neither paired, the move is refused naming both. An output
-to a bus the template returns and the session will not (the return was refused) is refused.
+to a bus the template returns and the session will not (the return's row could not be placed) puts
+the bus in use first, as Logic's own output change does: the lowest free aux comes up fed from it,
+output Output 1-2, with no track row, and the plan says so on the output's line; with `--skip return`
+the bus stays unused and that output is skipped, saying so.
 A template stack of tracks the plan adds is planned above them, saying how many are added, and
 made once they exist. The channel ops are planned again once tracks are added and moved, so a
 run can do ops `--plan` did not list; the plan says so when it has any of those.
@@ -116,7 +121,9 @@ and a checkout, and refuses before writing anything when one is missing.
 A slot is its mixer slot: `--at N` and `slot N` count from 1 with empty slots included, the number
 automation names an insert by. `add-plugin` puts one plug-in from the donor library into slot N of a
 channel (after the last without `--at`): an empty slot takes it where it is, an occupied one moves
-it and every later slot down a key. `remove-plugin --at N` takes that slot's plug-in out and moves
+it and every later slot down a key. A chain that grows past the input's headroom under the `.cst`
+reference moves the reference and the Smart Controls archives up with it on every channel, as
+Logic's own save lays them out — `chains` and `transplant` too. `remove-plugin --at N` takes that slot's plug-in out and moves
 the later ones up, and `replace-plugin --at N --plugin NAME` puts another plug-in in its place. All
 three take `--channel LABEL` or `--stack NAME` (every member of a folder stack), and keep the
 channel's Smart Control mappings and automation lanes on the plug-ins they were made for, dropping a
@@ -153,7 +160,7 @@ four-letter code (`PRRT` for Quick Sampler) or the name in its translation map �
 slot goes through the same replace, settings carried through the family vocabulary, side chain
 and automation lanes with them, and gets its own report lines. A slot whose settings cannot
 cross (a compressor into a gate, a plug-in without a map) or that cannot take the plug-in (an
-instrument into an effect slot) is left as it is with the reason. `--channel` and `--stack`
+instrument into an effect slot) is left as it is with the reason, and the command exits 1. `--channel` and `--stack`
 narrow it, `--plan` runs the same swap in memory over every alternative the write edits and
 writes nothing, `--no-translate` puts the replacement in at its defaults, `--set` dials a value
 into every replacement. A `--from` no slot holds, one naming the `--to` plug-in, or a type id or
@@ -220,8 +227,11 @@ for one of Logic's own (held to its slider's measured ends with a note and put o
 grid where the plug-in's map measures its sliders; the instrument, MIDI-effect and re-measured effect
 tables carry each slider's measured ends as the parameter's range, a slider ending on a word at one
 end (Mute, Off, mono, Fix or Click at the bottom, inf or Paradise at the top) its other end alone,
-and a number outside is refused — the word's own side is not checked, and the word cannot be
-written by name — within it a finite number goes as given: Logic's load puts a value between slider
+and a number outside is refused, and so is a row named twice whatever the spelling (`Make Up` and
+`make_up`); the word itself can be written by name (`Dry=Mute`,
+`Lfo1 Cycles=inf`), each measured by a save with the slider at that end, and reads back as the
+word, and the word's float closes its side, so a number past it is refused — within the range a finite
+number goes as given: Logic's load puts a value between slider
 positions on one, and derives the next word from an ES2 MM Amount written alone, the one linked
 shape measured; the other effect tables carry no ranges), a vocabulary item for a third-party, a
 band on any EQ — and after `--translate` they override what was carried. A table name that lives past the float block (Vintage B3's lower
@@ -258,14 +268,15 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   same parent. A stack header moves with its members.
 - `stack-create --name NAME --track NAME` makes a folder stack from tracks; `--track` repeats.
   Its header takes the lowest `Sub` strip that is out of use (a converted stack leaves one), as
-  Logic's own does, and a new strip after the highest otherwise; it is coloured 20 unless
+  Logic's own does — the strip's pan kept, its inserts and sends dropped, a soloed one refused —
+  and a new strip after the highest otherwise; it is coloured 20 unless
   `--colour` names an index, takes the members' parent (the summing stack they sit in), and
   takes the lowest object id a converted or deleted track left behind, else the next id past
   the highest, as Logic's Create Track Stack does; `add-track` takes a deleted track's id the
   same way for a new audio track, whether an audio or an instrument track left it (the adds
   measured), the next id otherwise. A strip the convert left with
-  the folder's level or mute comes back at 0 dB and not muted, as in Logic; one carrying a pan,
-  a solo, an insert or a send is refused.
+  the folder's level or mute comes back at 0 dB and not muted, as in Logic; one carrying a solo
+  is refused.
   `--summing` makes a summing stack instead: a stereo aux on the lowest free `Aux` stub (a
   fresh strip after the highest when none is free), fed from the lowest bus nothing uses, with
   every member's output sent to that bus. The tracks are all at the top level, or all
@@ -295,7 +306,8 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   to the top level it keeps its output, the bus of a summing stack it left included, each as in
   Logic. `stacks
   --flatten STACK` takes a stack apart as Logic's Flatten Stack does: the header's row goes, the
-  members come up a level, selected, and keep their routing and their channels' stack index; the
+  members come up a level, selected, with the header's own parent (the outer summing stack's
+  header, none under a folder), and keep their routing and their channels' stack index; the
   header object and its strip stay, the strip in use. `stacks --convert STACK` makes a folder
   stack a summing stack as Logic's Track > Convert Folder Stack to Summing Stack does: the
   flatten, then a summing stack over the same members on the lowest free `Aux` fed from the
@@ -308,11 +320,16 @@ take a channel by its mixer label (`Audio 5`, `Bus 15`, `Aux 2`).
   on other outputs convert by `--summing`'s rule, and members that are the only channels on
   their bus take that bus's own aux as the main track: the header carries the aux's name and
   the track count drops by one when the aux was a track already; the aux keeps its own level
-  and lanes, but a folder's Volume lane moves onto it in place of the aux's own, as Logic's
-  convert does, and the output says so. Refused, each named: a folder with a lane other than
-  those three or with an insert, a reused aux with a lane other than Volume under a folder with
-  a Volume lane, a folder's Mute or Solo lane where the aux is reused, and a folder that holds
-  a stack (Logic's own convert of one leaves a track assigned to nothing). Where two
+  and lanes, but the folder's lanes move onto it in place of the aux's own, the strip keeping each
+  dropped Pan or Volume lane's bar-1 point on the pan or fader, as Logic's convert does, and the
+  output says so (a Solo lane on the folder, a Mute lane beside a Volume lane, or a Mute lane over
+  an aux that has lanes, is refused, unmeasured); a send to the bus from outside the folder does
+  not stop the
+  reuse, and an insert on the folder's strip stays on that strip, out of use. With the aux's
+  own track inside the folder a new aux on the next bus is the header, the aux a member routed
+  to it and the tracks left on the bus it is fed from. Refused, each named: a folder with a lane
+  other than those three, and a folder that holds a stack (Logic's own convert of one leaves a
+  track assigned to nothing). Where two
   stacks share a name, `--stack`, `stacks --move`, `--flatten` and `--convert` take `NAME (Sub
   1)` or `NAME (Aux 9)`.
 - `route --output CHANNEL=DEST` sets where a channel outputs to, and `--input CHANNEL=INPUT`
@@ -361,7 +378,11 @@ corpus), the chains one on a project whose channels carry its reference names. `
 --verify WRITTEN --config CFG` opens the written copy in Logic Pro, reads each chained channel's
 plug-ins in their Controls views and compares every row with what the tables decode from the
 file, saving nothing; it runs on macOS from a checkout (`tools/driver/`) and prints one line per
-slot, matched or the rows that differ with both values. `retrack` repoints strip references after
+slot, matched or the rows that differ with both values; a wrong table index shows as rows that
+differ. A third-party slot is read by the plug-in
+itself through the headless AU host, every parameter id against the file's state, where the plug-in is
+installed and its state is Pro-C 2's pairs or Pro-Q 4's blob; another state, or one whose bytes do not
+parse, it reports as not compared. `retrack` repoints strip references after
 a library rename — it changes a label, never a chain.
 
 ## Decoding plugin state
@@ -445,7 +466,8 @@ must; MS is the overlap when empty, the type `eqp` by default), the inspector's 
 `--colour N=INDEX` (a palette index; the Color window's swatch k is 24 + k); the listing shows the
 parameters that are set and a colour that differs from the track's. A split leaves the fade-in on the
 region and gives its fade-out to the new piece, which takes the region's selection, as Logic's own split
-does. A looping region and a crossfaded one are not split, a
+does; a region crossfaded at its start keeps the crossfade on the parent and the piece carries none, as
+Logic's does, and one crossfaded at its end is not split (unmeasured). A looping region is not split, a
 quantized region (flex markers that are hits) is neither trimmed nor split — one carrying the two
 anchors of an identity map, as a region bounced in place on a flexed track does, and at most the
 file's own markers after them, is cut, each piece re-anchored for its length with those markers
@@ -523,7 +545,8 @@ its own singer is heard. `--gate DB` sets the floor rule's margin apart from the
 little over the floor, and a lower gate keeps them. The plan names each reference's usual
 ratio, the bleed floor and the heard-over level per region; a region beside which no reference
 plays is left unchanged, since its floor cannot be read. `--band LOW:HIGH` measures within that
-band in Hz, as an RMS (without `--band` the RMS is of the whole band), and `--ref` or `--band` switches
+band in Hz, as an RMS (without `--band` the RMS is of the whole band; `--band` and `--ref` need the Swift
+toolchain and are refused without it, naming the audio file), and `--ref` or `--band` switches
 the envelope from the top-16-bit peak to an RMS read through the `bandrms.swift` helper (so this needs the swift toolchain, as `ocr` does). The
 reference's hops are aligned to the mic's file by song time, so the two regions may sit at
 different offsets in their files. `--against-band LOW:HIGH` reads the mic in a second band of its own, and each sound is then kept

@@ -31,6 +31,46 @@ class WordRoutedTemplateTest(unittest.TestCase):
         self.assertEqual(self._routing_ops(word_routed_template(fmt=2510)), [])
 
 
+class BusNothingHearsTest(unittest.TestCase):
+    """The template returns Bus 1 through an aux row the plan cannot place (the first row), and
+    sends Kick In to it: the output op says the bus is put in use first, and `apply` alone, with
+    no planning after, refuses to run such an op."""
+
+    def _pair(self) -> tuple[bytes, bytes]:
+        bus, out = chan(300, "Bus 1", uuid=uuid(700), size=201), chan(402, "Output 1-2", uuid=uuid(80), size=201)
+        template = proj(env_obj(96, "Drums"), env_obj(88, "Kick In"), env_obj(80, "Master", grouping=True),
+                        chan(0, "Audio 1", uuid=uuid(88), dest=uuid(700)), bus,
+                        chan(270, "Aux 1", uuid=uuid(96), source=uuid(700)), out,
+                        track(0, 96), track(1, 88), track(2, 80, flag=3), marker())
+        session = proj(env_obj(88, "Kick In"), env_obj(80, "Master", grouping=True),
+                       chan(0, "Audio 1", uuid=uuid(88), dest=uuid(80)), bus, chan(270, "Aux 1", in_use=False), out,
+                       track(0, 88), track(1, 80, flag=3), marker())
+        return template, session
+
+    def test_the_output_op_puts_the_bus_in_use_first(self):
+        template, session = self._pair()
+        ops = plan(template, session, template_count=3, session_count=2)
+        self.assertEqual([(op.kind, op.target, op.detail, op.status, op.args) for op in ops if op.kind == "output"],
+                         [("output", "Kick In (Audio 1)", "-> Bus 1 (put in use: an aux fed from it, as Logic's own does)",
+                           "planned", {"owner": 0, "dest": 300, "use_bus": "Bus 1"})])
+        self.assertEqual([(op.kind, op.status) for op in ops if op.kind == "add"], [("add", "refused")])
+
+    def test_skipping_returns_leaves_the_bus_unused_and_skips_the_output(self):
+        template, session = self._pair()
+        out, done, _ = apply_template(template, session, template_count=3, session_count=2, skip=("return",))
+        (op,) = [op for op in done if op.kind == "output"]
+        self.assertEqual((out, op.status, op.note), (session, "skipped", "Bus 1 is brought up by a return, and returns are skipped"))
+        self.assertEqual([op for op in done if op.kind == "return"], [])
+
+    def test_apply_alone_refuses_the_op(self):
+        from logicxkit.logic.orchestrators.apply_ops import apply
+        template, session = self._pair()
+        (op,) = [op for op in plan(template, session, template_count=3, session_count=2) if op.kind == "output"]
+        out, _added = apply(template, session, [op], session_count=2)
+        self.assertEqual((out, op.status, op.note),
+                         (session, "failed", "Bus 1 is put in use before the channel ops are planned, not among them"))
+
+
 class ReturnsTest(unittest.TestCase):
     """A legacy song returns its buses through mixer-only auxes; once a template aux track
     returns the same bus the old return is silenced, or the bus plays twice."""

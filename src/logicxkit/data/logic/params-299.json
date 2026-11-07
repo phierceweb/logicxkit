@@ -13,7 +13,10 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 2,
@@ -21,7 +24,10 @@
    "unit": "dB",
    "default": -6.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 3,

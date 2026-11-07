@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 
-from logicxkit.utils.swiftrun import native_dir, run_swift
+from logicxkit.utils.swiftrun import SwiftRunError, native_dir, run_swift
 from .wavfile import IEEE_FLOAT, PCM, wav_data
 
 FULL = 32768                                           # the top 16 bits' full scale
@@ -87,7 +87,10 @@ def rms_envelope(path: Path, *, band: tuple[int, int] | None, hop_ms: int = 10) 
     """The RMS per hop as `peak_envelope` scales a peak (0..32768), all channels pooled, within
     ``band`` Hz when given."""
     args = [str(path), str(hop_ms)] + ([str(band[0]), str(band[1])] if band else [])
-    code, out, err = run_swift(native_dir() / "bandrms.swift", args, timeout=RMS_TIMEOUT)
+    try:
+        code, out, err = run_swift(native_dir() / "bandrms.swift", args, timeout=RMS_TIMEOUT)
+    except SwiftRunError as e:
+        raise ValueError(f"{path}: {e}") from e
     if code != 0:
         raise ValueError(f"{path}: {err.strip() or 'the envelope helper failed'}")
     head, _, body = out.partition("\n")

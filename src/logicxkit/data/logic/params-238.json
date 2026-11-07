@@ -942,7 +942,10 @@
    "default": 100.0,
    "evidence": "code",
    "shown": "100",
-   "min": 1.0
+   "min": 1.0,
+   "named": {
+    "inf": 101.0
+   }
   },
   {
    "index": 3355,
@@ -978,7 +981,10 @@
    "default": 100.0,
    "evidence": "code",
    "shown": "100",
-   "min": 1.0
+   "min": 1.0,
+   "named": {
+    "inf": 101.0
+   }
   },
   {
    "index": 3364,

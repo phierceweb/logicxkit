@@ -41,7 +41,8 @@ from ..mixer.channel_alloc import (
     COUNT_CLASS_AT, NUMBER_AT, bump_channel_count, is_channel_record, is_mixer_record, mixer_record,
     new_sub_channel, project_words, shifted_channel,
 )
-from ..mixer.levels import FADER_AT, FADER_FIXED_AT, FIXED_ONE, MUTE_AT, PAN_CENTRE, UNITY, read_levels
+from ..mixer.levels import FADER_AT, FADER_FIXED_AT, FIXED_ONE, MUTE_AT, UNITY, read_levels
+from ..mixer.sends import SEND_TAG
 from ..mixer.mixer import is_channel_count
 from .environment import (
     ENV_TAG,
@@ -84,18 +85,16 @@ def _strip_for(data: bytes, chans) -> tuple[int, int, bool]:
     """``(number, owner, reused)`` of the new stack's `Sub` strip: the lowest one out of use,
     else a new one numbered after the highest and placed right after it (after Master with
     none). Logic's reuse puts the strip's fader at 0 dB and clears its mute
-    (`stack-sub-level-after-logic`, `stack-sub-muted-after-logic`); a pan, a solo, an insert or
-    a send on one is not measured and is refused."""
+    (`stack-sub-level-after-logic`, `stack-sub-muted-after-logic`), keeps its pan and drops its
+    inserts and sends (`stack-sub-settings-reused-after-logic`); a solo on one is not measured
+    and is refused."""
     subs = {int(c.label[4:]): o for o, c in chans.items() if c.label.startswith("Sub ") and c.label[4:].isdigit()}
     free = sorted(n for n, o in subs.items() if not chans[o].in_use)
     if free:
         owner = subs[free[0]]
-        level = read_levels(data)[owner]
-        carried = [what for what, off in (("a pan", level["pan"] != PAN_CENTRE), ("a solo", level["solo"])) if off]
-        carried += ["an insert or a send"] * any(r.tag == b"UCuA" and r.owner == owner for r in project_records(data))
-        if carried:
-            raise ValueError(f"Sub {free[0]} is out of use and is the strip Logic would take, but it carries "
-                             f"{', '.join(carried)}: what Logic's reuse does with that is not measured")
+        if read_levels(data)[owner]["solo"]:
+            raise ValueError(f"Sub {free[0]} is out of use and is the strip Logic would take, but it is soloed: "
+                             "what Logic's reuse does with that is not measured")
         return free[0], owner, True
     if subs:
         return max(subs) + 1, subs[max(subs)] + 1, False
@@ -219,6 +218,8 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
             if i == run[0]:
                 out += new_rows
             continue
+        if reused and r.owner == owner and r.tag in (b"UCuA", SEND_TAG):
+            continue                                      # the strip's inserts and sends go, as Logic's reuse drops them
         if reused_id and i in flat_set and row_object(r.raw) == object_id:
             if flat_pos >= 0 and i == flat[flat_pos]:
                 out.append(flat_row)

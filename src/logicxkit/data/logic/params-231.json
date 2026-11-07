@@ -13,7 +13,10 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 21,
@@ -21,7 +24,10 @@
    "unit": "dB",
    "default": -10.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 24,
@@ -39,7 +45,9 @@
    "name": "Input Crossfeed",
    "unit": "",
    "default": 1.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 28,
@@ -57,70 +65,90 @@
    "name": "Volume Init Level",
    "unit": "%",
    "default": 100.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 31,
    "name": "Volume Attack X1",
    "unit": "",
    "default": 0.011,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 32,
    "name": "Volume Attack Y1",
    "unit": "",
    "default": 0.58,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 33,
    "name": "Volume Attack X2",
    "unit": "",
    "default": 0.448,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 34,
    "name": "Volume Attack Y2",
    "unit": "",
    "default": 0.89,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 36,
    "name": "Volume Decay X1",
    "unit": "",
    "default": 0.647,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 37,
    "name": "Volume Decay Y1",
    "unit": "",
    "default": 0.825,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 38,
    "name": "Volume Decay X2",
    "unit": "",
    "default": 0.819,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 39,
    "name": "Volume Decay Y2",
    "unit": "",
    "default": 0.337,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 1.0
   },
   {
    "index": 40,
    "name": "Volume End Level",
    "unit": "%",
    "default": 30.0,
-   "evidence": "value"
+   "evidence": "value",
+   "min": 0.0,
+   "max": 100.0
   },
   {
    "index": 43,

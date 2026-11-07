@@ -139,6 +139,8 @@ def validate_project(data: bytes) -> list[str]:
 SIGNATURE = bytes.fromhex("2347c0ab")
 FORMAT_AT = 4
 MEASURED_FORMAT = 2513                  # Logic 12.3.1's and 12.4's; the format of every golden
+SAVED_BY = {2509: "Logic before 11.2", 2510: "Logic before 11.2", 2511: "Logic 11.2",
+            2512: "an earlier Logic 12", 2513: "Logic 12.3.1 and 12.4", 2514: "Logic 13.0"}
 
 
 def file_format(data: bytes) -> int | None:
@@ -148,21 +150,46 @@ def file_format(data: bytes) -> int | None:
     return struct.unpack_from("<H", data, FORMAT_AT)[0]
 
 
+_WRITING: ContextVar[tuple[int, ...]] = ContextVar("writing_formats", default=(MEASURED_FORMAT,))
+
+
+@contextmanager
+def writing_formats(formats: tuple[int, ...]):
+    """Inside, a write takes a project of any of ``formats`` — the running command's, from its
+    capability row; outside, Logic 12.3.1's alone."""
+    token = _WRITING.set(tuple(sorted(formats)))
+    try:
+        yield
+    finally:
+        _WRITING.reset(token)
+
+
+def writes_format(word: int) -> bool:
+    return word in _WRITING.get()
+
+
+def _measured_on() -> str:
+    formats = _WRITING.get()
+    if formats == (MEASURED_FORMAT,):
+        return f"{MEASURED_FORMAT}, {SAVED_BY[MEASURED_FORMAT]}'s"
+    return ", ".join(map(str, formats))
+
+
 def require_measured_format(data: bytes) -> None:
-    """Refuse a project of a format no writer is measured on: record classes move between
-    Logic builds, and a field written where another build keeps something else is damage
-    no later check sees."""
+    """Refuse a project of a format the running command is not measured on: record classes
+    move between Logic builds, and a field written where another build keeps something else
+    is damage no later check sees."""
     found = file_format(data)
     if found is None:
         raise ValueError("not a Logic project file")
-    if found < MEASURED_FORMAT:
-        raise ValueError(f"saved by an earlier Logic (file format {found}; the writers are "
-                         f"measured on {MEASURED_FORMAT}, Logic 12.3.1's) — open and save it "
-                         "in the current Logic first")
-    if found > MEASURED_FORMAT:
-        raise ValueError(f"saved by a Logic newer than this release (file format {found}; the "
-                         f"writers are measured on {MEASURED_FORMAT}, Logic 12.3.1's) — "
-                         "nothing is written")
+    if writes_format(found):
+        return
+    if found < max(_WRITING.get()):
+        raise ValueError(f"saved by an earlier Logic (file format {found}; this command is "
+                         f"measured on {_measured_on()}) — open and save it in the current "
+                         "Logic first")
+    raise ValueError(f"saved by {SAVED_BY.get(found, 'a Logic newer than this release')} (file format {found}; "
+                     f"this command is measured on {_measured_on()}) — nothing is written")
 
 
 def require_full_walk(data: bytes) -> None:

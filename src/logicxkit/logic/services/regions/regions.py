@@ -46,15 +46,38 @@ def song_events(records: list[ProjRecord], track_count: int | None = None) -> by
     return None if song is None else records[song.end].raw[HEADER:]
 
 
-def entry_blocks(events: bytes) -> list[tuple[int, int]]:
-    """``(offset, marker blocks after it)`` for every entry `entry_offsets` finds."""
+ROW, EXTENDS = 16, 0x80          # an event's 16-byte rows past its first carry bit 7 at their byte 7
+
+
+def entry_layout(events: bytes) -> list[tuple[int, list[int]]]:
+    """``(offset, the offsets of the marker blocks after it)`` for every entry `entry_offsets`
+    finds. A 16-byte row marked at byte 7 that is no marker block belongs to the entry before it:
+    Logic 12.4's save of a project converted from an older Logic opens with a 96-byte entry whose
+    last row reads `0xbe` there (`live-set-pieces`), so a block after such an entry does not sit
+    at a multiple of the entry size; every other container on hand is whole 80-byte chunks."""
     out, off, end = [], 0, len(events) - TAIL
     while off + ENTRY <= end:
-        start, off = off, off + ENTRY
-        while off + ENTRY <= end and events[off + MARKER_KIND_AT] == MARKER_KIND:
-            off += ENTRY
-        out.append((start, (off - start) // ENTRY - 1))
+        start, off, blocks = off, off + ENTRY, []
+        while off + ROW <= end and events[off + MARKER_KIND_AT] & EXTENDS:
+            if events[off + MARKER_KIND_AT] == MARKER_KIND and off + ENTRY <= end:
+                blocks.append(off)
+                off += ENTRY
+            else:
+                off += ROW
+        out.append((start, blocks))
     return out
+
+
+def entry_blocks(events: bytes) -> list[tuple[int, int]]:
+    """``(offset, marker blocks after it)`` for every entry (`entry_layout`)."""
+    return [(start, len(blocks)) for start, blocks in entry_layout(events)]
+
+
+def blocks_of(events: bytes, at: int, layout: dict[int, list[int]] | None = None) -> list[bytes]:
+    """The marker blocks after the entry at ``at``, each 80 bytes, where they sit; ``layout`` is
+    `entry_layout` as a dict, for a caller reading many entries of one container."""
+    offsets = (layout if layout is not None else dict(entry_layout(events))).get(at, [])
+    return [events[b:b + ENTRY] for b in offsets]
 
 
 def entry_offsets(events: bytes) -> list[int]:

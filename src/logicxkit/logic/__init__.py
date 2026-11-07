@@ -58,10 +58,9 @@ from logicxkit.logic.services.mixer.slot_width import set_slot_format, slot_form
 from logicxkit.logic.services.mixer.slots import set_slot_bypass, slot_bypassed, slot_index_base  # noqa: F401
 from logicxkit.logic.services.stream.stream import ProjRecord, project_records  # noqa: F401
 from logicxkit.logic.services.stream.validate import validate_project  # noqa: F401
+from logicxkit.logic.services.arrange.project_copy import copy_project, find_project  # noqa: F401
 from logicxkit.logic.services.arrange.retrack import (  # noqa: F401
-    copy_project,
     cst_references,
-    find_project,
     missing_strips,
     retrack,
     retrack_bundle,

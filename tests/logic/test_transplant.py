@@ -4,6 +4,8 @@ state is opaque), re-stamped for the target; slot keys run from 4 up to the proj
 
 import struct
 import unittest
+
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 from _records import chan, proj, rec
 from logicxkit.logic.services.mixer.transplant import (
     channel_slots,
@@ -246,29 +248,23 @@ class ChannelBaseWordTest(unittest.TestCase):
 
 
 class RefusalTest(unittest.TestCase):
-    """The two defects `transplant` shipped with, now refusals rather than damage."""
+    """A chain longer than the key range moves the reference up; a class crossing is refused."""
 
-    def test_more_source_slots_than_the_key_range_holds_is_refused(self):
-        """The reproduced defect: keys run 4..base, so six slots into a base-9 project reach
-        the `.cst` reference key and insert_slots' drop range deletes that record."""
+    def test_more_source_slots_than_the_key_range_holds_move_the_reference_up(self):
+        """Keys run 4..base: six slots into a base-9 project reach the `.cst` reference key, so the
+        reference moves up to keep the headroom and every slot lands (`insert_slots` grows the range)."""
         src = proj(chan(0, "Audio 1"), *[slot(0, 4 + i, b"P%d" % i) for i in range(6)], ref(0, 13))
         dst = proj(chan(3, "Audio 1"), slot(3, 4, b"OLD"), ref(3, 9))
-        with self.assertRaises(ValueError) as e:
-            transplant(src, dst, src_owner=0, dst_owner=3)
-        self.assertIn("5", str(e.exception), "the message names the capacity")
+        out, report = transplant(src, dst, src_owner=0, dst_owner=3)
+        keys = sorted(r.key for r in project_records(out) if r.tag == b"UCuA" and r.owner == 3)
+        self.assertEqual((report["slots"], keys), (6, [4, 5, 6, 7, 8, 9, 14]))
 
-    def test_the_reference_record_survives_a_refused_transplant(self):
+    def test_the_reference_record_survives_a_longer_chain(self):
         src = proj(chan(0, "Audio 1"), *[slot(0, 4 + i, b"P%d" % i) for i in range(6)], ref(0, 13))
         dst = proj(chan(3, "Audio 1"), slot(3, 4, b"OLD"), ref(3, 9))
-        with self.assertRaises(ValueError):
-            transplant(src, dst, src_owner=0, dst_owner=3)
-        self.assertIn(ref(3, 9), dst)
-
-    def test_force_lets_the_overflow_through(self):
-        src = proj(chan(0, "Audio 1"), *[slot(0, 4 + i, b"P%d" % i) for i in range(6)], ref(0, 13))
-        dst = proj(chan(3, "Audio 1"), slot(3, 4, b"OLD"), ref(3, 9))
-        out, report = transplant(src, dst, src_owner=0, dst_owner=3, force=True)
-        self.assertEqual(report["slots"], 6)
+        out, _report = transplant(src, dst, src_owner=0, dst_owner=3)
+        self.assertEqual([r.raw[HEADER:] for r in project_records(out) if r.tag == b"UCuA" and r.owner == 3 and r.key == 14],
+                         [ref(3, 9)[HEADER:]])
 
     def test_a_class_version_mismatch_is_refused(self):
         """A v3 record cannot be legalised into a v5 project; donors.retarget_version holds

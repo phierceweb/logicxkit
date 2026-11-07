@@ -23,11 +23,9 @@ CARRIED_LANES = ("Volume", "Mute", "Solo")       # `stack-convert-lane-`, `-mute
 
 def _master_state(data: bytes, stack, track_count: int | None) -> list[str]:
     """What a folder's main strip carries that no measured convert shows the fate of: a lane
-    other than Volume, Mute and Solo on its track, an insert."""
-    from ..mixer.plugins import slot_payloads
-    out = [f"a {lane} lane" for lane in sorted(_lanes(data, stack.object_id, track_count) - set(CARRIED_LANES))]
-    out += [f"a {ref.name} insert" for ref, _p in slot_payloads(data) if ref.channel == stack.strip]
-    return out
+    other than Volume, Mute and Solo on its track. An insert stays on the `Sub` strip Logic takes
+    out of use (`stack-convert-folder-insert-after-logic`)."""
+    return [f"a {lane} lane" for lane in sorted(_lanes(data, stack.object_id, track_count) - set(CARRIED_LANES))]
 
 
 def _level_left(data: bytes, stack) -> float | None:
@@ -74,6 +72,18 @@ def _lanes(data: bytes, track_object: int, track_count: int | None) -> set[str]:
             for ln in a.lanes if not ln.region}
 
 
+def _first_points(data: bytes, track_object: int, track_count: int | None) -> dict[str, float]:
+    """Each lane's first point on the track when it sits at the song's start: what the strip
+    reads once the lane is dropped — Logic's convert left the reused aux's pan at its dropped
+    Pan lane's first point (`stack-convert-aux-pan-lane-after-logic`, 64 → 84, the point at bar
+    1), its fader at its Volume lane's (`stack-convert-reuse-both-after-logic`, already there).
+    A lane whose first point sits later is unmeasured and leaves the strip as it is."""
+    from ..regions.automation import read_automation
+    from ..song.events import BAR_ONE
+    return {ln.parameter: ln.points[0].value for a in read_automation(data, track_count) if a.track_object == track_object
+            for ln in a.lanes if not ln.region and ln.points and ln.points[0].tick == BAR_ONE}
+
+
 def _has_lane(data: bytes, track_object: int, track_count: int | None, parameter: str) -> bool:
     return parameter in _lanes(data, track_object, track_count)
 
@@ -110,11 +120,16 @@ def convert_to_summing(data: bytes, stack_object: int, track_count: int | None =
     the folder's name when it was the user's; an unnamed folder's is `Sum N`, N the aux's number,
     unnamed as Logic's own `Sum 1` on `Aux 1` is. Members that are all their bus has get that
     bus's own aux as the main track, under its own name and at its own level, the folder's name
-    gone, its level left on the `Sub` strip and its Volume lane moved onto the aux in place of
-    the aux's own, which Logic drops (`stack-convert-reuse-*`); with no lane on the folder the
-    aux keeps every lane it has. An aux with another lane under a folder with a Volume lane, and
-    a folder's Mute or Solo lane there, are refused, unmeasured. A folder whose main strip
-    carries what no save shows the fate of (`_master_state`) is refused."""
+    gone, its level left on the `Sub` strip and its lanes moved onto the aux in place of the
+    aux's own, which Logic drops, the pan or fader keeping a dropped Pan or Volume lane's bar-1
+    point — a Pan lane of the aux's for the folder's Volume, the pan at that lane's first point after
+    (`stack-convert-aux-pan-lane-after-logic`), a folder's Mute lane carried
+    (`stack-convert-mute-lane-after-logic`, `stack-convert-reuse-*`); with no lane on the folder
+    the aux keeps every lane it has, and a folder with a Solo lane, a Mute lane beside a Volume lane,
+    or a Mute lane over an aux that has lanes, is refused, unmeasured. A send to the bus from outside does not stop the reuse
+    (`stack-convert-send-feeder-after-logic`), and an insert on the folder's strip stays on it out
+    of use (`stack-convert-folder-insert-after-logic`). A folder whose track carries a lane no
+    save shows the fate of (`_master_state`) is refused."""
     from .stack_summing import create_summing_stack
     records = project_records(data)
     stacks = {s.object_id: s for s in read_stacks(data, track_count)}
@@ -146,24 +161,25 @@ def convert_to_summing(data: bytes, stack_object: int, track_count: int | None =
     reused, replaced = report["reused"], []
     if reused:
         name = report["name"]
-        others = _lanes(data, stack_object, track_count) - {CARRIED_LANE}
-        if others:
-            raise ValueError(f"its members are all {report['bus']} has, so its own {report['label']} becomes the "
-                             f"main track; the folder carries a {', '.join(sorted(others))} lane, and where Logic's "
-                             "convert puts it then is not measured, so nothing is written")
-        if _has_lane(data, stack_object, track_count, CARRIED_LANE):
-            own = _lanes(data, report["object_id"], track_count)
-            if own - {CARRIED_LANE}:
-                raise ValueError(f"its members are all {report['bus']} has, so its own {report['label']} becomes the "
-                                 f"main track; that track carries a {', '.join(sorted(own - {CARRIED_LANE}))} lane and "
-                                 "the folder a Volume lane, and what Logic's convert keeps of the track's then is not "
-                                 "measured, so nothing is written")
-            replaced = sorted(own)
+        folder_lanes = _lanes(data, stack_object, track_count)
+        if folder_lanes:                                     # the folder's lanes in place of the aux's own
+            replaced = sorted(_lanes(data, report["object_id"], track_count))
+            # measured: a Volume lane over any aux lanes, a Mute lane over an aux with none; nothing else
+            if not (folder_lanes <= {"Volume"} or (folder_lanes == {"Mute"} and not replaced)):
+                raise ValueError(f"the folder carries {', '.join(sorted(folder_lanes))} lane(s) and its bus's aux "
+                                 f"{', '.join(replaced) or 'no lane'}: Logic's convert of that pair is not measured, so nothing is written")
             out = _carry_lanes(out, stack_object, report["object_id"])
     else:
         out = _carry_lanes(out, stack_object, report["object_id"])
         name = stack.name if named else f"Sum {report['label'].split()[-1]}"
     header_owner = bound_channels(out)[report["object_id"]]
+    levels_set: dict[str, int] = {}
+    if replaced:                                             # a dropped lane leaves its first point on the strip
+        from ..mixer.levels import set_levels
+        first = _first_points(data, report["object_id"], track_count)
+        levels_set = {field: int(first[lane]) for lane, field in (("Pan", "pan"), ("Volume", "fader")) if lane in first and lane in replaced}
+        if levels_set:
+            out, _changed = set_levels(out, {header_owner: levels_set})
     # by label: a fresh aux strip moved every owner above it up one
     sub_owner = next(o for o, c in channels(out).items() if c.label == stack.strip)
     member_owners = {bound_channels(out)[m] for m in members}
@@ -190,4 +206,4 @@ def convert_to_summing(data: bytes, stack_object: int, track_count: int | None =
     require_valid(result)
     return result, {**report, "name": name, "sub": stack.strip, "header_owner": header_owner,
                     "level_left": _level_left(data, stack), "mute_left": _muted(data, stack),
-                    "tracks_added": report["tracks_added"] - 1, "lanes_replaced": replaced}
+                    "tracks_added": report["tracks_added"] - 1, "lanes_replaced": replaced, "levels_set": levels_set}

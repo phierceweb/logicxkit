@@ -94,7 +94,10 @@
    "unit": "%",
    "default": 100.0,
    "evidence": "value",
-   "max": 100.0
+   "max": 100.0,
+   "named": {
+    "Fix": 0.0
+   }
   },
   {
    "index": 24,

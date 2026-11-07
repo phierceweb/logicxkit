@@ -13,7 +13,7 @@ from _cli import data, written, wrapped
 from test_stack_create import TRACKS, session
 
 from logicxkit.logic._edit import CommandError, plan_step
-from logicxkit.logic.services.arrange.retrack import stale_alternatives
+from logicxkit.logic.services.arrange.project_copy import stale_alternatives
 
 SUMMING = "stack-summing-logic"                         # Sum 1 on Aux 1 fed Bus 1
 TEMPLATE = "stack-folder-logic"

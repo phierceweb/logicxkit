@@ -119,6 +119,13 @@ def new_row(template: bytes, *, object_id: int, member: int, row_type: int | Non
     return bytes(row)
 
 
+def with_selected_row(raw: bytes) -> bytes:
+    """The row's selected bit set, as every member Flatten Stack frees is left."""
+    row = bytearray(raw)
+    row[HEADER + EXPANDED_AT] |= SELECTED_BIT
+    return bytes(row)
+
+
 def with_member(raw: bytes, member: int, *, header: bool = False) -> bytes:
     """The +14 byte (the nesting depth). A plain row moved inside a stack loses the expanded bit;
     a header keeps its own."""

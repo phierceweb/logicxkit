@@ -17,7 +17,7 @@ from ._apply import register as register_apply
 from ._apply_template import register as register_template
 from ._apply_tracks import register as register_tracks
 from ._beats_cmd import register as register_beats
-from ._capabilities import emit_notice
+from ._capabilities import emit_notice, formats
 from ._capabilities import register as register_capabilities
 from ._controlbar import register as register_controlbar
 from ._toolbar import register as register_toolbar
@@ -55,6 +55,7 @@ from ._inspect import (
     cmd_project,
     cmd_stacks,
 )
+from .services.stream.validate import writing_formats
 
 # Every path argument, so a quoted "~/Music/…" is a path and not a directory named "~".
 _PATH_ARGS = ("project", "logicx", "out", "to", "spec", "library", "file", "image", "map",
@@ -159,7 +160,8 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
     _expand_paths(args)
     emit_notice(args)
-    return args.func(args)
+    with writing_formats(formats(args.cmd)):
+        return args.func(args)
 
 
 if __name__ == "__main__":

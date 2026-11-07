@@ -6,7 +6,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .services.arrange.retrack import left_line, missing_strips, retrack_bundle
+from .services.arrange.project_copy import left_line
+from .services.arrange.retrack import missing_strips, retrack_bundle
 from .services.mixer.library import strip_library
 
 

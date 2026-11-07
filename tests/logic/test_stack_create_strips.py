@@ -106,14 +106,16 @@ class SubStripsBesideTheStacksTest(unittest.TestCase):
         self.assertEqual((report["label"], level["fader"], level["fader_fixed"], level["mute"]),
                          ("Sub 4", 90, 90 << 24, False))
 
-    def test_a_sub_out_of_use_with_a_pan_or_a_solo_is_refused(self):
-        for at, value, what in ((89, 20, "a pan"), (88, 1, "a solo")):
-            with self.subTest(what):
-                data = bytearray(session_with_sub_above(in_use=False))
-                strip = next(r for r in project_records(bytes(data)) if r.tag == b"OCuA" and r.owner == 381)
-                data[bytes(data).index(strip.raw) + HEADER + at] = value
-                with self.assertRaisesRegex(ValueError, f"Sub 4 is out of use .* {what}"):
-                    create_stack(bytes(data), name="Nested Stack", members=[504], track_count=TRACKS)
+    def test_a_sub_out_of_use_keeps_its_pan_and_a_soloed_one_is_refused(self):
+        data = bytearray(session_with_sub_above(in_use=False))
+        strip = next(r for r in project_records(bytes(data)) if r.tag == b"OCuA" and r.owner == 381)
+        at = bytes(data).index(strip.raw) + HEADER
+        data[at + 89] = 20                                    # a pan: kept, as Logic's reuse keeps it
+        out, report = create_stack(bytes(data), name="Nested Stack", members=[504], track_count=TRACKS)
+        self.assertEqual((report["label"], read_levels(out)[381]["pan"]), ("Sub 4", 20))
+        data[at + 88] = 1                                     # a solo: unmeasured
+        with self.assertRaisesRegex(ValueError, "Sub 4 is out of use .* soloed"):
+            create_stack(bytes(data), name="Nested Stack", members=[504], track_count=TRACKS)
 
 
 SUMMING_MIXER = MIXER + [600, 604]

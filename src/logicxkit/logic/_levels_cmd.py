@@ -9,7 +9,7 @@ from pathlib import Path
 from ._edit import CommandError, edit_copy, owner_by_label, written_alternatives
 from .services.mixer.levels import (
     PAN_CENTRE, UNITY, copy_levels, db_text, fader_word, read_levels, set_levels)
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _wanted(args, data: bytes) -> dict[int, dict[str, int]]:

@@ -103,12 +103,13 @@ class StackWrapCommandsTest(unittest.TestCase):
         self.assertEqual(code, 0, text)
         self.assertIn("Sub 1's mute stays on it, as Logic's convert leaves it; Aux 1 is not muted", text)
 
-    def test_a_mute_lane_on_a_folder_whose_bus_aux_becomes_the_main_track_is_refused(self):
+    def test_a_mute_lane_on_a_folder_whose_bus_aux_becomes_the_main_track_goes_onto_it(self):
+        """As Logic's convert did (`stack-convert-mute-lane-after-logic`)."""
+        from logicxkit.logic.services.regions.automation import read_automation
         ridden = written(self, "automation", ALL_OF_A_BUS, "--set", "Sub 1:Mute=0@1,127@3", out=self.out / "lane")
-        code, text = run("stacks", ridden, "--convert", "Sub 1", "--out", self.out / "converted")
-        self.assertEqual(code, 1, text)
-        self.assertIn("the folder carries a Mute lane", text)
-        self.assertFalse((self.out / "converted" / ridden.name).exists(), text)
+        dest = written(self, "stacks", ridden, "--convert", "Sub 1", out=self.out / "converted")
+        lanes = [(a.track, ln.parameter, len(ln.points)) for a in read_automation(data(dest), count(dest)) for ln in a.lanes]
+        self.assertEqual(lanes, [("Aux 1", "Mute", 2)])
 
     def test_a_folder_made_after_a_muted_convert_takes_the_sub_the_convert_left(self):
         converted = written(self, "stacks", MUTED, "--convert", "Sub 1", out=self.out / "converted")

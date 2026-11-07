@@ -29051,59 +29051,59 @@
      ],
      "Length": [
       "914 \u00b5s",
-      ""
+      "1.83 s"
      ],
      "Input Crossfeed": [
-      "",
-      ""
+      "0.00",
+      "1.00"
      ],
      "Volume Init Level": [
       "0 %",
-      ""
+      "100 %"
      ],
      "Volume Attack Time": [
-      "",
-      ""
+      "0.0 s",
+      "1.0 s"
      ],
      "Volume Attack X1": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume Attack Y1": [
       "0.000",
-      ""
+      "1.000"
      ],
      "Volume Attack X2": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume Attack Y2": [
       "0.000",
-      ""
+      "1.000"
      ],
      "Volume Decay Time": [
-      "",
-      ""
+      "1.0 ms",
+      "1.0 s"
      ],
      "Volume Decay X1": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume Decay Y1": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume Decay X2": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume Decay Y2": [
-      "",
-      ""
+      "0.000",
+      "1.000"
      ],
      "Volume End Level": [
-      "",
-      ""
+      "0 %",
+      "100 %"
      ],
      "Filter Init Level": [
       "0.1 Hz",
@@ -29179,7 +29179,7 @@
      ],
      "IR Offset": [
       "0.0 s",
-      ""
+      "1.83 s"
      ],
      "Low Mid Gain": [
       "-24.0 dB",
@@ -32835,8 +32835,8 @@
       "100 %"
      ],
      "Output Beat 1": [
-      "Mute",
-      "+6.0 dB"
+      "1.00",
+      "4.88"
      ],
      "Output Beat 4": [
       "-800.0 %",
@@ -32851,6 +32851,58 @@
       "800.00 %"
      ],
      "Repeat 6": [
+      "-100 %",
+      "100 %"
+     ],
+     "Speed 1": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Input Time Curve 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "Repeat 1": [
+      "1",
+      "8"
+     ],
+     "Filter Cutoff 1": [
+      "20.0 Hz",
+      "20000 Hz"
+     ],
+     "Filter Cutoff Slope 1": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Filter Cutoff Curve 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "Filter Resonance 1": [
+      "0 %",
+      "100 %"
+     ],
+     "Volume 1": [
+      "Mute",
+      "+6.0 dB"
+     ],
+     "Volume Slope 1": [
+      "-800.0 %",
+      "800.0 %"
+     ],
+     "Volume Curve 1": [
+      "-100 %",
+      "100 %"
+     ],
+     "Pan 1": [
+      "-100 %",
+      "+100 %"
+     ],
+     "Pan Slope 1": [
+      "-800.00 %",
+      "800.00 %"
+     ],
+     "Pan Curve 1": [
       "-100 %",
       "100 %"
      ]
@@ -33061,6 +33113,82 @@
       "0.50"
      ],
      "Step Mod 2 Length 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 2 Depth": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 2 Swing": [
+      "50.0 %",
+      "99.9 %"
+     ],
+     "Step Mod 2 Attack": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 2 Attack Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 2 Hold": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 2 Release": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 2 Release Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 2 Num Steps": [
+      "",
+      ""
+     ],
+     "Step Mod 2 Value 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 3 Depth": [
+      "-100 %",
+      "100 %"
+     ],
+     "Step Mod 3 Swing": [
+      "50.0 %",
+      "99.9 %"
+     ],
+     "Step Mod 3 Attack": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 3 Attack Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 3 Hold": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 3 Release": [
+      "0.0 %",
+      "50.0 %"
+     ],
+     "Step Mod 3 Release Curve": [
+      "-0.50",
+      "0.50"
+     ],
+     "Step Mod 3 Num Steps": [
+      "",
+      ""
+     ],
+     "Step Mod 3 Value 1": [
+      "0.0 %",
+      "100 %"
+     ],
+     "Step Mod 3 Length 1": [
       "0.0 %",
       "100 %"
      ]
@@ -63805,6 +63933,1859 @@
      "Band 4 Exp. Ratio": 1.14
     }
    }
+  }
+ },
+ "slider-nbr-lo-midpoints-raw": {
+  "path": "slider-s16-nbr-lo-midpoints-raw.logicx",
+  "note": "Every row of slider-midpoints-raw written a tenth of a step above its lower sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 2.31,
+     "Attack": 12.55,
+     "Release": 935.0
+    },
+    "Noise Gate": {
+     "Release": 52.53,
+     "Low Cutoff": 2120.0,
+     "High Cutoff": 241.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.573,
+     "Low Shelf Q-Factor": 0.955,
+     "Peak 2 Frequency": 112.1,
+     "Peak 3 Frequency": 3762.0,
+     "Peak 3 Q-Factor": 19.1
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.9374,
+     "Band 1 Attack": 125.3,
+     "Band 1 Release": 372.0,
+     "Band 2 Xover Frequency 1/2": 111.0,
+     "Band 1 Exp. Threshold": -29.95,
+     "Band 1 Exp. Ratio": 4.095
+    },
+    "Limiter": {
+     "Release": 11.1
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-midpoints-resave-logic": {
+  "path": "slider-s17-nbr-lo-midpoints-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-lo-midpoints-raw: each value laid on the lower position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 2.3,
+     "Attack": 12.5,
+     "Release": 930.0
+    },
+    "Noise Gate": {
+     "Release": 52.392998,
+     "Low Cutoff": 2100.0,
+     "High Cutoff": 240.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.57,
+     "Low Shelf Q-Factor": 0.95,
+     "Peak 2 Frequency": 112.0,
+     "Peak 3 Frequency": 3760.0,
+     "Peak 3 Q-Factor": 19.0
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.933333,
+     "Band 1 Attack": 125.0,
+     "Band 1 Release": 370.0,
+     "Band 2 Xover Frequency 1/2": 110.0,
+     "Band 1 Exp. Threshold": -30.0,
+     "Band 1 Exp. Ratio": 4.08
+    },
+    "Limiter": {
+     "Release": 11.0
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-midpoints-raw": {
+  "path": "slider-s18-nbr-hi-midpoints-raw.logicx",
+  "note": "Every row of slider-midpoints-raw written a tenth of a step under its upper sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 2.39,
+     "Attack": 12.95,
+     "Release": 975.0
+    },
+    "Noise Gate": {
+     "Release": 53.57,
+     "Low Cutoff": 2280.0,
+     "High Cutoff": 249.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.597,
+     "Low Shelf Q-Factor": 0.995,
+     "Peak 2 Frequency": 112.9,
+     "Peak 3 Frequency": 3778.0,
+     "Peak 3 Q-Factor": 19.9
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.9726,
+     "Band 1 Attack": 127.7,
+     "Band 1 Release": 388.0,
+     "Band 2 Xover Frequency 1/2": 119.0,
+     "Band 1 Exp. Threshold": -29.55,
+     "Band 1 Exp. Ratio": 4.215
+    },
+    "Limiter": {
+     "Release": 11.9
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-midpoints-resave-logic": {
+  "path": "slider-s19-nbr-hi-midpoints-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-hi-midpoints-raw: each value laid on the upper position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 2.4,
+     "Attack": 13.0,
+     "Release": 980.0
+    },
+    "Noise Gate": {
+     "Release": 53.693996,
+     "Low Cutoff": 2300.0,
+     "High Cutoff": 250.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.6,
+     "Low Shelf Q-Factor": 1.0,
+     "Peak 2 Frequency": 113.0,
+     "Peak 3 Frequency": 3780.0,
+     "Peak 3 Q-Factor": 20.0
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.977778,
+     "Band 1 Attack": 128.0,
+     "Band 1 Release": 390.0,
+     "Band 2 Xover Frequency 1/2": 120.0,
+     "Band 1 Exp. Threshold": -29.5,
+     "Band 1 Exp. Ratio": 4.23
+    },
+    "Limiter": {
+     "Release": 12.0
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties1-raw": {
+  "path": "slider-s20-nbr-lo-ties1-raw.logicx",
+  "note": "Every row of slider-ties1-raw written a tenth of a step above its lower sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 1.41,
+     "Attack": 7.05,
+     "Release": 14.1
+    },
+    "Noise Gate": {
+     "Release": 29.2,
+     "Low Cutoff": 48.3,
+     "High Cutoff": 201.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.301,
+     "Low Shelf Q-Factor": 0.171,
+     "Peak 2 Frequency": 53.55,
+     "Peak 3 Frequency": 53.55,
+     "Peak 3 Q-Factor": 0.301
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.5374,
+     "Band 1 Attack": 7.05,
+     "Band 1 Release": 5.13,
+     "Band 2 Xover Frequency 1/2": 54.3,
+     "Band 1 Exp. Threshold": -38.45,
+     "Band 1 Exp. Ratio": 1.131
+    },
+    "Limiter": {
+     "Release": 5.13
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties1-resave-logic": {
+  "path": "slider-s21-nbr-lo-ties1-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-lo-ties1-raw: each value laid on the lower position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 1.4,
+     "Attack": 7.0,
+     "Release": 14.0
+    },
+    "Noise Gate": {
+     "Release": 29.090998,
+     "Low Cutoff": 48.0,
+     "High Cutoff": 200.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.3,
+     "Low Shelf Q-Factor": 0.17,
+     "Peak 2 Frequency": 53.5,
+     "Peak 3 Frequency": 53.5,
+     "Peak 3 Q-Factor": 0.3
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.533333,
+     "Band 1 Attack": 7.0,
+     "Band 1 Release": 5.1,
+     "Band 2 Xover Frequency 1/2": 54.0,
+     "Band 1 Exp. Threshold": -38.5,
+     "Band 1 Exp. Ratio": 1.13
+    },
+    "Limiter": {
+     "Release": 5.1
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties1-raw": {
+  "path": "slider-s22-nbr-hi-ties1-raw.logicx",
+  "note": "Every row of slider-ties1-raw written a tenth of a step under its upper sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 1.49,
+     "Attack": 7.45,
+     "Release": 14.9
+    },
+    "Noise Gate": {
+     "Release": 30.0,
+     "Low Cutoff": 50.7,
+     "High Cutoff": 209.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.309,
+     "Low Shelf Q-Factor": 0.179,
+     "Peak 2 Frequency": 53.95,
+     "Peak 3 Frequency": 53.95,
+     "Peak 3 Q-Factor": 0.309
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.5726,
+     "Band 1 Attack": 7.45,
+     "Band 1 Release": 5.37,
+     "Band 2 Xover Frequency 1/2": 56.7,
+     "Band 1 Exp. Threshold": -38.05,
+     "Band 1 Exp. Ratio": 1.139
+    },
+    "Limiter": {
+     "Release": 5.37
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties1-resave-logic": {
+  "path": "slider-s23-nbr-hi-ties1-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-hi-ties1-raw: each value laid on the upper position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 1.5,
+     "Attack": 7.5,
+     "Release": 15.0
+    },
+    "Noise Gate": {
+     "Release": 30.111998,
+     "Low Cutoff": 51.0,
+     "High Cutoff": 210.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 0.31,
+     "Low Shelf Q-Factor": 0.18,
+     "Peak 2 Frequency": 54.0,
+     "Peak 3 Frequency": 54.0,
+     "Peak 3 Q-Factor": 0.31
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 1.577778,
+     "Band 1 Attack": 7.5,
+     "Band 1 Release": 5.4,
+     "Band 2 Xover Frequency 1/2": 57.0,
+     "Band 1 Exp. Threshold": -38.0,
+     "Band 1 Exp. Ratio": 1.14
+    },
+    "Limiter": {
+     "Release": 5.4
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties2-raw": {
+  "path": "slider-s24-nbr-lo-ties2-raw.logicx",
+  "note": "Every row of slider-ties2-raw written a tenth of a step above its lower sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 5.62,
+     "Attack": 50.3,
+     "Release": 161.0
+    },
+    "Noise Gate": {
+     "Release": 254.14,
+     "Low Cutoff": 423.0,
+     "High Cutoff": 221.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 3.42,
+     "Low Shelf Q-Factor": 0.423,
+     "Peak 2 Frequency": 625.5,
+     "Peak 3 Frequency": 620.5,
+     "Peak 3 Q-Factor": 3.22
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 2.9154,
+     "Band 1 Attack": 47.3,
+     "Band 1 Release": 58.3,
+     "Band 2 Xover Frequency 1/2": 654.0,
+     "Band 1 Exp. Threshold": -9.975,
+     "Band 1 Exp. Ratio": 1.986
+    },
+    "Limiter": {
+     "Release": 61.4
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties2-resave-logic": {
+  "path": "slider-s25-nbr-lo-ties2-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-lo-ties2-raw: each value laid on the lower position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 5.6,
+     "Attack": 50.0,
+     "Release": 160.0
+    },
+    "Noise Gate": {
+     "Release": 253.12999,
+     "Low Cutoff": 420.0,
+     "High Cutoff": 220.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 3.4,
+     "Low Shelf Q-Factor": 0.42,
+     "Peak 2 Frequency": 625.0,
+     "Peak 3 Frequency": 620.0,
+     "Peak 3 Q-Factor": 3.2
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 2.911111,
+     "Band 1 Attack": 47.0,
+     "Band 1 Release": 58.0,
+     "Band 2 Xover Frequency 1/2": 650.0,
+     "Band 1 Exp. Threshold": -10.0,
+     "Band 1 Exp. Ratio": 1.98
+    },
+    "Limiter": {
+     "Release": 61.0
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties2-raw": {
+  "path": "slider-s26-nbr-hi-ties2-raw.logicx",
+  "note": "Every row of slider-ties2-raw written a tenth of a step under its upper sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 5.78,
+     "Attack": 52.7,
+     "Release": 169.0
+    },
+    "Noise Gate": {
+     "Release": 262.46,
+     "Low Cutoff": 447.0,
+     "High Cutoff": 229.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 3.58,
+     "Low Shelf Q-Factor": 0.447,
+     "Peak 2 Frequency": 629.5,
+     "Peak 3 Frequency": 624.5,
+     "Peak 3 Q-Factor": 3.38
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 2.9506,
+     "Band 1 Attack": 49.7,
+     "Band 1 Release": 60.7,
+     "Band 2 Xover Frequency 1/2": 686.0,
+     "Band 1 Exp. Threshold": -9.775,
+     "Band 1 Exp. Ratio": 2.034
+    },
+    "Limiter": {
+     "Release": 64.6
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties2-resave-logic": {
+  "path": "slider-s27-nbr-hi-ties2-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-hi-ties2-raw: each value laid on the upper position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 5.8,
+     "Attack": 53.0,
+     "Release": 170.0
+    },
+    "Noise Gate": {
+     "Release": 263.549988,
+     "Low Cutoff": 450.0,
+     "High Cutoff": 230.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 3.6,
+     "Low Shelf Q-Factor": 0.45,
+     "Peak 2 Frequency": 630.0,
+     "Peak 3 Frequency": 625.0,
+     "Peak 3 Q-Factor": 3.4
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 2.955556,
+     "Band 1 Attack": 50.0,
+     "Band 1 Release": 61.0,
+     "Band 2 Xover Frequency 1/2": 690.0,
+     "Band 1 Exp. Threshold": -9.75,
+     "Band 1 Exp. Ratio": 2.04
+    },
+    "Limiter": {
+     "Release": 65.0
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties3-raw": {
+  "path": "slider-s28-nbr-lo-ties3-raw.logicx",
+  "note": "Every row of slider-ties3-raw written a tenth of a step above its lower sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 19.1,
+     "Attack": 155.3,
+     "Release": 1910.0
+    },
+    "Noise Gate": {
+     "Release": 3879.43,
+     "Low Cutoff": 3930.0,
+     "High Cutoff": 251.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 38.2,
+     "Low Shelf Q-Factor": 1.21,
+     "Peak 2 Frequency": 7105.0,
+     "Peak 3 Frequency": 7105.0,
+     "Peak 3 Q-Factor": 38.2
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 21.2925,
+     "Band 1 Attack": 155.3,
+     "Band 1 Release": 664.0,
+     "Band 2 Xover Frequency 1/2": 7050.0,
+     "Band 1 Exp. Threshold": 4.025,
+     "Band 1 Exp. Ratio": 6.143
+    },
+    "Limiter": {
+     "Release": 664.0
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-ties3-resave-logic": {
+  "path": "slider-s29-nbr-lo-ties3-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-lo-ties3-raw: each value laid on the lower position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 19.0,
+     "Attack": 155.0,
+     "Release": 1900.0
+    },
+    "Noise Gate": {
+     "Release": 3866.100098,
+     "Low Cutoff": 3900.0,
+     "High Cutoff": 250.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 38.0,
+     "Low Shelf Q-Factor": 1.2,
+     "Peak 2 Frequency": 7100.0,
+     "Peak 3 Frequency": 7100.0,
+     "Peak 3 Q-Factor": 38.0
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 21.225,
+     "Band 1 Attack": 155.0,
+     "Band 1 Release": 660.0,
+     "Band 2 Xover Frequency 1/2": 7000.0,
+     "Band 1 Exp. Threshold": 4.0,
+     "Band 1 Exp. Ratio": 6.12
+    },
+    "Limiter": {
+     "Release": 660.0
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties3-raw": {
+  "path": "slider-s30-nbr-hi-ties3-raw.logicx",
+  "note": "Every row of slider-ties3-raw written a tenth of a step under its upper sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "written": {
+    "Compressor": {
+     "Ratio": 19.9,
+     "Attack": 157.7,
+     "Release": 1990.0
+    },
+    "Noise Gate": {
+     "Release": 3986.07,
+     "Low Cutoff": 4170.0,
+     "High Cutoff": 259.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 39.8,
+     "Low Shelf Q-Factor": 1.29,
+     "Peak 2 Frequency": 7145.0,
+     "Peak 3 Frequency": 7145.0,
+     "Peak 3 Q-Factor": 39.8
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 21.8325,
+     "Band 1 Attack": 157.7,
+     "Band 1 Release": 696.0,
+     "Band 2 Xover Frequency 1/2": 7450.0,
+     "Band 1 Exp. Threshold": 4.225,
+     "Band 1 Exp. Ratio": 6.327
+    },
+    "Limiter": {
+     "Release": 696.0
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-ties3-resave-logic": {
+  "path": "slider-s31-nbr-hi-ties3-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-hi-ties3-raw: each value laid on the upper position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Compressor": 1,
+    "Noise Gate": 2,
+    "Linear Phase EQ": 3,
+    "Multipressor": 4,
+    "Limiter": 5
+   },
+   "kept": {
+    "Compressor": {
+     "Ratio": 20.0,
+     "Attack": 158.0,
+     "Release": 2000.0
+    },
+    "Noise Gate": {
+     "Release": 3999.400146,
+     "Low Cutoff": 4200.0,
+     "High Cutoff": 260.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Q-Factor": 40.0,
+     "Low Shelf Q-Factor": 1.3,
+     "Peak 2 Frequency": 7150.000488,
+     "Peak 3 Frequency": 7150.000488,
+     "Peak 3 Q-Factor": 40.0
+    },
+    "Multipressor": {
+     "Band 1 Comp. Ratio": 21.9,
+     "Band 1 Attack": 158.0,
+     "Band 1 Release": 700.0,
+     "Band 2 Xover Frequency 1/2": 7500.0,
+     "Band 1 Exp. Threshold": 4.25,
+     "Band 1 Exp. Ratio": 6.35
+    },
+    "Limiter": {
+     "Release": 700.0
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-siblings-raw": {
+  "path": "slider-s32-nbr-lo-siblings-raw.logicx",
+  "note": "Every row of slider-siblings-raw written a tenth of a step above its lower sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Channel EQ": 1,
+    "Linear Phase EQ": 2,
+    "Multipressor": 3
+   },
+   "written": {
+    "Channel EQ": {
+     "Low Cut Frequency": 53.55,
+     "Low Shelf Frequency": 625.5,
+     "Peak 1 Frequency": 7105.0,
+     "Peak 2 Frequency": 53.55,
+     "Peak 3 Frequency": 625.5,
+     "Peak 4 Frequency": 7105.0,
+     "High Shelf Frequency": 53.55,
+     "High Cut Frequency": 625.5
+    },
+    "Linear Phase EQ": {
+     "Low Cut Frequency": 625.5,
+     "Low Shelf Frequency": 7105.0,
+     "Peak 1 Frequency": 53.55,
+     "Peak 4 Frequency": 53.55,
+     "High Shelf Frequency": 625.5,
+     "High Cut Frequency": 7105.0
+    },
+    "Multipressor": {
+     "Band 2 Attack": 155.3,
+     "Band 2 Exp. Threshold": -38.45,
+     "Band 2 Exp. Ratio": 1.986,
+     "Band 3 Attack": 7.05,
+     "Band 3 Exp. Threshold": -9.975,
+     "Band 3 Exp. Ratio": 6.143,
+     "Band 4 Attack": 47.3,
+     "Band 4 Exp. Threshold": 4.025,
+     "Band 4 Exp. Ratio": 1.131
+    }
+   }
+  }
+ },
+ "slider-nbr-lo-siblings-resave-logic": {
+  "path": "slider-s33-nbr-lo-siblings-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-lo-siblings-raw: each value laid on the lower position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Channel EQ": 1,
+    "Linear Phase EQ": 2,
+    "Multipressor": 3
+   },
+   "kept": {
+    "Channel EQ": {
+     "Low Cut Frequency": 53.5,
+     "Low Shelf Frequency": 625.0,
+     "Peak 1 Frequency": 7100.0,
+     "Peak 2 Frequency": 53.5,
+     "Peak 3 Frequency": 625.0,
+     "Peak 4 Frequency": 7100.0,
+     "High Shelf Frequency": 53.5,
+     "High Cut Frequency": 625.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Frequency": 625.0,
+     "Low Shelf Frequency": 7100.0,
+     "Peak 1 Frequency": 53.5,
+     "Peak 4 Frequency": 53.5,
+     "High Shelf Frequency": 625.0,
+     "High Cut Frequency": 7100.0
+    },
+    "Multipressor": {
+     "Band 2 Attack": 155.0,
+     "Band 2 Exp. Threshold": -38.5,
+     "Band 2 Exp. Ratio": 1.98,
+     "Band 3 Attack": 7.0,
+     "Band 3 Exp. Threshold": -10.0,
+     "Band 3 Exp. Ratio": 6.12,
+     "Band 4 Attack": 47.0,
+     "Band 4 Exp. Threshold": 4.0,
+     "Band 4 Exp. Ratio": 1.13
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-siblings-raw": {
+  "path": "slider-s34-nbr-hi-siblings-raw.logicx",
+  "note": "Every row of slider-siblings-raw written a tenth of a step under its upper sampled position, nothing snapped",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Channel EQ": 1,
+    "Linear Phase EQ": 2,
+    "Multipressor": 3
+   },
+   "written": {
+    "Channel EQ": {
+     "Low Cut Frequency": 53.95,
+     "Low Shelf Frequency": 629.5,
+     "Peak 1 Frequency": 7145.0,
+     "Peak 2 Frequency": 53.95,
+     "Peak 3 Frequency": 629.5,
+     "Peak 4 Frequency": 7145.0,
+     "High Shelf Frequency": 53.95,
+     "High Cut Frequency": 629.5
+    },
+    "Linear Phase EQ": {
+     "Low Cut Frequency": 629.5,
+     "Low Shelf Frequency": 7145.0,
+     "Peak 1 Frequency": 53.95,
+     "Peak 4 Frequency": 53.95,
+     "High Shelf Frequency": 629.5,
+     "High Cut Frequency": 7145.0
+    },
+    "Multipressor": {
+     "Band 2 Attack": 157.7,
+     "Band 2 Exp. Threshold": -38.05,
+     "Band 2 Exp. Ratio": 2.034,
+     "Band 3 Attack": 7.45,
+     "Band 3 Exp. Threshold": -9.775,
+     "Band 3 Exp. Ratio": 6.327,
+     "Band 4 Attack": 49.7,
+     "Band 4 Exp. Threshold": 4.225,
+     "Band 4 Exp. Ratio": 1.139
+    }
+   }
+  }
+ },
+ "slider-nbr-hi-siblings-resave-logic": {
+  "path": "slider-s35-nbr-hi-siblings-resave.logicx",
+  "note": "Logic's re-save of slider-nbr-hi-siblings-raw: each value laid on the upper position, the exact float that position stores",
+  "facts": {
+   "channel": "Stereo Out",
+   "slots": {
+    "Channel EQ": 1,
+    "Linear Phase EQ": 2,
+    "Multipressor": 3
+   },
+   "kept": {
+    "Channel EQ": {
+     "Low Cut Frequency": 54.0,
+     "Low Shelf Frequency": 630.0,
+     "Peak 1 Frequency": 7150.000488,
+     "Peak 2 Frequency": 54.0,
+     "Peak 3 Frequency": 630.0,
+     "Peak 4 Frequency": 7150.000488,
+     "High Shelf Frequency": 54.0,
+     "High Cut Frequency": 630.0
+    },
+    "Linear Phase EQ": {
+     "Low Cut Frequency": 630.0,
+     "Low Shelf Frequency": 7150.000488,
+     "Peak 1 Frequency": 54.0,
+     "Peak 4 Frequency": 54.0,
+     "High Shelf Frequency": 630.0,
+     "High Cut Frequency": 7150.000488
+    },
+    "Multipressor": {
+     "Band 2 Attack": 158.0,
+     "Band 2 Exp. Threshold": -38.0,
+     "Band 2 Exp. Ratio": 2.04,
+     "Band 3 Attack": 7.5,
+     "Band 3 Exp. Threshold": -9.75,
+     "Band 3 Exp. Ratio": 6.35,
+     "Band 4 Attack": 50.0,
+     "Band 4 Exp. Threshold": 4.25,
+     "Band 4 Exp. Ratio": 1.14
+    }
+   }
+  }
+ },
+ "stack-flatten-inner-summing-after-logic": {
+  "path": "stack-120-flatten-inner-summing-after-logic.logicx",
+  "note": "Logic 12.4 on stack-summing-around-summing-after-logic: the Sum 1 header (a summing stack inside Sum 2) selected, Track > Flatten Stack: the three tracks direct members of Sum 2 with Sum 2 as parent, still on Bus 1 whose Aux 1 is left feeding Bus 2; every freed row selected (2026-11-04)",
+  "facts": {
+   "flattened": "Sum 1",
+   "outer": "Sum 2",
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3"
+   ],
+   "parent_object": 108,
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Aux 1": "Bus 2",
+    "Aux 2": "Output 1-2"
+   }
+  }
+ },
+ "stack-newtrack-in-folder-in-summing-after-logic": {
+  "path": "stack-121-newtrack-in-folder-in-summing-after-logic.logicx",
+  "note": "Logic 12.4 on stack-summing-around-folder-after-logic: Audio 2 (in Sub 1, in Sum 1) selected, Track > New Audio Track: Audio 4 lands at the top level after Sum 1, in no stack, output Output 1-2 (2026-11-04)",
+  "facts": {
+   "selected": "Audio 2",
+   "new": "Audio 4",
+   "depth": 0,
+   "after": "Sum 1",
+   "output": "Output 1-2"
+  }
+ },
+ "stack-convert-mute-lane-before": {
+  "path": "stack-122-convert-mute-lane-before.logicx",
+  "note": "stack-convert-reuse-before-logic with logic automation --set 'Sub 1:mute=1@1,0@3' on the folder (not opened in Logic)",
+  "facts": {
+   "folder": "Sub 1",
+   "lanes": {
+    "Sub 1": [
+     "Mute"
+    ]
+   }
+  }
+ },
+ "stack-convert-mute-lane-after-logic": {
+  "path": "stack-123-convert-mute-lane-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-mute-lane-before: the Sub 1 header selected, Track > Convert Folder Stack to Summing Stack: Aux 1 (fed from Bus 1, in use before) is the header and the folder's Mute lane is on its track (2026-11-04)",
+  "facts": {
+   "header": "Aux 1",
+   "lanes": {
+    "Aux 1": [
+     "Mute"
+    ]
+   }
+  }
+ },
+ "stack-convert-aux-pan-lane-before": {
+  "path": "stack-124-convert-aux-pan-lane-before.logicx",
+  "note": "stack-convert-reuse-track-before-logic with a Volume lane on the folder and a Pan lane on Aux 1's own track (logic automation --set; not opened in Logic)",
+  "facts": {
+   "folder": "Sub 1",
+   "lanes": {
+    "Sub 1": [
+     "Volume"
+    ],
+    "Aux 1": [
+     "Pan"
+    ]
+   }
+  }
+ },
+ "stack-convert-aux-pan-lane-after-logic": {
+  "path": "stack-125-convert-aux-pan-lane-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-aux-pan-lane-before: Sub 1 converted: Aux 1 is the header carrying the folder's Volume lane; its own Pan lane is gone (2026-11-04)",
+  "facts": {
+   "header": "Aux 1",
+   "lanes": {
+    "Aux 1": [
+     "Volume"
+    ]
+   }
+  }
+ },
+ "stack-convert-folder-insert-before": {
+  "path": "stack-126-convert-folder-insert-before.logicx",
+  "note": "stack-convert-reuse-before-logic with a Compressor added on the folder's Sub 1 strip (logic add-plugin; not opened in Logic)",
+  "facts": {
+   "folder": "Sub 1",
+   "slots": {
+    "Sub 1": [
+     "Compressor"
+    ]
+   }
+  }
+ },
+ "stack-convert-folder-insert-after-logic": {
+  "path": "stack-127-convert-folder-insert-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-folder-insert-before: Sub 1 converted: Aux 1 is the header; the Compressor stays on the Sub 1 strip, now out of use (2026-11-04)",
+  "facts": {
+   "header": "Aux 1",
+   "slots": {
+    "Sub 1": [
+     "Compressor"
+    ],
+    "Aux 1": []
+   }
+  }
+ },
+ "stack-convert-aux-inside-before": {
+  "path": "stack-128-convert-aux-inside-before.logicx",
+  "note": "stack-convert-reuse-track-before-logic with Aux 1's own track moved inside the folder (logic stacks --move; not opened in Logic)",
+  "facts": {
+   "folder": "Sub 1",
+   "members": [
+    "Audio 1",
+    "Audio 2",
+    "Audio 3",
+    "Aux 1"
+   ]
+  }
+ },
+ "stack-convert-aux-inside-after-logic": {
+  "path": "stack-129-convert-aux-inside-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-aux-inside-before: Sub 1 converted: a new aux, Aux 2 fed from Bus 2, is the header Sum 2; Aux 1 stays a member and outputs to Bus 2; the three tracks keep Bus 1 (2026-11-04)",
+  "facts": {
+   "header": "Sum 2",
+   "header_channel": "Aux 2",
+   "bus": "Bus 2",
+   "outputs": {
+    "Audio 1": "Bus 1",
+    "Audio 2": "Bus 1",
+    "Audio 3": "Bus 1",
+    "Aux 1": "Bus 2",
+    "Aux 2": "Output 1-2"
+   }
+  }
+ },
+ "stack-convert-send-feeder-before": {
+  "path": "stack-130-convert-send-feeder-before.logicx",
+  "note": "stack-convert-reuse-track-before-logic with a track added at the top level (Extra, on Audio 4) sending to Bus 1 (logic add-track, send --add; not opened in Logic)",
+  "facts": {
+   "folder": "Sub 1",
+   "sends": {
+    "Audio 4": [
+     1
+    ]
+   }
+  }
+ },
+ "stack-convert-send-feeder-after-logic": {
+  "path": "stack-131-convert-send-feeder-after-logic.logicx",
+  "note": "Logic 12.4 on stack-convert-send-feeder-before: Sub 1 converted: Aux 1 is the header though a send from outside feeds its bus; the send stays (2026-11-04)",
+  "facts": {
+   "header": "Aux 1",
+   "sends": {
+    "Audio 4": [
+     1
+    ]
+   }
+  }
+ },
+ "stack-sub-in-use-left-before": {
+  "path": "stack-132-sub-in-use-left-before.logicx",
+  "note": "stack-folder-logic with a pan, a Compressor and a send to Bus 3 on Sub 1, then logic stacks --flatten 'Sub 1': the Sub 1 strip stays in use with them (not opened in Logic)",
+  "facts": {
+   "strip": "Sub 1",
+   "in_use": true
+  }
+ },
+ "stack-sub-in-use-left-after-logic": {
+  "path": "stack-133-sub-in-use-left-after-logic.logicx",
+  "note": "Logic 12.4 on stack-sub-in-use-left-before: Create Track Stack (Folder) over Audio 1-3: the header is Sub 2; the in-use Sub 1 strip is passed over with its pan, insert and send (2026-11-04)",
+  "facts": {
+   "header": "Sub 2",
+   "left": "Sub 1"
+  }
+ },
+ "instrument-quick-sampler-stamped-ours": {
+  "path": "instrument-i29-quick-sampler-stamped.logicx",
+  "note": "tracks-instrument-logic with Inst 1's instrument replaced by a Quick Sampler donor harvested from instrument-quick-sampler-logic (logic replace-plugin --at 1; not opened in Logic)",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Quick Sampler"
+  }
+ },
+ "stack-sub-settings-before": {
+  "path": "stack-134-sub-settings-before.logicx",
+  "note": "stack-folder-logic with a pan, a Compressor and a send to Bus 3 on the folder's Sub 1 strip (logic levels, add-plugin, send; not opened in Logic)",
+  "facts": {
+   "strip": "Sub 1",
+   "pan": 34,
+   "slots": [
+    "Compressor"
+   ],
+   "sends": [
+    3
+   ]
+  }
+ },
+ "stack-sub-settings-convert-after-logic": {
+  "path": "stack-135-sub-settings-convert-after-logic.logicx",
+  "note": "Logic 12.4 on stack-sub-settings-before: Sub 1 converted to a summing stack (Sum 2 on Aux 2, Bus 1): the Sub 1 strip goes out of use keeping its pan, its Compressor and its send (2026-11-04)",
+  "facts": {
+   "strip": "Sub 1",
+   "in_use": false,
+   "pan": 34,
+   "slots": [
+    "Compressor"
+   ],
+   "sends": [
+    3
+   ],
+   "header": "Sum 2"
+  }
+ },
+ "stack-sub-settings-reused-after-logic": {
+  "path": "stack-136-sub-settings-reused-after-logic.logicx",
+  "note": "Logic 12.4 on stack-sub-settings-convert-after-logic: Create Track Stack (Folder) over Audio 1-3 inside Sum 2: the Sub 1 strip is reused for the new folder with its pan kept and its Compressor and send removed (2026-11-04)",
+  "facts": {
+   "strip": "Sub 1",
+   "in_use": true,
+   "pan": 34,
+   "slots": [],
+   "sends": [],
+   "folder": "Sub 1",
+   "inside": "Sum 2"
+  }
+ },
+ "stack-sub-gap-logic-track-after-logic": {
+  "path": "stack-137-sub-gap-logic-track-after-logic.logicx",
+  "note": "Logic 12.4 on stack-sub-gap-before-logic: Audio 4 (a track add-track bound to the free Audio 4 strip) selected, Track > New Audio Track: Logic's new track takes the Audio 4 strip, stereo on Input 1-2, and the written track is moved onto Audio 5 with no input and its source UUID cleared (2026-11-04)",
+  "facts": {
+   "logic_track_channel": "Audio 4",
+   "logic_input": "Input 1-2",
+   "written_track_channel": "Audio 5",
+   "written_input": null
+  }
+ },
+ "stack-sub-gap-logic-track-stacked-after-logic": {
+  "path": "stack-138-sub-gap-logic-track-stacked-after-logic.logicx",
+  "note": "Logic 12.4 on stack-sub-gap-logic-track-after-logic: Logic's own Audio 4 selected, Create Track Stack (Folder): Sub 2 over it; its channel and input as they were (2026-11-04)",
+  "facts": {
+   "folder": "Sub 2",
+   "member_channel": "Audio 4",
+   "member_input": "Input 1-2"
+  }
+ },
+ "instrument-quick-sampler-stamped-resave-logic": {
+  "path": "instrument-i30-quick-sampler-stamped-resave.logicx",
+  "note": "Logic 12.4's re-save of tracks-instrument-logic with Inst 1's instrument replaced by a Quick Sampler donor harvested from instrument-quick-sampler-logic (logic replace-plugin --at 1): Inst 1's records as written; Inst 2's two archives come back with new instance ids, version-1 UUIDs, in their last 16 bytes (2026-11-04)",
+  "facts": {
+   "channel": "Inst 1",
+   "plugin": "Quick Sampler",
+   "rewritten": "Inst 2"
+  }
+ },
+ "instrument-fx-two-midi-one-audio-logic": {
+  "path": "instrument-m02-fx-two-midi-one-audio-logic.logicx",
+  "note": "Logic 12.4 on instrument-fx-two-midi-logic: Channel EQ put into Inst 1's first Audio FX slot from the slot's own menu, its window closed: the slot at key 3, the two MIDI effects still at keys 4 and 5, the archive at 9, the shown-slot count still 2 (2026-11-04)",
+  "facts": {
+   "channel": "Inst 1",
+   "audio_key": 3,
+   "midi_keys": [
+    4,
+    5
+   ],
+   "archive_key": 9,
+   "shown": 2,
+   "slot_base": 2
+  }
+ },
+ "instrument-fx-two-midi-two-audio-ours": {
+  "path": "instrument-m03-fx-two-midi-two-audio-ours.logicx",
+  "note": "instrument-fx-two-midi-one-audio-logic with logic add-plugin Chorus on Inst 1 (0.15.0's writer): the slot at key 4, the MIDI effects moved to 5 and 6, the archive to 10, the shown-slot count written 4 (not opened in Logic)",
+  "facts": {
+   "channel": "Inst 1",
+   "audio_keys": [
+    3,
+    4
+   ],
+   "midi_keys": [
+    5,
+    6
+   ],
+   "archive_key": 10,
+   "shown": 4
+  }
+ },
+ "instrument-fx-two-midi-two-audio-resave-logic": {
+  "path": "instrument-m04-fx-two-midi-two-audio-resave-logic.logicx",
+  "note": "Logic 12.4's re-save of instrument-fx-two-midi-two-audio-ours: every slot and both MIDI effects kept at their keys, the shown-slot count put to 3 (the audio effects plus one; the instrument does not count) and the archive at key 10 dropped (2026-11-04)",
+  "facts": {
+   "channel": "Inst 1",
+   "audio_keys": [
+    3,
+    4
+   ],
+   "midi_keys": [
+    5,
+    6
+   ],
+   "archive_key": null,
+   "shown": 3
+  }
+ },
+ "instrument-fx-three-midi-logic": {
+  "path": "instrument-m05-fx-three-midi-logic.logicx",
+  "note": "Logic 12.4 on instrument-fx-two-midi-logic: Chord Trigger from Inst 1's empty MIDI FX slot under the two: at key 6, the archive moved from 9 to 10, the shown-slot count still 2 (2026-11-04)",
+  "facts": {
+   "channel": "Inst 1",
+   "midi_keys": [
+    4,
+    5,
+    6
+   ],
+   "archive_key": 10,
+   "shown": 2,
+   "slot_base": 2
+  }
+ },
+ "instrument-fx-two-midi-two-audio-fixed-ours": {
+  "path": "instrument-m06-fx-two-midi-two-audio-fixed-ours.logicx",
+  "note": "instrument-fx-two-midi-one-audio-logic with logic add-plugin Chorus on Inst 1: the slot at key 4, the MIDI effects at 5 and 6, the archive at 10, the shown-slot count 3 (not opened in Logic)",
+  "facts": {
+   "channel": "Inst 1",
+   "audio_keys": [
+    3,
+    4
+   ],
+   "midi_keys": [
+    5,
+    6
+   ],
+   "archive_key": 10,
+   "shown": 3
+  }
+ },
+ "instrument-fx-two-midi-two-audio-fixed-resave-logic": {
+  "path": "instrument-m07-fx-two-midi-two-audio-fixed-resave-logic.logicx",
+  "note": "Logic 12.4's re-save of instrument-fx-two-midi-two-audio-fixed-ours: every key, the shown-slot count and the archive as written (2026-11-04)",
+  "facts": {
+   "channel": "Inst 1",
+   "audio_keys": [
+    3,
+    4
+   ],
+   "midi_keys": [
+    5,
+    6
+   ],
+   "archive_key": 10,
+   "shown": 3
+  }
+ },
+ "strip-reference-library-logic": {
+  "path": "reference-01-library-setting.logicx",
+  "note": "tracks-two-audio-logic with a library channel strip setting (Channel EQ -> Compressor, strip-save of inserts-native-logic's Audio 1, in a folder of its own) loaded onto Audio 1 through the inspector strip's Setting menu; Logic 12.4 renamed the track to the setting",
+  "facts": {
+   "channel": "Audio 1",
+   "track": "CLAUDE Verify",
+   "reference": "CLAUDE Verify.cst",
+   "folder": "CLAUDE",
+   "chain": [
+    "Channel EQ",
+    "Compressor"
+   ],
+   "reference_key": 7,
+   "slot_keys": [
+    2,
+    3
+   ]
+  }
+ },
+ "strip-reference-chains-ours": {
+  "path": "reference-02-chains-ours.logicx",
+  "note": "logic chains on strip-reference-library-logic with the example config's Kick chain keyed by the reference (CLAUDE Verify.cst): Channel EQ -> Enveloper -> Compressor on Audio 1; chains --verify matched every row in Logic's Controls views (not a Logic save)",
+  "facts": {
+   "channel": "Audio 1",
+   "chain": [
+    "Channel EQ",
+    "Enveloper",
+    "Compressor"
+   ],
+   "slot_keys": [
+    2,
+    3,
+    4
+   ],
+   "reference_key": 7
+  }
+ },
+ "strip-reference-chains-resave-logic": {
+  "path": "reference-03-chains-resave-logic.logicx",
+  "note": "Logic 12.4's re-save of strip-reference-chains-ours: the chain as written; the reference and both archives of every channel one key up, the channel records' flag words one longer",
+  "facts": {
+   "channel": "Audio 1",
+   "chain": [
+    "Channel EQ",
+    "Enveloper",
+    "Compressor"
+   ],
+   "slot_keys": [
+    2,
+    3,
+    4
+   ],
+   "reference_key": 8
+  }
+ },
+ "regions-c04-crossfade-split-logic": {
+  "path": "regions-c04-crossfade-split.logicx",
+  "note": "regions-a20-crossfade's 'v030-tone2.1' (crossfaded over 'tone renamed') split by Edit > Split > Regions at Playhead at 1 2 3 1 (Navigate > Go To > Position), the audio files skipped on open: the first piece keeps the crossfade bit, the new piece 'v030-tone2.2' has none and the selection, the partner is untouched (Logic 13.0)",
+  "facts": {
+   "split_at": 39840,
+   "pieces": [
+    {
+     "name": "v030-tone2.1",
+     "piece": 1,
+     "frames": 11025,
+     "crossfaded": true
+    },
+    {
+     "name": "v030-tone2.2",
+     "piece": 2,
+     "frames": 11025,
+     "offset": 55125,
+     "crossfaded": false
+    }
+   ],
+   "partner": "tone renamed",
+   "skipped_files": [
+    "v030-tone.wav",
+    "v030-tone_1.wav",
+    "v030-tone2.wav"
+   ],
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "strip-reference-reset-logic": {
+  "path": "reference-04-reset-logic.logicx",
+  "note": "strip-reference-library-logic after Reset Channel Strip from the inspector strip's Setting menu: the chain gone, the setting cleared, the track named for its channel again (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 1",
+   "track": "Audio 1",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "tracks-two-audio-13-0-logic": {
+  "path": "tracks-two-audio-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of tracks-two-audio-logic, opened and saved with no change: the first 13.0 save in the corpus, format word 2514",
+  "facts": {
+   "format": 2514,
+   "tracks": 2,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "strip-reference-chains-resave-13-0-logic": {
+  "path": "reference-05-chains-resave-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of the chains copy written on strip-reference-library-logic with the key headroom kept (the writer's own layout, format 2513), opened and saved with no change",
+  "facts": {
+   "channel": "Audio 1",
+   "chain": [
+    "Channel EQ",
+    "Enveloper",
+    "Compressor"
+   ],
+   "format": 2514
+  }
+ },
+ "regions-c05-crossfade-split-ours-resave-13-0-logic": {
+  "path": "regions-c05-crossfade-split-ours-resave-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of regions --split 6=1.375 on regions-a20-crossfade-logic (the writer's output, format 2513), the audio files skipped on open",
+  "facts": {
+   "format": 2514,
+   "pieces": [
+    {
+     "name": "v030-tone2.1",
+     "piece": 1,
+     "crossfaded": true
+    },
+    {
+     "name": "v030-tone2.2",
+     "piece": 2,
+     "crossfaded": false
+    }
+   ]
+  }
+ },
+ "stack-summing-13-0-logic": {
+  "path": "stack-06-summing-stack-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of stack-summing-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "inserts-native-all-13-0-logic": {
+  "path": "inserts-09-native-all-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of inserts-native-all-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "send-two-base-3-13-0-logic": {
+  "path": "send-03-second-send-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of send-two-base-3-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "automation-volume-fade-13-0-logic": {
+  "path": "automation-c12-volume-fade-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of automation-volume-fade-logic, opened and saved with no change, the audio skipped on open",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "tracks-instrument-13-0-logic": {
+  "path": "tracks-05-instrument-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of tracks-instrument-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)",
+   "tracks": 4
+  }
+ },
+ "stack-folder-13-0-logic": {
+  "path": "stack-03-folder-stack-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of stack-folder-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "regions-a10-midi-split-13-0-logic": {
+  "path": "regions-a10-midi-split-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of regions-a10-midi-split-logic, opened and saved with no change, the audio skipped on open",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "group-drums-13-0-logic": {
+  "path": "group-drums-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of group-drums-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "tempo-point-140-13-0-logic": {
+  "path": "tempo-point-140-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of tempo-point-140-logic, opened and saved with no change",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "markers-a23-second-13-0-logic": {
+  "path": "markers-a23-second-13-0.logicx",
+  "note": "Logic Pro 13.0 (7801)'s re-save of markers-a23-second-logic, opened and saved with no change, the audio skipped on open",
+  "facts": {
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-arpeggiator-word-velocity-range": {
+  "path": "instrument-w-arpeggiator-velocity-range.logicx",
+  "note": "instrument-params-arpeggiator-defaults with Velocity Range's slider at its min end, where the Controls view reads 'Fix' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Arpeggiator",
+   "param": "Velocity Range",
+   "shown": "Fix",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-modulator-word-steps-per-env-pass": {
+  "path": "instrument-w-modulator-steps-per-env-pass.logicx",
+  "note": "instrument-params-modulator-defaults with Steps per ENV pass's slider at its max end, where the Controls view reads '\u221e' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Modulator",
+   "param": "Steps per ENV pass",
+   "shown": "\u221e",
+   "side": "max",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-sculpture-word-vibrato-phase-vari": {
+  "path": "instrument-w-sculpture-vibrato-phase-vari.logicx",
+  "note": "instrument-params-sculpture-defaults with Vibrato Phase Vari's slider at its min end, where the Controls view reads 'mono' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Sculpture",
+   "param": "Vibrato Phase Vari",
+   "shown": "mono",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-sculpture-word-lfo1-phase-vari": {
+  "path": "instrument-w-sculpture-lfo1-phase-vari.logicx",
+  "note": "instrument-params-sculpture-defaults with LFO1 Phase Vari's slider at its min end, where the Controls view reads 'mono' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Sculpture",
+   "param": "LFO1 Phase Vari",
+   "shown": "mono",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-sculpture-word-lfo2-phase-vari": {
+  "path": "instrument-w-sculpture-lfo2-phase-vari.logicx",
+  "note": "instrument-params-sculpture-defaults with LFO2 Phase Vari's slider at its min end, where the Controls view reads 'mono' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Sculpture",
+   "param": "LFO2 Phase Vari",
+   "shown": "mono",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-ultrabeat-word-lfo1-cycles": {
+  "path": "instrument-w-ultrabeat-lfo1-cycles.logicx",
+  "note": "instrument-params-ultrabeat-defaults with Lfo1 Cycles's slider at its max end, where the Controls view reads 'inf' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Ultrabeat",
+   "param": "Lfo1 Cycles",
+   "shown": "inf",
+   "side": "max",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-ultrabeat-word-lfo2-cycles": {
+  "path": "instrument-w-ultrabeat-lfo2-cycles.logicx",
+  "note": "instrument-params-ultrabeat-defaults with Lfo2 Cycles's slider at its max end, where the Controls view reads 'inf' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Ultrabeat",
+   "param": "Lfo2 Cycles",
+   "shown": "inf",
+   "side": "max",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-b3-word-pedal-sustain": {
+  "path": "instrument-w-vintage-b3-pedal-sustain.logicx",
+  "note": "instrument-params-vintage-b3-defaults with Pedal Sustain's slider at its min end, where the Controls view reads 'Click' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage B3",
+   "param": "Pedal Sustain",
+   "shown": "Click",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-b3-word-perc-time": {
+  "path": "instrument-w-vintage-b3-perc-time.logicx",
+  "note": "instrument-params-vintage-b3-defaults with Perc Time's slider at its max end, where the Controls view reads 'Paradise' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage B3",
+   "param": "Perc Time",
+   "shown": "Paradise",
+   "side": "max",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-bell-volume": {
+  "path": "instrument-w-vintage-electric-piano-bell-volume.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Bell Volume's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Bell Volume",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-damper-volume": {
+  "path": "instrument-w-vintage-electric-piano-damper-volume.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Damper Volume's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Damper Volume",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-stereo": {
+  "path": "instrument-w-vintage-electric-piano-stereo.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Stereo's slider at its min end, where the Controls view reads 'mono' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Stereo",
+   "shown": "mono",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-drive-gain": {
+  "path": "instrument-w-vintage-electric-piano-drive-gain.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Drive Gain's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Drive Gain",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-tremolo-depth": {
+  "path": "instrument-w-vintage-electric-piano-tremolo-depth.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Tremolo Depth's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Tremolo Depth",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-bend-range-down": {
+  "path": "instrument-w-vintage-electric-piano-bend-range-down.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Bend Range Down's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Bend Range Down",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "instrument-params-vintage-electric-piano-word-bend-range-up": {
+  "path": "instrument-w-vintage-electric-piano-bend-range-up.logicx",
+  "note": "instrument-params-vintage-electric-piano-defaults with Bend Range Up's slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Inst 1",
+   "table": "Vintage Electric Piano",
+   "param": "Bend Range Up",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-amp-defaults-12-4-word-amp-designer-output-level": {
+  "path": "effectcheck-w-amp-amp-designer-output-level.logicx",
+  "note": "stockfx-amp-defaults-12-4 with Amp Designer's Output Level slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Amp Designer",
+   "param": "Output Level",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-amp-defaults-12-4-word-bass-amp-designer-di-gain": {
+  "path": "effectcheck-w-amp-bass-amp-designer-di-gain.logicx",
+  "note": "stockfx-amp-defaults-12-4 with Bass Amp Designer's DI Gain slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Bass Amp Designer",
+   "param": "DI Gain",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-amp-defaults-12-4-word-bass-amp-designer-output-gain": {
+  "path": "effectcheck-w-amp-bass-amp-designer-output-gain.logicx",
+  "note": "stockfx-amp-defaults-12-4 with Bass Amp Designer's Output Gain slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Bass Amp Designer",
+   "param": "Output Gain",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-delay-designer-feedback-amount": {
+  "path": "effectcheck-w-dr-delay-designer-feedback-amount.logicx",
+  "note": "stockfx-dr-defaults-12-4 with Delay Designer's Feedback Amount slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Delay Designer",
+   "param": "Feedback Amount",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 2,
+    "private words": 1,
+    "bookmark fields": 14
+   }
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-delay-designer-dry": {
+  "path": "effectcheck-w-dr-delay-designer-dry.logicx",
+  "note": "stockfx-dr-defaults-12-4 with Delay Designer's Dry slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Delay Designer",
+   "param": "Dry",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 2,
+    "private words": 1,
+    "bookmark fields": 14
+   }
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-delay-designer-wet": {
+  "path": "effectcheck-w-dr-delay-designer-wet.logicx",
+  "note": "stockfx-dr-defaults-12-4 with Delay Designer's Wet slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Delay Designer",
+   "param": "Wet",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 2,
+    "private words": 1,
+    "bookmark fields": 14
+   }
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-space-designer-output-dry": {
+  "path": "effectcheck-w-dr-space-designer-output-dry.logicx",
+  "note": "stockfx-dr-defaults-12-4 with Space Designer's Output Dry slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Space Designer",
+   "param": "Output Dry",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 4,
+    "private words": 2,
+    "bookmark fields": 28
+   }
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-space-designer-output-wet": {
+  "path": "effectcheck-w-dr-space-designer-output-wet.logicx",
+  "note": "stockfx-dr-defaults-12-4 with Space Designer's Output Wet slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Space Designer",
+   "param": "Output Wet",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 4,
+    "private words": 2,
+    "bookmark fields": 28
+   }
+  }
+ },
+ "stockfx-dr-defaults-12-4-word-chromaverb-modulation-depth": {
+  "path": "effectcheck-w-dr-chromaverb-modulation-depth.logicx",
+  "note": "stockfx-dr-defaults-12-4 with ChromaVerb's Modulation Depth slider at its min end, where the Controls view reads 'off' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "ChromaVerb",
+   "param": "Modulation Depth",
+   "shown": "off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  },
+  "scrubbed": {
+   "Alternatives/000/ProjectData": {
+    "home paths": 4,
+    "private words": 2,
+    "bookmark fields": 28
+   }
+  }
+ },
+ "stockfx-dr3-defaults-12-4-word-quantec-room-simulator-dry-level": {
+  "path": "effectcheck-w-dr3-quantec-room-simulator-dry-level.logicx",
+  "note": "stockfx-dr3-defaults-12-4 with Quantec Room Simulator's Dry Level slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Quantec Room Simulator",
+   "param": "Dry Level",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-dr3-defaults-12-4-word-quantec-room-simulator-reverb-level": {
+  "path": "effectcheck-w-dr3-quantec-room-simulator-reverb-level.logicx",
+  "note": "stockfx-dr3-defaults-12-4 with Quantec Room Simulator's Reverb Level slider at its min end, where the Controls view reads 'Mute' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "Quantec Room Simulator",
+   "param": "Reverb Level",
+   "shown": "Mute",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
+  }
+ },
+ "stockfx-util-defaults-12-4-word-multimeter-gonio-autogain": {
+  "path": "effectcheck-w-util-multimeter-gonio-autogain.logicx",
+  "note": "stockfx-util-defaults-12-4 with MultiMeter's Gonio AutoGain slider at its min end, where the Controls view reads 'Off' (Logic 13.0)",
+  "facts": {
+   "channel": "Audio 2",
+   "table": "MultiMeter",
+   "param": "Gonio AutoGain",
+   "shown": "Off",
+   "side": "min",
+   "format": 2514,
+   "logic": "13.0 (7801)"
   }
  }
 }

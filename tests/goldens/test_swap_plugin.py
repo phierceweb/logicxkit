@@ -62,7 +62,7 @@ class SwapTest(unittest.TestCase):
         self.assertIn("Threshold = -15.0", out)
         with tempfile.TemporaryDirectory() as tmp:
             code, out = _swap("slots-named-mine", "Compressor", "Noise Gate", tmp)
-            self.assertEqual(code, 0, out)
+            self.assertEqual(code, 1, out)
             self.assertIn("Swapped 0 slot(s) on 0 channel(s), 2 left as they are.", out)
             self.assertIn("Compressor is a compressor, Noise Gate a gate", out)
             copy = next(Path(tmp).glob("*.logicx"))
@@ -169,7 +169,8 @@ class RefusedSwapTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             code, out = _swap("snap-ours", "Noise Gate", "Compressor", tmp, no_translate=True)
             self.assertEqual(code, 0, out)
-            self.assertIn("side chain Bus 1 dropped with the old plug-in", out)
+            self.assertIn("side chain Bus 1 dropped with the old plug-in; leaving out --no-translate carries it", out)
+            self.assertNotIn("; --translate", out)
 
 
 @_goldens.needs("inserts-native-logic", "instrument-fx-io-logic", "instrument-quick-sampler-logic", "addtrack-order-mine",
@@ -240,7 +241,7 @@ class PlanAsWrittenTest(unittest.TestCase):
                 for plan in (True, False):
                     with self.subTest(key, plan=plan), tempfile.TemporaryDirectory() as tmp:
                         code, out = _swap(key, source, target, None if plan else tmp, no_translate=True, library=lib)
-                        self.assertEqual(code, 0, out)
+                        self.assertEqual(code, 1, out)
                         self.assertIn(f"left as it is — {why}", out)
                         self.assertIn(f"{'Would swap' if plan else 'Swapped'} 0 slot(s) on 0 channel(s), 1 left as they are", out)
 

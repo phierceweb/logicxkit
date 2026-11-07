@@ -9,7 +9,7 @@ from .services.mixer.binding import channels
 from .services.mixer.channel_width import widen_channels
 from .services.mixer.mixer import channel_formats
 from .services.mixer.slot_width import MONO, STEREO
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 WORDS = {MONO: "mono", STEREO: "stereo"}
 

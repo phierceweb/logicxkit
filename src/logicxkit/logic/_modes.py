@@ -7,7 +7,7 @@ from pathlib import Path
 
 from ._edit import CommandError, edit_copy, first_project_data
 from .services.song.modes import COUNT_IN, COUNT_INS, MODES, copy_modes, read_modes, set_modes
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _match(name: str) -> str:

@@ -69,10 +69,15 @@ class ConvertRefusesTest(unittest.TestCase):
                  for a in read_automation(data(dest), count(dest)) for ln in a.lanes]
         self.assertEqual(lanes, [("Sum 1", "Volume", [(38400, 90.0), (46080, 60.0)])])
 
-    def test_a_folder_with_an_insert(self):
-        self.refused(written(self, "add-plugin", FOLDER, "--plugin", "Compressor", "--channel", "Sub 1",
-                             out=self.out / "insert"),
-                     "a Compressor insert")
+    def test_a_folders_insert_stays_on_its_strip_out_of_use(self):
+        """As Logic's convert left one (`stack-convert-folder-insert-after-logic`)."""
+        from logicxkit.logic.services.mixer.binding import channels as _channels
+        from logicxkit.logic.services.mixer.plugins import slot_payloads
+        inserted = written(self, "add-plugin", FOLDER, "--plugin", "Compressor", "--channel", "Sub 1", out=self.out / "insert")
+        dest = written(self, "stacks", inserted, "--convert", "Sub 1", out=self.out / "converted")
+        after = data(dest)
+        self.assertEqual([(r.channel, r.name) for r, _p in slot_payloads(after) if r.channel in ("Sub 1", "Aux 1")], [("Sub 1", "Compressor")])
+        self.assertFalse(next(c.in_use for c in _channels(after).values() if c.label == "Sub 1"))
 
     def test_a_folder_at_its_defaults_converts(self):
         code, text = run("stacks", _goldens.path(FOLDER), "--convert", "Sub 1", "--out", self.out / "converted")

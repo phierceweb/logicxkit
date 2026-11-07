@@ -9,7 +9,7 @@ from .services.song.controlbar import (
     CONTROLS, LCD_MODES, alternative_dirs, controls_of, copy_layout, read_layout, write_controls,
 )
 from ._edit import display_source, edit_display
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _match(name: str) -> str:

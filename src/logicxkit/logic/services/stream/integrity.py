@@ -23,7 +23,7 @@ from ..arrange.groups import group_errors, missing_group_events
 from ..mixer.mixer import CHANNEL_TAG
 from .stream import HEADER, project_records
 from .integrity_regions import (
-    RegionKey, dangling_files, marker_block_errors, placed, region_regressions, unregistered_slots,
+    RegionKey, dangling_files, extended_events, marker_block_errors, placed, region_regressions, unregistered_slots,
 )
 from .keyflags import flag_errors
 from ..regions.regions import region_errors, row_count_errors
@@ -110,7 +110,7 @@ def _empty() -> dict:
             "bad_groups": [], "missing_group_events": 0, "misplaced_references": [], "unbound_channels": [],
             "binds_by_uuid": False, "regions": [],
             "dangling_files": {"entries": [], "records": [], "unfiled": [], "files": [], "doubled": [], "rba": []},
-            "unregistered_slots": [], "marker_blocks": [], "unreadable": None}
+            "unregistered_slots": [], "marker_blocks": [], "extended": None, "unreadable": None}
 
 
 def structural_report(data: bytes, track_count: int | None = None) -> dict:
@@ -138,6 +138,7 @@ def structural_report(data: bytes, track_count: int | None = None) -> dict:
             "dangling_files": dangling_files(records),
             "unregistered_slots": unregistered_slots(records),
             "marker_blocks": marker_block_errors(records),
+            "extended": extended_events(records),
             "unreadable": None,
         }
     except Exception as e:                      # a writer can leave bytes nothing can parse

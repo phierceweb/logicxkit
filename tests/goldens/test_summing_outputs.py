@@ -227,13 +227,23 @@ class SummingOutputsTest(unittest.TestCase):
         _out, report = convert_to_summing(data, obj(data, "Sub 1"), track_count=count)
         self.assertEqual(report["lanes_replaced"], ["Volume"])
 
-    def test_an_aux_with_another_lane_under_a_folder_with_a_volume_lane_is_refused(self):
-        from logicxkit.logic.services.regions.automation import FADER_IDS
+    def test_an_aux_with_another_lane_under_a_folder_with_a_volume_lane_loses_it(self):
+        """As Logic's convert did (`stack-convert-aux-pan-lane-after-logic`): the folder's lanes in place
+        of every lane the aux had."""
+        from logicxkit.logic.services.regions.automation import FADER_IDS, read_automation
         from logicxkit.logic.services.regions.automation_write import set_lane
         data, count = load("stack-convert-reuse-both-before-logic")
         panned = set_lane(data, obj(data, "Aux 1"), FADER_IDS["Pan"], [(38400, 40)])
-        with self.assertRaisesRegex(ValueError, "carries a Pan lane"):
-            convert_to_summing(panned, obj(panned, "Sub 1"), track_count=count)
+        folders = [[(p.tick, p.value) for p in ln.points] for a in read_automation(panned, count) if a.track_object == obj(panned, "Sub 1") for ln in a.lanes]
+        out, report = convert_to_summing(panned, obj(panned, "Sub 1"), track_count=count)
+        self.assertEqual(report["lanes_replaced"], ["Pan", "Volume"])
+        aux = obj(out, "Aux 1")
+        lanes = [a for a in read_automation(out, count - 1) if a.track_object == aux]
+        self.assertEqual([ln.parameter for a in lanes for ln in a.lanes], ["Volume"])
+        self.assertEqual([[(p.tick, p.value) for p in ln.points] for a in lanes for ln in a.lanes], folders)   # the folder's points, not the aux's own
+        from logicxkit.logic.services.mixer.levels import read_levels
+        level = read_levels(out)[next(o for o, c in channels(out).items() if c.label == "Aux 1")]
+        self.assertEqual((level["pan"], level["fader"]), (40, 80))      # the dropped Pan lane's bar-1 point; the fader as it was
 
 
 if __name__ == "__main__":

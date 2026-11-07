@@ -35,7 +35,10 @@
    "unit": "dB",
    "default": -6.0,
    "evidence": "value",
-   "max": 6.0
+   "max": 6.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 6,
@@ -43,7 +46,10 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 7,
@@ -51,7 +57,10 @@
    "unit": "dB",
    "default": 0.0,
    "evidence": "value",
-   "max": 0.0
+   "max": 0.0,
+   "named": {
+    "Mute": -100.0
+   }
   }
  ],
  "unmapped": [

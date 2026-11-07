@@ -10,7 +10,7 @@ from ._edit import CommandError, edit_copy, plan_alternatives
 from ._quantize_cmd import _wav_finder
 from ._silence_spec import KEYS, Group, read_spec, settings_from
 from .orchestrators.strip_silence import RegionPlan, Settings, apply_strip, piece_room, plan_strip
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.project.project import project_metadata
 from .services.song.signature import meter
 

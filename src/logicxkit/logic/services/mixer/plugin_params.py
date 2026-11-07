@@ -23,8 +23,8 @@ from ....utils.data import data_dirs
 
 def _key(name: str) -> str:
     """A name's lookup key: letters and digits, with a sharp or flat kept as a word ("Quantize
-    C♯" and "Quantize C" are two parameters)."""
-    return re.sub(r"[^a-z0-9]", "", name.lower().replace("♯", " sharp").replace("#", " sharp").replace("♭", " flat"))
+    C♯" and "Quantize C" are two parameters) and ∞ as "inf" (Modulator's top word is the sign)."""
+    return re.sub(r"[^a-z0-9]", "", name.lower().replace("♯", " sharp").replace("#", " sharp").replace("♭", " flat").replace("∞", "inf"))
 
 
 @dataclass(frozen=True)
@@ -256,7 +256,7 @@ def _as_word(n: int) -> float:
 
 
 def _coerce(table: Table, p: Param, value: float | str) -> float:
-    if p.named and isinstance(value, str) and not _number(value):
+    if p.named and isinstance(value, str):             # before the number parse: "inf" is a word here
         for name, word in p.named:
             if _key(name) == _key(value):
                 return word
@@ -276,9 +276,12 @@ def _coerce(table: Table, p: Param, value: float | str) -> float:
         if not number.is_integer() or not 0 <= number < len(p.choices):
             raise ValueError(f"{table.name} {p.name}: {value!r} is not one of {', '.join(p.choices)} (0..{len(p.choices) - 1})")
         return round(number) / p.scale
-    if p.min is not None and number < p.min or p.max is not None and number > p.max:
-        ends = ("" if p.min is None else str(p.min)) + ".." + ("" if p.max is None else str(p.max))   # one end open: Mute below, say
-        raise ValueError(f"{table.name} {p.name}: {number} is outside {ends} {p.unit}".rstrip())
+    words = {w: n for n, w in p.named}                      # a word end closes its side: Mute at -100, inf past the top
+    lo = p.min if p.min is not None else (min(words) if words else None)
+    hi = p.max if p.max is not None else (max(words) if words else None)
+    if lo is not None and number < lo or hi is not None and number > hi:
+        end = lambda v: "" if v is None else f"{v} ({words[v]})" if v in words and v not in (p.min, p.max) else str(v)  # noqa: E731
+        raise ValueError(f"{table.name} {p.name}: {number} is outside {end(lo)}..{end(hi)} {p.unit}".rstrip())
     if p.kind == "int":
         if not number.is_integer():
             raise ValueError(f"{table.name} {p.name}: {value!r} is not a whole number")

@@ -67,7 +67,7 @@ def cmd_prefs(args) -> int:
         if args.controlbar_from:
             from ._edit import display_source
             from .services.song.controlbar import read_layout
-            from .services.arrange.retrack import find_project
+            from .services.arrange.project_copy import find_project
             src = find_project(Path(args.controlbar_from))
             source = display_source(src)
             if source is None:

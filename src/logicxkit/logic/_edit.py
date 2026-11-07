@@ -11,7 +11,7 @@ from pw_foundation.utils.io import atomic_write_bytes
 
 from .services.stream.integrity import require_no_regression
 from .services.project.project import project_metadata
-from .services.arrange.retrack import copy_project, find_project, left_line, stale_alternatives
+from .services.arrange.project_copy import copy_project, find_project, left_line, stale_alternatives
 from .services.mixer.routing_loops import new_loops
 from .services.mixer.transplant import owner_of
 from .services.stream.validate import tolerating

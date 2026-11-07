@@ -6,7 +6,8 @@ import plistlib
 import struct
 import unittest
 
-from logicxkit.logic.services.translate.translate import load_maps, map_for, plan, read_settings
+from logicxkit.logic.services.translate.translate import load_maps, map_for, read_settings
+from logicxkit.logic.services.translate.translate_plan import plan
 from logicxkit.logic.services.translate.translate_eq import Band
 from logicxkit.utils.data import PACKAGED
 

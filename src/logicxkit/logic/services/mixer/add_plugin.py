@@ -2,7 +2,7 @@
 
 A slot is its mixer position, from 1 with empty slots counted: key minus the slot base, plus
 one — payload +6 holds the index, and automation names the insert by the same number. Keys run
-up to the channel's `.cst` reference key (`transplant`'s capacity rule). A moved slot keeps
+up to the channel's `.cst` reference key, moved up when a chain grows past it. A moved slot keeps
 every other byte, and its Smart Control mappings and automation lanes move with it. An
 instrument channel's slot 1 is its instrument, which keeps the width it was saved at: the channel's
 input byte follows it, and its width too when no effect comes after. The donor goes through
@@ -14,10 +14,9 @@ from __future__ import annotations
 
 import struct
 
-from .binding import channels
 from .channel_width import with_channel_io
 from .insert import _stamp, insert_slots
-from .mixer import CHANNEL_TAG, channel_formats
+from .mixer import channel_formats
 from .slot_identity import slot_header
 from .slot_width import MONO, STEREO, slot_format
 from .slots import SLOT_INDEX_AT, slot_index_base
@@ -25,7 +24,9 @@ from ..stream.stream import HEADER, VER_OFF, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
 from ..stream.recbuild import with_key
 from .sidechain import SideChain, with_side_chain
-from .slots import SHOWN_AT, archive_index, is_plugin_slot, property_key_base
+from .key_range import grow_range, headroom
+from .shown import needed_shown, show_slots
+from .slots import archive_index, is_plugin_slot, property_key_base
 from .smart_controls import shift_mapping_slots
 from .insert_lanes import move_lanes
 from .plugins import is_instrument_plugin
@@ -68,21 +69,22 @@ def add_plugin(data: bytes, owner: int, donor: bytes, *, at: int | None = None,
     moved = [(r.key, r.key + 1) for r in existing if r.key >= key] if any(r.key == key for r in existing) else []
     if not force:
         _refuse(data, owner, donor, width=width)
-    # Logic keeps two keys between the longest chain and the reference: a chain growing into
-    # them pushes the reference, the records under it and the archives above it up, project-wide
+    # Logic keeps two keys between the longest chain and the reference: a chain growing past the
+    # project's highest key into them pushes the reference, the records under it and the archives above it up, project-wide
     last = max([key] + [new for _old, new in moved])
-    grown = max(0, last + headroom(data, first, base) - base)
+    highest = max((r.key for r in project_records(data) if is_plugin_slot(r, base, first)), default=None)
+    grown = max(0, last + headroom(data, first, base) - base) if highest is None or last > highest else 0
     if grown:
         data = grow_range(data, base, grown, first)
         base += grown
-    data = show_slots(data, last - first + 2)
+    data = show_slots(data, needed_shown(data, {owner: last}, first))
     report = {"key": key, "position": position, "moved": moved, "width": width, "grown": grown,
               "ids": "stamped" if id_offsets else "verbatim", "slots": len(existing) + 1,
               "side_chain": side_chain.label if side_chain else None, "lanes_moved": 0}
     donor = with_side_chain(donor, side_chain)
     if not existing:
         entry = (donor, key, None, None, None, id_offsets, type_id, bypass, None)
-        return insert_slots(data, {owner: [entry]}), report
+        return insert_slots(data, {owner: [entry]}, grow=False), report
 
     stamped = _stamp(donor, owner, key, None, None, f"{owner}:{key}", fmt=width,
                      id_offsets=id_offsets, type_id=type_id, bypass=bypass, index_base=first)
@@ -133,50 +135,6 @@ def _key_for(data: bytes, owner: int, donor: bytes, existing, at: int | None, fi
         return first + at - 1
     key = existing[-1].key + 1 if existing else first
     return max(key, first + 1) if inst_channel else key
-
-
-def headroom(data: bytes, first: int, base: int) -> int:
-    """Keys Logic keeps between the project's highest slot key and the reference: measured
-    from the input, since Logic re-lays a project out to its own figure on load (3 on a
-    blank-born project, 6 on the owner's sessions) and drops what lands past the channel
-    records' flag words. Never under 3."""
-    keys = [r.key for r in project_records(data) if is_plugin_slot(r, base, first)]
-    return max(3, base - max(keys)) if keys else 3
-
-
-def grow_range(data: bytes, base: int, by: int, index_base: int) -> bytes:
-    """Every channel satellite from two keys under the reference at ``base`` moved up ``by``
-    keys, on every channel: the records under the reference, the reference, the archives. A
-    plug-in slot there stays: Logic's own save of an instrument with one effect puts the effect
-    two keys under the reference (`instrument-es2-over-chromaglow-logic`)."""
-    owners = set(channels(data))
-    out = [with_key(r.raw, r.key + by) if r.tag == b"UCuA" and r.owner in owners and r.key >= base - 2
-           and not is_plugin_slot(r, base, index_base) else r.raw for r in project_records(data)]
-    return reassemble(data, out)
-
-
-def shown_slots(data: bytes) -> int:
-    """The highest shown-slot count any channel record carries (0 in a project without one)."""
-    owners = set(channels(data))
-    return max((struct.unpack_from("<H", r.raw, HEADER + SHOWN_AT)[0] for r in project_records(data)
-                if r.tag == CHANNEL_TAG and r.owner in owners and len(r.raw) - HEADER >= SHOWN_AT + 2), default=0)
-
-
-def show_slots(data: bytes, shown: int) -> bytes:
-    """Every channel record's `+30` raised to ``shown``, the insert slots the mixer shows —
-    the longest chain plus one empty slot, one value for the project. A higher count is left:
-    Logic recomputes it on save."""
-    owners = set(channels(data))
-    out = []
-    for r in project_records(data):
-        raw = r.raw
-        if r.tag == CHANNEL_TAG and r.owner in owners and len(raw) - HEADER >= SHOWN_AT + 2 \
-                and struct.unpack_from("<H", raw, HEADER + SHOWN_AT)[0] < shown:
-            buf = bytearray(raw)
-            struct.pack_into("<H", buf, HEADER + SHOWN_AT, shown)
-            raw = bytes(buf)
-        out.append(raw)
-    return reassemble(data, out)
 
 
 def _refuse(data: bytes, owner: int, donor: bytes, *, width: int | None) -> None:

@@ -5,7 +5,7 @@ bundle with the older one still as it was. Skips without the owner's files."""
 import unittest
 
 import _goldens
-from logicxkit.logic.services.arrange.retrack import stale_alternatives
+from logicxkit.logic.services.arrange.project_copy import stale_alternatives
 from logicxkit.logic.services.mixer.levels import read_levels
 
 BEFORE, OURS, RESAVE = "stale-alt-before", "stale-alt-ours", "stale-alt-resave-logic"

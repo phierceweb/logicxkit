@@ -18,7 +18,7 @@ from .services.midi.midi_write import add_note, add_region
 from .services.project.project import project_metadata
 from .services.song.signature import meter
 from .services.midi.smf import meter_map, tempo_map, unexportable, write_smf
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _describe(e, drum_map: str | None = None) -> str:

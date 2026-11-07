@@ -121,6 +121,16 @@ class FlexEntryTest(unittest.TestCase):
         self.assertEqual(region_errors(data, None), [])
 
 
+class ExtensionRowTest(unittest.TestCase):
+    def test_a_row_marked_at_byte_7_belongs_to_the_entry_before_it(self):
+        """A converted 10.8.1 set's first entry runs 96 bytes, its last row marked `0xbe`."""
+        from logicxkit.logic.services.regions.regions import entry_blocks
+        row = bytearray(16)
+        row[7] = 0xBE
+        events = entry(10, 1) + bytes(row) + entry(20, 2) + TAIL_BYTES
+        self.assertEqual(entry_blocks(events), [(0, 0), (ENTRY + 16, 0)])
+
+
 class RegionPairTest(unittest.TestCase):
     def test_entry_pairs_come_from_every_sequence_take_folders_included(self):
         from _records import seq_triple
@@ -167,6 +177,32 @@ class PieceStemTest(unittest.TestCase):
         self.assertEqual(stem("Mix v1.2", 0), "Mix v1.2")           # the parent's own name is left alone
         self.assertEqual(stem(".5", 5), ".5")
 
+
+
+class EntryLayoutTest(unittest.TestCase):
+    """A marker block after an entry that runs past 80 bytes sits where the entry ends, not at a
+    multiple of the entry size; a block cut short at the end is rows of the entry before it."""
+
+    def _block(self) -> bytes:
+        from logicxkit.logic.services.regions.regions import MARKER_BYTE, MARKER_BYTES_AT, MARKER_KIND, MARKER_KIND_AT
+        b = bytearray(80)
+        b[MARKER_KIND_AT] = MARKER_KIND
+        for at in MARKER_BYTES_AT:
+            b[at] = MARKER_BYTE
+        return bytes(b)
+
+    def test_a_block_after_a_long_entry_is_found_where_it_sits(self):
+        from logicxkit.logic.services.regions.regions import TAIL, blocks_of, entry_blocks, entry_layout
+        row = bytes(7) + b"\xbe" + bytes(8)
+        events = entry(10, 1) + row + self._block() + entry(20, 2) + bytes(TAIL)
+        self.assertEqual(entry_layout(events), [(0, [96]), (176, [])])
+        self.assertEqual(entry_blocks(events), [(0, 1), (176, 0)])
+        self.assertEqual(blocks_of(events, 0), [self._block()])
+
+    def test_a_block_cut_short_belongs_to_no_entry_as_a_block(self):
+        from logicxkit.logic.services.regions.regions import TAIL, entry_layout
+        events = entry(10, 1) + entry(20, 2) + self._block()[:48] + bytes(TAIL)
+        self.assertEqual(entry_layout(events), [(0, []), (80, [])])
 
 if __name__ == "__main__":
     unittest.main()

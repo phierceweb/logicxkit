@@ -34,6 +34,7 @@ class PlainReplaceTest(unittest.TestCase):
             self.assertEqual(code, 0, out)
             self.assertIn("slot 1: Noise Gate in, key 3 out", out)
             self.assertIn("lane(s) of the old plug-in dropped", out)
+            self.assertIn("--translate carries them, --keep-automation keeps them", out)
             names = [r.name for r, _p in slot_payloads(project_data(next(Path(tmp).glob("*.logicx")))) if r.channel == "Audio 2"]
             self.assertEqual(names[0], "Noise Gate")
 
@@ -50,7 +51,7 @@ class SideChainDroppedTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             code, out = _replace("snap-ours", tmp, at=2, plugin="Compressor")
             self.assertEqual(code, 0, out)
-            self.assertIn("side chain Bus 1 dropped with the old plug-in", out)
+            self.assertIn("side chain Bus 1 dropped with the old plug-in; --translate carries it", out)
 
 
 if __name__ == "__main__":

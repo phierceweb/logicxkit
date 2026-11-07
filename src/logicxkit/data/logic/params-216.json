@@ -250,7 +250,10 @@
    "unit": "ms",
    "default": 10.0,
    "evidence": "code",
-   "max": 5000.0
+   "max": 5000.0,
+   "named": {
+    "Click": 5.0
+   }
   },
   {
    "offset": 1320,
@@ -274,7 +277,10 @@
    "unit": "ms",
    "default": 150.0,
    "evidence": "row",
-   "min": 0.0
+   "min": 0.0,
+   "named": {
+    "Paradise": 1000.0
+   }
   },
   {
    "offset": 1340,

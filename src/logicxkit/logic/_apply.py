@@ -10,7 +10,7 @@ from pathlib import Path
 from pw_foundation.utils.io import atomic_write_bytes
 
 from ._edit import CommandError, edit_copy, first_project_data, owner_by_label, pairs
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.mixer.transplant import remove_slots, set_bypass, transplant
 
 
@@ -237,10 +237,9 @@ def register(sub) -> None:
                     help="every member of this folder stack takes SRC_LABEL's slots (repeatable)")
     tp.add_argument("--bypass", action="store_true", help="clone the slots bypassed")
     tp.add_argument("--force", action="store_true",
-                    help="write past a refusal — a move that overruns the slot key range "
-                         "deletes the channel's .cst reference record; a third-party slot of the "
-                         "other width loads at its saved width; copies with no measurable "
-                         "instance id share one")
+                    help="write past a refusal — a third-party slot of the other width loads at its "
+                         "saved width; copies with no measurable instance id share one; a chain of "
+                         "another record class is written as it is")
     tp.set_defaults(func=cmd_transplant)
     bp = sub.add_parser("bypass", help="bypass every slot on a channel (writes a copy)")
     bp.add_argument("project")

@@ -18,9 +18,11 @@ import struct
 from ..._binary import FLOAT_OFFSET as FLOAT_OFFSET_IN_CHUNK
 from ..._binary import find_blocks, patch_block_floats
 from ..stream.keyflags import sync_key_flags
+from .key_range import grow_range, headroom
 from .mixer import CHANNEL_TAG, channel_formats
+from .shown import needed_shown, show_slots
 from .slot_width import set_slot_format
-from .slots import SLOT_INDEX_AT, SLOT_INDEX_BASE_DEFAULT, set_slot_bypass, slot_index_base
+from .slots import SLOT_INDEX_AT, SLOT_INDEX_BASE_DEFAULT, is_plugin_slot, property_key_base, set_slot_bypass, slot_index_base
 from ..stream.stream import BODY_START, HEADER, KEY_OFF, OWNER_OFF, TOTAL_AT, project_records
 from ..stream.validate import require_valid
 
@@ -153,22 +155,34 @@ def _clones(plan: dict, formats: dict[int, int], owner: int,
 
 
 def insert_slots(data: bytes, plan: dict[int, list[tuple[bytes, int, object, int]]],
-                 drop: dict[int, set[int]] | None = None) -> bytes:
+                 drop: dict[int, set[int]] | None = None, grow: bool = True) -> bytes:
     """Add slot records to channels. ``plan`` maps owner -> [(donor_raw, key, floats, limit)].
 
     Any existing record whose owner and key the plan writes is dropped, so re-running is
     idempotent rather than stacking duplicates. The match is on ``(owner, key)`` alone, not on
-    the record's tag: a plan that reaches the key of a channel's `.cst` reference record takes
-    that record too. ``drop`` removes further ``owner -> {key}`` records — the caller's way to
-    clear a superseded copy the plan's own keys do not reach.
+    the record's tag. ``drop`` removes further ``owner -> {key}`` records — the caller's way to
+    clear a superseded copy the plan's own keys do not reach. The shown-slot count is raised to
+    the longest chain written plus one empty slot (`shown.show_slots`), and the reference and
+    the records around it move up to keep the input's headroom when the chain grows past the
+    project's highest slot key (`key_range`; a chain within it moves nothing, whatever the headroom;
+    ``grow=False`` for a caller that moved the range itself): Logic's re-save of a three-slot chain written under a reference two keys
+    up moved it, and every channel's archives, one key (`strip-reference-chains-resave-logic`).
     """
     records = project_records(data)
-    formats = channel_formats(data)
     index_base = slot_index_base(data)
     owners = {r.owner for r in records if r.tag == CHANNEL_TAG}
     missing = sorted(set(plan) - owners)
     if missing:
         raise ValueError(f"no channel record for owner(s) {missing}")
+    last = max((entry[1] for slots in plan.values() for entry in slots), default=None)
+    base = property_key_base(data)
+    highest = max((r.key for r in records if is_plugin_slot(r, base, index_base)), default=None)
+    if grow and last is not None and (highest is None or last > highest):     # the chain grows past the project's own
+        grown = max(0, last + headroom(data, index_base, base) - base)
+        if grown:
+            data = grow_range(data, base, grown, index_base)
+            records = project_records(data)
+    formats = channel_formats(data)
 
     # Where the slots go: immediately before the owner's first satellite (slot keys are the
     # lowest, so that is their sorted position). A channel can be preceded by a 14-byte OCuA
@@ -205,6 +219,8 @@ def insert_slots(data: bytes, plan: dict[int, list[tuple[bytes, int, object, int
     head = bytearray(data[:BODY_START])
     struct.pack_into("<I", head, TOTAL_AT, len(body))
     result = bytes(head) + body
+    if any(plan.values()):
+        result = show_slots(result, needed_shown(result, {o: max(e[1] for e in slots) for o, slots in plan.items() if slots}, index_base))
 
     # Never hand back a project that violates a structural invariant.
     require_valid(result)

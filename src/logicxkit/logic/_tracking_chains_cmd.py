@@ -114,7 +114,7 @@ def cmd_tracking_chains(args) -> int:
     from .services.stream.stream import HEADER
     from .services.mixer.plugin_library import load_library
     from .services.mixer.plugins import plugin_identity, slot_payloads
-    from .services.arrange.retrack import find_project
+    from .services.arrange.project_copy import find_project
     from .services.translate.translate import load_maps
     from .services.mixer.transplant import channel_slots, slot_class_version
 

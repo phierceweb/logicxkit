@@ -26,9 +26,9 @@ import re
 
 from ..mixer.binding import bound_channels, channels
 from ..mixer.channel_alloc import (
-    COUNT_CLASS_AT, bind_audio_stub, bump_channel_count, free_audio_stub, free_aux_stub, is_channel_record,
-    is_mixer_record, require_packaged_class, shifted_channel,
+    COUNT_CLASS_AT, bump_channel_count, is_channel_record, is_mixer_record, require_packaged_class, shifted_channel,
 )
+from ..mixer.channel_stubs import bind_audio_stub, free_audio_stub, free_aux_stub
 from ..mixer.mixer import is_channel_count
 from .environment import (
     DEFAULT_COLOUR,
@@ -44,7 +44,7 @@ from .environment import (
     set_selected_object,
     shifted_object,
 )
-from ..mixer.add_plugin import show_slots, shown_slots
+from ..mixer.shown import show_slots, shown_slots
 from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.keyflags import sync_key_flags
 from ..stream.recbuild import fresh_uuid, rec
@@ -187,7 +187,9 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
         ref_owner = owners_of.get(after)
         ref_label = chans[ref_owner].label if ref_owner in chans else ""
         ref_depth = ref_row[HEADER + MEMBER_AT]               # the byte is the nesting depth
-        if member is None:
+        if member is None and ref_depth >= 2:
+            depth = 0                                         # Logic's New Track from two deep: the top level, after the outer stack
+        elif member is None:
             depth = ref_depth                                 # the anchor's sibling
         elif not member:
             depth = 0
@@ -204,7 +206,10 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
         member = depth
         if depth <= ref_depth:                                # beside the anchor: after everything it holds
             from .stacks import span_end
-            ref_pos = span_end([records[i].raw[HEADER + MEMBER_AT] for i in run], ref_pos) - 1
+            depths = [records[i].raw[HEADER + MEMBER_AT] for i in run]
+            while depths[ref_pos] > depth:                    # out to the row at the new row's own depth
+                ref_pos -= 1
+            ref_pos = span_end(depths, ref_pos) - 1
         arrange_row = new_row(packaged["row"] if packaged else records[run[like_pos]].raw,
                               object_id=object_id, member=member,
                               row_type=ROW_TYPE.get(kind, ROW_TYPE["audio"]),

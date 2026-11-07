@@ -13,7 +13,8 @@ from ....au.services.embed import find_au_plists
 from ..mixer.plugin_params import load_tables, set_by_name, table_for
 from ..mixer.slot_width import plugin_variant
 from ..mixer.slider import interp, slider_curve, snap
-from .translate import VOCABULARY, Item, Map, Plan, _show, clamp, read_settings
+from .translate import VOCABULARY, Item, Map, _show, clamp, read_settings
+from .translate_plan import Plan
 from .translate_eq import BRICKWALL, Band, held, parse_band
 
 _ON = {"on", "true", "yes", "1"}

@@ -22,6 +22,7 @@ from __future__ import annotations
 import sys
 
 from ..utils.env import env_str
+from .services.stream.validate import MEASURED_FORMAT, SAVED_BY
 from ._capabilities_table import CAPABILITIES, Capability  # noqa: F401
 
 LEVELS = ("CONFIRMED", "CLAIMED", "DERIVED", "BROKEN", "—")
@@ -57,6 +58,12 @@ def by_command() -> dict[str, Capability]:
     return {name: cap for cap in CAPABILITIES for name in cap.commands}
 
 
+def formats(cmd: str) -> tuple[int, ...]:
+    """The file formats a write by `cmd` takes: its row's, else Logic 12.3.1's."""
+    cap = by_command().get(cmd)
+    return cap.formats if cap is not None else Capability((), "", "").formats
+
+
 def _names(cap: Capability) -> str:
     return " ".join(f"`{n}`" for n in cap.commands)
 
@@ -71,13 +78,21 @@ def table() -> str:
     return "\n".join(rows)
 
 
+def also_writes(cap: Capability) -> str:
+    """The sentence naming the formats ``cap`` writes beyond Logic 12.3.1's, or ""."""
+    extra = [f"{SAVED_BY.get(f, 'another Logic')}'s saves (file format {f})"
+             for f in cap.formats if f != MEASURED_FORMAT]
+    return f"Also writes {', '.join(extra)}" if extra else ""
+
+
 def catches() -> str:
     """The catch per command, generated for `docs/EVIDENCE.md`: what each level was measured
     against, and where it stops."""
     out = []
     for cap in CAPABILITIES:
-        if cap.catch:
-            out.append(f"### {_names(cap)}\n\n{cap.catch}.")
+        text = ". ".join(t for t in (cap.catch, also_writes(cap)) if t)
+        if text:
+            out.append(f"### {_names(cap)}\n\n{text}.")
     return "\n\n".join(out)
 
 
@@ -88,6 +103,8 @@ def cmd_capabilities(args) -> int:
     for cap in CAPABILITIES:
         names = " ".join(cap.commands)
         print(f"  {names:{width}s}  {cap.level:9s}  {cap.safe}")
+        if also_writes(cap):
+            print(f"  {'':{width}s}             {also_writes(cap)}")
         if cap.catch and args.verbose:
             print(f"  {'':{width}s}             {cap.catch}")
     print("\nThe catch per command: -v; full detail, including the reproduced defects: docs/EVIDENCE.md")

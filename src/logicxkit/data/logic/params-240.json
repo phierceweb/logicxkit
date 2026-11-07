@@ -40,7 +40,10 @@
    "unit": "%",
    "default": 50.0,
    "evidence": "value",
-   "max": 100.0
+   "max": 100.0,
+   "named": {
+    "Off": 0.0
+   }
   },
   {
    "index": 9,

@@ -15,70 +15,18 @@ from ._midi_cmd import events_count
 from .services.regions.audio_regions import read_audio_files
 from .services.regions.audio_write import add_audio_region
 from .services.project.project import first_alternative, project_metadata
-from .services.regions.fades import OUT_CODES
 from .services.regions.region_edit import (
     move_region, move_to_track, rename_region, set_fade, set_loop, set_mute, split_region, trim_region,
 )
 from .services.regions.region_locate import listed, located, renumbered, samples_per_tick_of
 from .services.regions.region_params_write import set_colour, set_crossfade, set_params
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.song.signature import meter
 from .services.arrange.stacks import read_tracks
+from ._regions_args import _fade, _index, _int, _number, _split, _switch
 
 PARAMS = {"gain": ("gain", "N=DB"), "delay": ("delay", "N=TICKS"), "transpose": ("transpose", "N=SEMITONES"),
           "fine-tune": ("fine_tune", "N=CENTS")}
-
-
-def _number(text: str, what: str) -> float:
-    try:
-        return float(text)
-    except ValueError:
-        raise CommandError(f"bad {what} {text!r}: a bar number, fractions allowed") from None
-
-
-def _index(text: str, flag: str) -> int:
-    if not text.isdigit() or int(text) < 1:
-        raise CommandError(f"bad --{flag} {text!r}: N is a region's number in the listing")
-    return int(text)
-
-
-def _split(spec: str, flag: str, shape: str) -> tuple[int, str]:
-    n, sep, rest = spec.partition("=")
-    if not sep:
-        raise CommandError(f"bad --{flag} {spec!r}: {shape}")
-    return _index(n, flag), rest
-
-
-def _switch(spec: str, flag: str) -> tuple[int, bool]:
-    n, _sep, rest = spec.partition("=")
-    if rest not in ("", "on", "off"):
-        raise CommandError(f"bad --{flag} {spec!r}: N, N=on or N=off")
-    return _index(n, flag), rest != "off"
-
-
-def _fade(spec: str, flag: str) -> tuple[int, int | None, int, str]:
-    """``N=MS[:CURVE[:TYPE]]`` -> (N, ms, curve, type); a crossfade's MS may be empty (the overlap)."""
-    shape = {"fade-in": "N=MS[:CURVE[:speed-up]]", "fade-out": "N=MS[:CURVE[:out|x|eqp|xs]]", "crossfade": "N=[MS][:CURVE[:x|eqp|xs]]"}[flag]
-    n, rest = _split(spec, flag, shape)
-    parts = rest.split(":")
-    try:
-        ms = None if flag == "crossfade" and not parts[0] else int(parts[0])
-        curve = int(parts[1]) if len(parts) > 1 and parts[1] else 0
-    except ValueError:
-        raise CommandError(f"bad --{flag} {spec!r}: {shape}") from None
-    kind = parts[2] if len(parts) > 2 else ""
-    kinds = {"fade-in": ("", "in", "speed-up"), "fade-out": ("", *OUT_CODES), "crossfade": ("", "x", "eqp", "xs")}[flag]
-    if kind not in kinds or len(parts) > 3:
-        raise CommandError(f"bad --{flag} {spec!r}: {shape}")
-    return n, ms, curve, kind
-
-
-def _int(spec: str, flag: str, shape: str) -> tuple[int, int]:
-    n, rest = _split(spec, flag, shape)
-    try:
-        return n, int(rest)
-    except ValueError:
-        raise CommandError(f"bad --{flag} {spec!r}: {shape}") from None
 
 
 UNVERIFIED = ("transpose",)      # Logic flexes the track and the writer does not

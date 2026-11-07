@@ -13,7 +13,7 @@ from .services.stream.header import (
     write_components,
 )
 from ._edit import display_source, edit_display
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def _match(name: str) -> str:

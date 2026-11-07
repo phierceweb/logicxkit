@@ -88,7 +88,7 @@ def cmd_swap_plugin(args) -> int:
     from ..utils.data import data_dirs
     from .services.mixer.mixer import channel_formats
     from .services.mixer.plugin_library import load_library
-    from .services.arrange.retrack import find_project
+    from .services.arrange.project_copy import find_project
     from .services.translate.translate import load_maps
     from .services.mixer.transplant import slot_class_version
 
@@ -114,7 +114,8 @@ def cmd_swap_plugin(args) -> int:
                     donor = _pick(donors, args.target, formats.get(owner), version)
                     data, lines = replace_slot(data, owner, at, donor, id_offsets=_offsets(data, donor, libraries),
                                                settings=settings, translate=not args.no_translate,
-                                               keep_automation=args.keep_automation, force=args.force)
+                                               keep_automation=args.keep_automation, force=args.force,
+                                               translate_hint="leaving out --no-translate")
                 except LookupError as e:
                     raise CommandError(f"{alt}: {label}: {e}") from None
                 except ValueError as e:
@@ -142,7 +143,7 @@ def cmd_swap_plugin(args) -> int:
     verb = "Would swap" if args.plan else "Swapped"
     print(f"\n{verb} {swapped} slot(s) on {len(channels)} channel(s)" + (f", {skipped} left as they are" if skipped else "")
           + ("." if args.plan else ". Open the copy in Logic before trusting it."))
-    return 0
+    return 1 if skipped else 0
 
 
 def register(sub) -> None:

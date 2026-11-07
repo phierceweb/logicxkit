@@ -67,7 +67,10 @@
    "unit": "dB",
    "default": -7.0,
    "evidence": "value",
-   "max": 15.0
+   "max": 15.0,
+   "named": {
+    "Mute": -100.0
+   }
   },
   {
    "index": 15,

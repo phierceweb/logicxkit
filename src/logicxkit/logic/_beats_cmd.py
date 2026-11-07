@@ -21,7 +21,7 @@ from ._edit import CommandError, edit_copy, written_alternatives
 from .services.midi.beats_compose import compose, plan
 from .services.midi.beats_place import place, place_phrase
 from .services.project.project import project_metadata
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 FAILURES = (OSError, ValueError, OverflowError, struct.error, sqlite3.Error, CommandError)
 

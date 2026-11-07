@@ -63,6 +63,6 @@ case "$cmd" in
     echo "lint OK"
     ;;
   ""|--help|-h)
-    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|pw-guards|pw-doctor|logic|au} [args]" ;;
+    echo "usage: bin/run {setup|pytest|python|pip|ruff|lint|pw-guards|pw-doctor|pw-setup|logic|au} [args]" ;;
   *) echo "unknown command: $cmd" >&2; exit 2 ;;
 esac

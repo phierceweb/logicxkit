@@ -168,11 +168,14 @@ has the record list of Logic 12.3.1's re-save, tag for tag, and holds that re-sa
 Where the two differ outside the per-save ids and stamps, 12.4 kept what was written: an
 un-named instrument track keeps its object name (`Inst 1`) where 12.3.1 wrote the preset's
 (`Untitled`, with `Untitled.aupreset` at the instrument slot's `+14`). An audio file skipped as
-missing on load comes back with one byte of its `lFuA` record cleared; with the file in place
-the record is ours byte for byte.
+missing on load comes back with the byte after its `LFUA` magic cleared — past the UTF-16 name, so
+the offset moves with the name's length (`audio_regions.file_present`; three names of three lengths
+in `regions-c04-crossfade-split-logic`, a Logic 13.0 save); with the file in place the record is ours
+byte for byte.
 
-Every offset in this document is measured on 2513, and the writers take nothing else
-(`retrack.stale_alternatives`, before a project is copied: an alternative of an earlier format is
+Every offset in this document is measured on 2513, and the writers take nothing else unless a
+command's capability row names another format (`formats`, which no row does yet)
+(`project_copy.stale_alternatives`, before a project is copied: an alternative of an earlier format is
 left as it is when a current one sits beside it, as Logic keeps such bundles; a bundle with no
 current alternative is refused). A Logic 11.2 project
 (2511) reads — its object types and channel trailer are below — and no writer takes it: its
@@ -394,8 +397,11 @@ save**: its re-save of a fan-out that shortened every chain moved the references
 chain change (`songb-drums-to-midi-logic`). That re-layout drops what lands past the channel
 records' flag words: a write that grew a base-4 session by three keys instead of its six came
 back with every channel's second archive gone (2026-09-21). So a writer grows the
-range to the project's own headroom, measured from the input: `add_plugin.headroom` and
-`grow_range` move everything from reference −2 up by the deficit, and `property_key_base`
+range to the project's own headroom, measured from the input: `key_range.headroom` and
+`grow_range` move everything from reference −2 up by the deficit — in every `insert_slots` caller,
+`add-plugin`, `chains` and `transplant` alike, since Logic's re-save of a three-slot chain written
+under a reference two keys up moved the reference and every channel's archives one key and grew the
+channel records' flag words (`strip-reference-chains-resave-logic`, 2026-11-04) — and `property_key_base`
 reads the reference's place from the archive pair when no channel names a strip, or from one
 archive alone: a new instrument channel carries only its second (`tracks-instrument-logic`,
 `addtrack-inst-stereo-logic`), which Logic's own New Software Instrument Track keyed at slot
@@ -410,8 +416,13 @@ a MIDI file), which keep one to three keys more.
 
 **The two archives are the channel's Smart Controls**: the first an `NSMutableDictionary` of
 knob number → `NSMutableArray` of `MAPlugInParameterMapping`, each naming the plug-in it
-reads by **slot index** (`slot`) and parameter (`parameterIndex_1`); the second holds the
-layout name (`contentTagLayoutName`). Payload `+16` is the bplist's size, the bplist from
+reads by **slot index** (`slot`) and parameter (`parameterIndex_1`), and an instrument by
+`kGInstIDKey` (ES2 104, Klopfgeist 76); the second holds the layout name (`contentTagLayoutName`:
+"Automatic-Modern Synth 8 Single Row" with its knob labels and `IdentityIndexLookup` on Logic's own
+instrument inserts, `instrument-es2-logic`, 11 mappings). An instrument this tool inserts gets the
+layout "Automatic" and no mappings, which Logic keeps (`instrument-write-es2-logic`); where the
+mapping list comes from is not decoded. Logic 13.0's re-save of a 12.4 blank gave Klopfgeist six
+mappings and the named layout (`tracks-two-audio-13-0-logic`). Payload `+16` is the bplist's size, the bplist from
 `+20`, then a 16-byte tail. A plug-in moved to another slot without its mappings made Logic
 reset the channel to an unused stub on load (2026-09-21); `smart_controls.shift_mapping_slots`
 moves them with the slots, and Logic re-saved that archive byte for byte
@@ -423,11 +434,16 @@ at payload `+14`: a third-party donor saved with an empty label came back readin
 on one re-save (`addplugin-front-logic`) and empty on another (`transplant-fanout-logic`).
 
 **Channel record `+30`** is the number of insert slots the mixer shows — the longest chain
-plus one empty slot, highest slot key − base + 2 — one value on every channel record of the
+plus one empty slot, highest slot key − base + 2; on an instrument channel the instrument's slot
+does not count, so highest key − base + 1 (2 with one audio effect after the instrument, 3 with two:
+`instrument-fx-two-midi-one-audio-logic`, `instrument-fx-two-midi-two-audio-resave-logic`, whose
+re-save put a written 4 back to 3 and dropped the archive the extra key had moved, 2026-11-04) — one
+value on every channel record of the
 project, the 201-byte stubs included (5 on a tracked song whose longest chain is 4; 6, 7 and 9
 on the `master-track-*` saves as Audio 1 grew to slot 5, 6 and 8). Logic recomputes it on
-save too (5 → 3 on the shortened fan-out, a stale 2 → 5 on the drums-to-midi copy);
-`add_plugin.show_slots` raises it to what the new chain needs, which is what makes the
+save too (5 → 3 on the shortened fan-out, a stale 2 → 5 on the drums-to-midi copy, 2 → 6 on
+`slider-midpoints-raw`'s five slots); `shown.show_slots` raises it to what the new chain needs — `insert_slots`
+calls it for every chain it writes — which is what makes the
 reproduced append match Logic's channel record byte for byte. It is one of six u16 words every
 channel record of a project carries alike — `+28` the slot base, `+30`, and `+34 +36 +38 +42`,
 unnamed — on all 467 corpus saves and the owner's; Logic's re-save rewrote a fresh record that
@@ -933,8 +949,26 @@ saves they name what Logic 12.4 bound by UUID when it converted each, every in-u
 | file header word (u16 at +4) | `ivnE` class | channel-object type | `OCuA` class | written by |
 |---|---|---|---|---|
 | 2513, 2512 | 12 | 1800 | 7 | Logic 12 |
+| 2514 | 12 | 1312 | 7 | Logic 13.0 |
 | 2511 | 12 | 1760 | 6 | Logic 11.2 |
 | 2510, 2509 | 11 | 1728 (1736 and 1752 occur, unread) | 6 | before 11.2; no channel binds by UUID |
+
+**Logic 13.0 writes 2514** (`tracks-two-audio-13-0-logic`, its re-save of a 12.4 blank with no
+change, 2026-11-06): every channel object's type word 488 lower at the same class, a `gnnT` and a
+`ktSU` record 12.4 had not, `MroC` 242 → 542 bytes, the registry twice the size, one more `karT`
+row, the instrument channel's record 20 bytes longer with two keyed records at 7 and 8 it did not
+carry. On eleven twins (the blank, a summing and a folder stack, the native inserts, two sends, a volume
+fade, an instrument track, a MIDI split, a group, a tempo point and markers, `*-13-0-logic`) every reader —
+channels, objects, rows, stacks, slot chains, sends, routing, automation lanes, regions, groups, tempo,
+markers, sections — gives its 12.4 answer; every writer takes
+2513 alone, so a 13.0 save is refused by the format gate until its layout is measured. The two
+13.0 saves of edits (`regions-c04-crossfade-split-logic`, `strip-reference-reset-logic`) are read
+at the entry and record-list level; a region record's bytes there mix 13.0's layout with the edit,
+so none is pinned. 13.0 re-saves this tool's 2513 writes as 12.4 did: the chains copy came back
+with 12.4's key layout and channel records byte for byte but for the channel record's `+80`, where 13.0
+sets the value 8 on the channels carrying keyed records (the value 4 there is the loaded setting, cleared by
+Reset Channel Strip), and the split with its entries as
+written (`strip-reference-chains-resave-13-0-logic`, `regions-c05-crossfade-split-ours-resave-13-0-logic`).
 
 ### Instrument outputs — an aux fed by a software instrument's extra output
 
@@ -971,6 +1005,28 @@ channel's reference and keeps its folder; `--map` stays the project-wide name-to
 which refuses when one name would have to become two strips. Confirmed 2026-09-06: seven
 references repointed on the Tracking template showed on the mixer's Setting buttons and Logic's
 re-save kept them byte for byte.
+
+The record itself (`strip-reference-library-logic`: a library setting loaded through the inspector
+strip's Setting menu, Logic 12.4, 2026-11-04; every reference record on hand agrees but for the
+176-byte v2 records of an old backup's format): 192 bytes at `UCuA` v5, keyed at the property key.
+
+| offset | meaning |
+|---|---|
+| `+0` | u32 196, the class word |
+| `+4` | u32 5 |
+| `+10` | u16 `0x1235` |
+| `+14` | u16 0, `0xfffe` on some older records — not decoded |
+| `+16` | the file name with its `.cst`, NUL-padded to `+80` |
+| `+80` | the library folder's name, NUL-padded |
+| `+154` | u16, the same for one setting across saves, 0 on older records — not decoded |
+| `+176` | a version-1 UUID |
+
+Loading a setting onto a track still named for its channel renames the track to the setting, and
+Reset Channel Strip in the same menu (`strip-reference-reset-logic`, Logic 13.0) takes every keyed
+record of the channel away — the reference, the slots and both Smart Controls archives — with their
+key flags, sets the channel record's `+80` from 4 to 0 and names the track for its channel again. A
+synthetic record with a zero head and no UUID opened as "Project may be damaged"; the chains
+command test clones Logic's record and renames it (`retrack_channels`).
 
 ### Sends — `UCuA` keys 0-2
 
@@ -1123,10 +1179,14 @@ region count was raised, and dropped it when the count alone was left at 1. A re
 registry held no kind-0x1e run at all, and Logic's own splits of it, read across two of its backups,
 added none (2026-10-25): the pair is written only where a run exists. The piece number at the
 entry's `+40` is a u16, not a byte: Logic 12.4's own save of a live set (a 10.8.1 project it
-converted) carries a folder region whose container holds audio entries numbered well past 255,
-every one pairing with its record when read so, `+42..43` zero throughout (2026-10-25). A folder
-region's container holds its entries from `+16`, after a 16-byte head, which this reader does not
-follow: `regions` lists nothing inside a folder region.
+converted) holds audio entries numbered well past 255, every one pairing with its record when read
+so, `+42..43` zero throughout (2026-10-25). Its song container's first entry runs 96 bytes: a fifth
+16-byte row whose byte 7 reads `0xbe`. Every row of an entry past its first carries bit 7 at byte 7
+(`0x89`, `0xbc`, `0x8a`, `0x89` on the four of an 80-byte entry), so `entry_blocks` takes such a row,
+when it is no flex marker block, as the entry's own — on every container on hand, flexed ones
+included. The writers move entries 80 bytes at a time, so the integrity gate refuses a write
+that changes a container holding such an entry, or that leaves an entry so (`live-set-pieces`,
+2026-11-02).
 
 **A region on another track** is the entry's `+16` (track object) and `+20` (row) and nothing else:
 Logic 12.4's own drag of a split piece onto another track left its `gRuA` untouched, the entry
@@ -1149,7 +1209,8 @@ the piece no fade-in, and moved the selection (`+15` bit 7) from the parent to t
 (`regions-c03`) kept both entries; it set the piece record's payload `+130` to 1, which Logic's own
 split writes 0. Logic 12.4's re-saves of `strip-silence` and `split-sections` copies (`writers-a01-strip-silence-ours-resave-logic`,
 `writers-a03-split-sections-ours-resave-logic`, 2026-10-30) set it on every piece to the record's header owner, the piece number (1, 2, 3),
-and kept every other byte of each entry and record but the time and UUID. A crossfaded region's split is not measured, so it is refused. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
+and kept every other byte of each entry and record but the time and UUID. A region crossfaded at its start splits as Logic's own did (`regions-c04-crossfade-split-logic`, Logic 13.0): the
+crossfade stays on the parent, the piece gets none and takes the edited and selected bits, the partner is untouched; one crossfaded at its end is refused, unmeasured. **The inspector's parameters** (`region_params.py`, 2026-09-15, the `regions-b*`
 goldens): Gain in dB as a tens byte `+52` i8 and a signed five-bit remainder in `+48` bits 0-4 (-17
 is -1 and -7), Reverse `+48` bit 5, Fine Tune `+50` i8 cents, Transpose `+53` i8 semitones, Delay
 `+60` i32 ticks. Transpose on an unflexed region made Logic switch the track to Flex Pitch (two 0xAA
@@ -1200,7 +1261,7 @@ seven rows its eight points cover, each shown at its bar on the predicted unit a
 holding every row of every map in the tests; a map may
 carry the grid alone, with no vocabulary family: `settings` names it as having no settings vocabulary,
 and `swap-plugin` and `tracking-chains` see no map there;
-the rates from every row read at eleven automation values, `auto_value_probe.py`; a switch is on
+the rates from every row read in Logic at eleven automation values; a switch is on
 from one unit; a written point aims at the middle of its unit so no rounding tips it down).
 `automation --set "TRACK:slot N NAME=V@BAR,…"` writes such a lane from the parameter's own values:
 one of Logic's own by its table name onto the slider unit nearest each value, a third-party by its
@@ -1691,7 +1752,8 @@ own UUID to the new header's and changes nothing else of it, adds no channel rec
 the `Sub` rows of the mixer-order list in strip order (`stack-sub-gap-after-logic`,
 `stack-sub-after-convert-after-logic`). A strip the convert left with the folder's level or mute
 is put back at its defaults: `+85` to 90, the fixed word at `+116` to `00 00 00 5a`, bit 0 of
-`+90` cleared (`stack-sub-level-after-logic`, `stack-sub-muted-after-logic`). In those two saves
+`+90` cleared (`stack-sub-level-after-logic`, `stack-sub-muted-after-logic`); its pan is kept and its
+inserts and sends removed (`stack-sub-settings-reused-after-logic`, 2026-11-04). In those two saves
 the new header also took the object id of the header the convert removed, whose registry entry
 and mixer-order row were still there, so the row left the head of the list and no id was added;
 `create_stack` does the same ("As Logic makes one", below). Logic re-saved an earlier copy,
@@ -1701,7 +1763,12 @@ after the highest `Sub`, one a flattened stack left in use included
 (`stack-sub-after-flatten-after-logic`). Stacks nest two deep: with a stack inside a stack, Logic's
 Create Track Stack is disabled for the outer header, for the inner header and for the tracks
 inside it (read with the Track menu open, 2026-10-04), and a third level is not written
-(`stacks.require_two_levels`). Logic's Convert Folder Stack to Summing Stack on a folder that
+(`stacks.require_two_levels`). Logic's convert of a folder whose members are all their bus has (2026-11-04, `stack-convert-*-after-logic`):
+a Mute lane on the folder goes to the reused aux's track with its Volume lane, and a lane of the aux's own
+(a Pan lane) is dropped for the folder's; an insert on the folder's strip stays on that `Sub` strip, out
+of use; a send to the bus from a track outside the folder does not stop the aux being reused; and with
+the aux's own track inside the folder Logic makes a new aux on the next bus the header, moves that aux's
+output to it and leaves the tracks on the bus the aux is fed from. Logic's Convert Folder Stack to Summing Stack on a folder that
 holds a folder makes no summing stack: the save has no stack, and a first row bound to no object
 that Logic shows as Not Assigned (`stack-convert-holding-folder-after-logic`); `stacks
 --convert` refuses such a folder. A member's stack index is not a
@@ -1710,7 +1777,10 @@ the old Sub number (`stack-summing-logic`), and top-level summing members on han
 often than not. The project word at `+42` is 0 on Logic 12.3.1's saves and 3 on 12.4's, which
 rewrites it on every channel record. Flatten Stack takes out the header's arrange row alone
 (`stack-folder-flattened-logic`, `stack-summing-flattened-logic`, against the saves before
-them): the members' rows come up a level with their parent pointer cleared and all of them
+them): the members' rows come up a level with the header's own parent pointer — cleared at the
+top level and under a folder (`nest-flatten-after-logic`, `stack-flatten-in-summing-after-logic`), the
+outer summing header's for a summing stack inside one (`stack-flatten-inner-summing-after-logic`,
+2026-11-04) — and all of them
 selected (`+80` on each object, the first in the registry), the header object, its flat row,
 its strip (in use), its table entry and triple stay, and so do the members' channel stack
 indices and routing. Inside another stack the members' parent is cleared to 0 too, not set to
@@ -1758,7 +1828,7 @@ name — bytes many track objects carry as 0, or as 2 with 250, 113 or 11, and w
 decoded; Logic wrote 0 in both when it saved a header written with them, so they are written 0.
 `stack-create --summing`
 (`services/arrange/stack_summing.py`) writes the same through an aux track add that binds the lowest
-free `Aux` stub (`channel_alloc.free_aux_stub`; a fresh `Aux` strip after the highest when none
+free `Aux` stub (`channel_stubs.free_aux_stub`; a fresh `Aux` strip after the highest when none
 is free), and its header's record reads as Logic's own, strip for strip; Logic 12.4 opened two
 written stacks whose headers were fresh strips, showed the members under their headers, and
 re-saved them with no channel record and neither header object changed (`stack-summing-ours`,
@@ -1794,7 +1864,8 @@ bus counts as shared only with a UUID of its own: Logic's output change to an un
 it one and brings the lowest free `Aux` into use fed from it (`route-out-bus-logic`), and so do
 its sends (`send-bus-1-logic`, one aux per bus on `send-two-base-3-logic`). Over two members
 on a bus still on its placeholder Logic sent the new aux to Output 1-2
-(`stack-summing-placeholder-*`). `bus_return.use_bus` writes Logic's version: the bus's
+(`stack-summing-placeholder-*`). `bus_return.use_bus` writes Logic's version (`route`, and
+`apply-template` for a template bus nothing in the session would hear): the bus's
 own UUID, every output, input and send that named the placeholder moved to it, and the aux
 through `add_track(arrange=False)` — the stub bound stereo, an object (unselected, stamp step
 0x42), a flat row, a sequence triple and its index-table entry, no arrange row. On the
@@ -2235,9 +2306,10 @@ table). The two that differ are display curves the tables do not carry: the file
 0.8 shows as 0.79 and Band 1 Comp. Ratio 2.5 as 2.511, so a channel-keyed chain's raw value
 lands a grid step off where `--set` would have snapped it. A copy with one value moved in the
 file matches too — Logic shows the moved value — so the oracle catches a wrong word, not a
-wrong value. The chain-by-reference example cannot be verified publicly yet: the only public
-project with the config's references is the test fixture's, whose synthetic reference records
-Logic 12.4 opens as "Project may be damaged".
+wrong value: with two Channel EQ indices swapped in the table it named both rows (file 100,
+Logic shows 75 Hz; 2026-11-04). The chain-by-reference example ran on a library setting Logic
+loaded (`strip-reference-library-logic`): the three slots matched row for row, and Logic's
+re-save of the copy is `strip-reference-chains-resave-logic`.
 
 ### Where values come from
 

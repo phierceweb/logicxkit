@@ -18,7 +18,7 @@ from ..midi.midi import (
 from ..midi.midi_write import LENGTH_AFTER_NAME, entry_tick, name_end
 from ..stream.recbuild import rec
 from .region_locate import Located
-from .regions import ENTRY, TAIL, entry_blocks, song_container
+from .regions import ENTRY, TAIL, blocks_of, entry_blocks, song_container
 from ..arrange.tracklist import arrange_run
 from ..stream.validate import require_valid
 
@@ -161,10 +161,9 @@ def _carried(payload: bytes, loc: Located, spt: float | None) -> list[bytes] | N
     if spt is None or loc.audio is None:
         return None
     at, frames = loc.region.at, loc.audio.frames
-    count = dict(entry_blocks(payload)).get(at, 0)
-    if count < 2:
+    blocks = blocks_of(payload, at)
+    if len(blocks) < 2:
         return None
-    blocks = [payload[at + ENTRY * k:at + ENTRY * (k + 1)] for k in range(1, count + 1)]
     first, second = block_fields(blocks[0]), block_fields(blocks[1])
     # (source, kind, target, fraction); Logic's fraction differs from ours in the last places, so a tick's tolerance
     if first != (0, START, 0, 0) or second[:2] != (frames, END) or abs(second[2] - frames / spt) > 1:

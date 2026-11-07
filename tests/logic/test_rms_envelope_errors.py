@@ -30,6 +30,11 @@ class RmsHelperAnswersTest(unittest.TestCase):
         self.assertIn("a.wav: no such band", self.answer(1, "", "no such band"))
         self.assertIn("a.wav: the envelope helper failed", self.answer(1, ""))
 
+    def test_a_missing_toolchain_is_refused_naming_the_file(self):
+        with mock.patch("logicxkit.utils.swiftrun.shutil.which", return_value=None), \
+                self.assertRaisesRegex(ValueError, "a.wav: swift toolchain not available"):
+            rms_envelope(self.wav, band=None)
+
     def test_no_frames_read_from_a_file_that_holds_some_is_refused(self):
         self.assertIn("read no frames from it", self.answer(0, "44100 441 0 0\n"))
 

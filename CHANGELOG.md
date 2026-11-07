@@ -3,6 +3,66 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.16.0 — 2026-11-06
+
+### Changed
+
+- A command's capability row names the file formats it writes (`formats`); every row names 2513
+  alone, so every writer still refuses a project another Logic saved. The refusal names the
+  formats the command is measured on. `logic capabilities` and `docs/EVIDENCE.md` name any other
+  format a command writes.
+- `swap-plugin`'s dropped-lanes and side-chain notes name `--no-translate`, its own flag; neither note
+  names a flag when translation ran.
+- `chains --verify` reads a third-party slot through the headless AU host, every parameter against the
+  file's state, for Pro-C 2's pairs and Pro-Q 4's blob where the plug-in is installed; another state, or
+  one whose bytes do not parse, is reported as not compared.
+- `apply-template` sends an output to a bus the template returns and the session will not: the bus is put in
+  use first, the lowest free aux fed from it, as `route` does.
+- A writer's refusal of a Logic 13.0 save names it ("saved by Logic 13.0", format 2514); the readers find a
+  13.0 save's channel objects (type word 1312) and read its rows, stacks, channels, chains, sends, automation,
+  regions, groups, tempo, markers and strip references as they read 12.4's.
+- `regions --split` cuts a region crossfaded at its start: the parent keeps its crossfade, the piece carries
+  none and takes the edited and selected bits, the partner is untouched, as Logic's own split does. One
+  crossfaded at its end is still refused.
+- `settings --set` writes a one-sided range's word end by name (`Dry=Mute`, `Lfo1 Cycles=inf`, `Stereo=mono`),
+  reads it back as the word, and refuses a number past it: the 28 ends' floats are measured.
+- Step FX's Step Mod 2 Hold and eleven more Space Designer parameters (its length, offset, size and volume envelope
+  rows) carry their measured ranges.
+- A skipped audio file reads as such in the library (`audio_regions.file_present`): the byte after the `LFUA`
+  magic.
+- `stacks --flatten` on a stack inside another gives the freed members the flattened header's own parent
+  (the outer summing stack's header, none under a folder) and leaves every one of them selected, as
+  Logic's Flatten Stack does.
+- `add-track` after a track two levels down (inside a folder in a summing stack) puts the new track at the
+  top level after the outer stack, as Logic's New Track does; a top-level row asked for from inside a stack
+  lands after that stack.
+- `stacks --convert` writes four folders it refused: one carrying a Mute lane (carried onto the reused aux's
+  track), one whose reused aux has a lane of its own (dropped for the folder's, the pan or fader left at the
+  dropped Pan or Volume lane's bar-1 point, as Logic does; a Solo lane, a Mute lane beside a Volume lane, or a
+  Mute lane over an aux with lanes, is still refused), one with an
+  insert on its strip (left there, out of use) and one whose bus a send feeds from outside (the aux is still
+  reused); a folder holding its bus's own aux track gets a new aux as the header, the aux alone moved to the
+  new bus. `stack-create --summing` keeps a member on the bus of an aux that is a member too.
+- `stack-create` reuses a `Sub` strip out of use that carries a pan, an insert or a send, as Logic does:
+  the pan kept, the inserts and sends dropped; a soloed one is still refused.
+
+### Fixed
+
+- `--set` refuses one row named twice, whatever the spelling (`Make Up` and `make_up`).
+- `strip-silence --band` or `--ref` without the Swift toolchain is refused naming the audio file.
+- `swap-plugin` exits 1 when it leaves a slot as it is, with `--plan` too.
+- `chains`, `transplant` and every other write that places plug-in slots raise the mixer's shown-slot count to
+  the longest chain plus one, as Logic's save does, so `settings`, `automation slot N` and `remove-plugin`
+  reach slot 4 and up on the copy.
+- `regions` and every reader of the song container read past an entry longer than 80 bytes, as in Logic's
+  save of a project converted from an older Logic; a write that changes a container holding one, or that
+  leaves an entry so, is refused.
+- `chains` and `transplant` move the `.cst` reference and the Smart Controls archives up when a chain grows
+  past the input's key headroom, as `add-plugin` does.
+- A plug-in added on an instrument channel sets the mixer's shown-slot count from the audio effects alone,
+  the instrument aside, and leaves the channel's MIDI effects where they sit under the reference instead of
+  growing the key range past them, as Logic's own insert does.
+
 ## 0.15.0 — 2026-11-01
 
 ### Changed

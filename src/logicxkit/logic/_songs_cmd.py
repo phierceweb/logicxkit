@@ -11,7 +11,7 @@ from ._edit import CommandError, edit_copy, plan_alternatives
 from ._quantize_cmd import _wav_finder
 from .orchestrators.songs import Settings, SongPlan, apply_songs, plan_songs
 from .services.song.arrangement_write import fill_gaps
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 from .services.project.project import project_metadata
 from .services.song.setlist import read_setlist
 from .services.song.signature import meter

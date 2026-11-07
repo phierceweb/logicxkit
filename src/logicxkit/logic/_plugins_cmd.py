@@ -12,7 +12,7 @@ from pw_foundation.utils.io import atomic_write_bytes
 
 from ._edit import first_project_data
 from .services.mixer.plugins import installed_components, project_plugins, validate_components, verdict
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 CACHE_AGE = 24 * 3600               # seconds a kept registry scan is used
 COMPONENT_FOLDERS = ("/Library/Audio/Plug-Ins/Components", "~/Library/Audio/Plug-Ins/Components")

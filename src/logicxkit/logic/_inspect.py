@@ -170,7 +170,7 @@ def cmd_stacks(args) -> int:
     """Track stacks and the arrange track list; --move puts a track into one."""
     from .services.arrange.stacks import read_stacks, read_tracks
 
-    from .services.arrange.retrack import find_project
+    from .services.arrange.project_copy import find_project
 
     project = find_project(Path(args.logicx))
     if args.move or args.move_out or getattr(args, "flatten", None) or getattr(args, "convert", None):

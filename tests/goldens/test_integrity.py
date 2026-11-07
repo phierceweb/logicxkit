@@ -31,19 +31,20 @@ class ProblemsOnRealFilesTest(unittest.TestCase):
     def test_a_logic_written_session_regresses_against_itself_zero_times(self):
         from logicxkit.logic.services.stream.integrity import regressions
         for project in self.files:
-            with self.subTest(project.stem):
-                data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
-                self.assertEqual(regressions(data, data), [])
+            for alternative in sorted(project.glob("Alternatives/*/ProjectData")):
+                with self.subTest(f"{project.stem} {alternative.parent.name}"):
+                    data = alternative.read_bytes()
+                    self.assertEqual(regressions(data, data), [])
 
     def test_the_baseline_is_reported_not_demanded(self):
         """Pre-existing problems are counted, never treated as a failure."""
         from logicxkit.logic.services.stream.integrity import structural_report
         for project in self.files:
-            with self.subTest(project.stem):
-                data = sorted(project.glob("Alternatives/*/ProjectData"))[0].read_bytes()
-                report = structural_report(data)
-                self.assertIn("link_errors", report)
-                self.assertIsInstance(report["link_errors"], int)
+            for alternative in sorted(project.glob("Alternatives/*/ProjectData")):
+                with self.subTest(f"{project.stem} {alternative.parent.name}"):
+                    report = structural_report(alternative.read_bytes())
+                    self.assertIn("link_errors", report)
+                    self.assertIsInstance(report["link_errors"], int)
 
 
 class RegressionDetectionTest(unittest.TestCase):

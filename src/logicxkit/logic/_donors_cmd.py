@@ -9,7 +9,7 @@ from pathlib import Path
 from ._binary import find_blocks
 from .services.mixer.donors import harvest_donors
 from .services.mixer.library import factory_settings
-from .services.arrange.retrack import find_project
+from .services.arrange.project_copy import find_project
 
 
 def cmd_donors(args) -> int:

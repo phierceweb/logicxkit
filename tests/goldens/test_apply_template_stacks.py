@@ -1,13 +1,13 @@
 """apply-template meets stacks of one name and a return it cannot place: a template stack means
-the session stack its header pairs with, and a track is not sent to a bus nothing in the session
-will take. Skips without the public corpus."""
+the session stack its header pairs with, and a bus nothing in the session would hear gets an aux
+before a track is sent to it. Skips without the public corpus."""
 
 import unittest
 
 import _goldens
 
 from logicxkit.logic.orchestrators.apply_template import apply_template
-from logicxkit.logic.services.mixer.binding import bound_channels, output_labels
+from logicxkit.logic.services.mixer.binding import bound_channels, channels, input_labels, output_labels
 from logicxkit.logic.services.arrange.environment import channel_objects
 from logicxkit.logic.services.arrange.stack_create import create_stack
 from logicxkit.logic.services.arrange.stack_summing import create_summing_stack
@@ -59,16 +59,20 @@ class TwoStacksOfOneNameTest(unittest.TestCase):
 
 
 @_goldens.needs(THREE, SUMMING)
-class RefusedReturnTest(unittest.TestCase):
-    def test_a_track_is_not_sent_to_a_bus_nothing_will_take(self):
-        """Logic's summing stack as the template, its aux the first row, so it cannot be placed."""
+class BusBroughtUpTest(unittest.TestCase):
+    def test_a_bus_nothing_would_hear_gets_an_aux_before_the_outputs_go_to_it(self):
+        """Logic's summing stack as the template, its aux the first row, so it cannot be placed:
+        the bus comes into use as Logic's own output change leaves one, then the outputs go to it."""
         template, session = (project_data(_goldens.path(k)) for k in (SUMMING, THREE))
         out, ops, _n = apply_template(template, session, template_count=None, session_count=None)
-        outputs = [op for op in ops if op.kind == "output"]
-        self.assertEqual({(op.status, op.note) for op in outputs},
-                         {("refused", "nothing in the session takes Bus 1 as input")})
-        self.assertEqual([output(out, f"Audio {n}") for n in (1, 2, 3)], ["Output 1-2"] * 3)
-
+        self.assertEqual([(op.target, op.detail, op.status) for op in ops if op.kind == "return"],
+                         [("Bus 1", "put in use: Aux 1 fed from it, output Output 1-2, as Logic's own does", "done")])
+        self.assertEqual({(op.detail, op.status) for op in ops if op.kind == "output"}, {("-> Bus 1", "done")})
+        self.assertEqual([output(out, f"Audio {n}") for n in (1, 2, 3)], ["Bus 1"] * 3)
+        aux = next(o for o, c in channels(out).items() if c.label == "Aux 1")
+        self.assertEqual((channels(out)[aux].in_use, input_labels(out)[aux], output_labels(out)[aux]),
+                         (True, "Bus 1", "Output 1-2"))
+        self.assertEqual(validate_project(out), [])
 
 if __name__ == "__main__":
     unittest.main()
