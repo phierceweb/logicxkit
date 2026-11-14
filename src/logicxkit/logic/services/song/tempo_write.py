@@ -30,11 +30,17 @@ from .tempo import (
 )
 
 _MIN_BPM, _MAX_BPM = 5.0, 990.0
+MODEL_SLACK = 1                  # how far a stored time word may sit from the model: the rounding of the sums
 
 
 def set_tempo(data: bytes, bpm: float) -> bytes:
     """The tempo at bar 1 set to ``bpm``. Every project word that carried the old bar-1
-    tempo follows (all three on a song without changes); later tempo events stay."""
+    tempo follows (all three on a song without changes). Where every later tempo event's time
+    word (data +8) sits within `MODEL_SLACK` of the constant-tempo model (`time_word`) — every
+    Logic-written map on hand, Tempo List points, ramps and a re-saved 0xb4 curve among them
+    (2026-11-13) — each moves by what the change does to the model: the word Logic 13.0's
+    re-save writes (`tempo-set-ours-resave-13-0-logic`). A map the model does not fit (a drawn
+    curve, `mix-04`) keeps its words."""
     if not _MIN_BPM <= bpm <= _MAX_BPM:
         raise ValueError(f"{bpm} bpm is outside Logic's {_MIN_BPM:g}-{_MAX_BPM:g}")
     word = int(round(bpm * SCALE))
@@ -44,8 +50,14 @@ def set_tempo(data: bytes, bpm: float) -> bytes:
         raise ValueError("the song has no tempo track")
     payload = records[i].raw[HEADER:]
     evs = events(payload)
-    first = next(e for e in evs if e.type == EVENT_TYPE)
+    tempos = [e for e in evs if e.type == EVENT_TYPE]
+    first = min(tempos, key=lambda e: e.tick)
     old = struct.unpack_from("<I", first.data, BPM_AT)[0]
+    before = _points(tempos)
+    after = [(t, bpm if t == first.tick else b) for t, b in before]
+    origin = _origin(tempos)
+    fits = all(abs(struct.unpack_from("<I", e.data, TIME_AT)[0] - time_word(before, *origin, e.tick)) <= MODEL_SLACK
+               for e in tempos if e is not first)
     body = sum(len(e.head) + LINE * len(e.lines) for e in evs)
     parts = []
     for e in evs:
@@ -53,6 +65,11 @@ def set_tempo(data: bytes, bpm: float) -> bytes:
         if e is first:
             ln = bytearray(e.data)
             struct.pack_into("<I", ln, BPM_AT, word)
+            lines = [bytes(ln) if old_line[7] == DATA_LINE else old_line for old_line in lines]
+        elif e.type == EVENT_TYPE and fits:
+            ln = bytearray(e.data)
+            was = struct.unpack_from("<I", ln, TIME_AT)[0]
+            struct.pack_into("<I", ln, TIME_AT, was + time_word(after, *origin, e.tick) - time_word(before, *origin, e.tick))
             lines = [bytes(ln) if old_line[7] == DATA_LINE else old_line for old_line in lines]
         parts.append(e.head + b"".join(lines))
     out = [r.raw for r in records]

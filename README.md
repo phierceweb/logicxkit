@@ -71,8 +71,11 @@ session you care about.
 - **Logic Pro 12.3.1 or 12.4** — the tool reads and writes their file format, and confirming any
   change means opening the result in Logic; the confirmations were made in 12.3.1 and, from
   2026-10-01, in 12.4, which re-saved each of the 61 public copies this tool wrote with its
-  goldens holding. The writers take a project in the format both save (2513) and refuse any
-  other, naming the format they found: open an older project in Logic and save it first. The
+  goldens holding. The writers take a project in the format both save (2513); most take Logic
+  13.0's (2514) too — the rows marked "Also writes Logic 13.0's saves" in `docs/EVIDENCE.md`,
+  each opened on Logic 13.0's re-save of one write, named in its row, the command's other
+  flags taking the format on that evidence — and the rest refuse any other format,
+  naming the one they found: open an older project in Logic and save it first. The
   readers run on older saves: a Logic 11.2 project reads with its tracks named and routed, and
   serves as an `apply-template` template; before 11.2, tracks may read unnamed.
 - **Python 3.12 or newer.** `bin/run setup` builds the venv with `python3.12`; set

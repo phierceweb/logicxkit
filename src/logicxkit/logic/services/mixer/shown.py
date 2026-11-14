@@ -1,14 +1,18 @@
 """Channel record `+30`, the number of insert slots the mixer shows: one value on every channel
-record of the project, the longest chain plus one empty slot. Logic recomputes it on save."""
+record of the project, the longest chain plus one empty slot, and its copy at `+61` of the
+channel-count record (a u8 beside the slot base at `+60`: equal to the channel word on every public
+Logic save, 2026-11-13). Logic recomputes both on save."""
 
 from __future__ import annotations
 
 import struct
 
 from .binding import channels
-from .mixer import CHANNEL_TAG
+from .mixer import CHANNEL_TAG, is_channel_count
 from .slots import SHOWN_AT
 from ..stream.stream import HEADER, project_records, reassemble
+
+SHOWN_MIRROR_AT = 61
 
 
 def shown_slots(data: bytes) -> int:
@@ -31,7 +35,8 @@ def needed_shown(data: bytes, highest_key: dict[int, int], index_base: int) -> i
 
 def show_slots(data: bytes, shown: int) -> bytes:
     """Every channel record's `+30` raised to ``shown``, the insert slots the mixer shows —
-    the longest chain plus one empty slot, one value for the project. A higher count is left:
+    the longest chain plus one empty slot, one value for the project — and the channel-count
+    record's `+61` set to the value the channel records then carry. A higher count is left:
     Logic recomputes it on save."""
     owners = set(channels(data))
     out = []
@@ -43,4 +48,14 @@ def show_slots(data: bytes, shown: int) -> bytes:
             struct.pack_into("<H", buf, HEADER + SHOWN_AT, shown)
             raw = bytes(buf)
         out.append(raw)
-    return reassemble(data, out)
+    result = reassemble(data, out)
+    project = shown_slots(result)
+    if project > 0xFF:
+        return result
+    return reassemble(result, [_mirrored(r.raw, project) if is_channel_count(r) else r.raw for r in project_records(result)])
+
+
+def _mirrored(raw: bytes, shown: int) -> bytes:
+    buf = bytearray(raw)
+    buf[HEADER + SHOWN_MIRROR_AT] = shown
+    return bytes(buf)

@@ -25,10 +25,15 @@ def stamped(word: int) -> bytes:
 
 
 class WritingFormatsTest(unittest.TestCase):
-    def test_every_row_takes_the_measured_format_and_none_takes_another_yet(self):
+    def test_every_row_takes_the_measured_format_and_at_most_logic_13_0s_beside_it(self):
+        """A row opened on 13.0 names the measured format first and 2514 after it; `test_format_evidence`
+        makes it cite a public 2514 save."""
         for cap in _capabilities.CAPABILITIES:
             with self.subTest(cap.commands[0]):
-                self.assertEqual(cap.formats, (MEASURED,))
+                self.assertIn(cap.formats, ((MEASURED,), (MEASURED, NEXT)))
+
+    def test_a_row_is_opened(self):
+        self.assertEqual(_capabilities.by_command()["regions"].formats, (MEASURED, NEXT))
 
     def test_inside_a_wider_set_its_format_is_taken(self):
         with validate.writing_formats((LOGIC_11_2, MEASURED)):
@@ -50,7 +55,7 @@ class WritingFormatsTest(unittest.TestCase):
 
 class ShownFormatsTest(unittest.TestCase):
     def test_a_row_of_the_measured_format_alone_says_nothing_more(self):
-        self.assertEqual(_capabilities.also_writes(_capabilities.by_command()["rename"]), "")
+        self.assertEqual(_capabilities.also_writes(_capabilities.by_command()["remove-plugin"]), "")
 
     def test_a_row_opened_on_logic_11_2_says_so_in_its_catch(self):
         opened = dataclasses.replace(_capabilities.by_command()["rename"], formats=(LOGIC_11_2, MEASURED))

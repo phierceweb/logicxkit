@@ -7,7 +7,9 @@ so the undecoded `+8` word comes from the template, and only the fields the file
 set — owner, key, `+4`, `+20`, a fresh instance UUID at `+44` and the target bus channel's UUID
 at `+60` — plus the slot's flag on the channel's own record. An added send takes the level, mode
 and bypass asked for (`with_settings`), else those of the send Logic adds; a copied send keeps its
-source's.
+source's. The class word at `+0` is the saving Logic's: 72 on every 12.x save, 68 on every Logic 13.0
+save on hand (2026-11-13), so a clone takes the project's format's word (`SEND_CLASS_BY_FORMAT`); a format outside
+that table keeps the template's or source's word, unmeasured.
 """
 
 from __future__ import annotations
@@ -42,10 +44,11 @@ from .sends import (
     read_sends,
     send_base,
 )
-from ..stream.validate import require_full_walk, require_valid
+from ..stream.validate import file_format, require_full_walk, require_valid
 
 UUID_LEN = 16
 _DATA = "send-12.3.1.json"
+SEND_CLASS_BY_FORMAT = {2513: 72, 2514: 68}          # the class word at +0 by the project's format
 
 
 def _bus_uuid(chans: dict[int, Channel], bus: int) -> bytes:
@@ -81,13 +84,15 @@ def _as_logic_adds(raw: bytes) -> bytes:
 
 
 def _clone(template: bytes, *, owner: int, key: int, bus: int, bus_uuid: bytes, base: int,
-           container: bytes | None = None) -> bytes:
+           container: bytes | None = None, project_format: int | None = None) -> bytes:
     """``template`` re-targeted. ``container``, a send of the destination project, lends its
     header and class word when the source comes from another project; ``base`` is the
     destination project's `send_base`."""
     p = bytearray(template[HEADER:])
     if container is not None:
         p[CLASS_AT:CLASS_AT + 4] = container[HEADER + CLASS_AT:HEADER + CLASS_AT + 4]
+    if project_format in SEND_CLASS_BY_FORMAT:
+        struct.pack_into("<I", p, CLASS_AT, SEND_CLASS_BY_FORMAT[project_format])
     struct.pack_into("<I", p, SLOT_AT, key << 16)
     struct.pack_into("<H", p, BUS_AT, bus + base)
     p[INSTANCE_UUID_AT:INSTANCE_UUID_AT + UUID_LEN] = fresh_uuid()
@@ -165,7 +170,8 @@ def add_send(data: bytes, *, owner: int, bus: int, key: int | None = None,
     if twin is not None:
         raise ValueError(f"channel {owner} already sends to Bus {bus} (send {twin.key}); set that one instead")
     new = with_settings(_as_logic_adds(_clone(_template(records, owner), owner=owner, key=key, bus=bus,
-                                              bus_uuid=_bus_uuid(chans, bus), base=send_base(data))),
+                                              bus_uuid=_bus_uuid(chans, bus), base=send_base(data),
+                                              project_format=file_format(data))),
                         level_db=level_db, mode=mode, bypass=bypass)
     kept = [r for r in records if not (is_send(r) and r.owner == owner and r.key == key)]
     out = _finish(data, _place(kept, owner, new), owner)
@@ -211,7 +217,7 @@ def copy_sends(src: bytes, dst: bytes, *, src_owner: int, dst_owner: int) -> tup
     base = send_base(dst)
     for s in sources:
         new = _clone(s.raw, owner=dst_owner, key=s.key, bus=s.bus,
-                     bus_uuid=_bus_uuid(chans, s.bus), base=base, container=container)
+                     bus_uuid=_bus_uuid(chans, s.bus), base=base, container=container, project_format=file_format(dst))
         kept = _place(kept, dst_owner, new)
     out = _finish(dst, kept, dst_owner)
     return out, {"keys": [s.key for s in sources], "buses": [s.bus for s in sources],

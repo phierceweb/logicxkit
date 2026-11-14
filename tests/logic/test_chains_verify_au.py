@@ -7,7 +7,7 @@ import unittest.mock
 
 import _goldens
 import _paths  # noqa: F401
-from goldens.test_state_check import fabfilter, reporting
+from _auhost import fabfilter, reporting
 
 from logicxkit.au.services.state_check import decoded_values
 from logicxkit.logic.orchestrators.chains_verify import expected_rows, verify

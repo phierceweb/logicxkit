@@ -6,7 +6,8 @@ import uuid
 
 import _paths  # noqa: F401
 from logicxkit.logic.services.regions.audio_regions import FORMAT_AT, NAME_AT, PATH_AT, REGION_NAME_AT, file_name, magic_at, region_name
-from logicxkit.logic.services.regions.audio_write import WavInfo, file_record, import_templates, region_record, superseded
+from logicxkit.logic.services.regions.audio_write import WavInfo, file_record, import_templates, region_record, superseded, with_leading_word
+from logicxkit.logic.services.arrange.tracklist import CONTENT_FLAG, CONTENT_FLAG_AT, CONTENT_MARK, SELECTED_AT, SELECTED_MARK, with_content
 from logicxkit.logic.services.stream.stream import HEADER
 from logicxkit.logic.services.stream.recbuild import slot_of
 
@@ -45,6 +46,31 @@ class FileRecordTest(unittest.TestCase):
         self.assertEqual((raw[m + 7], moved[m + 7], struct.unpack_from("<I", moved, m + FORMAT_AT + 62)[0]), (1, 0, 4))
         self.assertEqual({k for k in range(len(raw)) if raw[k] != moved[k]}, {m + 7} | set(range(m + FORMAT_AT + 62, m + FORMAT_AT + 66)))
         self.assertEqual({k for k in range(len(raw)) if raw[k] != superseded(raw)[k]}, {m + 7})
+
+
+class LeadingWordTest(unittest.TestCase):
+    def test_a_13_0_project_gets_13_0s_word_in_both_places_with_the_count_bits_kept(self):
+        raw = file_record(import_templates()["lfua"], name="a.wav", folder="/Media", info=INFO, ordinal=0)
+        self.assertEqual(struct.unpack_from("<II", raw, HEADER), (920, 920))
+        counted = bytearray(raw)
+        struct.pack_into("<I", counted, HEADER, 920 | (3 << 18))
+        out = with_leading_word(bytes(counted), 2514)
+        self.assertEqual(struct.unpack_from("<II", out, HEADER), (952 | (3 << 18), 952))
+        self.assertEqual(out[HEADER + 8:], raw[HEADER + 8:])
+
+    def test_a_12_3_1_project_keeps_the_templates_word(self):
+        raw = file_record(import_templates()["lfua"], name="a.wav", folder="/Media", info=INFO, ordinal=0)
+        self.assertEqual(with_leading_word(raw, 2513), raw)
+
+
+class ContentRowTest(unittest.TestCase):
+    def test_the_row_gains_the_two_content_bits_and_keeps_the_rest(self):
+        row = bytearray(HEADER + 58)
+        row[HEADER + SELECTED_AT] = SELECTED_MARK
+        out = with_content(bytes(row))
+        self.assertEqual((out[HEADER + CONTENT_FLAG_AT], out[HEADER + SELECTED_AT]), (CONTENT_FLAG, SELECTED_MARK | CONTENT_MARK))
+        self.assertEqual(out[:HEADER + CONTENT_FLAG_AT] + out[HEADER + CONTENT_FLAG_AT + 1:HEADER + SELECTED_AT], bytes(row[:HEADER + CONTENT_FLAG_AT] + row[HEADER + CONTENT_FLAG_AT + 1:HEADER + SELECTED_AT]))
+        self.assertEqual(with_content(out), out)
 
 
 class NameTest(unittest.TestCase):

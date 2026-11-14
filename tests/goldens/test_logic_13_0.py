@@ -1,4 +1,4 @@
-"""Logic Pro 13.0 (7801)'s re-save of a public 12.4 blank (`tracks-two-audio-13-0-logic` from
+"""Logic Pro 13.0 (7801)'s re-save of a public 12.3.1 blank (`tracks-two-audio-13-0-logic` from
 `tracks-two-audio-logic`, opened and saved with no change): format word 2514; every channel
 object's type word 488 lower (1800 -> 1312) at the same class; new `gnnT` and `ktSU` records; `MroC`
 and the registry larger; the instrument channel's record 20 bytes longer with two keyed records
@@ -37,9 +37,10 @@ class Logic13Test(unittest.TestCase):
         self.assertEqual(SAVED_BY[file_format(self.new)], "Logic 13.0")
 
     def test_a_writer_refuses_the_save_naming_logic_13(self):
+        """A row that does not name Logic 13.0's format (`width`, held at 12.3.1's) refuses the save."""
         out = io.StringIO()
         with tempfile.TemporaryDirectory() as tmp, contextlib.redirect_stdout(out), contextlib.redirect_stderr(out):
-            code = logicxkit_main(["logic", "rename", str(_goldens.path(NEW)), "--track", "Audio 1=X", "--out", tmp])
+            code = logicxkit_main(["logic", "width", str(_goldens.path(NEW)), "--stereo", "Audio 1", "--out", tmp])
             self.assertNotEqual(code, 0)
             self.assertEqual(list(Path(tmp).glob("*.logicx")), [])
         self.assertIn("saved by Logic 13.0 (file format 2514", out.getvalue())

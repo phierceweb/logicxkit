@@ -17,7 +17,8 @@ there that Logic leaves alone, and so does the writer):
           velocity (0x80 0xff at 127) and are copied with the row
 
 The MIDI click rows live in the Environment's click object: the one `ivnE` record of 414
-bytes whose payload starts 0xe8 0x03. Four 48-byte rows from payload +180 — Bar, Beat,
+bytes whose type word (payload +0) is 1000 — 512 from Logic 13.0, which writes every object
+type 488 lower (`*-13-0-logic`). Four 48-byte rows from payload +180 — Bar, Beat,
 Division, Group — each with the note-on status (0x90 + channel - 1) at +6, bit 7 of +13 set
 when the row is OFF, the velocity at +17 and the note at +18. "Only during count-in" was
 disabled while measuring and "Audio Click (Klopfgeist)" wrote nothing, so neither is here.
@@ -32,7 +33,7 @@ from .settings import MIRROR, edit_song
 
 FLAGS_AT, TAKES_AT, RECORDING_AT, PREROLL_AT, PREROLL_TIME_AT = 224, 223, 227, 284, 122
 KLOPFGEIST_AT, KLOPFGEIST_ROW, KLOPFGEIST_ROWS = 516, 32, ("Bar", "Beat", "Group", "Division")
-CLICK_HEAD, CLICK_SIZE, CLICK_ROWS_AT, CLICK_ROW = b"\xe8\x03", 414, 180, 48
+CLICK_TYPES, CLICK_SIZE, CLICK_ROWS_AT, CLICK_ROW = {1000, 512}, 414, 180, 48      # the type word: Logic 12's, Logic 13.0's
 CLICK_ROWS = ("Bar", "Beat", "Division", "Group")
 BITS: dict[str, tuple[int, int, bool]] = {          # name -> (payload offset, mask, set means off)
     "Click while playing": (FLAGS_AT, 0x01, False),
@@ -57,7 +58,7 @@ def _song(data: bytes) -> bytes:
 
 def _click_index(records) -> int | None:
     hits = [i for i, r in enumerate(records)
-            if r.tag == b"ivnE" and len(r.raw) == CLICK_SIZE and r.raw[HEADER:HEADER + 2] == CLICK_HEAD]
+            if r.tag == b"ivnE" and len(r.raw) == CLICK_SIZE and struct.unpack_from("<H", r.raw, HEADER)[0] in CLICK_TYPES]
     return hits[0] if len(hits) == 1 else None
 
 

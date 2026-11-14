@@ -7,7 +7,9 @@ import _goldens
 import _paths  # noqa: F401
 from logicxkit.logic._edit import first_project_data
 from logicxkit.logic.services.song.arrangement import read_sections, section_sequence
-from logicxkit.logic.services.song.arrangement_write import _anchor, add_section, ensure_arrangement_track, has_arrangement_pair
+from logicxkit.logic.services.song.arrangement_write import (
+    TEXT_TAG, _anchor, add_section, delete_section, ensure_arrangement_track, has_arrangement_pair,
+)
 from logicxkit.logic.services.song.signature import BAR_ONE, PPQ
 from logicxkit.logic.services.stream.sequence import sequences
 from logicxkit.logic.services.stream.stream import project_records, reassemble
@@ -42,6 +44,19 @@ class EmptyPairTest(unittest.TestCase):
         self.assertEqual(len(sequences(after)), len(sequences(before)))
         self.assertEqual(section_sequence(after), _anchor(before) + 3)
         self.assertEqual([(s.name, s.start) for s in read_sections(added)], [("Intro", BAR_ONE)])
+
+    def test_a_deleted_section_takes_its_text_record_with_it(self):
+        """Logic 13.0's re-save of a delete that left the record dropped it."""
+        def texts(d: bytes) -> int:
+            return sum(r.tag == TEXT_TAG for r in project_records(d))
+
+        data = self._pair_without_snrt()
+        added = add_section(data, "Intro", start=BAR_ONE, length=8 * BAR)
+        self.assertEqual(texts(added), texts(data) + 1)
+        gone = delete_section(added, 1)
+        self.assertEqual(read_sections(gone), [])
+        self.assertEqual(texts(gone), texts(data))
+        self.assertEqual(len(sequences(project_records(gone))), len(sequences(project_records(added))))
 
     def test_a_song_without_the_pair_still_gets_one(self):
         data = first_project_data(_goldens.path(TRACK))

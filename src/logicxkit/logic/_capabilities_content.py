@@ -3,7 +3,8 @@ automation, Library patches, MIDI and beats — spliced into `_capabilities_tabl
 
 from __future__ import annotations
 
-from ._capability import Capability
+from ._capability import LOGIC_13_0, Capability
+from .services.stream.validate import MEASURED_FORMAT
 
 CONTENT_ROWS = (
     Capability(("regions",), "CONFIRMED", "read yes; `--audio` and the edits on a copy",
@@ -48,9 +49,20 @@ CONTENT_ROWS = (
                "Logic kept the value on load, but whether it plays transposed is unheard. `--to-track N=TRACK` puts a "
                "region on another audio track where it is in time, writing the entry's track object and row — the two "
                "fields Logic's own drag of a piece onto another track changed, its record untouched "
-               "(`vocal-pieces-moved-logic`, Logic 12.4, 2026-10-25), and Logic 12.4 opened and saved a set's copy "
-               "carrying `split-sections`' moves, which are this writer's, with every entry as written (2026-10-25)",
-               derived=("unverified",)),
+               "(`vocal-pieces-moved-logic`, Logic 12.4, 2026-10-25) — and the destination row flagged as holding a region, as Logic 13.0's re-save of a move onto a bare row left it (`split-sections-ours-resave-13-0-logic`, 2026-11-13); a track whose last region leaves keeps its row's flags, unmeasured — and Logic 12.4 opened and saved a set's copy "
+               "carrying `split-sections`' moves, which are this writer's, with every entry as written (2026-10-25). "
+               "On a Logic 13.0 save (format 2514) every write here lands as written: the eight audio edits, the MIDI "
+               "move, trim, split, loops and rename, the parameters and an import, written onto 13.0 saves, list and read "
+               "as Logic 13.0's own edits of the same project, and Logic 13.0 re-saved each copy with every record as "
+               "written but a touched piece's number byte and the row mark (2026-11-12, `regions-d05`..`d20`: "
+               "`regions-d14-edits-ours-resave-13-0-logic`, `regions-d16-midi-ours-resave-13-0-logic`, "
+               "`regions-d18-params-ours-resave-13-0-logic`, `regions-d20-import-ours-resave-13-0-logic`). Logic's own "
+               "13.0 edits also keep a length change's cut-off tail as an unreferenced record and stamp bookkeeping "
+               "bytes this tool leaves to Logic; its re-save of the import rewrote the file record for its own copy "
+               "of the WAV, gave it 13.0's leading word and set the row's content flags — `--audio` writes the project's "
+               "leading word and the row flags itself since, so a fresh import differs from Logic's own in the words of "
+               "Logic's copy of the WAV and the selection alone (2026-11-12)",
+               derived=("unverified",), formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("markers",), "CONFIRMED", "yes, on a copy",
                "Reads the marker track — a marker's bar, name and length — matching Logic's Marker List on "
                "its own create, rename, move, second-marker and delete saves (2026-09-15, the `markers-a2*` "
@@ -60,7 +72,9 @@ CONTENT_ROWS = (
                "four with both markers as written (`markers-edits-*`); Logic's own first marker also rewrote "
                "part of the registry, which ours leaves alone. A name outside ASCII is written as UTF-8, "
                "which Logic's Marker List showed and its re-save kept; Logic's own rename to one, an RTF "
-               "record, is read (`names-text-*`, 2026-10-02)"),
+               "record, is read (`names-text-*`, 2026-10-02)"
+               ". On a Logic 13.0 save (format 2514) `--add` came back from Logic 13.0's re-save byte for byte (2026-11-12, `markers-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--rename` with `--move`, and `--delete`, each came back byte for byte (`markers-edit-ours-resave-13-0-logic`, `markers-delete-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("quantize-drums",), "CONFIRMED", "yes, on a copy",
                "The drum-quantize procedure as file writes: groups off, the drum group with Editing "
                "(Selection) and Quantize-Locked (Audio), Q-Reference on the reference tracks, flex "
@@ -82,7 +96,8 @@ CONTENT_ROWS = (
                "first Q-Reference region alone — takes that region's hits, and the group is reused when "
                "every member with audio regions is in it; on a take Logic itself quantized this wrote "
                "one list to every member, and Logic re-saved that `--bars 9-12` copy with every member's marker "
-               "list and the drum group as written (2026-09-15, `songb-bars-9-12-*`), and those bars listen as tight as Logic's own"),
+               "list and the drum group as written (2026-09-15, `songb-bars-9-12-*`), and those bars listen as tight as Logic's own"
+               ". On a Logic 13.0 save (format 2514) a two-track take quantized to the 1/16 grid was re-saved by Logic 13.0 with the group, the markers and every region as written; on opening the copy Logic analysed the audio and appended its `LGBM` beat-marker cache to the two WAV copies inside the package, in place, and its save wrote their file records' size words and a word at magic+394 (1 → 3) for it (2026-11-13, `quantize-drums-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("strip-silence",), "CONFIRMED", "yes, on a copy; without `--out` the plan alone",
                "Cuts the silent stretches out of the named tracks' audio regions and fades the cut edges. "
                "Each audio file is read once into a peak per 10 ms (its top 16 bits); a stretch is silent "
@@ -122,7 +137,8 @@ CONTENT_ROWS = (
                "first and last piece, shortened to fit a piece they outlast, and a cut edge takes `--fade` with no curve or type. "
                "An entry numbers its file's pieces in two bytes (Logic 12.4's own save "
                "of a live set numbers pieces well past 255, 2026-10-25), so a file the cuts would take past 65535 is refused "
-               "before anything is written"),
+               "before anything is written"
+               ". On a Logic 13.0 save (format 2514) a track cut plain was re-saved by Logic 13.0 with every piece as written but the piece-number word 13.0 fills in each cut record (2026-11-13, `strip-silence-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("songs",), "CONFIRMED", "yes, on a copy; without `--out` the plan alone",
                "Finds a live set's songs where the named tracks — a bass DI, a kick, a snare — all go quiet, "
                "and writes one arrangement section per song, named from a setlist. Each file is read once into a "
@@ -143,7 +159,8 @@ CONTENT_ROWS = (
                "`--breaks NAME` writes a section over every stop as well, so the sections run contiguous, as `arrangement "
                "--fill` does, to the end of the last region on any track. A section already where a song plays is named and nothing is "
                "written, so a second run cannot write the songs twice. A changing tempo, an unknown track, a track with no audio regions, a file at another rate than the project, and a "
-               "setlist with a break before its first song, two breaks in a row or no song are refused"),
+               "setlist with a break before its first song, two breaks in a row or no song are refused"
+               ". On a Logic 13.0 save (format 2514) `--breaks` over a two-track set came back from Logic 13.0's re-save byte for byte (2026-11-13, `songs-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("split-sections",), "CONFIRMED", "yes, on a copy; without `--out` the plan alone",
                "Cuts the named audio tracks' regions at the edges of every arrangement section of one name and, "
                "with `--to`, puts the pieces inside those sections on another track, where they are in time: a "
@@ -162,7 +179,8 @@ CONTENT_ROWS = (
                "record as written but the payload `+130` it fills with the record's owner (`writers-a03-split-sections-ours-resave-logic`, 2026-10-30). "
                "A piece that would land over a region on the destination or "
                "over another piece this run moves there, a destination that is not an audio track or is the track itself, "
-               "`--to` naming fewer or more tracks than `--track`, an unknown section and a changing tempo are refused"),
+               "`--to` naming fewer or more tracks than `--track`, an unknown section and a changing tempo are refused"
+               ". On a Logic 13.0 save (format 2514) a take cut at two sections with the pieces moved onto Audio 2 was re-saved by Logic 13.0 with every piece and section as written; 13.0 filled the piece-number word of each cut record and flagged the destination row as holding a region (`+2` 0x14, `+43` 0x0c), which `--to-track`'s move writes too, so a fresh write differs in the piece numbers alone (2026-11-13, `split-sections-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("drums-to-midi",), "CONFIRMED", "yes, on a copy",
                "Each `--hit TRACK=TERM` audio track's hits, found by `quantize-drums`' detector, become "
                "sixteenths on the term's key in the drum map, each cut at the next note on that key, "
@@ -176,7 +194,8 @@ CONTENT_ROWS = (
                "350 notes as written (2026-09-15, `songb-drums-to-midi-*`). Listened to on that take: the kick "
                "and snare lanes are the playing. It is for drums with strong transients — kick, snare, toms; "
                "hats and cymbals ring under bleed and are not what this converts (the detector's 24 dB rise, "
-               "not its floor, is what a hat never gives)"),
+               "not its floor, is what a hat never gives)"
+               ". On a Logic 13.0 save (format 2514) six hits made a kick region on the instrument track and came back from Logic 13.0's re-save with every note as written but two event lines of the region's sequence record in the other order (2026-11-13, `drums-to-midi-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("sessionplayer",), "—", "yes, read-only",
                "A Session Player region's settings from the JSON in its MneG record — Complexity "
                "(`rComp`), Fill Amount (`fillsAmount`) and Swing pinned by one editor move per save "
@@ -205,7 +224,9 @@ CONTENT_ROWS = (
                "as the Pro-Q 4 there and lanes at insert 1 as nothing (`slots-insert*`, 2026-09-23). The "
                "listing names a plug-in lane as `--set` takes it, with each point in the parameter's own "
                "unit: every index took the name Logic's Event List gave it and every point the value the "
-               "Controls view showed, on the three `auto-*-resave-logic` saves"),
+               "Controls view showed, on the three `auto-*-resave-logic` saves"
+               ". On a Logic 13.0 save (format 2514) `--set` of a Pan lane was re-saved by Logic 13.0 with every point as written; 13.0 set the channel's static pan (`OCuA +89`) and the lane record's value word from the lane (2026-11-12, `automation-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--copy` of a Volume lane came back with every point as written; 13.0 added the lane's sentinel record and set the channel's static volume (`OCuA +85`/`+119`) from it (`automation-copy-ours-resave-13-0-logic`); `--clear` as written but the emptied lane's 52-byte record, which this writer leaves and 13.0 drops (`automation-clear-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("patch",), "CONFIRMED", "read yes; `--build` writes outside Logic's library unless `--install`",
                "Reads a Library patch bundle in both shapes Logic writes: its nodes, each channel's "
                "settings and the plug-ins on its strip; one Logic saved from the Library reads back "
@@ -221,7 +242,7 @@ CONTENT_ROWS = (
                "project, one field changed per save (2026-09-13); the .mid is a format-1 file at the "
                "song's PPQ with its tempo map and time signatures, one track per region, and Logic "
                "imported one and saved the same events; events before bar 1 are refused. `--region` "
-               "and `--note` write what Logic's Pencil click and Event List Create wrote; a region "
+               "and `--note` write what Logic's Pencil click and Event List Create wrote, `--region` flagging the track's row as holding a region as Logic's re-save of one does; a region "
                "with two notes came back from Logic's re-save note for note, and so did regions named "
                "four and nine bytes long, every word after the name as written. `--note` goes into "
                "the region on its track that holds its bar and is refused when none or several do. "
@@ -241,7 +262,9 @@ CONTENT_ROWS = (
                "the operations, and the presets) rewrite the selected notes' fields through the same lines and "
                "gate, and Logic re-saved a copy carrying one of every operation and preset on 27 regions with "
                "every region and event as written (2026-09-15, `midi-transform-*`); swing's tick is the one "
-               "Logic's Piano Roll wrote at 60% (`midi-qswing-60-logic`)"),
+               "Logic's Piano Roll wrote at 60% (`midi-qswing-60-logic`)"
+               ". On a Logic 13.0 save (format 2514) `--transpose` came back from Logic 13.0's re-save byte for byte (2026-11-12, `midi-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--region` with `--note`, the transforms (`--velocity`, `--move`, `--quantize`) and `--copy-region` with `--delete` each came back from Logic 13.0's re-save byte for byte (`midi-region-note-ours-resave-13-0-logic`, `midi-transforms-ours-resave-13-0-logic`, `midi-copy-delete-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("beats",), "CONFIRMED", "yes, on a copy",
                "The patterns, their index and the picking are groovebin's (`groovebin index`, `search`, "
                "`show`, `generate`); this writes them into a project. `place` lays one pattern, "
@@ -252,5 +275,6 @@ CONTENT_ROWS = (
                "phrase picked bar by bar from real library bars by their kick and snare onsets. Each "
                "region is written as `midi --region` writes one and filled through the region edits, on "
                "a software instrument track only, never lengthened for a note; the loop flag is never "
-               "written and no output has been listened to. Logic re-saved a copy holding a placed pattern and a generated phrase, and one holding two composed sections with their fills, with every region and note as written (2026-09-15, `beats-place-generate-*`, `beats-compose-*`)"),
+               "written and no output has been listened to. Logic re-saved a copy holding a placed pattern and a generated phrase, and one holding two composed sections with their fills, with every region and note as written (2026-09-15, `beats-place-generate-*`, `beats-compose-*`)"
+               ". On a Logic 13.0 save (format 2514) `place` was re-saved by Logic 13.0 with the region and its notes as written; 13.0 flagged the track's row as holding a region (`+2` 0x14, `+43` 0x0c), as it does after `regions --audio`, and the writer now flags it itself, so a fresh `place` differs from 13.0's re-save of it in the per-save churn alone (2026-11-12, `beats-place-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
 )

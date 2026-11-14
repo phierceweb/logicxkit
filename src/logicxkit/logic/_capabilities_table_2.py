@@ -2,20 +2,24 @@
 
 from __future__ import annotations
 
-from ._capability import Capability
+from ._capability import LOGIC_13_0, Capability
+from .services.stream.validate import MEASURED_FORMAT
 
 
 WRITER_ROWS = (
     Capability(("width",), "CONFIRMED", "yes, on a copy",
                "A channel's width and the build of every plug-in on it, measured across real sessions "
                "and a Logic-written stereo bus; two auxes made stereo on two templates came back "
-               "stereo from Logic's re-save, slots included (2026-09-08)"),
+               "stereo from Logic's re-save, slots included (2026-09-08)"
+               ". Measured on a Logic 13.0 save (2026-11-12, `width-ours-resave-13-0-logic`): `--stereo` reads as written after Logic 13.0's re-save, but 13.0 rewrote the channel record's `+94`/`+95` (→ 0xFFFF) and cleared four bytes at `+185`..`+194`; the row stays at 12.3.1's format until those words are measured"),
     Capability(("tempo",), "CONFIRMED", "yes, on a copy",
                "Reads matched every project's LCD, ramps and steps included; `--set 180` showed 180 on "
                "Logic's LCD and survived its re-save (2026-09-06); "
                "`--add` writes the bare step Logic's Tempo List makes and survived its re-save; "
                "`--ramp` writes the event run Logic's Tempo Operations curve makes and survived "
-               "its re-save event for event. Hand-drawn curves (the 0xb4 line) are read only"),
+               "its re-save event for event. Hand-drawn curves (the 0xb4 line) are read only"
+               ". On a Logic 13.0 save (format 2514) `--add` came back from Logic 13.0's re-save byte for byte (2026-11-12, `tempo-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--ramp` came back byte for byte and `--set` with the tempo map as written but a word of the later tempo event (`+56`/`+57` of the 80-byte record, its time) 13.0 recomputed (`tempo-set-ours-resave-13-0-logic`, `tempo-ramp-ours-resave-13-0-logic`) — the writer moves every later point's time word by the change where the constant-tempo model fits the map's stored words within a unit (every Logic-written map on hand; the drawn curve of `mix-04` sits far off it and keeps its words), and a fresh `--set` is that re-save byte for byte", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("rename", "colour", "hide"), "CONFIRMED", "yes",
                "Applied across three legacy migrations Logic re-saved unchanged (2026-09-04); a "
                "rename marks the name as the user's, else the arrange shows the strip "
@@ -25,7 +29,8 @@ WRITER_ROWS = (
                "rename wrote (`names-non-ascii-logic`), and Logic 12.4 saved a copy "
                "carrying three with "
                "each as written (`names-write-*`, 2026-10-01) and one with names of 64, 96 and 127 "
-               "bytes (`names-long-*`)"),
+               "bytes (`names-long-*`)"
+               ". On a Logic 13.0 save (format 2514) a rename, a colour and a hide written onto a 13.0 save were each re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `rename-ours-resave-13-0-logic`, `colour-ours-resave-13-0-logic`, `hide-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("settings",), "CONFIRMED", "yes; `--set` writes a copy",
                "A slot's settings in its family's vocabulary through the plug-in's map "
                "(`data/translate`): a third-party's from its AU state's id/value pairs (Pro-C 2, "
@@ -43,7 +48,8 @@ WRITER_ROWS = (
                "length (sonible's protobuf and iZotope's JSON are read, not written); an EQ takes "
                "`band N=<shape> <freq> …`, rewriting that band and no other. `--at` is the mixer slot. "
                "Three items written into a Pro-C 2 came back from Logic's re-save shown as written, the "
-               "other nine and the side chain untouched (`write-proc-*`, 2026-09-23)"),
+               "other nine and the side chain untouched (`write-proc-*`, 2026-09-23)"
+               ". On Logic 13.0 saves (format 2514) `--set` into a Compressor's table and into a Pro-C 2's pairs each came back from Logic 13.0's re-save byte for byte (2026-11-13, `settings-ours-resave-13-0-logic`, `settings-proc-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("transplant",), "CONFIRMED", "yes",
                "Each slot's side chain follows its source's name into the destination (payload "
                "+144/+145, the `sidechain-*` goldens) or is cleared with a report line. A chain longer "
@@ -67,11 +73,15 @@ WRITER_ROWS = (
                "members. One Auto-Align 2 fanned out onto a tracking song's seventeen drum channels "
                "came back from Logic's re-save with every slot byte for byte, the seventeen "
                "stamped ids included (2026-09-21, `transplant-fanout-*`). The destination's plug-in "
-               "automation lanes are left as they are"),
+               "automation lanes are left as they are"
+               ". On a Logic 13.0 save (format 2514) Audio 1's eight-slot chain moved from another 13.0 save was re-saved by Logic 13.0 with every slot, archive and channel record as written; 13.0 set the count record's copy of the shown-slot word (`nCuA +61`, 2 → 9, the value `OCuA +30` already carried; `show_slots` writes it too), the channel's `+81` (0 → 2) and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-13, `transplant-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--bypass` onto a stack member came back as written but the channel's `+81` and the Klopfgeist byte (`transplant-bypass-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("bypass",), "CONFIRMED", "yes",
                "Flips the bypass bit on the slots a channel already carries; adds nothing and "
                "removes nothing. Two bypassed slots came back from Logic's re-save with the bits "
-               "as written (2026-09-13)"),
+               "as written (2026-09-13)"
+               ". On a Logic 13.0 save (format 2514) a bypassed chain came back from Logic 13.0's re-save byte for byte (2026-11-12, `bypass-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--enable` on a bypassed chain came back byte for byte (`bypass-enable-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("add-plugin",), "CONFIRMED", "yes, on a copy",
                "A library plug-in into mixer slot N (from 1, empty slots counted — the insert automation "
                "names), the end without: an empty slot takes it where it is, an occupied one moves it "
@@ -119,7 +129,10 @@ WRITER_ROWS = (
                "grown by the project's own headroom (`addplugin-front-*`). Third-party plug-ins "
                "come from `logic donors PROJECT [--as NAME] [--refresh]`, one donor per width. A side "
                "chain may also be an input of the interface or an instrument track "
-               "(`sidechain-input2-logic`, `sidechain-inst-*`)"),
+               "(`sidechain-input2-logic`, `sidechain-inst-*`)"
+               ". On a Logic 13.0 save (format 2514) a Channel EQ added to a bare channel was re-saved by Logic 13.0 with the slot, its archive and the channel record as written but the channel's `+81` (0 → 2) and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `add-plugin-ours-resave-13-0-logic`)"
+               ". A Compressor side-chained to an instrument track on a Logic 13.0 save was re-saved by Logic 13.0 with the slot and its side chain as written but the channel's `+81` (0 → 2) (2026-11-13, `sidechain-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): a bypassed insert into slot 1 of an eight-slot chain came back byte for byte (`add-plugin-mid-bypassed-ours-resave-13-0-logic`); `--stack` with `--set` onto three members as written but each channel's `+81` and the Klopfgeist byte (`add-plugin-stack-set-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("tracking-chains",), "CONFIRMED", "yes, on a copy",
                "Every third-party slot with a translation map replaced by Logic's own of its family with the "
                "settings carried (the `replace-plugin --translate` path; Neutron 5 one native per live element, "
@@ -128,7 +141,8 @@ WRITER_ROWS = (
                "Logic-confirmed 2026-09-24 (`trk-*`): a Neutron 5 read back as the Channel "
                "EQ and Compressor it became, both Controls views on the carried values, and a re-save kept every "
                "swap and every bypass on two channels and the output. An instrument channel keeps its "
-               "instrument, whatever it is (2026-09-27)"),
+               "instrument, whatever it is (2026-09-27)"
+               ". On Logic 13.0 saves (format 2514) a Pro-Q 4 made a Channel EQ came back from Logic 13.0's re-save as written but two frequencies a single-precision step under (8 kHz, 16 kHz; `tracking-chains-eq-ours-resave-13-0-logic`); a Pro-C 2 made a Compressor beside two other slots had 13.0 re-lay the records as after `replace-plugin` — the channel records 4 B shorter, the channel's trailing keyed archives moved down one key, byte for byte (`tracking-chains-comp-ours-resave-13-0-logic`, 2026-11-13) — so the row stays at 12.3.1's format with the slot families"),
     Capability(("swap-plugin",), "CONFIRMED", "yes, on a copy",
                "Every slot holding one plug-in replaced by another across the project, each through the "
                "`replace-plugin --translate` path: settings through the family vocabulary, side chains and "
@@ -142,7 +156,8 @@ WRITER_ROWS = (
                "Auto Release reading 1 — the packaged `#default` donor's — where the data root's `Drum Mix` "
                "donor had read 0. The 2026-09-24 copies, and the `translate-*` ones, took a Compressor donor "
                "harvested from a real project — the packaged donor's layout and length, its preset name, "
-               "values and instance id aside"),
+               "values and instance id aside"
+               ". Measured on a Logic 13.0 save (2026-11-12, `swap-plugin-ours-resave-13-0-logic`, Gain → Limiter without translation): the chain reads as written after Logic 13.0's re-save, but 13.0 moves the channel's trailing keyed archives down one key, byte for byte, and shortens the edited channel records by 4 B, as after `replace-plugin`; the row stays at 12.3.1's format until the writer lays those out as 13.0 does"),
     Capability(("remove-plugin", "replace-plugin"), "CONFIRMED", "yes, on a copy",
                "The plug-in in mixer slot N out of a channel, the slots after it moved up a key with their "
                "automation lanes and Smart Control mappings, the removed slot's dropped (`slots-remove-*`, "
@@ -193,13 +208,17 @@ WRITER_ROWS = (
                "into a Pro-MB band as one side, its expander when the compressor is neutral, else its "
                "compressor, the plan naming the side; that side's lanes carry (the expander's threshold, "
                "ratio and reduction onto an expand band's threshold, ratio and range) and the other "
-               "side's stay behind with the reason"),
+               "side's stay behind with the reason"
+               ". Measured on a Logic 13.0 save (2026-11-12, `remove-plugin-ours-resave-13-0-logic`, `replace-plugin-ours-resave-13-0-logic`): the chain reads as written after Logic 13.0's re-save, but 13.0 re-lays what the writer leaves — after a removal the shown-slot word every channel repeats at `OCuA +30` (and its copy at `nCuA +61`) lowered to the shorter chain, after both the channel's trailing keyed archives moved down one key, byte for byte, and the edited channel records 4 B shorter — so both rows stay at 12.3.1's format until the writer lays those out as 13.0 does"),
     Capability(("clear-slots",), "CONFIRMED", "yes",
                "Drops the records and their key flags; the `.cst` reference label stays. Opened in "
-               "Logic with the inserts empty (2026-09-04); without the flag sync Logic refuses the file"),
+               "Logic with the inserts empty (2026-09-04); without the flag sync Logic refuses the file"
+               ". Measured on a Logic 13.0 save (2026-11-12, `clear-slots-ours-resave-13-0-logic`): the cleared chain reads as written after Logic 13.0's re-save, but 13.0 lowers the shown-slot word every channel repeats at `OCuA +30` (and its copy at `nCuA +61`) to the bare project's, moves the trailing keyed archives to keys 7 and 8, regenerating the cleared channel's pair (5357/1392 B → 303/907 B), and shortens the cleared channel records to 237 B; the row stays at 12.3.1's format until the writer lays those out as 13.0 does"),
     Capability(("header",), "CONFIRMED", "yes",
                "Every bit measured on seventeen single-toggle saves; a written set opened in Logic "
-               "showing all sixteen components as set"),
+               "showing all sixteen components as set"
+               ". On a Logic 13.0 save (format 2514) `--show Mute --hide Freeze` was re-saved by Logic 13.0 with every record and the display state as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-13, `header-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--from` a 13.0 save came back as written but the Klopfgeist byte (`header-from-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("prefs",), "CONFIRMED", "yes, with Logic closed",
                "Logic's own settings: 150 controls across every Settings pane pinned by single "
                "changes (General > Editing 2026-09-05, the rest 2026-09-08); a box written with Logic "
@@ -208,14 +227,18 @@ WRITER_ROWS = (
                "refused while Logic runs, and take a backup first"),
     Capability(("controlbar",), "CONFIRMED", "yes",
                "Every id measured on fifty single-toggle saves (2026-09-04); a bar copied whole "
-               "onto another project came up in Logic with that set. Both display-state files written"),
+               "onto another project came up in Logic with that set. Both display-state files written"
+               ". On a Logic 13.0 save (format 2514) `--show Library --hide Pause` was re-saved by Logic 13.0 with every record and the display state as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-13, `controlbar-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--from` a 13.0 save came back as written but the Klopfgeist byte (`controlbar-from-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("group",), "CONFIRMED", "yes",
                "Every box and the member events measured on twenty-eight single-change saves "
                "(2026-09-05); the writer reproduces six of Logic's saves byte for byte, and a "
                "migrated song with two groups opened in Logic showing them and re-saved with the "
                "identical group records and row list. Leaving a group: Logic's own No Group on a member (2026-09-12) matches the composed leave outside the selection bytes. "
                "A name outside ASCII is UTF-8 by its byte length, as Logic's own rename wrote one; "
-               "Logic's Groups inspector showed one written here (`names-text-*`, 2026-10-02)"),
+               "Logic's Groups inspector showed one written here (`names-text-*`, 2026-10-02)"
+               ". On a Logic 13.0 save (format 2514) `--create` with two members was re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `group-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--assign` came back byte for byte, and `--name` with `--setting` with the boxes and members as written but each member's fader events in the other order (Pan, Mute, Volume where the staged write put Mute, Volume, Pan) (`group-settings-ours-resave-13-0-logic`, `group-assign-ours-resave-13-0-logic`) — the writer orders a member's events Solo, Pan, Mute, Volume, the one order every Logic save on hand fits (Solo before Pan on `group-hide-logic` and `group-solo-logic`; Solo never seen beside Mute or Volume), and a fresh `--name` with `--setting` is that re-save byte for byte", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("apply-template",), "CONFIRMED", "yes, with a map across lineages",
                "Same lineage pairs by object id; across lineages `--map FILE` says how tracks pair "
                "(`--propose-map` drafts it, `(none)` leaves a track alone). Legacy songs "
@@ -238,7 +261,8 @@ WRITER_ROWS = (
                "(`route`'s measured aux; a copy with a bus put in use this way has not been opened in Logic). "
                "A Logic 11.2 save serves as the template: its routing is read from the channel "
                "records' index words (every routed channel as Logic 12.4 converted it, "
-               "2026-10-02); its chains are refused, its slot records being another class"),
+               "2026-10-02); its chains are refused, its slot records being another class"
+               ". On a Logic 13.0 save (format 2514) a template of the same lineage — an instrument track and an audio track added, an eight-slot chain put on Audio 1 — was re-saved by Logic 13.0 with the tracks, channels, rows and chain as written; 13.0 set the count record's copy of the shown-slot word (`nCuA +61`, written too), two channels' `+81`, the new instrument channel's `+80`, regenerated its two trailing keyed archives shorter, cleared a row's `+43` mark and re-minted the two new mixer-order rows' UUIDs (2026-11-13, `apply-template-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("migrate",), "CONFIRMED", "yes, on a renamed copy; across lineages only with `--map` or `--force`",
                "Composes `propose-map` (or `--map FILE`) with `apply-template`'s step into "
                "`CLAUDE migrated - <song>.logicx`: the ops are apply-template's CONFIRMED writers, "
@@ -247,5 +271,6 @@ WRITER_ROWS = (
                "the copy, Save As through `tools/driver`, closes without saving — and compares the "
                "row lists ignoring only the flag word; it runs from a checkout on macOS with Logic "
                "installed and has not yet been run against Logic. Logic re-saved a migrated legacy session "
-               "with every row and plug-in as written (2026-09-24, `legacy-migrate-fixed-*`)"),
+               "with every row and plug-in as written (2026-09-24, `legacy-migrate-fixed-*`)"
+               ". On a Logic 13.0 save (format 2514) a migration onto a folder-stack template — the stack made, a track added — was re-saved by Logic 13.0 with every record as written but the two new mixer-order rows' UUIDs, re-minted, and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-13, `migrate-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
 )

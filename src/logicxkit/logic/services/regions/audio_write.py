@@ -52,8 +52,8 @@ from ..midi.midi_write import _place_entry, _track, entry_tick
 from ..stream.recbuild import fresh_uuid, rec, slot_of, time_fields, with_slot
 from .regions import TRACK_OBJECT_AT, TRACK_ROW_AT, entry_offsets, song_container
 from ..stream.registry import GNOS_TAG, TIME_STRIDE, UUID_STRIDE, run_entries
-from ..arrange.tracklist import arrange_run
-from ..stream.validate import require_full_walk, require_valid
+from ..arrange.tracklist import arrange_run, row_object, with_content
+from ..stream.validate import file_format, require_full_walk, require_valid
 
 _DATA = "audio-region-12.3.1.json"
 AUDIO_REGION_KIND = 0x0B
@@ -62,6 +62,8 @@ ORDINAL_AT, LINK_AT = FORMAT_AT + 56, FORMAT_AT + 62         # u32s from the for
 LAST_LINK = 0xFFFFFFFF
 FOLDER_LEN = 256
 FILE_CURRENT_AT, FILE_CHANNELS_AT = 7, 400                   # u8s from the LFUA magic
+LEADING_WORD = {2514: 952}        # the file record's +4, and +0's low bits, by project format; the template carries 12.3.1's 920
+LEADING_MASK = 0x3FFFF
 MAX_NAME_UNITS = 0xFFFF
 REGION_UUID_FROM_END = 47
 REGION_CURRENT_AT, REGION_TIME_AT = 38, 42
@@ -157,6 +159,19 @@ def file_record(template: bytes, *, name: str, folder: str, info: WavInfo, ordin
     struct.pack_into("<I", body, m + LINK_AT, LAST_LINK)
     struct.pack_into("<I", body, m + REGION_COUNT_AT, 1)
     return with_slot(rec(FILE_TAG, template, bytes(body)), 4 * ordinal)
+
+
+def with_leading_word(raw: bytes, project_format: int) -> bytes:
+    """The file record's leading words as the saving Logic writes them: `+4` and the low bits of `+0`
+    (its high bits, 0 in every public file, kept) take the format's word; a format without one keeps the template's."""
+    word = LEADING_WORD.get(project_format)
+    if word is None:
+        return raw
+    body = bytearray(raw)
+    first = struct.unpack_from("<I", body, HEADER)[0]
+    struct.pack_into("<I", body, HEADER, (first & ~LEADING_MASK) | word)
+    struct.pack_into("<I", body, HEADER + 4, word)
+    return bytes(body)
 
 
 def _uuid_time(uuid: bytes) -> int:
@@ -262,7 +277,8 @@ def add_audio_region(data: bytes, *, track: str, start: int, wav: Path, media_fo
         raise ValueError(f"{target} exists with other content")
     if any(f.name == target.name for f in read_audio_files(data)):
         raise ValueError(f"the project already holds an audio file named {target.name}; rename the WAV before importing it")
-    file_rec = file_record(t["lfua"], name=target.name, folder=str(media_folder.resolve()), info=info, ordinal=ordinal)
+    file_rec = with_leading_word(file_record(t["lfua"], name=target.name, folder=str(media_folder.resolve()), info=info, ordinal=ordinal),
+                                 file_format(data))
     region_name = name or target.stem
     region_rec = region_record(t["grua"], name=region_name, frames=info.frames, ordinal=ordinal)
     entry = bytearray(t["entry"])
@@ -283,6 +299,8 @@ def add_audio_region(data: bytes, *, track: str, start: int, wav: Path, media_fo
             raw = rec(GNOS_TAG, raw, _register(raw[HEADER:], word=4 * ordinal))
         elif r.tag in (FILE_TAG, REGION_TAG):
             raw = superseded(raw, link=4 * ordinal if i == last_file else None)
+        elif i in run and row_object(raw) == object_id:
+            raw = with_content(raw)
         out.append(raw)
         if i == anchor:
             out += [file_rec, region_rec]

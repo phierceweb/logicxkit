@@ -60,6 +60,16 @@ class FlagsTest(unittest.TestCase):
             flags_for(["Loudness"])
 
     @needs("logic", "group-12.3.1.json")
+    def test_a_members_events_run_solo_pan_mute_volume(self):
+        """The one order every Logic save on hand fits: Solo before Pan (12.x), Pan before Mute before Volume (13.0)."""
+        from logicxkit.logic.services.arrange.groups import EVENT, EVENT_FADER_AT, flags_for
+
+        def ids(evs: bytes) -> list[int]:
+            return [evs[o + EVENT_FADER_AT] for o in range(0, len(evs), EVENT)]
+
+        self.assertEqual(ids(member_events(flags_for(("Volume", "Mute", "Pan")), KICK)), [10, 9, 7])
+        self.assertEqual(ids(member_events(flags_for(("Volume", "Mute", "Solo", "Pan")), KICK)), [3, 10, 9, 7])
+
     def test_member_events_follow_the_faders_only(self):
         self.assertEqual([e[12] for e in _split(member_events(DEFAULT_FLAGS, KICK))], [9, 7])
         self.assertEqual([e[12] for e in _split(member_events(flags_for(["Solo", "Pan"]), KICK))], [3, 10])
@@ -68,11 +78,11 @@ class FlagsTest(unittest.TestCase):
 
     @needs("logic", "group-12.3.1.json")
     def test_the_event_carries_the_members_value_in_three_places(self):
-        volume = _split(member_events(flags_for(["Volume", "Pan"]), KICK, fader=0x5E3DD780, pan=100 << 24))
-        self.assertEqual(struct.unpack_from("<I", volume[0], 8)[0], 0x5E3DD780)
-        self.assertEqual(struct.unpack_from("<H", volume[0], 20)[0], 0x5E3D)
-        self.assertEqual(struct.unpack_from("<H", volume[0], 30)[0], 0xD780)
-        self.assertEqual((volume[1][12], volume[1][11]), (10, 100))
+        pan, volume = _split(member_events(flags_for(["Volume", "Pan"]), KICK, fader=0x5E3DD780, pan=100 << 24))
+        self.assertEqual(struct.unpack_from("<I", volume, 8)[0], 0x5E3DD780)
+        self.assertEqual(struct.unpack_from("<H", volume, 20)[0], 0x5E3D)
+        self.assertEqual(struct.unpack_from("<H", volume, 30)[0], 0xD780)
+        self.assertEqual((pan[12], pan[11]), (10, 100))
 
 
 def _split(events: bytes) -> list[bytes]:
@@ -236,7 +246,7 @@ class SetGroupTest(unittest.TestCase):
 
     def test_a_fader_change_rewrites_every_members_events(self):
         out = set_group(self.data, 1, settings=["Mute", "Solo"])
-        self.assertEqual(events_of(out, 1), [(OH_L, 9), (OH_L, 3), (OH_R, 9), (OH_R, 3)])
+        self.assertEqual(events_of(out, 1), [(OH_L, 3), (OH_L, 9), (OH_R, 3), (OH_R, 9)])
         self.assertEqual(group_errors(out), [])
 
     def test_switching_off_clears_bit_31_and_nothing_else(self):

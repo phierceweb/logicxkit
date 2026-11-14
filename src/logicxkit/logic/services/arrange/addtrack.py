@@ -53,7 +53,7 @@ from ..regions.regions import sync_region_tracks, sync_row_count
 from .selection import select_track
 from ..stream.sequence import QESM_FRESH, plan_sequence
 from ..stream.table_index import sync_indices
-from .environment import next_object_id
+from .environment import next_object_id, typed_for_format
 from .stack_ids import free_object_id, gone_triple_kind
 from .addtrack_pattern import _by_label, _flat_anchor, _pattern, _with_table_entry, channel_records_for, fresh_audio_owner
 from .stack_pattern import packaged_aux
@@ -68,7 +68,7 @@ from .tracklist import (
     row_object,
     row_position,
 )
-from ..stream.validate import require_full_walk, require_valid
+from ..stream.validate import file_format, require_full_walk, require_valid
 
 _PREFIX = {"audio": "Audio ", "instrument": "Inst ", "aux": "Aux "}
 AUX_ICON, AUX_COLOUR = 0x1224, 5
@@ -157,7 +157,7 @@ def add_track(data: bytes, *, name: str, after: int, kind: str = "audio", input_
                          fresh_word=AUX_FRESH_WORD if kind == "aux" else QESM_FRESH,
                          kind_byte=AUX_KIND_BYTE if kind == "aux" else None, reuse=reused)
 
-    pattern_obj = pattern_object or (packaged["object"] if packaged else object_record(records, like))
+    pattern_obj = typed_for_format(pattern_object or (packaged["object"] if packaged else object_record(records, like)), file_format(data))
     pattern_stamp = object_stamp(pattern_obj)
     named = not re.fullmatch(r"(Audio|Inst|Aux) \d+", name)
     if kind == "audio":

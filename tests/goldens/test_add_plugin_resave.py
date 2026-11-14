@@ -7,8 +7,9 @@ import unittest
 import _goldens
 from logicxkit.logic._edit import owner_by_label
 from logicxkit.logic.services.mixer.add_plugin import add_plugin
-from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG
-from logicxkit.logic.services.stream.stream import HEADER, project_records
+from logicxkit.logic.services.mixer.mixer import CHANNEL_TAG, is_channel_count
+from logicxkit.logic.services.mixer.shown import SHOWN_MIRROR_AT
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
 from logicxkit.logic.services.mixer.slots import archive_index, property_key_base
 from logicxkit.logic.services.mixer.smart_controls import mapping_slots
@@ -37,6 +38,23 @@ def _channel_record(data: bytes) -> bytes:
     return max((r.raw for r in project_records(data) if r.tag == CHANNEL_TAG and r.owner == owner), key=len)
 
 
+def _mirror(data: bytes) -> int:
+    (record,) = [r.raw for r in project_records(data) if is_channel_count(r)]
+    return record[HEADER + SHOWN_MIRROR_AT]
+
+
+def _with_mirror(data: bytes, value: int) -> bytes:
+    """The staged write with the channel-count record's shown-slot copy at ``value``: the staged write
+    lacks the copy the writer sets, as Logic's re-save set it."""
+    out = []
+    for r in project_records(data):
+        raw = bytearray(r.raw)
+        if is_channel_count(r):
+            raw[HEADER + SHOWN_MIRROR_AT] = value
+        out.append(bytes(raw))
+    return reassemble(data, out)
+
+
 @_goldens.needs(*KEYS)
 class ResaveTest(unittest.TestCase):
     @classmethod
@@ -51,9 +69,11 @@ class ResaveTest(unittest.TestCase):
         return out
 
     def test_the_writes_are_reproduced_from_their_inputs(self):
-        for mine_key, _logic_key, at in CASES:
+        for mine_key, logic_key, at in CASES:
             with self.subTest(mine_key):
-                self.assertEqual(self._ours(at), project_data(_goldens.path(mine_key)))
+                ours = self._ours(at)
+                self.assertEqual(ours, _with_mirror(project_data(_goldens.path(mine_key)), _mirror(ours)))
+                self.assertEqual(_mirror(ours), _mirror(project_data(_goldens.path(logic_key))))
 
     def test_logic_kept_every_slot_as_written(self):
         """Byte for byte, the new slot included: the packaged donor's +76 token came back
@@ -101,7 +121,8 @@ class RemoveReplaceTest(unittest.TestCase):
 
     def test_the_writes_are_reproduced_from_their_inputs(self):
         self.assertEqual(self.removed, project_data(_goldens.path("addplugin-remove-mine")))
-        self.assertEqual(self.replaced, project_data(_goldens.path("addplugin-replace-mine")))
+        self.assertEqual(self.replaced, _with_mirror(project_data(_goldens.path("addplugin-replace-mine")), _mirror(self.replaced)))
+        self.assertEqual(_mirror(self.replaced), _mirror(project_data(_goldens.path("addplugin-replace-logic"))))
 
     def test_logic_kept_every_slot_as_written(self):
         for mine_key, logic_key in (("addplugin-remove-mine", "addplugin-remove-logic"),

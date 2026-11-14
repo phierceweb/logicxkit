@@ -60,8 +60,11 @@ modified.** There is no in-place mode and none will be added.
 **Every writer takes a project in file format 2513** — the u16 at +4 of `ProjectData`, which
 Logic 12.3.1 and 12.4 write. Logic moves record layouts between builds, so a field written where
 another build keeps something else is damage no later check sees. A command takes another format
-only when its row in `logic/_capabilities_table.py` names it (`formats`); no row does yet, and
-`CONTRIBUTING.md` says what opening one takes. An alternative an earlier
+only when its row in `logic/_capabilities_table.py` names it (`formats`): the rows whose text ends
+"Also writes Logic 13.0's saves" in `docs/EVIDENCE.md` take 2514 as well, each citing the 13.0
+re-save that opened it. A row opens its command whole: its sentences name the operations Logic re-saved, and
+the command's other flags take the format on that evidence. The rest take 2513 alone, and `CONTRIBUTING.md` says what opening one
+takes. An alternative an earlier
 Logic saved is left as it is, byte for byte, and named in the output, when a current one sits
 beside it — Logic keeps such bundles itself. A bundle with no current alternative, or one holding
 an alternative a later Logic saved, is refused before anything is copied, naming the alternative
@@ -455,8 +458,8 @@ onto a project with no audio regions or with the ones Logic's own imports and sp
 refuses any other layout and a WAV whose name the project already holds, before anything is copied.
 Names outside ASCII are written as Logic writes them (UTF-8 region names, UTF-16 file names). The
 edits take the listing number, in command-line order on a copy: `--move N=BAR`, `--to-track N=TRACK` (onto
-another audio track, where it is in time; a MIDI region, the region's own track and a track that is
-not an audio track are refused), `--trim N=BAR:BARS`
+another audio track, where it is in time, the destination's row flagged as holding a region; a MIDI
+region, the region's own track and a track that is not an audio track are refused), `--trim N=BAR:BARS`
 (the start with its content kept in place, the length, or both), `--split N=BAR`, `--loop
 N[=on|off]`, `--mute N[=on|off]`, `--rename N=NAME`, `--fade-in N=MS[:CURVE[:speed-up]]`,
 `--fade-out N=MS[:CURVE[:TYPE]]` (type `out`, `x`, `eqp` or `xs`), `--crossfade

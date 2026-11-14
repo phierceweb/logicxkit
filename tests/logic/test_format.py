@@ -106,8 +106,13 @@ class EveryWriterRefusesTest(unittest.TestCase):
         self.assertIn("file format 2511", text)
 
     def test_one_saved_by_a_later_logic_is_refused(self):
-        text = self.refused("rename", restamped(self.root, THREE, NEXT), "--track", "Audio 2=Snare")
+        """A row that does not name Logic 13.0's format refuses its save."""
+        text = self.refused("width", restamped(self.root, THREE, NEXT), "--stereo", "Audio 1")
         self.assertIn(f"file format {NEXT}", text)
+
+    def test_one_saved_by_a_logic_newer_than_this_release_is_refused_by_an_opened_row(self):
+        text = self.refused("rename", restamped(self.root, THREE, NEXT + 1), "--track", "Audio 2=Snare")
+        self.assertIn(f"newer than this release (file format {NEXT + 1}", text)
 
     def test_chains_own_copy_refuses(self):
         text = self.refused("chains", restamped(self.root, THREE, LOGIC_11_2),
@@ -193,7 +198,7 @@ class StaleAlternativeTest(unittest.TestCase):
     def test_one_saved_by_a_later_logic_still_refuses_the_bundle(self):
         project = restamped(self.root, THREE, MEASURED)
         with_stale_alternative(project, NEXT)
-        code, text = wrapped("rename", project, "--track", "Audio 2=Snare", "--out", self.out)
+        code, text = wrapped("width", project, "--stereo", "Audio 1", "--out", self.out)
         self.assertEqual(code, 1, text)
         self.assertIn(f"file format {NEXT}", text)
         self.assertFalse(self.out.exists() and any(self.out.iterdir()))

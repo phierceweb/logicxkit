@@ -32,9 +32,11 @@ that changes something writes a changed copy into the folder you name with `--ou
 you started from is never touched. Open the copy in Logic to use it.
 
 - **A Mac.** It runs on macOS only.
-- **A project saved by Logic 12.3.1 or 12.4, to change it.** A project an older Logic saved is
-  refused with the reason: open it in the current Logic, save it, and run the command again.
-  Reading works on older projects too.
+- **A project saved by Logic 12.3.1, 12.4 or 13.0, to change it.** Most commands change a Logic
+  13.0 save; the few that do not yet (`remove-plugin`, `replace-plugin`, `swap-plugin`, `clear-slots`,
+  `width`, `tracking-chains`) say so and want a 12.3.1 or 12.4 save. A project an older Logic saved is
+  refused with the reason: open it in the current Logic, save it, and run the command again. Reading
+  works on older projects too.
 - **The command line.** Every change is a command, such as
   `logicxkit logic rename Song.logicx --track "Audio 1=Rhythm Gtr" --out edited/`. An AI coding
   agent such as Claude Code can run them for you from a plain description of the change.

@@ -60,6 +60,8 @@ INVERTED = {"Quantize-Locked (Audio)"}          # the bit is set while the box i
 FADERS = ("Mute", "Volume", "Solo", "Pan")     # the boxes that give each member an event,
                                                # in the order Logic writes the pairs seen
 FADER_IDS = {"Volume": 7, "Mute": 9, "Solo": 3, "Pan": 10}
+EVENT_ORDER = ("Solo", "Pan", "Mute", "Volume")   # as Logic's saves order a member's events: Solo before Pan on `group-hide-logic`
+                                                   # and `group-solo-logic`, Pan before Mute before Volume on 13.0's (2026-11-13)
 _FADER_INDEX = {i: FADERS.index(n) for n, i in FADER_IDS.items()}
 _KNOWN = sum(1 << b for b in FLAGS.values())
 

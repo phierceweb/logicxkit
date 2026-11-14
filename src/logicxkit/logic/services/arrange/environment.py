@@ -4,6 +4,10 @@
                  Logic 12, 1312 at class v12 from Logic 13.0, 1760 at class v12 from Logic 11.2,
                  1728 at v11; mixed projects set
                  flag bits 0x4040 in the high half on some tracks
+    +114   u16   a second type word near +0's (equal on most objects, 4 lower on some); both
+                 488 lower from Logic 13.0, and 13.0 rewrites a 12.x word a writer leaves on a new
+                 object (`send-ours-resave-13-0-logic`, `stack-create-ours-resave-13-0-logic`), so
+                 `typed_for_format` writes the format's own
     +16    u32   object id — what a `karT` row's +8 points at
     +38    u32   parent: the object id of the stack this track was dragged into (0 = never)
     +80    u8    1 on the selected object only (`selection.py`)
@@ -33,6 +37,8 @@ from ..stream.recbuild import fresh_uuid, rec
 ENV_TAG = b"ivnE"
 CHANNEL_OBJECT = {11: 1728, 12: 1800}
 CHANNEL_OBJECT_TYPES = {11: {1728}, 12: {1312, 1760, 1800}}   # 1312: Logic 13.0's re-save (`tracks-two-audio-13-0-logic`)
+OBJECT_TYPE_BY_FORMAT = {2513: 1800, 2514: 1312}             # the word a new object gets by the project's format
+SECOND_TYPE_AT = 114
 OBJECT_ID_AT = 16
 PARENT_AT = 38
 KIND_AT = 154
@@ -113,6 +119,20 @@ def channel_objects(data: bytes) -> dict[int, EnvObject]:
             uuid=payload[-UUID_LEN:], size=len(payload), colour=payload[COLOUR_AT],
             icon=struct.unpack_from("<H", payload, ICON_AT)[0])
     return out
+
+
+def typed_for_format(raw: bytes, project_format: int, by_format: dict[int, int] = OBJECT_TYPE_BY_FORMAT) -> bytes:
+    """A new record's two type words (`+0`'s low half, `+114`) as the saving Logic writes them: one made from
+    another format's template moves both by the difference between the formats' words; a record already of
+    the format, of a word no format in ``by_format`` owns, or in a format without a word, is left."""
+    want = by_format.get(project_format)
+    have = struct.unpack_from("<H", raw, HEADER)[0]
+    if want is None or have == want or have not in by_format.values():
+        return raw
+    out = bytearray(raw)
+    for at in (0, SECOND_TYPE_AT):
+        struct.pack_into("<H", out, HEADER + at, struct.unpack_from("<H", out, HEADER + at)[0] + want - have)
+    return bytes(out)
 
 
 def set_parent(raw: bytes, parent: int) -> bytes:

@@ -6,6 +6,8 @@ from dataclasses import dataclass
 
 from .services.stream.validate import MEASURED_FORMAT
 
+LOGIC_13_0 = 2514                 # the format a row names beside the measured one once its write is re-saved by 13.0
+
 
 @dataclass(frozen=True)
 class Capability:

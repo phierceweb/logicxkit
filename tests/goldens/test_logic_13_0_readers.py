@@ -17,6 +17,7 @@ from logicxkit.logic.services.regions.audio_regions import read_audio_regions
 from logicxkit.logic.services.regions.automation import read_automation
 from logicxkit.logic.services.song.arrangement import read_sections
 from logicxkit.logic.services.song.markers import read_markers
+from logicxkit.logic.services.song.metronome import read_metronome
 from logicxkit.logic.services.song.tempo import read_tempo_events
 from logicxkit.logic.services.stream.validate import file_format
 from logicxkit.logicx import project_data
@@ -50,7 +51,8 @@ def picture(data: bytes, count: int | None) -> dict:
             "tempo": [(e.position, e.bpm, e.generated) for e in read_tempo_events(data)],
             "markers": [(k.name, k.tick, k.length) for k in read_markers(data)],
             "sections": [(k.name, k.start, k.length, k.kind) for k in read_sections(data)],
-            "references": sorted((chans[o].label, ref) for o, ref in channel_references(data).items() if o in chans)}
+            "references": sorted((chans[o].label, ref) for o, ref in channel_references(data).items() if o in chans),
+            "metronome": read_metronome(data)}
 
 
 @_goldens.needs(*(k for pair in PAIRS for k in pair))

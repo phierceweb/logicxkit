@@ -46,6 +46,7 @@ from ..mixer.sends import SEND_TAG
 from ..mixer.mixer import is_channel_count
 from .environment import (
     ENV_TAG,
+    typed_for_format,
     UUID_LEN,
     channel_objects,
     clone_object,
@@ -76,7 +77,7 @@ from .tracklist import (
     row_object,
     with_member,
 )
-from ..stream.validate import require_full_walk, require_valid
+from ..stream.validate import file_format, require_full_walk, require_valid
 
 SUB_NUMBER_AT = NUMBER_AT
 
@@ -188,8 +189,9 @@ def create_stack(data: bytes, *, name: str, members: list[int], track_count: int
     parents = {objs[m].parent for m in ordered if m in objs}
     if len(parents) > 1:
         raise ValueError(f"the members sit under different parents {sorted(parents)}; Logic's create would not offer this")
-    new_obj = set_parent(clone_object(pattern_obj, object_id=object_id, name=name, owner=owner,
-                                      colour=colour, icon=None, stack_number=number), parents.pop() if parents else 0)
+    new_obj = typed_for_format(set_parent(clone_object(pattern_obj, object_id=object_id, name=name, owner=owner,
+                                                       colour=colour, icon=None, stack_number=number), parents.pop() if parents else 0),
+                               file_format(data))
     last_env = max(i for i, r in enumerate(records) if r.tag == ENV_TAG)
     # its own stack index stays 0 inside another stack too, as on Logic's own (`nest-inner-folder-logic`)
     new_chan = set_stack_index(new_sub_channel(strip_template, number=number, owner=owner, uuid=new_obj[-UUID_LEN:],

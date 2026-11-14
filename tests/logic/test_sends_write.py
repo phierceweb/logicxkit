@@ -214,12 +214,20 @@ class CopySendsTest(unittest.TestCase):
         self.assertEqual(struct.unpack_from("<I", new, HEADER)[0], 72)
         self.assertEqual(struct.unpack_from("<H", new, 4)[0], 5)
 
-    def test_the_source_class_word_is_kept_when_the_target_has_none(self):
+    def test_the_projects_formats_class_word_wins_when_the_target_has_none(self):
+        """72 on a 2513 project whatever the source carried (`SEND_CLASS_BY_FORMAT`); the header is the source's."""
         dst = proj(chan(3, "Audio 4", uuid=uuid(100)), slot(3, 4), bus(10), bus(15))
         out, _ = copy_sends(source(), dst, src_owner=5, dst_owner=3)
         new = send_raw(out, 3, 0)
-        self.assertEqual(struct.unpack_from("<I", new, HEADER)[0], 99)
+        self.assertEqual(struct.unpack_from("<I", new, HEADER)[0], 72)
         self.assertEqual(struct.unpack_from("<H", new, 4)[0], 4)
+
+    def test_the_source_class_word_is_kept_on_a_format_with_no_measured_word(self):
+        from logicxkit.logic.services.stream.validate import FORMAT_AT
+        dst = bytearray(proj(chan(3, "Audio 4", uuid=uuid(100)), slot(3, 4), bus(10), bus(15)))
+        struct.pack_into("<H", dst, FORMAT_AT, 2512)
+        out, _ = copy_sends(source(), bytes(dst), src_owner=5, dst_owner=3)
+        self.assertEqual(struct.unpack_from("<I", send_raw(out, 3, 0), HEADER)[0], 99)
 
     def test_bus_uuids_are_the_targets_own(self):
         out, _ = copy_sends(source(), session(), src_owner=5, dst_owner=3)

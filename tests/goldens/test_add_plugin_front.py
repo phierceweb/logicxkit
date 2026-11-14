@@ -10,7 +10,9 @@ import _goldens
 from logicxkit.logic._add_plugin_cmd import _channels
 from logicxkit.logic._edit import owner_by_label
 from logicxkit.logic.services.mixer.add_plugin import add_plugin
-from logicxkit.logic.services.stream.stream import HEADER
+from logicxkit.logic.services.mixer.mixer import is_channel_count
+from logicxkit.logic.services.mixer.shown import SHOWN_MIRROR_AT
+from logicxkit.logic.services.stream.stream import HEADER, project_records, reassemble
 from logicxkit.logic.services.mixer.plugin_library import find_donor, load_library
 from logicxkit.logic.services.mixer.transplant import channel_slots, id_offsets, slot_class_version
 from logicxkit.logicx import project_data
@@ -27,6 +29,23 @@ def _count(key: str) -> int:
 
 
 LABEL_AT = 14                    # payload +14: the preset label, which Logic fills on load
+
+
+def _mirror(data: bytes) -> int:
+    (record,) = [r.raw for r in project_records(data) if is_channel_count(r)]
+    return record[HEADER + SHOWN_MIRROR_AT]
+
+
+def _with_mirror(data: bytes, value: int) -> bytes:
+    """The staged write with the channel-count record's shown-slot copy at ``value``: the staged write
+    lacks the copy the writer sets, as Logic's re-save set it."""
+    out = []
+    for r in project_records(data):
+        raw = bytearray(r.raw)
+        if is_channel_count(r):
+            raw[HEADER + SHOWN_MIRROR_AT] = value
+        out.append(bytes(raw))
+    return reassemble(data, out)
 
 
 def _without_token(raw: bytes) -> bytes:
@@ -55,7 +74,8 @@ class FrontTest(unittest.TestCase):
             donor = find_donor(donors, PLUGIN, width=1, version=slot_class_version(data))
             offsets = id_offsets(data, donor.raw) or tuple(donor.id_offsets)
             data, _ = add_plugin(data, owner, donor.raw, at=1, id_offsets=offsets, type_id=donor.type_id)
-        self.assertEqual(data, self.mine)
+        self.assertEqual(data, _with_mirror(self.mine, _mirror(data)))
+        self.assertEqual(_mirror(data), _mirror(self.logic))
 
     def test_every_member_leads_with_the_plug_in_and_keeps_its_chain(self):
         for label in self.labels:

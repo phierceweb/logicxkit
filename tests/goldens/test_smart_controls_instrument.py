@@ -2,7 +2,7 @@
 naming the instrument by `kGInstIDKey` and its parameter by index, the second's layout. ES2 as Logic
 inserted it (`instrument-es2-logic`, Logic 12.4): 11 mappings at id 104 and the "Automatic-Modern
 Synth 8 Single Row" layout with its knob labels; ours leaves the layout "Automatic" with no mappings,
-which Logic kept (`instrument-write-es2-logic`). Logic 13.0's re-save of a 12.4 blank gave Klopfgeist
+which Logic kept (`instrument-write-es2-logic`). Logic 13.0's re-save of a 12.3.1 blank gave Klopfgeist
 six mappings at id 76 and the same layout name (`tracks-two-audio-13-0-logic`)."""
 
 import plistlib

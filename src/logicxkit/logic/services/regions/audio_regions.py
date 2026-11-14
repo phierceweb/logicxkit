@@ -8,7 +8,8 @@ the same slot and the piece's number in the header owner (+14), and an entry wit
 at `+40`; entry `(+44, +40)` pairs with record `(slot, owner)` on every project on hand with
 audio, and the file is the record with the entry's slot.
 
-The file record: `+8` u16 the name's length in UTF-16 units, `+10` the name (UTF-16 LE), then
+The file record: `+0` and `+4` u32 920 from Logic 12 and 952 from 13.0 (`+0`'s high bits, 0 in every public file,
+kept; `--audio` writes the project's own word), `+8` u16 the name's length in UTF-16 units, `+10` the name (UTF-16 LE), then
 `LFUA`; from that magic, `+138` the Media folder's path in a 256-byte NUL-padded buffer, `+406`
 u32 file size, `+456` the format as a reversed four-CC (`EVAW`), `+464` u32 data offset, `+468`
 u32 frames, `+476` u32 sample rate, `+480` u16 channels, `+482` u16 bits, `+508` u32 the number of
@@ -16,7 +17,11 @@ region records on the file (Logic loads that many: a split's second piece with t
 1 was dropped) — the file as Logic stored it, converted to the project's rate. The region record: `+5` bit 1 Mute, `+6` u32 the
 region's first frame within the file, `+22` u32 its length in frames, `+74` the name (u16 byte
 length, UTF-8, padded to even), `+130` u16 0 from Logic's own split and the header owner (the piece
-number) once Logic re-saves the project (`regions-c03`, `writers-a01-strip-silence-ours-resave-logic`, `writers-a03-split-sections-ours-resave-logic`). The entry: `+12` bit 0 Mute, `+13` bit 1 Loop, `+28` the loop
+number) once Logic re-saves the project (`regions-c03`, `writers-a01-strip-silence-ours-resave-logic`, `writers-a03-split-sections-ours-resave-logic`), under Logic 13.0 `+130` stays 0 and the u8
+`PIECE_AFTER_NAME` bytes past the padded name's end (`+136` with a 12-byte name, `+134` with 10, `+142` with 17) takes
+that piece number once a 13.0 save has touched the record (`regions-d05`..`d07-…-13-0-logic`: 0, 1, 2;
+`regions-d04-split-ours-resave-13-0-logic`, `strip-silence-ours-resave-13-0-logic`, `split-sections-ours-resave-13-0-logic`). A 13.0 length change keeps the cut-off tail as a region record no
+entry points at and counts it in the file record's region count (`regions-d06-halve-13-0-logic`). The entry: `+12` bit 0 Mute, `+13` bit 1 Loop, `+28` the loop
 length, `+64`..`+79` the fades (`fades.py`).
 """
 
@@ -48,6 +53,14 @@ REGION_COUNT_AT = 508                        # u32 from the magic: the file's re
 REGION_MUTE_AT, REGION_MUTE_BIT = 5, 0x02
 PIECE_SUFFIX = re.compile(r"\.\d+$")
 REGION_OFFSET_AT, REGION_FRAMES_AT, REGION_NAME_AT = 6, 22, 74
+PIECE_AFTER_NAME = 48                        # the u8 a 13.0 save fills with the piece number, past the padded name
+
+
+def piece_number_at(payload: bytes) -> int:
+    """Where a region record keeps the piece number under Logic 13.0: 48 bytes past the name's padded end (85 before the
+    record's end on every public 13.0 record, the tail after the name being fixed)."""
+    n = struct.unpack_from("<H", payload, REGION_NAME_AT)[0]
+    return REGION_NAME_AT + 2 + n + (n % 2) + PIECE_AFTER_NAME
 
 
 @dataclass(frozen=True)
@@ -101,7 +114,7 @@ class AudioRegion:
         return (self.file_slot, self.piece)
 
 
-PRESENT_AT = 4                      # past the magic
+PRESENT_AT = 4                      # past the magic: 1 with the file found, under 13.0 too (`regions-d01-import-13-0-logic`)
 
 
 def name_count(payload: bytes) -> int:

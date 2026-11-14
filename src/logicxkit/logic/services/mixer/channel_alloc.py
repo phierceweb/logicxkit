@@ -16,7 +16,8 @@ same insert after the last `Aux` strip, with Logic's 201-byte default aux record
 The channel-count record `nCuA` is a 132-byte head over one u32 per channel record: +26 the
 total, then a u16 per strip class — +28 Audio, +32 Aux, +34 Inst (measured: an instrument add
 moved +26 and +34 by one and appended ``01000000``), +38 Bus, +40 Master and Sub together
-(counted from the file; unmeasured by a save).
+(counted from the file; unmeasured by a save); +60 u8 the slot base and +61 u8 the shown slots,
+copies of the channel records' `+28` and `+30` (`shown.py` writes +61; +60 is read, not written).
 
 Channel payload fields written here:
 

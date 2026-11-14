@@ -67,8 +67,8 @@ public corpus; a session that holds anyone's music or third-party plug-in state 
 
 ## Opening a command on another Logic version
 
-Every writer takes Logic 12.3.1's file format (2513, which 12.4 writes too) and refuses the rest;
-the readers run on older saves. A command takes another format when its row in
+Every writer takes Logic 12.3.1's file format (2513, which 12.4 writes too); most take Logic 13.0's
+(2514) as well, and the rest refuse it; the readers run on older saves. A command takes another format when its row in
 `src/logicxkit/logic/_capabilities_table.py` names it in `formats`, for example
 `formats=(2511, 2513)` for Logic 11.2. A pull request that adds one carries:
 

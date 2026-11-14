@@ -30,15 +30,18 @@ from .arrangement import (
 )
 from ....utils.data import data_file
 from .events import BAR_ONE, DATA_LINE, LINE, events
+from ..arrange.environment import typed_for_format
 from ..arrange.names import written
 from ..stream.stream import HEADER, project_records, reassemble
 from ..stream.recbuild import rec, slot_of, with_owner, with_slot
 from ..stream.sequence import QESM_ID_AT, free_seq_id, sequences
+from ..stream.validate import file_format
 
 PLAIN = 0x01000011
 _SIZE_AT, _TEXT_AT_AT, _SIZE2_AT, _FORM_AT = 0, 16, 20, 24
 _TEXT_DATA = "section-text-12.3.1.json"    # under the data root, `utils.data`
 _TRACK_DATA = "arrangement-track-12.3.1.json"
+ARRANGEMENT_TRACK_TYPE = {2513: 1128, 2514: 640}     # the `snrT`'s type words (+0, +114) by format: 13.0 rewrote the template's (`arrangement-ours-resave-13-0-logic`)
 _TRACK_ROLES = ("section_qesm", "section_marker", "section_qsve", "track_qesm", "track_marker", "track_qsve", "snrt")
 
 
@@ -126,9 +129,12 @@ def resize_section(data: bytes, number: int, length: int) -> bytes:
 
 
 def delete_section(data: bytes, number: int) -> bytes:
-    """Section ``number`` taken off the track; its text record stays (an unreferenced name)."""
+    """Section ``number`` taken off the track with its text record, as Logic 13.0 leaves the file after a delete
+    (`arrangement-delete-ours-resave-13-0-logic`, 2026-11-13)."""
     s = _section_at(data, number)
-    return _rewrite_events(data, lambda evs: [hl for hl in evs if not _match(hl[0], s)])
+    data = _rewrite_events(data, lambda evs: [hl for hl in evs if not _match(hl[0], s)])
+    records = project_records(data)
+    return reassemble(data, [r.raw for r in records if not (r.tag == TEXT_TAG and slot_of(r.raw) == s.text_slot)])
 
 
 def _text_bytes(name: str) -> bytes:
@@ -246,7 +252,7 @@ def ensure_arrangement_track(data: bytes) -> bytes:
     section_qsve = rec(b"qSvE", t["section_qsve"], t["section_qsve"][-LINE:])
     new = [_with_seq_id(t["section_qesm"], section_id), t["section_marker"], with_owner(section_qsve, section_id),
            _with_seq_id(t["track_qesm"], track_id), t["track_marker"], with_owner(t["track_qsve"], track_id),
-           t["snrt"]]
+           typed_for_format(t["snrt"], file_format(data), ARRANGEMENT_TRACK_TYPE)]
     first_rpyh = next((i for i, r in enumerate(records) if r.tag == b"rpyH"), len(records))
     ogns = max((i for i, r in enumerate(records[:first_rpyh]) if r.tag == b"OgnS"), default=None)
     last_mneg = max((i for i, r in enumerate(records) if r.tag == b"MneG"), default=len(records) - 1)

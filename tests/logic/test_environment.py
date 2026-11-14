@@ -10,11 +10,15 @@ from _records import env_obj, proj, rec, uuid
 from logicxkit.logic.services.arrange.environment import (
     CHANNEL_OBJECT,
     COLOUR_AT,
+    OBJECT_TYPE_BY_FORMAT,
     PARENT_AT,
+    SECOND_TYPE_AT,
     channel_objects,
     set_colour,
     set_parent,
+    typed_for_format,
 )
+from logicxkit.logic.services.stream.stream import HEADER
 
 
 class ChannelObjectsTest(unittest.TestCase):
@@ -195,3 +199,38 @@ class RenameTest(unittest.TestCase):
             rename_track(data, 999, "X")
         with self.assertRaises(ValueError):
             rename_track(data, 500, "")
+
+
+class TypedForFormatTest(unittest.TestCase):
+    """A new object's type words follow the project's format; a clone of the project's own object is left."""
+
+    def record(self, first: int, second: int) -> bytes:
+        raw = bytearray(HEADER + 160)
+        struct.pack_into("<I", raw, HEADER, first | 0x40400000)        # flag bits in the high half stay
+        struct.pack_into("<H", raw, HEADER + SECOND_TYPE_AT, second)
+        return bytes(raw)
+
+    def words(self, raw: bytes) -> tuple[int, int, int]:
+        return (struct.unpack_from("<H", raw, HEADER)[0], struct.unpack_from("<H", raw, HEADER + 2)[0],
+                struct.unpack_from("<H", raw, HEADER + SECOND_TYPE_AT)[0])
+
+    def test_a_12_x_template_takes_13_0s_word_in_both_places_keeping_their_distance(self):
+        out = typed_for_format(self.record(1800, 1796), 2514)
+        self.assertEqual(self.words(out), (1312, 0x4040, 1308))
+        self.assertEqual(out[HEADER + 4:HEADER + SECOND_TYPE_AT], bytes(SECOND_TYPE_AT - 4))
+
+    def test_the_formats_own_word_and_a_12_3_1_project_are_left(self):
+        own = self.record(1312, 1312)
+        self.assertEqual(typed_for_format(own, 2514), own)
+        template = self.record(1800, 1800)
+        self.assertEqual(typed_for_format(template, 2513), template)
+        self.assertEqual(typed_for_format(template, 2511), template)
+
+    def test_a_word_no_format_owns_is_left(self):
+        odd = self.record(1760, 1760)
+        self.assertEqual(typed_for_format(odd, 2514), odd)
+
+    def test_another_table_serves_another_record(self):
+        out = typed_for_format(self.record(1128, 1128), 2514, {2513: 1128, 2514: 640})
+        self.assertEqual(self.words(out), (640, 0x4040, 640))
+        self.assertEqual(OBJECT_TYPE_BY_FORMAT[2514], 1312)

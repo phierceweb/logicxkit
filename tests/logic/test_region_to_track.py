@@ -10,11 +10,12 @@ from _audio import tone
 from _cli import count, data, run, source, written
 
 from logicxkit.logic.services.arrange.stacks import read_tracks
+from logicxkit.logic.services.arrange.tracklist import CONTENT_FLAG, CONTENT_FLAG_AT, CONTENT_MARK, SELECTED_AT, arrange_run, row_object
 
 from logicxkit.logic.services.regions.audio_regions import AUDIO_ENTRY, read_audio_regions
 from logicxkit.logic.services.regions.region_edit import move_to_track
 from logicxkit.logic.services.regions.regions import ENTRY, TRACK_OBJECT_AT, TRACK_ROW_AT, song_events
-from logicxkit.logic.services.stream.stream import project_records
+from logicxkit.logic.services.stream.stream import HEADER, project_records
 from logicxkit.logic.services.stream.integrity import regressions, structural_report
 
 THREE = "tracks-three-audio-logic"        # Audio 1, 2 and 3
@@ -96,6 +97,34 @@ class MoveToTrackTest(unittest.TestCase):
     def test_an_unknown_track_is_refused(self):
         with self.assertRaisesRegex(ValueError, "no track named"):
             move_to_track(data(self.take), 1, "Audio 9", count(self.take))
+
+    def test_the_destination_row_is_flagged_as_holding_a_region_and_a_flagged_one_left_alone(self):
+        """Logic 13.0's re-save of a move onto a bare row set `+2` 0x14 and `+43` 0x0c on it; the move writes them."""
+        n = count(self.take)
+        before = _row(data(self.take), "Audio 2", n)
+        self.assertEqual(_flags(before), (0, 0))
+        moved, back = self.out / "flagged" / self.take.name, self.out / "back-flagged" / self.take.name
+        code, text = run("regions", self.take, "--to-track", "1=Audio 2", "--out", moved.parent)
+        self.assertEqual(code, 0, text)
+        after = _row(data(moved), "Audio 2", n)
+        self.assertEqual(_flags(after), (CONTENT_FLAG, CONTENT_MARK))
+        cleared = bytearray(after)
+        cleared[HEADER + CONTENT_FLAG_AT] &= ~CONTENT_FLAG & 0xFF
+        cleared[HEADER + SELECTED_AT] &= ~CONTENT_MARK & 0xFF
+        self.assertEqual(bytes(cleared), before)
+        code, text = run("regions", moved, "--to-track", "1=Audio 1", "--out", back.parent)              # Audio 1's row kept its flags
+        self.assertEqual(code, 0, text)
+        self.assertEqual(_row(data(back), "Audio 1", n), _row(data(moved), "Audio 1", n))
+
+
+def _row(d: bytes, name: str, n: int) -> bytes:
+    object_id = next(t["object_id"] for t in read_tracks(d, n) if t["name"] == name)
+    records = project_records(d)
+    return next(records[i].raw for i in arrange_run(records, n) if row_object(records[i].raw) == object_id)
+
+
+def _flags(raw: bytes) -> tuple[int, int]:
+    return raw[HEADER + CONTENT_FLAG_AT] & CONTENT_FLAG, raw[HEADER + SELECTED_AT] & CONTENT_MARK
 
 
 if __name__ == "__main__":

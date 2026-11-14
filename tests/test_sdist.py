@@ -4,6 +4,7 @@ packaged data file. The leak gate reads the git index, so this is the only check
 archives themselves. Skips without the `build` package."""
 
 import importlib.util
+import os
 import subprocess
 import sys
 import tarfile
@@ -75,6 +76,19 @@ class SdistTest(unittest.TestCase):
         wanted = [n for n in self.index("tests") if not n.startswith(("tests/corpus/", "tests/goldens/"))]
         self.assertTrue(any(not n.endswith(".py") for n in wanted))
         self.assertEqual(sorted(set(wanted) - set(self.members)), [])
+
+    def test_the_sdist_collects_its_own_tests(self):
+        """What CI runs on the unpacked sdist: every test module imports with the goldens tier absent,
+        the one tier the sdist leaves out."""
+        (archive,) = Path(self.tmp.name).glob("*.tar.gz")
+        with tempfile.TemporaryDirectory() as unpacked:
+            with tarfile.open(archive) as tar:
+                tar.extractall(unpacked, filter="data")
+            (root,) = Path(unpacked).iterdir()
+            clean = {k: v for k, v in os.environ.items() if not k.startswith("LOGICXKIT_")}    # a runner has none
+            run = subprocess.run([sys.executable, "-m", "pytest", "--collect-only", "-q", "-p", "no:cacheprovider"],
+                                 capture_output=True, text=True, cwd=root, env=clean)
+        self.assertEqual(run.returncode, 0, run.stdout[-2500:] + run.stderr[-500:])
 
     def test_every_packaged_data_file_ships_in_both(self):
         from logicxkit.utils.data import PACKAGED_KINDS

@@ -421,7 +421,7 @@ reads by **slot index** (`slot`) and parameter (`parameterIndex_1`), and an inst
 "Automatic-Modern Synth 8 Single Row" with its knob labels and `IdentityIndexLookup` on Logic's own
 instrument inserts, `instrument-es2-logic`, 11 mappings). An instrument this tool inserts gets the
 layout "Automatic" and no mappings, which Logic keeps (`instrument-write-es2-logic`); where the
-mapping list comes from is not decoded. Logic 13.0's re-save of a 12.4 blank gave Klopfgeist six
+mapping list comes from is not decoded. Logic 13.0's re-save of a 12.3.1 blank gave Klopfgeist six
 mappings and the named layout (`tracks-two-audio-13-0-logic`). Payload `+16` is the bplist's size, the bplist from
 `+20`, then a 16-byte tail. A plug-in moved to another slot without its mappings made Logic
 reset the channel to an unused stub on load (2026-09-21); `smart_controls.shift_mapping_slots`
@@ -447,7 +447,11 @@ calls it for every chain it writes — which is what makes the
 reproduced append match Logic's channel record byte for byte. It is one of six u16 words every
 channel record of a project carries alike — `+28` the slot base, `+30`, and `+34 +36 +38 +42`,
 unnamed — on all 467 corpus saves and the owner's; Logic's re-save rewrote a fresh record that
-disagreed (`addtrack-fresh-*`), so a fresh channel takes them from the project, not its template
+disagreed (`addtrack-fresh-*`), so a fresh channel takes them from the project, not its template.
+The channel-count record copies the two at `+60` (the base) and `+61` (the shown slots), one byte each:
+on all 861 public Logic saves `+61` equals it (`test_shown_mirror.py`,
+2026-11-13), and Logic 13.0's re-save of a chain written past the shown slots set it where the
+writer had left it (`transplant`, `chains`, `apply-template`), so `show_slots` writes `+61` too
 (`channel_alloc.project_words`).
 
 ### Parameter tables from the Controls view (2026-09-22)
@@ -953,22 +957,219 @@ saves they name what Logic 12.4 bound by UUID when it converted each, every in-u
 | 2511 | 12 | 1760 | 6 | Logic 11.2 |
 | 2510, 2509 | 11 | 1728 (1736 and 1752 occur, unread) | 6 | before 11.2; no channel binds by UUID |
 
-**Logic 13.0 writes 2514** (`tracks-two-audio-13-0-logic`, its re-save of a 12.4 blank with no
-change, 2026-11-06): every channel object's type word 488 lower at the same class, a `gnnT` and a
-`ktSU` record 12.4 had not, `MroC` 242 → 542 bytes, the registry twice the size, one more `karT`
-row, the instrument channel's record 20 bytes longer with two keyed records at 7 and 8 it did not
-carry. On eleven twins (the blank, a summing and a folder stack, the native inserts, two sends, a volume
-fade, an instrument track, a MIDI split, a group, a tempo point and markers, `*-13-0-logic`) every reader —
-channels, objects, rows, stacks, slot chains, sends, routing, automation lanes, regions, groups, tempo,
-markers, sections — gives its 12.4 answer; every writer takes
-2513 alone, so a 13.0 save is refused by the format gate until its layout is measured. The two
-13.0 saves of edits (`regions-c04-crossfade-split-logic`, `strip-reference-reset-logic`) are read
-at the entry and record-list level; a region record's bytes there mix 13.0's layout with the edit,
-so none is pinned. 13.0 re-saves this tool's 2513 writes as 12.4 did: the chains copy came back
-with 12.4's key layout and channel records byte for byte but for the channel record's `+80`, where 13.0
-sets the value 8 on the channels carrying keyed records (the value 4 there is the loaded setting, cleared by
-Reset Channel Strip), and the split with its entries as
-written (`strip-reference-chains-resave-13-0-logic`, `regions-c05-crossfade-split-ours-resave-13-0-logic`).
+**Logic 13.0 writes 2514** (eleven twins `*-13-0-logic`: Logic 13.0 (7801)'s re-saves, with no change, of
+12.3.1 saves of the blank, a summing and a folder stack, the native inserts, two sends, a volume fade, an
+instrument track, a MIDI split, a group, a tempo point and markers, 2026-11-06; `test_logic_13_0_twins.py`
+lists every byte 13.0 moves and fails on any other). What 13.0 changes:
+
+- the song record (`gnoS`): 2514 at `+4` and `+1906` (12.3.1 wrote 2513 at both, and at `+704` and `+2497`,
+  which 13.0 leaves at 2513); a byte at `+2457` 0 → 8;
+  single bytes and one fresh UUID among its display words, so it grows by 40 bytes or not at all;
+- every environment object (`ivnE`, and the `snrT` record): the type words at `+0` and `+114` 488 lower
+  at the same record class — 1800 → 1312 for a channel object, 1000 → 512 for the MIDI click object,
+  1128 → 640 for `snrT` — so the readers take either word (`CHANNEL_OBJECT_TYPES`, `metronome.CLICK_TYPES`);
+- each of the 32 `lytS` records: a u32 at `+12`, 0 before, the same list in every twin (4..124 by 4 in a
+  fixed order, one 0xffff);
+- the audio file record: the u32s at `+0` and `+4` 920 → 952 (`+0`'s high bits, 0 in every public file, kept);
+- one `gnnT` record (594 bytes: 586 zero, then u32 18 and u32 100) and one `ktSU` (8 bytes) — the undo
+  stack, which 13.0 saves into the project. A no-change re-save writes `ktSU` as zeros and no step; a save
+  after one edit writes `1, 1` and one `lESU` record per step: u32 the name's length, u32 0, the name as the
+  Undo menu shows it ("Split Regions", "Change Channel Strip Setting"), then two copies of the records the
+  step touched (`regions-c04-crossfade-split-logic`, `strip-reference-reset-logic`). Nothing here reads them;
+  a writer opened on 2514 would carry them through unchanged, which Logic has not yet been shown;
+- `MroC`, the MIDI inputs at save time (a count at `+2`, 100 bytes each, the name at the entry's `+4`): 13.0
+  lists five — Logic Pro Virtual In and Touch Keyboard A–D — where 12.3.1 listed one or two;
+- the selected-row marker (`selection.py`: `karT` row `+43` 0x40) is cleared on every selected row but one;
+  the object's `ivnE +80` and the song record's `+94` stand. What a 13.0 add sets there is unmeasured;
+- channel record `+80` 8 on channels carrying keyed records (4 there is the loaded setting, cleared by Reset
+  Channel Strip); `+128` 1 on two instrument channels; the Smart Controls archives' trailing 16-byte stamps;
+  a byte each in three `qSxT`, one `gRuA` (the piece-number byte past the name) and three `vEuA` records, unread here.
+
+Three of the eleven bases — the earliest saves of the blank — also gained what the other eight 12.3.1 saves
+already carried: `+42` 3 on every channel record, `+67` 3 on `nCuA`, the Klopfgeist channel's Smart Controls
+archives at keys 7 and 8 with their flag words (the record 20 bytes longer), one more `karT` row, the song
+record at its full size (about 21 kB, not 11 kB), two words after each channel object's name (2, 250)
+zeroed, the click object's rows filled. That is the state of a project once saved again, not 13.0's.
+
+Every reader — channels, objects, rows, stacks, slot chains, sends, routing, automation lanes, regions,
+groups, tempo, markers, sections, references, metronome — gives its 12.3.1 answer on the twins
+(`test_logic_13_0_readers.py`); every writer takes 2513 alone, so a 13.0 save is refused by the format gate
+until its output is measured under 13.0. 13.0 re-saves this tool's 2513 writes as 12.4 did: the chains
+copy came back with 12.4's key layout and channel records byte for byte but for `+80`, and the split with
+its entries as written (`strip-reference-chains-resave-13-0-logic`,
+`regions-c05-crossfade-split-ours-resave-13-0-logic`).
+
+Five more 13.0 saves, made on copies of 13.0 saves (2026-11-12, `test_logic_13_0_saves.py`):
+
+- **The undo stack is loaded, kept and grown.** A no-change Save As of the reset save writes its step and
+  `ktSU` `1, 1` back unchanged (`undo-a01-resave-13-0-logic`); every edit appends a `lESU` step named as the
+  Undo menu names it — Create Track, Insert, Split Regions — and `ktSU` holds the count twice
+  (`undo-a02-create-track-13-0-logic`, `regions-d01..d03`). A writer here adds no step and carries the stack as
+  the input holds it, `ktSU` and every `lESU` byte for byte — what Logic's own re-save does, and did with the
+  step this tool's split carried (`regions-d04-split-ours-resave-13-0-logic`).
+- **A 13.0 add marks the new row as 12.x did**: `karT` `+40` 0x20 and `+43` 0x40, the object's `+80`, the song
+  record's object id and 1-based row (`selection.py`), and it leaves the previous row's `+43` mark where an
+  edit set it (`regions-d03-add-track-13-0-logic`: the import had marked Audio 1's row), which `select_rows`
+  clears — the check to make on a 13.0 re-save before `add-track` opens on 2514.
+- **A found file reads present under 13.0**: an import of a tone onto the 13.0 twin of the blank writes the
+  present byte 1 and `+4` 952 (`regions-d01-import-13-0-logic`), so the skipped-file byte's meaning holds.
+- **This tool's split equals Logic 13.0's on a 13.0-born project**: `regions --split 1=3` on that import, the
+  format gate opened for the run, gives the regions, region records and file record of Logic's own split at
+  bar 3 (`regions-d02-split-13-0-logic`) but for the region records' time word (payload `+42..+50`) and UUID (16
+  bytes, 47 before the record's end: it moves with the name's length) and the file record's path buffer. Logic 13.0's no-change re-save of that split
+  (`regions-d04-split-ours-resave-13-0-logic`) keeps every record as written but the song, sequence and
+  undo-step records it rewrites on every save, the file record's path buffer, the second piece's piece-number byte (48 past its name,
+  `+136` here; 0 → 1, 13.0's home of what 12.x kept at `+130`; `regions-a10`'s piece too) and the
+  selected row's `+43` mark (0x4c → 0x0c: cleared, as on every 12.3.1 row 13.0 re-saved). So on a 13.0-born
+  project the split writer's output is what Logic writes; the `+2` and piece-number differences between
+  `regions-c05` and `regions-c04` were the 12.3.1-born base's.
+
+Regions under 13.0 (2026-11-12, `regions-d05`..`d20`, `test_logic_13_0_regions.py`):
+
+- **Logic 13.0's own edits, one save each on the split save** (`regions-d05`..`d12`: Edit > Move > To Playhead,
+  Length > Halve, Trim > Region Start to Previous Region, the inspector's Loop and Mute, a rename, Fade-In Time
+  and Fade-Out Time 500). They write bookkeeping this tool's edits never do: a touched record's piece-number byte (48 past its padded name) takes
+  its piece number; a length change keeps the cut-off tail as a third region record no entry points at (owner 2,
+  counted in the file record's region count); the start trim writes a signed tick word 15 before the record's end
+  (−3840, the bar it moved, one sample) and the u32 11 before the end is rewritten by the halve and the trim
+  (values pinned, meaning not claimed); the rename clears the "current" bytes (region `+38`, file magic+7) on the
+  other records; the move raises two tick words of the track's object (`+279`, `+327`) by the distance moved.
+- **This tool's writes on 2514 inputs** (the gate opened for the run): the same eight edits (`regions-d13`), the
+  MIDI move, trim, split, loops and rename on the 13.0 twin of the MIDI split (`d15`), the parameters, crossfade
+  and colours (`d17`) and an import onto the 13.0 twin of the blank (`d19`) list and read as Logic's own saves of
+  the same edits (`facts` and the container entries equal) and differ from them in that bookkeeping alone.
+- **Logic 13.0's re-save of each** (`d14`, `d16`, `d18`, `d20`) keeps every record as written but the touched
+  piece's piece-number byte and the row's `+43` mark — the MIDI write byte for byte. It does not add the tail record, the
+  tick words or the "current" bytes its own edits write. The import's re-save rewrites the imported WAV inside
+  the package to Logic's own form and the file record for it (the 13.0 leading word 952 where the 12.3.1 template
+  wrote 920, the size, the word at magic+530) and sets the row's content flags (`+2` 0x14, `+43` 0x0c) that every
+  audio track's row with a region carries on every Logic save on hand. `--audio` writes the format's leading word
+  and the row flags itself (`audio_write.with_leading_word`, `tracklist.with_content`): against Logic's own
+  import the file record then differs in the size and chunk words of Logic's copy of the WAV alone, and the row in
+  the selection bits alone (`test_logic_13_0_regions.py`, `FreshImportTest`).
+
+The one-write commands under 13.0 (2026-11-12, `<family>-ours-13-0` and `<family>-ours-resave-13-0-logic`,
+`test_logic_13_0_writers.py`): twenty-six writes on the public 13.0 twins, the gate opened for the run, each re-saved by
+Logic 13.0 with no change; every pair reads the same through its command's reader. The song record (`gnoS`) is left out of every record comparison as per-save churn; beyond its display words it holds words 13.0
+recomputes after some writes — a second copy of the selection words (`+210`/`+214`) at `+910`/`+914` after a row add or move (`+910`
+equal to `+210` on 757 of the 861 public Logic saves, both words on 690, so no rule the writers follow), meter, tempo and MIDI words — not yet pinned.
+
+- **As written** but for the Klopfgeist channel's `+80` (0 → 8, on every 13.0 re-save of a twin that lacks it) and a
+  moved row's cleared `+43` mark — or in nothing at all: rename, levels, route, bypass, colour, hide, reorder, group,
+  markers, tempo, metronome, `stacks --move`, `midi --transpose`.
+- **Logic completes words the writer leaves**, the content as written: a new environment object made from a 12.x
+  template kept its 12.x type word (1800 at `+0`/`+114`), which 13.0 rewrote to 1312 — `send --add`'s aux and
+  `stack-create`'s header object; `arrangement --add`'s `snrT` likewise 1128 → 640. The writers give a new object the
+  project's format's word (`environment.typed_for_format`, `OBJECT_TYPE_BY_FORMAT`,
+  `ARRANGEMENT_TRACK_TYPE`), so a fresh arrangement write is 13.0's re-save of it byte for byte but the Klopfgeist
+  channel's `+80`. `signature --time` leaves two
+  meter-derived tick words in the track's object (`+222`, `+278`: 3840 → 2880 for 3/4) that 13.0 recomputes, and 13.0
+  writes the signature record's two events in the other order (the key before the meter).
+  `automation --set` on Pan leaves the channel's static pan (`OCuA +89`) and the lane record's value word, which 13.0
+  sets from the lane. `add-plugin` on a bare channel leaves `OCuA +81` (0 → 2). A row the write adds or re-lays gets
+  its UUID regenerated on the mixer-order run's last row (`add-track`, `send`, `stack-create`), the stack header row
+  `+2` 0x01 and its mixer row `+2` 0x14 (`stack-create`) — the selected flag every selected instrument, aux and Sub
+  row carries in Logic's saves and never an audio track's, and the 0x14 every mixer-order row of a track carries, both
+  written (`selection.select_track` by the channel's kind, `tracklist.clone_flat_row`), the instrument track's row `+2` 0x14 / `+43` 0x0c once a
+  MIDI region sits on it (`beats place`) — the content flags the import writes and `midi_write.add_region`
+  writes too (`beats place`, `midi --region`, `drums-to-midi`), so a fresh `beats place` differs from 13.0's re-save of
+  it in the per-save churn alone (`test_logic_13_0_writers.py`).
+- **Logic re-lays records** on the slot families: after `remove-plugin` and `clear-slots`, 13.0 lowers the shown-slot word every channel
+  repeats at `OCuA +30` (and its copy at `nCuA +61`) to the shorter chain; after all four it moves the channel's trailing
+  keyed archives down one key, byte for byte — to keys 7/8 after a clear, which regenerates the cleared channel's pair
+  (5357/1392 B → 303/907 B) — and shortens the edited channel records by 4 B (remove, replace, swap) or to the bare
+  237 B (clear). The chain reads the same. `width --stereo` leaves the channel record's `+94`/`+95` (→ 0xFFFF) and
+  four bytes at `+185`..`+194` that 13.0 clears. These rows, and `tracking-chains`, whose Pro-C 2 → Compressor makes the
+  same re-lay, stay at 2513 until the writers lay the records out as 13.0 does.
+- **The owner's sessions re-saved by 13.0** (`<key>-13-0`, `test_logic_13_0_owner.py`) read as the
+  originals through every reader, with two differences: a group's `qSvE` holds every event the original had
+  (12.4's re-save had dropped the members' Volume events; 13.0's keeps them), and an arrange row the original
+  listed twice — the same object in two `karT` rows — is written once, Logic's own track count lower by as
+  many.
+
+The 12.x writer saves under 13.0 (2026-11-13, `<key>-13-0` for every public save the 12.4 campaign re-saved — 93
+bundles, `test_logic_13_0_public_twins.py`): Logic 13.0 opened each on a copy and saved it with no change. Every
+re-save reads as its source through every reader and validates clean. Past the eleven-twins set, 13.0 rewrites what a
+save with inserts carries: the channel word at `OCuA +81` (0 → 2 on 32 channel records; 2 is not "has inserts" — most
+channels with inserts keep 0 under both formats), the slots' view bytes (`+151`'s 0x10 cleared as 12.4 cleared it,
+`+148` on a few), a channel's two trailing keyed archives (regenerated shorter — 2787/1342 B → 303/907 B on the stock
+saves — or, on the add-track order save, renumbered 14/15 → 7/8 with the shown-slot word `OCuA +30`/`nCuA +61` lowered 9 → 2),
+and the state of seven plug-ins: Pedalboard, ChromaVerb, Tuner, Remix FX and Beat Breaker as under 12.4, plus
+Multipressor and sonible's gate (`Soni/sGat`); Space Designer's and Neutron's archives, which 12.4 restated, differ
+under 13.0 in their trailing stamps alone, and Pitch Correction's comes back 4 bytes longer. The MIDI FX and utility
+saves carry words in the instrument object (`ivnE +386..391`) and the multiband automation save a lane value word
+(`vEuA +48..50`) that 13.0 recomputes. Nothing else moves.
+
+The families the one-write sitting left (2026-11-13, `<family>-ours-13-0` and `<family>-ours-resave-13-0-logic`,
+`test_logic_13_0_families.py`): nineteen writes on Logic 13.0 saves, the gate opened for the run, each re-saved by Logic
+13.0 with no change; every pair reads the same through the family's readers. The families that need audio or sections
+ran on `take-*-13-0-logic` — Logic 13.0's re-saves of `regions --audio` takes of synthetic files on the public twins (two
+files at once: Logic's re-save rewrites the WAV copies and their file records' size and chunk words as it does for one)
+— and `chains` and `retrack` on Logic 13.0's re-save of the library-setting save (`strip-reference-library-13-0-logic`).
+
+- **As written** but for the Klopfgeist channel's `+80`, or in nothing at all: `header`, `controlbar`, `toolbar`,
+  `settings --set` into a Compressor's table and into a Pro-C 2's pairs, `retrack`, `songs --breaks`; `modes` (the display
+  state too) but a bit of a mode record (`+47` of an 80-byte `qSvE`) 13.0 sets, and `drums-to-midi` but two event lines of
+  the region's sequence record 13.0 writes in the other order.
+- **Logic completes words the writer leaves**: the count record's copy of the shown-slot word — `nCuA +61` equals
+  `OCuA +30` on all 861 public Logic saves (`test_shown_mirror.py`), and `transplant`, `chains` and
+  `apply-template`'s chain raised `+30` to the chain's length plus one (`shown.show_slots`) but left `+61`, which 13.0
+  set (2 → 9, 3 → 4) — `show_slots` writes it too, so a fresh transplant differs from 13.0's re-save of it in the
+  inserts word and the Klopfgeist byte alone (`test_logic_13_0_families.py`); the channel's `+81` (0 → 2) once Audio 1
+  carries inserts (`transplant`, `apply-template`, a
+  side-chained `add-plugin`); a new slot's per-plug-in token `+76` (`chains`, as on `add-plugin`'s measured appends);
+  two frequencies a single-precision step under the written 8 kHz and 16 kHz on the Channel EQ `tracking-chains` makes
+  from a Pro-Q 4 (Logic's slider grid, as 12.4 restated Linear Phase EQ's); on `apply-template`'s new instrument track
+  the channel's `+80`/`+81`, its two trailing keyed archives regenerated shorter, a row mark, and the two new
+  mixer-order rows' UUIDs re-minted (`migrate`'s too, its stack's); the piece-number word in each record `strip-silence`
+  and `split-sections` cut (13.0's home for it, after the name) and, on `split-sections --to`, the destination row's
+  content flags (`+2` 0x14, `+43` 0x0c), which the `--to-track` move writes too
+  (`region_edit.move_to_track`), so a fresh `split-sections --to` differs in the piece numbers alone. On the quantized take Logic
+  analysed the audio when it opened the copy, appended its `LGBM` beat-marker cache to the two WAV copies inside the
+  package in place (800080 → 801328 B; the written bundle's files carry it too) and wrote the file records' size words
+  (magic+406) and a word at magic+394 (1 → 3) for it.
+- **Logic re-lays records** on `tracking-chains` when the slot it replaces sits beside others (a Pro-C 2 made a
+  Compressor): the channel records 4 B shorter, the channel's trailing keyed archives moved down one key, byte for byte, as after
+  `replace-plugin`; the row stays at 2513 with the slot families.
+
+Fifteen rows opened to 2514 on this sitting (`transplant`, `chains`, `retrack`, `apply-template`, `migrate`, `header`,
+`controlbar`, `toolbar`, `modes`, `settings`, `quantize-drums`, `strip-silence`, `songs`, `split-sections`,
+`drums-to-midi`); `add-plugin`'s row gained the side chain.
+
+The opened commands' other operations (2026-11-13, `<op>-ours-13-0` and `<op>-ours-resave-13-0-logic`,
+`test_logic_13_0_operations.py`): a row opens its command whole, so the operations its first sentence did not cover ran
+too — thirty-five writes on the public 13.0 twins, each re-saved by Logic 13.0 with no change; every pair reads the same
+through its readers, and the sequence records (`qSvE`) the record comparison drops are set against each other as
+payload multisets. Twelve came back byte for byte (the MIDI region, note, transform, copy and delete writes, the marker
+edits and delete, the section rename, move and resize, `tempo --ramp`, `group --assign`, `send --set`, `bypass --enable`, a bypassed mid-chain insert,
+`retrack --map`); the staged `tempo --set` left the later tempo event's time word stale and the staged `group
+--name`/`--setting` wrote each member's three fader events as Mute, Volume, Pan where 13.0 puts Pan, Mute, Volume — words of
+the sequence records 13.0 recomputed, which the writers write: `set_tempo` moves every later point's time word by the
+change where the constant-tempo model (`time_word`) fits the map's stored words within a unit (`MODEL_SLACK`) — every
+Logic-written map on hand, Tempo List points, ramps and the re-saved curve of `mix-03` among them; the drawn curve of
+`mix-04` sits far off it and keeps its words — and
+`member_events` orders a member's events Solo, Pan, Mute, Volume (`EVENT_ORDER`), the one order every Logic save on hand
+fits — Solo before Pan on `group-hide-logic` and `group-solo-logic`, Pan before Mute before Volume on this re-save, Solo
+never seen beside Mute or Volume — so a fresh write of either is 13.0's re-save byte for byte
+(`TheWritersWriteWhatLogicCompletedTest`); `modes`
+leaves a bit of a mode record (`+47`); most of the rest differ in the Klopfgeist byte, a row's cleared mark or a
+re-minted mixer-order row UUID. What 13.0 completed past that and the writers write: the send record's class word — 68
+on every 2514 save on hand where the 12.x template carries 72 — after `send --add`, taken from the project's format
+(`SEND_CLASS_BY_FORMAT`), so a fresh `--add` differs from 13.0's re-save in the UUIDs it mints, the mixer-order row UUID
+13.0 re-mints and the Klopfgeist byte alone; the deleted section's text record after `arrangement --delete` and `--fill`,
+which `delete_section` drops — a fresh `--delete` comes back byte for byte, a fresh `--fill` after a delete differs in the
+new section's text-record slot alone (it takes the freed slot where the staged write, keeping the orphan, took the next).
+What 13.0 re-lays that the writers leave: the lane's sentinel record and the channel's static volume
+(`OCuA +85`/`+119`) after `automation --copy`; the emptied lane's record dropped after `automation --clear`; meter words in the track's object after a key
+and meter change (`+230`..`+233`, `+318`, `+319`); the pattern channel's — the Klopfgeist's — `+81`, its trailing archives regenerated and
+three bytes of the cloned instrument slot after `add-track --instrument`; each member's `+81` after a stack insert; on
+`stacks --convert`, an object word (`+63`) set and the summing header's selected flag and `+43` mark cleared — Logic's own
+summing headers carry the flag beside a row bit at `+40` (0x40) the writer does not set, undecoded; and after `send
+--remove` of a channel's two sends on a key-3 project, the slot base lowered to 2 on every channel record (`+28`, the
+count record's `+60`), two channel records 4 B shorter and the archives down a key — a re-lay like the slot families'.
+A staged corpus bundle's recorded audio path is scrubbed, so a write on one opens in Logic with the audio skipped and
+its file records' present and chunk words cleared: the write whose input holds audio (`arrangement --fill`) ran on the
+unscrubbed scratch copy of its save instead. `quantize-drums --bars` is not measured apart on 13.0.
 
 ### Instrument outputs — an aux fed by a software instrument's extra output
 
@@ -1035,7 +1236,7 @@ slots (key 4+). 78 sends across three Logic 12.3.1 saves:
 
 | offset | meaning |
 |---|---|
-| `+0` | u32 class word, 72 at `UCuA` v5 (the only version on hand) |
+| `+0` | u32 class word: 72 on every 12.x save (header v5, the only version on hand), 68 on every Logic 13.0 save (2026-11-13); a written send takes the project format's (`SEND_CLASS_BY_FORMAT`) |
 | `+4` | slot: `key << 16` |
 | `+8` | u16, 0 or 4 — not decoded |
 | `+16` | 1 in **Post Pan** mode (Logic's default), 0 in the other two |
@@ -1456,7 +1657,7 @@ whole structure. A group is a **sequence triple of its own** — `qeSM` / zero-s
 | `qeSM +8` | the triple id, repeated as the `qSvE`'s owner; any unused id (Logic gave 82, then 43) |
 | `qeSM +16` | u16 name length; the name follows, padded to an even length |
 | `qeSM +70` + padded name | u32 **settings**, one bit per box: 0 Volume, 1 Pan, 2 Mute, 3 Solo, 8-15 Send 1-8, 16 Editing (Selection), 17 Track Zoom, 18 Color, 20 Record, 21 Hide, 22 Quantize-Locked (Audio) **inverted** (set while the box is off), 23 Track Alternatives, 24 Automation Mode, 26 Input. A fresh group is `0x81400005`; bit 31 is the table's **On** box (clear on a switched-off group; two groups switched off, 2026-09-13) |
-| `qSvE` | one 32-byte **event per member per linked fader** — Volume, Mute, Solo, Pan; every other box is flag-only — then a 16-byte tail. `+4` = the member's object id × 2; `+12` the fader as Logic numbers them (7 Volume, 9 Mute, 3 Solo, 10 Pan); `+8` u32 the member's value for it as its channel stores it (the fader's fixed-point word, `0x5a000000` at unity; the pan byte in the top byte, 64 = centre; 0 for Mute and Solo), its halves repeated at `+20` and `+30`. A fresh group writes Mute then Volume per member; Solo then Pan |
+| `qSvE` | one 32-byte **event per member per linked fader** — Solo, Pan, Mute, Volume (`EVENT_ORDER`): the one order every Logic save on hand fits, Solo before Pan on `group-hide-logic` and `group-solo-logic`, Pan before Mute before Volume on 13.0's re-save of a write (2026-11-13), Solo never seen beside Mute or Volume; every other box is flag-only — then a 16-byte tail. `+4` = the member's object id × 2; `+12` the fader as Logic numbers them (7 Volume, 9 Mute, 3 Solo, 10 Pan); `+8` u32 the member's value for it as its channel stores it (the fader's fixed-point word, `0x5a000000` at unity; the pan byte in the top byte, 64 = centre; 0 for Mute and Solo), its halves repeated at `+20` and `+30`. |
 | `ivnE +24` | the member's **groups as a bitmask**, bit N−1 = group N (measured on a Create Group that put overhead tracks already in group 1 into group 4: they read 9) |
 | `gnoS` | a `<0x11><slot>` entry per group in both runs, directly before the object entries |
 
@@ -2444,8 +2645,9 @@ bin/run logic recdiff A B [--baseline X Y] [--json]  # positional record diff of
 Both are sequence triples near the head of ProjectData whose `qSvE` payload is 16-byte
 lines (`services/song/events.py`): a line whose byte 7 has its top bit clear starts an event
 (type u32 at +0, tick u32 at +4; 960 ticks per quarter, bar 1 at tick 38400), a line whose
-byte 7 has the top bit set continues the event before it (0x88 is the data line; 0xb4 and
-0xb1 carry a tempo curve), and type 0xf1 at tick 0x3fffffff ends the sequence.
+byte 7 has the top bit set continues the event before it (0x88 is the data line; 0xb4 carries a
+tempo curve's four undecoded fields; 0xb1 is all zero on every save on hand, its meaning unknown), and type 0xf1 at tick
+0x3fffffff ends the sequence.
 
 **Arrangement** (`services/song/arrangement.py`): events of type 0x12, one per section. The data
 line holds the slot of the section's `qSxT` text record at +0, the section kind at +8
@@ -2465,11 +2667,16 @@ ramp (one every 480 ticks); data +8 is the point's time in 1/2000 s from Logic's
 digit. A step Logic draws from the tempo track is two events one tick
 apart with 0xb4/0xb1 lines; one added from the Tempo List is a single bare event. Matched on
 every song on hand, ramps and steps included. The 0xb4 line's four fields are
-undecoded. The event type is the u16 at +0: a change Logic added carried a nonzero word at +2.
+undecoded; the 0xb1 line is all zero on every save on hand — the bar-1 event of the owner's template-born songs carries
+one, edited or not, a drawn curve one on a later event, the blank project's saves none (2026-11-13) — so it is not a curve
+and its meaning is unknown. The event type is the u16 at +0: a change Logic added carried a nonzero word at +2.
 
 Edits (`--out` required, on a copy): `arrangement --rename N=NAME`, `--move N=BAR`, `--length
-N=BARS`, `--delete N`, `--add BAR:BARS:NAME[:KIND]` (N as the listing numbers the sections), `tempo
---set BPM` (the bar-1 event and every `gnoS` word that held its old value) and `tempo --add
+N=BARS`, `--delete N` (the section and its text record; Logic 13.0's re-save of a delete that left the record dropped it,
+2026-11-13), `--add BAR:BARS:NAME[:KIND]` (N as the listing numbers the sections), `tempo
+--set BPM` (the bar-1 event, every `gnoS` word that held its old value, and every later point's time word, moved by the
+change as 13.0's re-save of a set recomputed it, 2026-11-13, where the constant-tempo model fits the map's stored words
+within a unit — every Logic-written map on hand; the drawn curve of `mix-04` sits far off it and keeps its words) and `tempo --add
 BAR=BPM`. A renamed section's text record is rebuilt plain (`arrangement_write.py`); Logic's re-save
 of a rename plus a resize kept both byte for byte (2026-09-06), a move plus a delete came back from
 Logic's re-save event for event (2026-09-07), and `tempo --set 180` showed on Logic's LCD and

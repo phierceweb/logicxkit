@@ -2,32 +2,18 @@
 headless host: every id agrees on Pro-C 2's pairs and Pro-Q 4's blob, and a value the plug-in will
 not keep is named."""
 
-import json
 import os
 import unittest
 from pathlib import Path
 
 import _goldens
+from _auhost import fabfilter, reporting
 
 from logicxkit.au.services.austate_write import patch_ffbs
-from logicxkit.au.services.embed import find_au_plists
 from logicxkit.au.services.host import AuHost
 from logicxkit.au.services.state_check import check_state, checkable, decoded_values
-from logicxkit.logicx import project_data
 
 PROC, PROQ = "write-proc", "translate-proq"
-
-
-def fabfilter(key: str) -> dict:
-    return next(pl for _off, pl in find_au_plists(project_data(_goldens.path(key)))
-                if pl.get("manufacturer") == int.from_bytes(b"FabF", "big"))
-
-
-def reporting(values: dict[int, float]):
-    """A host that reports ``values`` for whatever state it is handed."""
-    params = [{"id": i, "name": f"p{i}", "unit": "", "min": 0, "max": 1, "default": 0, "value": v} for i, v in values.items()]
-    dump = {"component": "x", "type": "aumf", "subtype": "FC2p", "manufacturer": "FabF", "params": params}
-    return AuHost(runner=lambda args, timeout: (0, json.dumps(dump), ""))
 
 
 @_goldens.needs(PROC, PROQ)
@@ -75,11 +61,13 @@ def fabfilter_installed() -> bool:
 
 @_goldens.needs(PROC, PROQ)
 class RealHostTest(unittest.TestCase):
-    def test_the_plug_ins_read_every_id_as_the_bytes_give_it(self):
+    def setUp(self):
         if not fabfilter_installed():                       # a silent skip would hide a broken host on the owner's Mac
             if os.environ.get("LOGICXKIT_REQUIRE_GOLDENS") == "1":
                 self.fail("the AU host and FabFilter's Pro-C 2 and Pro-Q 4 are required here")
             self.skipTest("the AU host and FabFilter's Pro-C 2 and Pro-Q 4")
+
+    def test_the_plug_ins_read_every_id_as_the_bytes_give_it(self):
         for key in (PROC, PROQ):
             with self.subTest(key):
                 found = check_state(fabfilter(key), AuHost())

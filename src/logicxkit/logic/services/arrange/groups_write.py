@@ -11,7 +11,7 @@ import struct
 from ..mixer.binding import bound_channels
 from .environment import ENV_TAG, object_id_of
 from .groups import (
-    BEFORE_TAG, DEFAULT_FLAGS, EVENT_OBJECT_AT, EVENT_VALUE_AT, EVENT_VALUE_HI_AT, EVENT_VALUE_LO_AT, FADERS, FLAGS,
+    BEFORE_TAG, DEFAULT_FLAGS, EVENT_OBJECT_AT, EVENT_VALUE_AT, EVENT_VALUE_HI_AT, EVENT_ORDER, EVENT_VALUE_LO_AT, FLAGS,
     GROUP_AT, GROUP_ON, ID_AT, NAME_AT, SLOT_STEP, TAIL, Group, _bit, _flags_at, _groups, _numbers, _object_groups,
     _DATA, _NAME_MAX, flags_for,
 )
@@ -56,7 +56,7 @@ def member_events(flags: int, object_id: int, *, fader: int = UNITY * FIXED_ONE,
     """The events ``flags`` give one member, carrying its ``fader`` (the channel's
     fixed-point word) and ``pan`` (the byte, shifted up)."""
     values = {"Volume": fader, "Pan": pan, "Mute": 0, "Solo": 0}
-    return b"".join(_event(f, object_id, values[f]) for f in FADERS if flags >> FLAGS[f] & 1)
+    return b"".join(_event(f, object_id, values[f]) for f in EVENT_ORDER if flags >> FLAGS[f] & 1)
 
 
 def _values(data: bytes) -> dict[int, dict[str, int]]:

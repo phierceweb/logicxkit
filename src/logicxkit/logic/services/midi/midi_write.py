@@ -7,7 +7,8 @@ the last table-slotted triple with a fresh id and the next free slot, its name r
 after the name move with it, as the longer names in the `sessionplayer-*` and
 `midi-import-resave` goldens show); the song container gets the 80-byte entry in tick order
 (`+4` the start with bar 1 at 34560, `+16` the object, `+20` the row, `+32` the slot); the
-registry gets the slot pair. A note is two 16-byte lines spliced into the region's sequence in
+registry gets the slot pair; the track's arrange row gains the content flags (`tracklist.with_content`), which
+Logic's re-save of a region write lacking them sets. A note is two 16-byte lines spliced into the region's sequence in
 tick order; the first event also sets three words Logic set once and never moved again (`+123`
 = 84, `+172` = 44, `+192` = 1 past the name's end — meaning unmeasured, values as written).
 """
@@ -31,7 +32,7 @@ from ..stream.registry import GNOS_TAG, register_slot
 from ..stream.sequence import QESM_ID_AT, Triple, free_seq_id, free_table_slot, index_table, sequences, triple_by_slot
 from ..song.signature import meter
 from ..arrange.stacks import read_tracks
-from ..arrange.tracklist import arrange_run
+from ..arrange.tracklist import arrange_run, row_object, with_content
 from ..arrange.trackname import one_object, rows_named
 from ..stream.validate import require_full_walk, require_valid
 
@@ -151,6 +152,8 @@ def add_region(data: bytes, *, track: str, start: int, length: int, name: str | 
             raw = rec(b"qSvE", raw, _place_entry(raw[HEADER:], bytes(entry)))
         elif r.tag == GNOS_TAG:
             raw = rec(GNOS_TAG, raw, register_slot(raw[HEADER:], slot=slot))
+        elif i in run and row_object(raw) == object_id:
+            raw = with_content(raw)
         out.append(raw)
         if i == anchor:
             out += [bytes(qesm), marker, qsve]

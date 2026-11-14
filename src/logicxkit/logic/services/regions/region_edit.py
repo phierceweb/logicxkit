@@ -40,7 +40,7 @@ from .region_entry import (
 from .region_locate import located
 from .regions import TRACK_OBJECT_AT, TRACK_ROW_AT, _rows
 from ..arrange.stacks import read_tracks
-from ..arrange.tracklist import arrange_run
+from ..arrange.tracklist import arrange_run, row_object, with_content
 from ..arrange.trackname import one_object
 from ..stream.registry import GNOS_TAG, has_run, register_after_run, register_slot
 from ..stream.sequence import QESM_ID_AT, free_seq_id, free_table_slot, index_table, sequences, triple_by_slot
@@ -78,8 +78,10 @@ def audio_track(tracks: list[dict], track: str) -> int:
 def move_to_track(data: bytes, number: int, track: str, track_count: int | None = None, validate: bool = True) -> bytes:
     """Region ``number`` on the track ``track`` names, where it is in time: the entry's track object
     and row, the two fields Logic's own drag of a piece onto another track changed, its record
-    untouched (`vocal-pieces-moved-logic`, Logic 12.4, 2026-10-25). An audio region onto an audio
-    track; a MIDI region's sequence names its track too, and no move of one is measured."""
+    untouched (`vocal-pieces-moved-logic`, Logic 12.4, 2026-10-25), and the destination's arrange
+    row flagged as holding a region (`tracklist.with_content`), which Logic 13.0's re-save of a move
+    onto a bare row set (2026-11-13). An audio region onto an audio track; a MIDI region's sequence
+    names its track too, and no move of one is measured."""
     loc = located(data, number, track_count)
     if loc.audio is None:
         raise ValueError(f"region {number} is a MIDI region; moving one onto another track is unmeasured")
@@ -88,11 +90,15 @@ def move_to_track(data: bytes, number: int, track: str, track_count: int | None 
         raise ValueError(f"region {number} {loc.audio.name!r} is already on {track!r}")
     records = project_records(data)
     song, payload = _container(records, track_count)
+    run = arrange_run(records, track_count)
     entry = bytearray(_entry(payload, loc))
     struct.pack_into("<H", entry, TRACK_OBJECT_AT, object_id)
-    struct.pack_into("<H", entry, TRACK_ROW_AT, _rows(records, arrange_run(records, track_count))[object_id])
+    struct.pack_into("<H", entry, TRACK_ROW_AT, _rows(records, run)[object_id])
     out = [r.raw for r in records]
     out[song.end] = rec(b"qSvE", records[song.end].raw, _rewrite(payload, loc.audio.at, bytes(entry)))
+    for i in run:
+        if row_object(records[i].raw) == object_id:
+            out[i] = with_content(records[i].raw)
     return _finish(data, out, validate)
 
 

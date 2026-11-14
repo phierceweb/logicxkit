@@ -3,9 +3,11 @@
 The payload is 16-byte lines. A line whose byte 7 has its top bit clear starts an event:
 type u16 at +0 (a tempo event Logic added carried a nonzero word at +2, undecoded), tick u32
 at +4 (960 per quarter, bar 1 at tick 38400). A line whose byte 7
-has the top bit set continues the event before it — 0x88 carries the event's data, 0xb4
-and 0xb1 a tempo event's curve. Type 0xf1 at tick 0x3fffffff ends the sequence. Read the
-same way in every song on hand (2026-09-06).
+has the top bit set continues the event before it — 0x88 carries the event's data, 0xb4 a
+tempo curve's four undecoded fields; 0xb1 is all zero on every save on hand (the bar-1 event of
+the owner's template-born songs, a later event of a drawn curve, none on the blank project's),
+its meaning unknown. Type 0xf1 at tick 0x3fffffff ends the sequence. Read the same way in every
+song on hand (2026-09-06, 2026-11-13).
 """
 
 from __future__ import annotations

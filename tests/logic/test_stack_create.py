@@ -21,7 +21,11 @@ from _records import (
 from logicxkit.logic.services.mixer.binding import channels
 from logicxkit.logic.services.arrange.environment import channel_objects
 from logicxkit.logic.services.stream.stream import HEADER, project_records
-from logicxkit.logic.services.arrange.tracklist import arrange_run, flat_run, row_object
+from logicxkit.logic.services.arrange.selection import select_track
+from logicxkit.logic.services.arrange.tracklist import (
+    CONTENT_FLAG, CONTENT_FLAG_AT, EXPANDED_AT, SELECTED_AT, SELECTED_BIT, SELECTED_FLAG, SELECTED_MARK, arrange_run, flat_run,
+    row_object,
+)
 from logicxkit.logic.services.stream.sequence import sequences
 from logicxkit.logic.services.stream.table_index import index_errors
 from logicxkit.logic.services.arrange.stack_create import SUB_NUMBER_AT, create_stack
@@ -103,12 +107,56 @@ class RowsTest(unittest.TestCase):
         self.assertEqual(names(rows)[5:], ["Mixed", "Test Bounce", "Cymbals", "Drums", "Master"])
         self.assertEqual([r["member"] for r in rows[5:]], [False, True, True, False, False])
 
+    def test_the_header_row_is_selected_with_the_flag_and_its_mixer_row_carries_the_track_flag(self):
+        out, report = create_stack(session(), name="Nested Stack", members=[504], track_count=TRACKS)
+        recs = project_records(out)
+        run = arrange_run(recs, TRACKS + 1)
+        header = next(recs[i].raw for i in run if row_object(recs[i].raw) == report["object_id"])
+        self.assertTrue(struct.unpack_from("<I", header, HEADER)[0] & SELECTED_FLAG)
+        self.assertEqual((header[HEADER + EXPANDED_AT] & SELECTED_BIT, header[HEADER + SELECTED_AT]), (SELECTED_BIT, SELECTED_MARK))
+        flat = next(recs[i].raw for i in flat_run(recs, run) if row_object(recs[i].raw) == report["object_id"])
+        self.assertEqual(flat[HEADER + CONTENT_FLAG_AT], CONTENT_FLAG)
+
     def test_the_flat_list_gains_a_row_after_the_last_sub(self):
         out, _ = create_stack(session(), name="Nested Stack", members=[504], track_count=TRACKS)
         flat = [r for r in project_records(out) if r.tag == b"karT" and len(r.raw) - HEADER == 58]
         ids = [struct.unpack_from("<I", r.raw, HEADER + 8)[0] for r in flat[10:]]
         self.assertEqual(ids, [296, 300, 304] + MIXER + [508])
         self.assertEqual([r.key for r in flat[10:]], list(range(13)))
+
+
+class SelectedFlagTest(unittest.TestCase):
+    """The selected row's `+0` flag goes by the channel kind: an aux or instrument track's row takes it, an
+    audio track's never does, as every selected row in Logic's saves shows."""
+
+    def flagged(self, data: bytes, object_id: int) -> bool:
+        recs = project_records(data)
+        raw = next(recs[i].raw for i in arrange_run(recs, TRACKS) if row_object(recs[i].raw) == object_id)
+        return bool(struct.unpack_from("<I", raw, HEADER)[0] & SELECTED_FLAG)
+
+    def test_aux_and_instrument_rows_take_the_flag_and_an_audio_row_does_not(self):
+        base = session()
+        self.assertTrue(self.flagged(select_track(base, 212, TRACKS), 212))        # Drums aux, Aux 2
+        self.assertTrue(self.flagged(select_track(base, 504, TRACKS), 504))        # Test Bounce, Inst 4
+        self.assertFalse(self.flagged(select_track(base, 88, TRACKS), 88))         # Kick In, Audio 1
+        self.assertFalse(self.flagged(select_track(base, 88, TRACKS), 212))        # the previous holder cleared
+
+    def test_a_selection_move_keeps_every_rows_content_mark(self):
+        """`+43` holds the selected mark (0x40) beside the content mark (0x0c): a move sets and clears
+        the one and leaves the other, as Logic's own add left a row holding a region at 0x4c."""
+        from logicxkit.logic.services.arrange.tracklist import CONTENT_MARK, SELECTED_MARK, TRACK_OBJECT_AT, select_rows
+
+        def row(object_id: int, mark: int) -> bytes:
+            p = bytearray(58)
+            struct.pack_into("<I", p, TRACK_OBJECT_AT, object_id)
+            p[SELECTED_AT] = mark
+            return bytes(HEADER) + bytes(p)
+
+        rows = [row(1, SELECTED_MARK | CONTENT_MARK), row(2, CONTENT_MARK)]       # both hold a region, the first selected
+        moved = select_rows(rows, 2)
+        self.assertEqual([r[HEADER + SELECTED_AT] for r in moved], [CONTENT_MARK, SELECTED_MARK | CONTENT_MARK])
+        back = select_rows(moved, 1)
+        self.assertEqual([r[HEADER + SELECTED_AT] for r in back], [SELECTED_MARK | CONTENT_MARK, CONTENT_MARK])
 
 
 class StackTest(unittest.TestCase):

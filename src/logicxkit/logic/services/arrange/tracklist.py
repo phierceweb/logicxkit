@@ -2,7 +2,13 @@
 
 Row payload (58 bytes at Logic 12, 57 at Logic 11):
 
-    +0    u32   flags; bit 0x04000000 hides the row
+    +0    u32   flags; bit 0x04000000 hides the row; bit 0x10000 on the selected row when it is an
+                instrument, aux or Sub track's, never an audio track's (every Logic save on hand); byte
+                +2 0x14 on a track's row once a region sits on it, audio or MIDI, with 0x0c at +43
+                (every audio row so held in every save on hand; an instrument row so held carries
+                +43's 0x04 in every save and 0x0c in most; Logic's import sets both, and its re-save
+                of a write lacking them sets both). On the mixer-order run +2 is 0x14 on every row
+                whose object has an arrange row (every Logic save on hand), 0 on most without one
     +8    u32   object id (`ivnE +16`)
     +14   u8    1 on every row inside a stack, 0 on headers and top-level rows
     +24   16    row UUID
@@ -36,9 +42,12 @@ OFF_BIT = 0x20000000               # +0: the track's power button off (measured:
                                   # cleared this bit and nothing else on the track, 2026-09-06)
 HIDDEN_FLAG = 0x24000001          # the value most hidden rows carry; the bit is what counts
 FLAG_BASE = 0x1
-INST_SELECTED_BIT = 0x10000       # +0: set on a selected instrument row only
+SELECTED_FLAG = 0x10000           # +0: the selected row's, on an instrument, aux or Sub row
 SELECTED_BIT = 0x20               # +40
 SELECTED_MARK = 0x40              # +43
+CONTENT_FLAG_AT, CONTENT_FLAG = 2, 0x14     # with CONTENT_MARK at +43: a track's row holding a region;
+                                            # alone, a mixer-order row whose object has an arrange row
+CONTENT_MARK = 0x0C
 UUID_LEN = 16
 
 
@@ -119,6 +128,14 @@ def new_row(template: bytes, *, object_id: int, member: int, row_type: int | Non
     return bytes(row)
 
 
+def with_content(raw: bytes) -> bytes:
+    """The row flagged as holding a region: +2's 0x14 and +43's 0x0c, as Logic's import and its re-save of a region write leave it."""
+    row = bytearray(raw)
+    row[HEADER + CONTENT_FLAG_AT] |= CONTENT_FLAG
+    row[HEADER + SELECTED_AT] |= CONTENT_MARK
+    return bytes(row)
+
+
 def with_selected_row(raw: bytes) -> bytes:
     """The row's selected bit set, as every member Flatten Stack frees is left."""
     row = bytearray(raw)
@@ -155,29 +172,34 @@ def with_hidden(raw: bytes, hidden: bool) -> bytes:
     return bytes(row)
 
 
-def select_rows(rows: list[bytes], object_id: int) -> list[bytes]:
-    """``rows`` with ``object_id``'s row selected and every other one deselected."""
+def select_rows(rows: list[bytes], object_id: int, flagged: bool | None = None) -> list[bytes]:
+    """``rows`` with ``object_id``'s row selected and every other one deselected. ``flagged`` says
+    whether the selected row takes `+0`'s SELECTED_FLAG; left None, an instrument row alone does
+    (`selection.select_track` knows the channel and passes it)."""
     out = []
     for raw in rows:
         row = bytearray(raw)
         selected = row_object(raw) == object_id
-        flag = struct.unpack_from("<I", row, HEADER + TRACK_FLAG_AT)[0] & ~INST_SELECTED_BIT
-        if selected and row[HEADER + ROW_TYPE_AT] == ROW_TYPE["instrument"]:
-            flag |= INST_SELECTED_BIT
+        flag = struct.unpack_from("<I", row, HEADER + TRACK_FLAG_AT)[0] & ~SELECTED_FLAG
+        if selected and (flagged if flagged is not None else row[HEADER + ROW_TYPE_AT] == ROW_TYPE["instrument"]):
+            flag |= SELECTED_FLAG
         struct.pack_into("<I", row, HEADER + TRACK_FLAG_AT, flag)
         if selected:
             row[HEADER + EXPANDED_AT] |= SELECTED_BIT
         else:
             row[HEADER + EXPANDED_AT] &= ~SELECTED_BIT & 0xFF
-        row[HEADER + SELECTED_AT] = SELECTED_MARK if selected else 0
+        mark = row[HEADER + SELECTED_AT] & ~SELECTED_MARK & 0xFF            # the content mark stays, as Logic keeps it
+        row[HEADER + SELECTED_AT] = mark | (SELECTED_MARK if selected else 0)
         out.append(bytes(row))
     return out
 
 
 def clone_flat_row(template: bytes, object_id: int) -> bytes:
-    """A mixer-order row for ``object_id``, everything else as ``template``."""
+    """A mixer-order row for ``object_id`` with `+2`'s 0x14, as every such row of an object with an
+    arrange row carries; everything else as ``template``."""
     row = bytearray(template)
     struct.pack_into("<I", row, HEADER + TRACK_OBJECT_AT, object_id)
+    row[HEADER + CONTENT_FLAG_AT] |= CONTENT_FLAG
     row[HEADER + ROW_UUID_AT:HEADER + ROW_UUID_AT + UUID_LEN] = fresh_uuid()
     return bytes(row)
 

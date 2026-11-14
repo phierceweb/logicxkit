@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from ._capabilities_content import CONTENT_ROWS
 from ._capabilities_table_2 import WRITER_ROWS
-from ._capability import Capability
+from ._capability import LOGIC_13_0, Capability
+from .services.stream.validate import MEASURED_FORMAT
 
 
 CAPABILITIES = (
@@ -98,7 +99,9 @@ CAPABILITIES = (
                "is read as one: the rows under it make it a header. Two summing stacks moved into "
                "each other in turn leave their auxes feeding each other, as Logic 12.4's own two drags "
                "did with no alert (`stack-loop-*`); the write lands and names the routing loop in a "
-               "warning, as any write that leaves one does"),
+               "warning, as any write that leaves one does"
+               ". On a Logic 13.0 save (format 2514) `--move` into a folder stack was re-saved by Logic 13.0 with every record as written but a channel's `+80` byte every 13.0 re-save sets (2026-11-12, `stacks-move-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--flatten` and `--move-out` came back from Logic 13.0's re-save as written but a row's cleared `+43` mark and the Klopfgeist byte (`stacks-flatten-ours-resave-13-0-logic`, `stacks-move-out-ours-resave-13-0-logic`); `--convert` as written but the new aux row's UUID, an object word (`+63`), the summing header's selected flag and mark, which 13.0 cleared — its own summing headers carry the flag beside a row bit at `+40` (0x40) this writer does not set — and the Klopfgeist byte (`stacks-convert-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("levels",), "CONFIRMED",
                "read-only until `--fader`, `--pan` or `--to`, which need `--out`",
                "Reads fader and pan, the fader in dB to the hundredth, and each channel's mute and "
@@ -113,7 +116,9 @@ CAPABILITIES = (
                "Logic 12.4 and came back from its save as written (`send-set-*`, "
                "2026-10-02). Logic's "
                "fader readout shows its own steps as labelled, but a level between two up to "
-               "0.1 dB low (an exact -6.0 shows -6.1), so the listing gives the level as written"),
+               "0.1 dB low (an exact -6.0 shows -6.1), so the listing gives the level as written"
+               ". On a Logic 13.0 save (format 2514) `--fader` and `--pan` were re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `levels-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--to` another 13.0 save came back as written but the Klopfgeist byte (`levels-to-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("build", "verify", "pst", "donors", "image", "ocr"), "—",
                "never touches a project; `build`/`pst` reach Logic's own library only with "
                "`--install`",
@@ -142,12 +147,15 @@ CAPABILITIES = (
                "file; on the example written onto a copy of `inserts-native-logic`, Logic 12.4 showed every "
                "slot as the file holds it (2026-10-09). A third-party slot is read by the plug-in through the "
                "headless AU host instead: Pro-C 2 and Pro-Q 4 report every id as `write-proc` and `translate-proq` "
-               "hold it, and Pro-Q 4 names a value it will not keep (2026-11-02)"),
+               "hold it, and Pro-Q 4 names a value it will not keep (2026-11-02)"
+               ". On a Logic 13.0 save (format 2514) — Logic 13.0's re-save of the library-setting save — the example chain keyed by the channel's reference was re-saved by Logic 13.0 with the three slots and the reference as written; 13.0 set the count record's copy of the shown-slot word (`nCuA +61`, 3 → 4, written too) and cleared the new Enveloper slot's per-plug-in token (`+76`), the two bytes a fresh write then differs in (2026-11-13, `chains-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("retrack",), "CONFIRMED", "yes",
                "Changes a label, never a chain; basename-only library match. `--channel` repoints one "
                "channel at a time, so channels sharing a name can part ways: seven repointed on a "
                "tracking template showed on the Setting buttons and survived Logic's re-save "
-               "byte for byte (2026-09-06)"),
+               "byte for byte (2026-09-06)"
+               ". On a Logic 13.0 save (format 2514) `--channel 'Audio 1=Kick.cst'` came back from Logic 13.0's re-save byte for byte (2026-11-13, `retrack-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--map` came back byte for byte (`retrack-map-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("strip-save",), "CONFIRMED", "yes",
                "A path under Logic's own library is refused without `--install` (2026-09-27)"),
     Capability(("send",), "CONFIRMED", "yes",
@@ -169,7 +177,9 @@ CAPABILITIES = (
                "(`send-two-base-3-logic`); a second send to a bus the channel sends to is refused. "
                "`--add` to a bus nothing uses puts it in use first, as `route` does and as Logic's own "
                "sends did (`send-bus-1-logic`); Logic 12.4 re-saved one with the send, the aux and "
-               "every index-table entry as written (`send-bus-*`, 2026-10-03)"),
+               "every index-table entry as written (`send-bus-*`, 2026-10-03)"
+               ". On a Logic 13.0 save (format 2514) `--add` (Bus 1 put in use, Aux 1 made from the packaged template) was re-saved by Logic 13.0 with the send, the aux and its routing as written; 13.0 rewrote one byte of its keyed record and the mixer-order run's last row UUID, and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `send-ours-resave-13-0-logic`); the new aux object carried its 12.x template's type word, which 13.0 rewrote (1800 → 1312 at +0 and +114) and the writer now writes by the project's format"
+               ". Also on 2514 (2026-11-13): `--set` with a level and mode came back byte for byte (`send-set-ours-resave-13-0-logic`); `--add` with a level and bypass as written but the send record's class word, which 13.0 writes as 68 where the 12.x template carries 72 (every 2514 save on hand), the aux row's UUID and the Klopfgeist byte (`send-add-level-ours-resave-13-0-logic`) — the writer writes the project format's word, and a fresh `--add` differs from that re-save in the UUIDs it mints, the row UUID 13.0 re-mints and the Klopfgeist byte alone; `--remove` of a channel's two sends on a project whose slots start at key 3 had 13.0 lower the slot base to 2 on every channel record (`+28`, and the count record's `+60`), shorten two channel records by 4 B and move the archives down a key — a re-lay this writer leaves to Logic (`send-remove-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("stack-create",), "CONFIRMED", "yes",
                "A session with no stack patterns on Logic's own first "
                "stack (packaged); Logic re-saved two such stacks with the header, strip and members "
@@ -219,7 +229,8 @@ CAPABILITIES = (
                "of each as written. Logic's own new header takes the object id of the header the convert "
                "removed, and with it that object's mixer-order row; a written one takes a new id and the "
                "row stays. A third level of stack is refused: Logic's "
-               "own Create Track Stack is disabled wherever it would make one"),
+               "own Create Track Stack is disabled wherever it would make one"
+               ". On a Logic 13.0 save (format 2514) a folder stack was re-saved by Logic 13.0 with the stack, its rows and sequence as written; 13.0 set the header row's `+2` 0x01 (the selected flag every selected instrument, aux and Sub row carries in Logic's saves, never an audio track's) and its mixer row's `+2` 0x14 (every mixer-order row of a track), both now written, regenerated that row's UUID, and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `stack-create-ours-resave-13-0-logic`); the header object carried its 12.x template's type word, which 13.0 rewrote (1800 → 1312) and the writer now writes by the project's format", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("add-track",), "CONFIRMED", "yes",
                "Audio, instrument and aux adds; every add in one migration survived Logic's own re-save "
                "row for row (2026-09-04). A stub no track has used is never bound: a fresh channel goes "
@@ -249,12 +260,15 @@ CAPABILITIES = (
                "strip (2026-10-01). A track bound to a free `Audio` strip is not one Logic counts as used: Logic's next New "
                "Audio Track took that strip and moved the written track onto the next free one with no "
                "input (`stack-sub-gap-logic-track-after-logic`, 2026-11-04); until the bytes Logic's own "
-               "bind writes are found, add another track in Logic before such a track, not after"),
+               "bind writes are found, add another track in Logic before such a track, not after"
+               ". On a Logic 13.0 save (format 2514) a new audio track was re-saved by Logic 13.0 with the track, its channel, rows and sequence as written but the previous row's `+43` mark cleared, the mixer-order run's last row given a fresh UUID, and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `add-track-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--instrument` came back with the track, channel and rows as written; 13.0 set the pattern channel's — the Klopfgeist's — `+81`, regenerated its two trailing keyed archives shorter, rewrote three bytes of the cloned instrument slot (`+116`, `+117`, `+146`) and the mixer-order row's UUID, and the Klopfgeist byte (`add-track-instrument-ours-resave-13-0-logic`); `--stereo` as written but the previous row's mark, the row UUID and the Klopfgeist byte (`add-track-stereo-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("reorder",), "CONFIRMED", "yes",
                "Moves a row among its siblings; a stack header moves with its members, and that "
                "move reproduces Logic's own drag of a header byte for byte (2026-09-12). A plain-row "
                "move came back from Logic's re-save in the written order, every row byte held but "
-               "the moved row's selection mark, which Logic clears on load (2026-09-13)"),
+               "the moved row's selection mark, which Logic clears on load (2026-09-13)"
+               ". On a Logic 13.0 save (format 2514) a move of one track before another was re-saved by Logic 13.0 with every record as written but the moved row's `+43` mark and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `reorder-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("route",), "CONFIRMED", "yes",
                "Sets a channel's input or output by label, by UUID and by index word; an output "
                "rerouted to a bus came back from Logic's re-save with the routing intact, and the "
@@ -271,7 +285,9 @@ CAPABILITIES = (
                "2026-10-03). Logic 12.4 showed the aux beside the routed track and re-saved the copy "
                "as written (`route-bus-*`). A Logic 11.2 project is refused by its format; its "
                "class-6 channel records "
-               "carry no routing uuid"),
+               "carry no routing uuid"
+               ". On a Logic 13.0 save (format 2514) `--input` was re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `route-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--output` to a bus, the aux made, came back as written but the aux row's UUID and the Klopfgeist byte (`route-output-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("arrangement",), "CONFIRMED", "yes, on a copy",
                "Reads matched Logic's display on every project tested; a rename plus a resize "
                "survived Logic's re-save byte for byte (2026-09-06), `--add` reproduces Logic's own "
@@ -287,27 +303,37 @@ CAPABILITIES = (
                "after the last to the end of the last region, through the same add; those sections touch, and a filled copy "
                "has not been re-saved by Logic, whose re-save kept sections with gaps between them. A name outside ASCII is written as UTF-8, which "
                "Logic's arrangement track showed and its re-save kept; Logic's own rename to one, "
-               "an RTF record, is read (`names-text-*`, 2026-10-02)"),
+               "an RTF record, is read (`names-text-*`, 2026-10-02)"
+               ". On a Logic 13.0 save (format 2514) `--add` was re-saved by Logic 13.0 with the section as written; 13.0 rewrote nothing of it but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `arrangement-ours-resave-13-0-logic`); the new arrangement track carried its 12.3.1 template's type word, which 13.0 rewrote (1128 → 640 at +0 and +114) and the writer now writes by the project's format, so a fresh write is 13.0's re-save of it"
+               ". Also on 2514 (2026-11-13): `--rename` with `--move` and `--length` came back byte for byte (`arrangement-edit-ours-resave-13-0-logic`); `--delete`, and `--fill` after a delete, as written but the deleted section's text record, which the staged write left and 13.0 dropped (`arrangement-delete-ours-resave-13-0-logic`, `arrangement-fill-ours-resave-13-0-logic`) — the writer drops it; a fresh `--delete` is that re-save byte for byte, and a fresh `--fill` after a delete differs from its re-save in the new section's text-record slot alone (the freed one, where the staged write took the next)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("signature",), "CONFIRMED", "yes, on a copy",
                "Reads the signature track and the LCD's division on every project tested. `--time` at "
                "bar 1, `--key` (major and minor) and `--division` reproduce Logic's own edits byte for "
                "byte (2026-09-06/07); `--key-at` and `--time-at` add changes after bar 1 and survived "
                "Logic's re-save byte for byte. `--time` at bar 1 refuses songs with later meter "
-               "changes"),
+               "changes"
+               ". On a Logic 13.0 save (format 2514) `--time 3/4 --key G` was re-saved by Logic 13.0 with the meter and key as written; 13.0 recomputed two meter-derived tick words in the track's object (`+222`, `+278`: 3840 → 2880), wrote the signature record's two events in the other order (the key before the meter) and the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `signature-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--division` with `--key-at` and `--time-at` came back as written; 13.0 recomputed meter words in the track's object (`+230`..`+233`, `+318`, `+319`) and the Klopfgeist byte (`signature-more-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("toolbar",), "CONFIRMED", "yes, on a copy",
                "Every button's id measured on seven saves (2026-09-07) and written in Logic's order; "
-               "Logic re-saved one of ours unchanged. `--row` shows or hides the toolbar row"),
+               "Logic re-saved one of ours unchanged. `--row` shows or hides the toolbar row"
+               ". On a Logic 13.0 save (format 2514) `--show Colors --hide Crop` was re-saved by Logic 13.0 with every record and the display state as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-13, `toolbar-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--from` a 13.0 save came back as written but the Klopfgeist byte (`toolbar-from-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("modes",), "CONFIRMED", "yes, on a copy",
                "Cycle, Replace, Autopunch, Metronome Click, Use Musical Grid and the count-in length in "
                "the song record, pinned on Logic's saves of one press apiece (2026-09-08); a copy "
                "written with four of them came up in Logic so and was re-saved intact. Solo is read "
                "but not copied — Logic clears it on load. "
-               "`apply-template` copies them"),
+               "`apply-template` copies them"
+               ". On a Logic 13.0 save (format 2514) `--set Cycle=on --set 'Count-in=1 Bar'` was re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets and a bit of a mode record (`+47` of the 80-byte record) (2026-11-13, `modes-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--from` a 13.0 save came back as written but the Klopfgeist byte and a bit of a mode record (`+47` of the 80-byte record) 13.0 sets (`modes-from-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     Capability(("metronome",), "CONFIRMED", "yes, on a copy",
                "The Metronome and Recording panes: nine boxes, the pre-roll time, the four Klopfgeist "
                "rows and the four MIDI click rows in the click object, pinned on Logic's saves of one "
                "change apiece (2026-09-08); a copy with six boxes and the pre-roll written, and one "
                "with changed rows copied in, each came up in Logic's "
-               "pane as written and re-saved intact. `apply-template` copies them"),
+               "pane as written and re-saved intact. `apply-template` copies them"
+               ". On a Logic 13.0 save (format 2514) `--set` was re-saved by Logic 13.0 with every record as written but the Klopfgeist channel's `+80` byte every 13.0 re-save of this twin sets (2026-11-12, `metronome-ours-resave-13-0-logic`)"
+               ". Also on 2514 (2026-11-13): `--from` a 13.0 save came back as written but the Klopfgeist byte (`metronome-from-ours-resave-13-0-logic`)", formats=(MEASURED_FORMAT, LOGIC_13_0)),
     *WRITER_ROWS,
 )

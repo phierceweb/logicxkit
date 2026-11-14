@@ -3,6 +3,52 @@
 Notable changes to logicxkit. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 versions follow [semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.17.0 — 2026-11-13
+
+### Added
+
+- `regions` writes onto Logic 13.0 saves (format 2514): the edits, the MIDI edits, the parameters
+  and `--audio`, each re-saved by Logic 13.0 with its content as written.
+- `regions --audio`, `midi --region`, `beats` and `drums-to-midi` flag the track's arrange row as holding a
+  region, as Logic does on its next save; `regions --audio` on a Logic 13.0 save writes the file record's
+  13.0 leading word.
+- A selected instrument, aux or stack-header row carries the flag Logic gives it, never an audio
+  track's row; a new mixer-order row carries a track's 0x14; a selection move leaves every row's
+  content mark where it was.
+- `send --add`, `stack-create`, `add-track` and `arrangement --add` give the object they create the
+  type word of the project's own Logic; on a 13.0 save that is 13.0's, where the 12.x template's stood.
+- Logic 13.0's re-saves of the public writer saves and the stock plug-in saves, staged beside Logic
+  12.3.1's and 12.4's as `<key>-13-0` twins; each reads as its source through every reader.
+- The one-write commands take Logic 13.0 saves too: `rename`, `colour`, `hide`, `levels`, `route`,
+  `send`, `bypass`, `add-plugin`, `add-track`, `reorder`, `group`, `markers`, `arrangement`, `tempo`,
+  `signature`, `metronome`, `stack-create`, `stacks --move`, `midi`, `automation` and `beats`, each
+  write on a 13.0 save re-saved by Logic 13.0 with its content as written.
+- So do `transplant`, `chains`, `retrack`, `apply-template`, `migrate`, `header`, `controlbar`, `toolbar`,
+  `modes`, `settings --set`, `quantize-drums`, `strip-silence`, `songs`, `split-sections` and `drums-to-midi`,
+  each write on a 13.0 save re-saved by Logic 13.0 with its content as written; Logic 13.0's re-saves of the
+  takes they ran on and of the library-setting save are staged. `remove-plugin`, `replace-plugin`,
+  `swap-plugin`, `clear-slots`, `width` and `tracking-chains` still take 12.3.1's format only.
+- The opened commands' other operations are measured on Logic 13.0 saves too — `stacks --flatten`, `--convert` and
+  `--move-out`, `automation --copy` and `--clear`, `send --set`, `--remove` and `--add` with a level, `midi`'s region,
+  note, transform, copy and delete writes, `add-track --instrument` and `--stereo`, the marker and section edits and
+  `arrangement --fill`, `tempo --set` and `--ramp`, `signature --division`, `--key-at` and `--time-at`, the group
+  edits, `route --output`, `bypass --enable`, `add-plugin` mid-chain, `--stack` and `--set`, `transplant --bypass`,
+  `retrack --map`, `levels --to`, the display and metronome copies `--from` — each re-saved by Logic 13.0 with its content as written (`send --remove` re-laid by Logic); the saves are staged.
+- A chain written past the shown slots (`add-plugin`, `chains`, `transplant`, `apply-template`) copies the
+  shown-slot word into the channel-count record, and `regions --to-track` (so `split-sections --to`) flags
+  the destination row as holding a region, as Logic's own save does.
+- `send --add` writes the send record's class word of the project's own Logic (68 on a 13.0 save, 72 on 12.x);
+  `arrangement --delete` drops the deleted section's text record; `tempo --set` moves the later tempo points' time
+  words where the constant-tempo model fits the map's words (a drawn curve keeps them); `group --name` and `--setting`
+  order a member's fader events Solo, Pan, Mute, Volume, the one order Logic's saves fit. A fresh write of each matches
+  Logic 13.0's re-save of it, `send --add` but for the UUIDs it mints.
+
+### Fixed
+
+- `metronome` reads the MIDI click rows of a Logic 13.0 save.
+- The sdist's tests collect on their own: a `chains --verify` test imported a module of the goldens tier, which
+  the sdist leaves out.
+
 ## 0.16.0 — 2026-11-06
 
 ### Changed
